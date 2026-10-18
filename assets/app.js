@@ -198,7 +198,8 @@
     if (!['search', 'browse', 'changes'].includes(S.tab)) S.tab = 'browse';
     mountStack();
     // Service Worker
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').then(r => r.update()).catch(() => {});
+      navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'updated') { const t = document.createElement('button'); t.className = 'toast'; t.textContent = 'Neue Version – tippen zum Laden'; t.onclick = () => location.reload(); document.querySelectorAll('.toast').forEach(x => x.remove()); document.body.appendChild(t); } }); }
   }
   const stackEl = () => document.getElementById('stack');
   const topEl = () => stackEl() && stackEl().lastElementChild;
@@ -421,11 +422,13 @@
       <div class="section">Darstellung</div><div class="group">${row('Glas-Design', sw(glass), 'design', 'Schwebende Tab-Leiste, Suche unten, Glas-Materialien')}</div>
       <div class="section">Sicherheit</div><div class="group">${row('Mit ' + BIO_NAME + ' schützen', sw(bio), 'bio', 'Beim Start entsperren statt Passphrase')}${row('Passphrase vergessen', '', 'forget', 'Beim nächsten Start neu eingeben')}</div>
       <div class="section">Index</div><div class="group"><div class="kv"><span>Stand</span><span>${fmtDate(S.index.generated, true)}</span></div><div class="kv"><span>Einträge</span><span>${S.items.length}</span></div><div class="kv"><span>Quellen</span><span>${S.sources.map(x => x.name).join(', ')}</span></div></div>
-      <p class="note">Explorer · PWA · ${STANDALONE ? 'installiert' : 'im Browser'}</p></div>`;
+      <div class="group"><button class="item plain" data-act="reload"><span class="txt"><span class="name" style="color:var(--accent)">App neu laden</span><span class="meta">Holt die neueste Version</span></span></button></div>
+      <p class="note">Explorer · ${STANDALONE ? 'installiert' : 'im Browser'} · Build 2026-10-18.5</p></div>`;
     sh.addEventListener('click', async e => { const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
       if (act === 'close') closeSheet();
       else if (act === 'design') { const g = store.get('design', 'glass') !== 'glass'; store.set('design', g ? 'glass' : 'classic'); applyDesign(); a.querySelector('.switch').classList.toggle('on', g); }
       else if (act === 'bio') { if (store.get('bio', null)) { store.del('bio'); a.querySelector('.switch').classList.remove('on'); toast(BIO_NAME + ' deaktiviert'); return; } if (!(await bioAvailable())) { toast(BIO_NAME + ' ist hier nicht verfügbar'); return; } try { await bioEnroll(); a.querySelector('.switch').classList.add('on'); toast('Beim nächsten Start mit ' + BIO_NAME); } catch (err) { toast('Abgebrochen'); } }
+      else if (act === 'reload') { caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k)))).catch(() => {}).then(() => location.reload()); }
       else if (act === 'forget') { store.del('pass'); store.del('bio'); toast('Passphrase vergessen'); closeSheet(); setTimeout(() => location.reload(), 400); } });
     scrim.addEventListener('click', () => closeSheet()); document.body.append(scrim, sh); S.sheet = [scrim, sh];
   }
