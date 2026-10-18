@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Explorer</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -13,116 +13,10 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<style>
-:root{
-  --bg:#f2f2f7; --card:#fff; --fg:#000; --fg2:#6e6e73; --sep:rgba(60,60,67,.18);
-  --accent:#0a84ff; --ok:#34c759; --warn:#ff9f0a; --bad:#ff453a; --pill:#e9e9ee;
-  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable","Segoe UI",system-ui,sans-serif;
-}
-@media (prefers-color-scheme: dark){:root{--bg:#000;--card:#1c1c1e;--fg:#fff;--fg2:#98989d;--sep:rgba(84,84,88,.6);--pill:#2c2c2e;color-scheme:dark}}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:17px;line-height:1.3;-webkit-font-smoothing:antialiased;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}
-.wrap{max-width:640px;margin:0 auto}
-h1{font-size:34px;font-weight:700;letter-spacing:-.4px;margin:28px 0 4px}
-.sub{color:var(--fg2);font-size:15px;margin:0 0 22px}
-h2{font-size:13px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);margin:26px 0 8px 16px}
-.group{background:var(--card);border-radius:12px;overflow:hidden}
-.row{display:flex;align-items:center;gap:12px;min-height:46px;padding:9px 16px;position:relative}
-.row+.row::before{content:"";position:absolute;left:16px;right:0;top:0;height:1px;background:var(--sep)}
-.row .t{flex:1;min-width:0}
-.row .t small{display:block;color:var(--fg2);font-size:13px;margin-top:2px;overflow-wrap:anywhere}
-.pill{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--pill);color:var(--fg2);white-space:nowrap;font-variant-numeric:tabular-nums}
-.pill.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
-.pill.warn{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
-.pill.bad{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
-a.row{color:var(--accent);text-decoration:none}
-a.row .chev{color:var(--fg2);opacity:.5}
-a.row:active{background:var(--pill)}
-button{font:inherit;color:var(--accent);background:none;border:0;padding:0;cursor:pointer}
-input{font:inherit;color:var(--fg);background:var(--pill);border:0;border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box;margin-top:6px;-webkit-user-select:text;user-select:text}
-.note{font-size:13px;color:var(--fg2);margin:8px 16px 0;line-height:1.4}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
-</style>
+<link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
-<div class="wrap">
-  <h1>Machbarkeitstest</h1>
-  <p class="sub">GitHub-Pages-Version. Vom Home-Bildschirm (iPhone) bzw. als installierte App (Edge) starten.</p>
-
-  <h2>App-Verhalten</h2>
-  <div class="group">
-    <div class="row"><div class="t">Standalone-Modus<small id="d-standalone">prüfe …</small></div><span class="pill" id="p-standalone">…</span></div>
-    <div class="row"><div class="t">Service Worker (Offline)<small id="d-sw">prüfe …</small></div><span class="pill" id="p-sw">…</span></div>
-    <div class="row"><div class="t">Lokaler Cache (IndexedDB)<small id="d-idb">prüfe …</small></div><span class="pill" id="p-idb">…</span></div>
-    <div class="row"><div class="t">Safe-Areas<small id="d-safe">prüfe …</small></div><span class="pill" id="p-safe">…</span></div>
-    <div class="row"><div class="t">Plattform<small id="d-ua">prüfe …</small></div><span class="pill" id="p-ua">…</span></div>
-  </div>
-
-  <h2>Verschlüsselter Index</h2>
-  <div class="group">
-    <div class="row"><div class="t">index.enc.json laden<small id="d-fetch">prüfe …</small></div><span class="pill" id="p-fetch">…</span></div>
-    <div class="row"><div class="t">Entschlüsseln<small id="d-dec">Passphrase eingeben – für den Test: <b>explorer</b></small><input id="pass" type="password" placeholder="Passphrase" autocomplete="off"></div><span class="pill" id="p-dec">…</span></div>
-    <div class="row"><div class="t">Inhalt<small id="d-items">–</small></div><span class="pill" id="p-items">…</span></div>
-  </div>
-  <p class="note">So wird später der tägliche Sync abgelegt: öffentlich im Repo, lesbar nur mit deiner Passphrase. Die Passphrase bleibt auf dem Gerät.</p>
-
-  <h2>Deep-Links</h2>
-  <div class="group">
-    <a class="row" href="https://docs.google.com/document/d/1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8/edit" target="_blank" rel="noopener"><div class="t">Google Drive – „Notizen 2018–2022“<small>https</small></div><span class="chev">›</span></a>
-    <a class="row" href="googledrive://file/1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8"><div class="t">Google-Drive-App<small>googledrive://</small></div><span class="chev">›</span></a>
-    <a class="row" href="mobilenotes://"><div class="t">Apple Notizen<small>mobilenotes://</small></div><span class="chev">›</span></a>
-    <a class="row" href="x-apple-reminderkit://"><div class="t">Apple Erinnerungen<small>x-apple-reminderkit://</small></div><span class="chev">›</span></a>
-    <a class="row" href="shortcuts://"><div class="t">Kurzbefehle<small>shortcuts://</small></div><span class="chev">›</span></a>
-    <a class="row" href="shareddocuments:///"><div class="t">Dateien-App<small>shareddocuments:///</small></div><span class="chev">›</span></a>
-  </div>
-
-  <h2>Ergebnis</h2>
-  <div class="group">
-    <div class="row"><div class="t"><button id="copy" type="button">Ergebnis kopieren</button><small id="copied">Zusammenfassung für den Chat.</small></div></div>
-  </div>
-</div>
-<script>
-(function(){
-  var R={};
-  function set(k,pill,cls,detail){var p=document.getElementById('p-'+k),d=document.getElementById('d-'+k);if(p){p.textContent=pill;p.className='pill '+(cls||'')}if(d&&detail!=null)d.textContent=detail;R[k]=pill+(detail?' ('+detail+')':'')}
-  var sa=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-  var modes=['fullscreen','standalone','minimal-ui','browser'].filter(function(m){return matchMedia('(display-mode: '+m+')').matches});
-  set('standalone',sa?'Ja':'Nein',sa?'ok':'warn',sa?'Läuft ohne Browser-Leiste':'Browser-Tab ('+(modes[0]||'?')+')');
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').then(function(reg){
-      return navigator.serviceWorker.ready.then(function(){return caches.has('explorer-v1')}).then(function(has){set('sw','Aktiv','ok',has?'App-Dateien im Offline-Cache – Flugmodus-Test möglich':'Registriert, Cache füllt sich beim nächsten Start')})
-    }).catch(function(e){set('sw','Fehler','bad',String(e))})
-  } else set('sw','Nicht verfügbar','warn','');
-  try{var rq=indexedDB.open('explorer',1);rq.onupgradeneeded=function(){rq.result.createObjectStore('k')};rq.onsuccess=function(){var tx=rq.result.transaction('k','readwrite');tx.objectStore('k').put(Date.now(),'t');tx.oncomplete=function(){set('idb','OK','ok','Index kann lokal zwischengespeichert werden')}};rq.onerror=function(){set('idb','Fehler','bad','')}}catch(e){set('idb','Fehler','bad',String(e))}
-  var probe=document.createElement('div');probe.style.cssText='position:fixed;top:0;height:env(safe-area-inset-top,0px);width:1px;visibility:hidden';document.body.appendChild(probe);var top=probe.getBoundingClientRect().height;probe.remove();
-  set('safe',Math.round(top)+' px',top>0?'ok':'',top>0?'Notch erkannt – Inhalt läuft bis an den Rand':'Keine Insets (Desktop oder Browser-Tab)');
-  var ua=navigator.userAgent,plat=/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':'Andere';
-  var br=/Edg\//.test(ua)?'Edge':/CriOS|Chrome\//.test(ua)?'Chrome':/Safari/.test(ua)?'Safari':'?';
-  set('ua',plat,'',br+' · '+innerWidth+'×'+innerHeight+' · DPR '+devicePixelRatio);
-
-  // Encrypted index
-  var enc=null;
-  fetch('index.enc.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(j){enc=j;set('fetch','Geladen','ok',Math.round(JSON.stringify(j).length/1024*10)/10+' KB · Stand '+j.updated);try{var s=localStorage.getItem('explorer.pass');if(s){document.getElementById('pass').value=s;decrypt(s)}}catch(e){}}).catch(function(e){set('fetch','Fehler','bad',String(e))});
-  function b64(s){var b=atob(s),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
-  function decrypt(pass){
-    if(!enc||!crypto.subtle){set('dec','Nicht möglich','bad','WebCrypto fehlt');return}
-    var te=new TextEncoder();
-    crypto.subtle.importKey('raw',te.encode(pass),'PBKDF2',false,['deriveKey']).then(function(k){
-      return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(enc.salt),iterations:enc.iterations,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt'])
-    }).then(function(key){return crypto.subtle.decrypt({name:'AES-GCM',iv:b64(enc.iv)},key,b64(enc.data))})
-    .then(function(buf){var data=JSON.parse(new TextDecoder().decode(buf));set('dec','OK','ok','Passphrase passt – wird auf dem Gerät gemerkt');try{localStorage.setItem('explorer.pass',pass)}catch(e){}
-      set('items',data.items.length+' Einträge','ok',data.items.map(function(i){return i.name}).join(' · '))})
-    .catch(function(){set('dec','Falsch','warn','Passphrase passt nicht')});
-  }
-  var t;document.getElementById('pass').addEventListener('input',function(e){clearTimeout(t);var v=e.target.value;t=setTimeout(function(){if(v.length>=4)decrypt(v)},400)});
-
-  document.getElementById('copy').addEventListener('click',function(){
-    var txt='Explorer-Test (Pages) '+new Date().toLocaleString('de-DE')+'\n'+Object.keys(R).map(function(k){return k+': '+R[k]}).join('\n');
-    var out=document.getElementById('copied');
-    (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){out.textContent='Kopiert.'}).catch(function(){out.textContent=txt});
-  });
-})();
-</script>
+<div id="app" aria-live="polite"></div>
+<script src="assets/app.js"></script>
 </body>
 </html>
