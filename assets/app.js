@@ -20,7 +20,7 @@
   const S = {
     index: null, items: [], byId: new Map(), children: new Map(), sources: [],
     tab: ({ recent: 'search' })[store.get('tab', 'browse')] || store.get('tab', 'browse'),
-    stacks: { search: [], browse: [], changes: [] },
+    stacks: { search: [], browse: [], changes: [] }, fwd: { search: [], browse: [], changes: [] },
     view: store.get('view', 'list'), sort: store.get('sort', 'name'), dir: store.get('dir', 'asc'),
     favs: new Set(store.get('favs', [])),
     opened: store.get('opened', []),
@@ -50,6 +50,13 @@
     clock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.3 2" stroke-linecap="round"/></svg>',
     gear: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
     face: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M9 9.5v1M15 9.5v1M12 9.5v4h-1M9 15.2a4.5 4.5 0 0 0 6 0"/></svg>',
+    house: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 3.2 2.8 11h2.4v9h5.3v-5.6h3v5.6h5.3v-9h2.4z"/></svg>',
+    person: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M4 20.5c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z"/></svg>',
+    kids: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="9.5" r="2.5"/><path d="M2.5 19.5c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5zM12.5 19.5c.3-2.6 1.8-4.3 4-4.3 2.4 0 4 1.8 4 4.3z"/></svg>',
+    bus: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2v1.5a1 1 0 0 1-2 0V18H8v1.5a1 1 0 0 1-2 0V18a2 2 0 0 1-2-2zm2 1v6h12V6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>',
+    work: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 4h6a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3V6a2 2 0 0 1 2-2zm0 3h6V6H9z"/></svg>',
+    box: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M3 5h18v4H3zM4 10h16v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm5 2v2h6v-2z"/></svg>',
+    tray: '<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h16v9h-4.5a3.5 3.5 0 0 1-7 0H4zM4 15h4.3a4.5 4.5 0 0 0 7.4 0H20v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>',
     link: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>'
   };
   const folderSVG = (s) => `<svg width="${s}" height="${s}" viewBox="0 0 64 64"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd0ff"/><stop offset="1" stop-color="#2f9ff3"/></linearGradient><linearGradient id="fb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb8f7"/><stop offset="1" stop-color="#2385dd"/></linearGradient></defs><path d="M6 18a4 4 0 0 1 4-4h14l5 5h25a4 4 0 0 1 4 4v27a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4z" fill="url(#fb)"/><path d="M6 26a3 3 0 0 1 3-3h46a3 3 0 0 1 3 3v24a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4z" fill="url(#fg)"/></svg>`;
@@ -80,6 +87,10 @@
     { id: 'rem', name: 'Erinnerungen', color: '#ff9f0a', types: ['reminder'] }
   ];
   const SOURCE_NAME = { drive: 'Google Drive', icloud: 'iCloud Drive', notes: 'Notizen', reminders: 'Erinnerungen' };
+  const SOURCE_SHORT = { drive: 'Drive', icloud: 'iCloud', notes: 'Notizen', reminders: 'Erinnerungen' };
+  const areaOf = id => (S.index.areas || []).find(a => a.id === id);
+  const areaRoots = aid => S.items.filter(i => i.area === aid && (!i.parent || !S.byId.get(i.parent) || S.byId.get(i.parent).area !== aid));
+  const areaCount = aid => S.items.filter(i => i.area === aid && i.kind === 'file').length;
 
   // ---------- Hilfen ----------
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -211,21 +222,22 @@
     document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
     renderSidebar();
   }
-  function push(sc) {
-    const stack = S.stacks[S.tab]; stack.push(sc);
+  function push(sc, keepFwd) {
+    const stack = S.stacks[S.tab]; stack.push(sc); if (!keepFwd) S.fwd[S.tab] = [];
     const prev = topEl(); const el = buildScreen(sc); el.classList.add('enter'); stackEl().appendChild(el);
     if (prev) { prev.classList.add('under-enter'); prev.addEventListener('animationend', () => { prev.classList.remove('under-enter'); prev.classList.add('under'); }, { once: true }); }
     el.addEventListener('animationend', () => el.classList.remove('enter'), { once: true });
     closeMenu(); renderSidebar();
   }
   function pop() {
-    const stack = S.stacks[S.tab]; if (stack.length < 2) return; stack.pop();
+    const stack = S.stacks[S.tab]; if (stack.length < 2) return; S.fwd[S.tab].push(stack.pop());
     const top = topEl(), prev = top.previousElementSibling;
     top.classList.add('leave'); top.addEventListener('animationend', () => top.remove(), { once: true });
     if (prev) { prev.classList.remove('under'); prev.classList.add('under-leave'); prev.addEventListener('animationend', () => prev.classList.remove('under-leave'), { once: true }); }
     if (matchMedia('(min-width:900px)').matches) { top.remove(); if (prev) { prev.classList.remove('under', 'under-leave'); } }
     closeMenu(); renderSidebar();
   }
+  function forward() { const f = S.fwd[S.tab]; if (f.length) push(f.pop(), true); }
   function popToRoot() { const stack = S.stacks[S.tab]; if (stack.length > 1) { S.stacks[S.tab] = [stack[0]]; mountStack(); } }
   function resetTo(sc) { S.stacks[S.tab] = [S.stacks[S.tab][0]]; if (sc.type !== 'root') S.stacks[S.tab].push(sc); mountStack(); }
 
@@ -234,10 +246,10 @@
     const el = document.createElement('section'); el.className = 'screen'; el.dataset.type = sc.type;
     const stack = S.stacks[S.tab], depth = stack.indexOf(sc), prevTitle = depth > 0 ? screenTitle(stack[depth - 1]) : null;
     const title = screenTitle(sc);
-    const showMenu = sc.type === 'folder' || sc.type === 'source' || sc.type === 'tag' || sc.type === 'favs';
+    const showMenu = ['folder', 'source', 'tag', 'favs', 'area'].includes(sc.type);
     const showGear = sc.type === 'root' || sc.type === 'changes';
     el.innerHTML = `<header class="nav"><div class="row">
-        ${prevTitle != null ? `<button class="back" data-act="back">${I.back}<span>${esc(prevTitle.length > 14 ? 'Zurück' : prevTitle)}</span></button>` : '<span></span>'}
+        ${prevTitle != null ? `<div class="navpill"><button class="back" data-act="back" aria-label="Zurück">${I.back}<span>${esc(prevTitle.length > 14 ? 'Zurück' : prevTitle)}</span></button><button class="fwd" data-act="fwd" aria-label="Vorwärts" ${S.fwd[S.tab].length ? '' : 'disabled'}>${I.back}</button></div>` : (S.fwd[S.tab].length ? `<div class="navpill"><button class="fwd" data-act="fwd" aria-label="Vorwärts">${I.back}</button></div>` : '<span></span>')}
         <div class="title">${esc(title)}</div>
         <div class="actions">${showGear ? `<button data-act="settings" aria-label="Einstellungen">${I.gear}</button>` : ''}${showMenu ? `<button data-act="menu" aria-label="Ansicht und Sortierung">${I.more}</button>` : ''}</div>
       </div></header><div class="content"></div>`;
@@ -254,7 +266,7 @@
     switch (sc.type) {
       case 'root': return 'Durchsuchen'; case 'search': return 'Suchen'; case 'changes': return 'Aktualisieren';
       case 'source': return SOURCE_NAME[sc.source] || sc.source; case 'folder': return (S.byId.get(sc.id) || {}).name || '';
-      case 'tag': return (TAGS.find(t => t.id === sc.tag) || {}).name || ''; case 'favs': return 'Favoriten'; default: return '';
+      case 'tag': return (TAGS.find(t => t.id === sc.tag) || {}).name || ''; case 'favs': return 'Favoriten'; case 'area': return (areaOf(sc.area) || {}).name || ''; default: return '';
     }
   }
   const searchHTML = (ph) => `<div class="search">${I.search}<input type="search" placeholder="${esc(ph || 'Suchen')}" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><button class="clear" data-act="clear" aria-label="Löschen">${I.x}</button></div>`;
@@ -269,6 +281,7 @@
   }
   function listFor(sc) {
     if (sc.type === 'source') return kidsOf(sc.source, null);
+    if (sc.type === 'area') return areaRoots(sc.area);
     if (sc.type === 'folder') { const f = S.byId.get(sc.id); return f ? kidsOf(f.source, f.id) : []; }
     if (sc.type === 'tag') { const t = TAGS.find(x => x.id === sc.tag); return S.items.filter(i => i.kind === 'file' && t.types.includes(i.type || 'other')); }
     if (sc.type === 'favs') return [...S.favs].map(id => S.byId.get(id)).filter(Boolean);
@@ -281,7 +294,9 @@
     const favs = [...S.favs].map(id => S.byId.get(id)).filter(Boolean);
     const favHTML = favs.length ? favs.map(it => itemRow(it, { showPath: true })).join('') : `<div class="item plain"><span class="txt"><span class="meta">Noch keine Favoriten – im Detail-Blatt mit ☆ markieren.</span></span></div>`;
     const tags = TAGS.map(t => { const n = S.items.filter(i => i.kind === 'file' && t.types.includes(i.type || 'other')).length; return n ? `<button class="item place tag" data-act="tag" data-tag="${t.id}"><span class="ico"><i style="background:${t.color}"></i></span><span class="txt"><span class="name">${esc(t.name)}</span></span><span class="count">${n}</span><span class="chev">${I.chevron}</span></button>` : ''; }).join('');
-    return `<div class="section">Speicherorte</div><div class="group">${places}</div>
+    const areas = (S.index.areas || []).map(a => `<button class="area" data-act="area" data-area="${a.id}" style="--ac:${a.color}"><span class="aico">${I[a.glyph] || I.tray}</span><span class="aname">${esc(a.name)}</span><span class="acount">${plural(areaCount(a.id), 'Datei', 'Dateien')}</span></button>`).join('');
+    return `<div class="section">Bereiche</div><div class="areas">${areas}</div>
+      <div class="section">Speicherorte</div><div class="group">${places}</div>
       <div class="section">Favoriten</div><div class="group">${favHTML}</div>
       <div class="section">Art</div><div class="group">${tags}</div>
       <p class="subtitle" style="margin:14px 16px 0">${S.items.filter(i => i.kind === 'file').length} Dateien in ${S.sources.length} Orten · Stand ${fmtDate(S.index.generated)}</p>`;
@@ -311,16 +326,16 @@
   }
   function renderItems(items, sc, q) {
     if (!items.length) return `<div class="empty"><b>${q ? 'Nichts gefunden' : 'Leer'}</b>${q ? 'Kein Eintrag passt zu „' + esc(q) + '“.' : 'Dieser Ordner enthält keine Einträge.'}</div>`;
-    const sorted = sortItems(items), showPath = sc.type === 'tag' || sc.type === 'favs' || !!q;
+    const sorted = sortItems(items), showPath = ['tag', 'favs', 'area'].includes(sc.type) || !!q;
     if (S.view === 'grid' && !q) return `<div class="grid">${sorted.map(it => itemCell(it)).join('')}</div>`;
     return `<div class="group filelist">${sorted.map(it => itemRow(it, { showPath })).join('')}</div><p class="subtitle" style="text-align:center;margin:12px 0 0">${plural(items.length, 'Objekt', 'Objekte')}</p>`;
   }
-  const shortPath = it => { const p = pathOf(it); return (p.length > 3 ? ['…'].concat(p.slice(-2)) : p).join(' › '); };
+  const shortPath = it => { const p = pathOf(it).slice(1); const t = p.length > 2 ? ['…'].concat(p.slice(-2)) : p; return `<i class="sdot ${it.source}" title="${esc(SOURCE_NAME[it.source] || '')}"></i>` + (t.length ? esc(t.join(' › ')) : esc(SOURCE_SHORT[it.source] || it.source)); };
   function itemRow(it, o = {}) {
     const isF = it.kind === 'folder';
     const when = it.due ? 'Fällig ' + fmtDate(it.due) : fmtDate(it.modified);
-    const meta = isF ? (o.showPath ? shortPath(it) + ' · ' : '') + plural(countIn(it), 'Objekt', 'Objekte') : [shortPath(it), when].filter(Boolean).join(' · ');
-    return `<button class="item" data-act="${isF ? 'folder' : 'detail'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 34)}</span><span class="txt"><span class="name">${esc(it.name)}</span><span class="meta">${esc(meta)}</span></span>${it.sample ? '<span class="badge sample">Beispiel</span>' : ''}${isF ? `<span class="chev">${I.chevron}</span>` : ''}</button>`;
+    const meta = isF ? (o.showPath ? shortPath(it) + ' · ' : '') + plural(countIn(it), 'Objekt', 'Objekte') : [shortPath(it), esc(when)].filter(Boolean).join(' · ');
+    return `<button class="item" data-act="${isF ? 'folder' : 'detail'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 34)}</span><span class="txt"><span class="name">${esc(it.name)}</span><span class="meta">${meta}</span></span>${it.sample ? '<span class="badge sample">Beispiel</span>' : ''}${isF ? `<span class="chev">${I.chevron}</span>` : ''}</button>`;
   }
   function itemCell(it) {
     const isF = it.kind === 'folder';
@@ -333,7 +348,7 @@
     if (sc.type === 'search') { res.innerHTML = q ? renderItems(S.items.filter(i => match(i, q)).slice(0, 200), sc, q) : recentBody(); return; }
     if (!q) { res.innerHTML = sc.type === 'root' ? rootResults() : renderItems(listFor(sc), sc); return; }
     let pool;
-    if (sc.type === 'root') pool = S.items; else if (sc.type === 'folder') pool = descendants(S.byId.get(sc.id)); else if (sc.type === 'source') pool = S.items.filter(i => i.source === sc.source); else pool = listFor(sc);
+    if (sc.type === 'root') pool = S.items; else if (sc.type === 'folder') pool = descendants(S.byId.get(sc.id)); else if (sc.type === 'source') pool = S.items.filter(i => i.source === sc.source); else if (sc.type === 'area') pool = S.items.filter(i => i.area === sc.area); else pool = listFor(sc);
     const hits = pool.filter(i => match(i, q)).slice(0, 200);
     res.innerHTML = renderItems(hits, sc, q);
   }
@@ -345,6 +360,8 @@
     if (act === 'back') pop();
     else if (act === 'source') push({ type: 'source', source: a.dataset.source });
     else if (act === 'tag') push({ type: 'tag', tag: a.dataset.tag });
+    else if (act === 'area') push({ type: 'area', area: a.dataset.area });
+    else if (act === 'fwd') forward();
     else if (act === 'folder') push({ type: 'folder', id });
     else if (act === 'detail') { e.stopPropagation(); openSheet(S.byId.get(id)); }
     else if (act === 'open') openItem(S.byId.get(id));
@@ -379,7 +396,7 @@
         ${it.snippet ? `<div class="group"><div class="snippet">${esc(it.snippet)}</div></div>` : ''}
         <div class="section">Informationen</div><div class="group">
           ${kv('Art', isF ? 'Ordner' : typeOf(it).label)}${kv('Größe', it.size != null ? fmtSize(it.size) : '')}${kv('Geändert', fmtDate(it.modified, true))}${kv('Erstellt', fmtDate(it.created, true))}${kv('Fällig', it.due ? fmtDate(it.due, true) : '')}
-          ${kv('Ort', path.join(' › '))}${kv('Quelle', SOURCE_NAME[it.source] || it.source)}${it.shared ? kv('Freigabe', 'Mit dir geteilt') : ''}
+          ${kv('Bereich', (areaOf(it.area) || {}).name)}${kv('Ort', path.join(' › '))}${kv('Quelle', SOURCE_NAME[it.source] || it.source)}${it.shared ? kv('Freigabe', 'Mit dir geteilt') : ''}
         </div>
         <div class="group" style="margin-top:8px"><button class="item plain" data-act="copy"><span class="txt"><span class="name" style="color:var(--accent)">Link kopieren</span></span></button></div>
       </div>`;
@@ -423,7 +440,7 @@
       <div class="section">Sicherheit</div><div class="group">${row('Mit ' + BIO_NAME + ' schützen', sw(bio), 'bio', 'Beim Start entsperren statt Passphrase')}${row('Passphrase vergessen', '', 'forget', 'Beim nächsten Start neu eingeben')}</div>
       <div class="section">Index</div><div class="group"><div class="kv"><span>Stand</span><span>${fmtDate(S.index.generated, true)}</span></div><div class="kv"><span>Einträge</span><span>${S.items.length}</span></div><div class="kv"><span>Quellen</span><span>${S.sources.map(x => x.name).join(', ')}</span></div></div>
       <div class="group"><button class="item plain" data-act="reload"><span class="txt"><span class="name" style="color:var(--accent)">App neu laden</span><span class="meta">Holt die neueste Version</span></span></button></div>
-      <p class="note">Explorer · ${STANDALONE ? 'installiert' : 'im Browser'} · Build 2026-10-18.5</p></div>`;
+      <p class="note">Explorer · ${STANDALONE ? 'installiert' : 'im Browser'} · Build 2026-10-18.6</p></div>`;
     sh.addEventListener('click', async e => { const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
       if (act === 'close') closeSheet();
       else if (act === 'design') { const g = store.get('design', 'glass') !== 'glass'; store.set('design', g ? 'glass' : 'classic'); applyDesign(); a.querySelector('.switch').classList.toggle('on', g); }
@@ -453,7 +470,7 @@
       if (active) { const d = Math.max(0, dx); el.style.transform = `translateX(${d}px)`; if (prev) prev.style.transform = `translateX(${-28 + 28 * (d / w)}%)`; } }, { passive: true });
     const end = e => { if (x0 == null) return; const dx = (e.changedTouches ? e.changedTouches[0].clientX : 0) - x0; x0 = null; if (!active) return; active = false;
       el.classList.remove('dragging'); if (prev) prev.classList.remove('dragging'); el.style.transition = 'transform .25s cubic-bezier(.32,.72,0,1)'; if (prev) prev.style.transition = 'transform .25s cubic-bezier(.32,.72,0,1)';
-      if (dx > w * 0.33) { el.style.transform = `translateX(${w}px)`; if (prev) prev.style.transform = 'translateX(0)'; setTimeout(() => { S.stacks[S.tab].pop(); el.remove(); if (prev) { prev.classList.remove('under'); prev.style.transform = ''; prev.style.transition = ''; prev.style.filter = ''; } renderSidebar(); }, 250); }
+      if (dx > w * 0.33) { el.style.transform = `translateX(${w}px)`; if (prev) prev.style.transform = 'translateX(0)'; setTimeout(() => { S.fwd[S.tab].push(S.stacks[S.tab].pop()); el.remove(); if (prev) { prev.classList.remove('under'); prev.style.transform = ''; prev.style.transition = ''; prev.style.filter = ''; } renderSidebar(); }, 250); }
       else { el.style.transform = ''; if (prev) prev.style.transform = ''; setTimeout(() => { el.style.transition = ''; if (prev) prev.style.transition = ''; }, 260); } };
     el.addEventListener('touchend', end); el.addEventListener('touchcancel', end);
   }
@@ -468,13 +485,14 @@
       <button class="item place recent ${S.tab === 'search' ? 'on' : ''}" data-side="search"><span class="ico">${I.tabSearch.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Suchen</span></span></button>
       <button class="item place ${S.tab === 'browse' && on('root') ? 'on' : ''}" data-side="root"><span class="ico" style="background:var(--accent)">${I.tabBrowse.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Durchsuchen</span></span></button>
       <button class="item place ${S.tab === 'changes' ? 'on' : ''}" data-side="changes"><span class="ico" style="background:var(--purple)">${I.tabChanges.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Aktualisieren</span></span></button>
+      <div class="section">Bereiche</div>${(S.index.areas || []).map(a => `<button class="item place ${S.tab === 'browse' && on('area', 'area', a.id) ? 'on' : ''}" data-side="area" data-area="${a.id}"><span class="ico" style="background:${a.color}">${(I[a.glyph] || I.tray).replace('width="20" height="20"', 'width="13" height="13"')}</span><span class="txt"><span class="name">${esc(a.name)}</span></span><span class="count">${areaCount(a.id)}</span></button>`).join('')}
       <div class="section">Speicherorte</div>${S.sources.map(s => `<button class="item place ${s.kind} ${S.tab === 'browse' && on('source', 'source', s.id) ? 'on' : ''}" data-side="source" data-source="${s.id}"><span class="ico">${I[s.kind] || I.drive}</span><span class="txt"><span class="name">${esc(s.name)}</span></span><span class="count">${srcCount(s.id)}</span></button>`).join('')}
       <div class="section">Favoriten</div>${[...S.favs].map(id => S.byId.get(id)).filter(Boolean).map(it => `<button class="item ${S.tab === 'browse' && on('folder', 'id', it.id) ? 'on' : ''}" data-side="${it.kind === 'folder' ? 'folder' : 'detail'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 20)}</span><span class="txt"><span class="name">${esc(it.name)}</span></span></button>`).join('') || '<div class="item plain"><span class="txt"><span class="meta">Keine Favoriten</span></span></div>'}
       <div class="section">Art</div>${TAGS.map(t => `<button class="item place tag ${S.tab === 'browse' && on('tag', 'tag', t.id) ? 'on' : ''}" data-side="tag" data-tag="${t.id}"><span class="ico"><i style="background:${t.color}"></i></span><span class="txt"><span class="name">${esc(t.name)}</span></span></button>`).join('')}`;
     sb.onclick = e => { const b = e.target.closest('[data-side]'); if (!b) return; const k = b.dataset.side;
       if (k === 'search' || k === 'changes') { switchTab(k); return; }
       if (S.tab !== 'browse') { S.tab = 'browse'; store.set('tab', 'browse'); }
-      if (k === 'root') resetTo({ type: 'root' }); else if (k === 'source') resetTo({ type: 'source', source: b.dataset.source }); else if (k === 'tag') resetTo({ type: 'tag', tag: b.dataset.tag }); else if (k === 'folder') resetTo({ type: 'folder', id: b.dataset.id }); else if (k === 'detail') openSheet(S.byId.get(b.dataset.id)); };
+      if (k === 'root') resetTo({ type: 'root' }); else if (k === 'source') resetTo({ type: 'source', source: b.dataset.source }); else if (k === 'tag') resetTo({ type: 'tag', tag: b.dataset.tag }); else if (k === 'area') resetTo({ type: 'area', area: b.dataset.area }); else if (k === 'folder') resetTo({ type: 'folder', id: b.dataset.id }); else if (k === 'detail') openSheet(S.byId.get(b.dataset.id)); };
   }
 
   // ---------- Start ----------

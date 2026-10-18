@@ -1,0 +1,30 @@
+{
+  "areas": [
+    {"id": "familie", "name": "Familie", "color": "#34c759", "glyph": "house"},
+    {"id": "nils", "name": "Nils", "color": "#007aff", "glyph": "person"},
+    {"id": "julia", "name": "Julia", "color": "#af52de", "glyph": "person"},
+    {"id": "kinder", "name": "Kinder", "color": "#ff9500", "glyph": "kids"},
+    {"id": "helpbus", "name": "Helpbus", "color": "#ffcc00", "glyph": "bus"},
+    {"id": "gauss", "name": "GAUSS", "color": "#5856d6", "glyph": "work"},
+    {"id": "archiv", "name": "Archiv", "color": "#8e8e93", "glyph": "box"},
+    {"id": "sonstiges", "name": "Sonstiges", "color": "#a2845e", "glyph": "tray"}
+  ],
+  "rules": [
+    {"prefix": "drive:/Familie Neumann/01 Nils/Helpbus", "area": "helpbus"},
+    {"prefix": "drive:/Familie Neumann/01 Nils/Beruf GAUSS", "area": "gauss"},
+    {"prefix": "drive:/Familie Neumann/00 Gemeinsam", "area": "familie"},
+    {"prefix": "drive:/Familie Neumann/01 Nils", "area": "nils"},
+    {"prefix": "drive:/Familie Neumann/02 Julia", "area": "julia"},
+    {"prefix": "drive:/Familie Neumann/03 Emma", "area": "kinder"},
+    {"prefix": "drive:/Familie Neumann/04 Paul", "area": "kinder"},
+    {"prefix": "drive:/Familie Neumann/05 Oskar", "area": "kinder"},
+    {"prefix": "drive:/Familie Neumann", "area": "familie"},
+    {"prefix": "drive:/Nils – Privat", "area": "nils"},
+    {"prefix": "drive:/Helpbus e.V.", "area": "helpbus"},
+    {"prefix": "drive:/Notizen-Archiv (iCloud, Okt 2026)", "area": "archiv"},
+    {"prefix": "notes:/", "area": "nils"},
+    {"prefix": "reminders:/", "area": "nils"},
+    {"prefix": "icloud:/", "area": "nils"}
+  ],
+  "default": "sonstiges"
+}

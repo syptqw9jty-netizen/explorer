@@ -1,74 +1,704 @@
 {
-  "generated": "2026-10-18T08:40:00Z",
-  "sources": [
-    {"id": "drive", "name": "Google Drive", "kind": "drive"},
-    {"id": "icloud", "name": "iCloud Drive", "kind": "icloud"},
-    {"id": "notes", "name": "Notizen", "kind": "notes"},
-    {"id": "reminders", "name": "Erinnerungen", "kind": "reminders"}
-  ],
-  "items": [
-    {"id":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","source":"drive","parent":null,"name":"Familie Neumann","kind":"folder","modified":"2024-04-02T17:23:47Z","created":"2024-04-02T15:57:50Z","url":"https://drive.google.com/drive/folders/1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs"},
-    {"id":"1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"00 Gemeinsam","kind":"folder","modified":"2026-10-17T21:02:37Z","url":"https://drive.google.com/drive/folders/1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF"},
-    {"id":"1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"01 Nils","kind":"folder","modified":"2026-10-17T21:02:38Z","url":"https://drive.google.com/drive/folders/1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e"},
-    {"id":"1QnC8z3DJe_jMaCz67z2rt9-_ihk8QG0g","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"02 Julia","kind":"folder","modified":"2026-10-17T21:02:38Z","url":"https://drive.google.com/drive/folders/1QnC8z3DJe_jMaCz67z2rt9-_ihk8QG0g"},
-    {"id":"12zjaNJiXQVWGaa-MA7CwYpQ18R9wvkiF","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"03 Emma","kind":"folder","modified":"2026-10-17T21:02:39Z","url":"https://drive.google.com/drive/folders/12zjaNJiXQVWGaa-MA7CwYpQ18R9wvkiF"},
-    {"id":"1sfMp3zsdadpECP8YB8Vxf0tVhxB1Ze9D","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"04 Paul","kind":"folder","modified":"2026-10-17T21:02:39Z","url":"https://drive.google.com/drive/folders/1sfMp3zsdadpECP8YB8Vxf0tVhxB1Ze9D"},
-    {"id":"1W2o8pKhLvgEi1VbDFcf4dTKlNKWvuYLC","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"05 Oskar","kind":"folder","modified":"2026-10-17T21:02:40Z","url":"https://drive.google.com/drive/folders/1W2o8pKhLvgEi1VbDFcf4dTKlNKWvuYLC"},
-    {"id":"1xjEliTJ45KxucVXf1zKYyRa03iTTaEso-3up4fU5yuU","source":"drive","parent":"1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs","name":"Changelog Drive-Struktur","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T21:02:50Z","url":"https://docs.google.com/document/d/1xjEliTJ45KxucVXf1zKYyRa03iTTaEso-3up4fU5yuU/edit"},
-    {"id":"1ycDGvpPvICHb_d8iMsqQqzIIz-ANG9FF","source":"drive","parent":"1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF","name":"Urlaube & Ausflüge","kind":"folder","modified":"2026-10-17T21:02:49Z","url":"https://drive.google.com/drive/folders/1ycDGvpPvICHb_d8iMsqQqzIIz-ANG9FF"},
-    {"id":"1aHx1S19ri1L5R2HU1FEHpcSD9kJZN-1R","source":"drive","parent":"1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF","name":"Finanzen & Verträge","kind":"folder","modified":"2026-10-17T21:02:48Z","url":"https://drive.google.com/drive/folders/1aHx1S19ri1L5R2HU1FEHpcSD9kJZN-1R"},
-    {"id":"1iNVF1Z7xBJzmlJCY9Cj1ajm43ojCFRbg","source":"drive","parent":"1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF","name":"Haushalt & Wohnen","kind":"folder","modified":"2026-10-17T21:02:48Z","url":"https://drive.google.com/drive/folders/1iNVF1Z7xBJzmlJCY9Cj1ajm43ojCFRbg"},
-    {"id":"1Ithyi870KxPN5U6sXQDR1auqSyG8P2x7","source":"drive","parent":"1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e","name":"Projekte & Ideen","kind":"folder","modified":"2026-10-17T21:02:48Z","url":"https://drive.google.com/drive/folders/1Ithyi870KxPN5U6sXQDR1auqSyG8P2x7"},
-    {"id":"1yaCWeBY9MFBkZnsKZbK0s3tosw2jGFA8","source":"drive","parent":"1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e","name":"Helpbus","kind":"folder","modified":"2026-10-17T21:02:47Z","url":"https://drive.google.com/drive/folders/1yaCWeBY9MFBkZnsKZbK0s3tosw2jGFA8"},
-    {"id":"1hfmRch1DKQ3eQOD1hkIxVhxytwNu8SWO","source":"drive","parent":"1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e","name":"Beruf GAUSS","kind":"folder","modified":"2026-10-17T21:02:47Z","url":"https://drive.google.com/drive/folders/1hfmRch1DKQ3eQOD1hkIxVhxytwNu8SWO"},
-    {"id":"1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH","source":"drive","parent":null,"name":"Nils – Privat","kind":"folder","modified":"2026-10-17T21:03:48Z","url":"https://drive.google.com/drive/folders/1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH"},
-    {"id":"1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY","source":"drive","parent":"1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH","name":"Nachrichten","kind":"folder","modified":"2026-10-17T21:05:31Z","url":"https://drive.google.com/drive/folders/1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY"},
-    {"id":"1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm","source":"drive","parent":"1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH","name":"_Schreibstil Nils.md","kind":"file","type":"md","size":1468,"modified":"2026-10-17T21:21:37Z","url":"https://drive.google.com/file/d/1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm/view"},
-    {"id":"1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM","source":"drive","parent":"1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY","name":"2026-10-17 – Parator – Terminabstimmung Handsender Garagentor (Mail privat)","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T21:42:14Z","url":"https://docs.google.com/document/d/1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM/edit"},
-    {"id":"1zvNestXvfzowBsGwQSjQsQgWuOR8Di6GDkNV_ZKZgaU","source":"drive","parent":"1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY","name":"2026-10-17 – Frau Rinske – Entschuldigung Gruppentherapie und Anfrage für Julia (Mail privat)","kind":"file","type":"gdoc","size":1045,"modified":"2026-10-17T21:39:09Z","url":"https://docs.google.com/document/d/1zvNestXvfzowBsGwQSjQsQgWuOR8Di6GDkNV_ZKZgaU/edit"},
-    {"id":"1P1bGDSNIrnJxPDnZmV_3kQbTgLR4MrVVgBJ1nKpxyR0","source":"drive","parent":"1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY","name":"2026-10-17 – Vermieter Dr. Fornefeld – Gesprächsangebot Telefontermin (Mail privat)","kind":"file","type":"gdoc","size":1155,"modified":"2026-10-17T21:21:15Z","url":"https://docs.google.com/document/d/1P1bGDSNIrnJxPDnZmV_3kQbTgLR4MrVVgBJ1nKpxyR0/edit"},
-    {"id":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","source":"drive","parent":null,"name":"Notizen-Archiv (iCloud, Okt 2026)","kind":"folder","modified":"2026-10-17T22:57:46Z","url":"https://drive.google.com/drive/folders/1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b"},
-    {"id":"1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8","source":"drive","parent":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen 2018–2022","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T22:57:50Z","url":"https://docs.google.com/document/d/1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8/edit"},
-    {"id":"1sO8yJtden-RqOwh7wHCl60Hla-kViry3jt-ov2xghcw","source":"drive","parent":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen 2023","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T22:57:51Z","url":"https://docs.google.com/document/d/1sO8yJtden-RqOwh7wHCl60Hla-kViry3jt-ov2xghcw/edit"},
-    {"id":"16mhEO35Ock-byzJdDeaMd5D3JG-dW5S_ChR3v8JNsw0","source":"drive","parent":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen 2024","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T22:57:52Z","url":"https://docs.google.com/document/d/16mhEO35Ock-byzJdDeaMd5D3JG-dW5S_ChR3v8JNsw0/edit"},
-    {"id":"1XYnrqJ-vK4JCk1iwaZynszY8U-hD1Dj07UGumzT4F6k","source":"drive","parent":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen 2025","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T22:57:53Z","url":"https://docs.google.com/document/d/1XYnrqJ-vK4JCk1iwaZynszY8U-hD1Dj07UGumzT4F6k/edit"},
-    {"id":"19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q","source":"drive","parent":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen 2026","kind":"file","type":"gdoc","size":1024,"modified":"2026-10-17T22:57:54Z","url":"https://docs.google.com/document/d/19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q/edit"},
-    {"id":"1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8","source":"drive","parent":null,"name":"Helpbus e.V.","kind":"folder","shared":true,"modified":"2026-10-17T11:37:11Z","url":"https://drive.google.com/drive/folders/1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8"},
-    {"id":"1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3","source":"drive","parent":"1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8","name":"Rechenschaftsbericht (Zwischenstand)","kind":"folder","modified":"2026-10-14T07:24:13Z","url":"https://drive.google.com/drive/folders/1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3"},
-    {"id":"1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc","source":"drive","parent":"1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3","name":"Helpbus_Rechenschaftsbericht_Stand13102026_Zuordnungen.pdf","kind":"file","type":"pdf","size":22409578,"modified":"2026-10-13T20:46:32Z","url":"https://drive.google.com/file/d/1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc/view"},
-    {"id":"1RFu2dO5Ugeu8qMowxvyktKUaWlqeC0Wc","source":"drive","parent":"1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3","name":"Helpbus_Rechenschaftsbericht_Stand07102026.pdf","kind":"file","type":"pdf","size":22454903,"modified":"2026-10-07T21:24:06Z","url":"https://drive.google.com/file/d/1RFu2dO5Ugeu8qMowxvyktKUaWlqeC0Wc/view"},
-    {"id":"1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ","source":"drive","parent":"1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8","name":"Belege","kind":"folder","modified":"2026-09-27T19:57:35Z","url":"https://drive.google.com/drive/folders/1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ"},
-    {"id":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","source":"drive","parent":"1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ","name":"Fotos","kind":"folder","modified":"2026-09-27T19:57:35Z","url":"https://drive.google.com/drive/folders/1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_"},
-    {"id":"19PGb465i1J-bhwQj-nFisqK2ZT7MX14X","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0814.HEIC","kind":"file","type":"image","size":2763683,"modified":"2026-09-27T20:02:34Z","url":"https://drive.google.com/file/d/19PGb465i1J-bhwQj-nFisqK2ZT7MX14X/view"},
-    {"id":"1MejDUoYFcjFZLpzi-9RdzToFL-C2GTu_","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0815.HEIC","kind":"file","type":"image","size":2119645,"modified":"2026-09-27T20:02:39Z","url":"https://drive.google.com/file/d/1MejDUoYFcjFZLpzi-9RdzToFL-C2GTu_/view"},
-    {"id":"1PPlNP5_2lhS7N00vfcAV8RTVU6Icv8a6","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0816.HEIC","kind":"file","type":"image","size":1046332,"modified":"2026-09-27T20:02:38Z","url":"https://drive.google.com/file/d/1PPlNP5_2lhS7N00vfcAV8RTVU6Icv8a6/view"},
-    {"id":"1MYh0O85ugQSZVEtyYjWPBoSTwAC7U7Wu","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0817.HEIC","kind":"file","type":"image","size":1068384,"modified":"2026-09-27T20:02:39Z","url":"https://drive.google.com/file/d/1MYh0O85ugQSZVEtyYjWPBoSTwAC7U7Wu/view"},
-    {"id":"1yXMuDqEOj4ycglp0jMtMTO7VKDrDI669","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0818.HEIC","kind":"file","type":"image","size":1222870,"modified":"2026-09-27T20:02:39Z","url":"https://drive.google.com/file/d/1yXMuDqEOj4ycglp0jMtMTO7VKDrDI669/view"},
-    {"id":"1kPhjSJ5c3n-tPaRI7ZYXYRpbwXZj-XO2","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0819.HEIC","kind":"file","type":"image","size":1112363,"modified":"2026-09-27T20:02:36Z","url":"https://drive.google.com/file/d/1kPhjSJ5c3n-tPaRI7ZYXYRpbwXZj-XO2/view"},
-    {"id":"1GwcDeMAV3ru05ATa8YL3ln-E9bFRe9bt","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0820.HEIC","kind":"file","type":"image","size":1160347,"modified":"2026-09-27T20:02:39Z","url":"https://drive.google.com/file/d/1GwcDeMAV3ru05ATa8YL3ln-E9bFRe9bt/view"},
-    {"id":"1fGgUmymV6OBADa4bapSwju7P3wIEqLNj","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0821.HEIC","kind":"file","type":"image","size":1127804,"modified":"2026-09-27T20:02:37Z","url":"https://drive.google.com/file/d/1fGgUmymV6OBADa4bapSwju7P3wIEqLNj/view"},
-    {"id":"1BRYjoArK7P0nrl8nqXN8TRTR9W3jKhcl","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0822.HEIC","kind":"file","type":"image","size":1122011,"modified":"2026-09-27T20:02:37Z","url":"https://drive.google.com/file/d/1BRYjoArK7P0nrl8nqXN8TRTR9W3jKhcl/view"},
-    {"id":"1RU9p37ueTtTJ4LvmcknbrpY9dXhlRbd-","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0823.HEIC","kind":"file","type":"image","size":1004687,"modified":"2026-09-27T20:02:38Z","url":"https://drive.google.com/file/d/1RU9p37ueTtTJ4LvmcknbrpY9dXhlRbd-/view"},
-    {"id":"1lqlFcNlVou1yzgfBzphJqvk6f_nTVBMr","source":"drive","parent":"1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_","name":"IMG_0824.HEIC","kind":"file","type":"image","size":874707,"modified":"2026-09-27T20:02:39Z","url":"https://drive.google.com/file/d/1lqlFcNlVou1yzgfBzphJqvk6f_nTVBMr/view"},
-
-    {"id":"ic-1","source":"icloud","parent":null,"name":"Dokumente","kind":"folder","sample":true,"modified":"2026-10-10T09:00:00Z","url":"shareddocuments:///"},
-    {"id":"ic-2","source":"icloud","parent":"ic-1","name":"Beispiel – Mietvertrag.pdf","kind":"file","type":"pdf","sample":true,"size":348211,"modified":"2026-03-04T12:00:00Z","url":"shareddocuments:///"},
-    {"id":"ic-3","source":"icloud","parent":null,"name":"Beispiel – Haushaltsplan.numbers","kind":"file","type":"sheet","sample":true,"size":122000,"modified":"2026-09-30T18:12:00Z","url":"shareddocuments:///"},
-
-    {"id":"n-1","source":"notes","parent":null,"name":"Beispiel-Ordner Notizen","kind":"folder","sample":true,"modified":"2026-10-12T07:30:00Z","url":"mobilenotes://"},
-    {"id":"n-2","source":"notes","parent":"n-1","name":"Beispiel – Einkaufsliste","kind":"file","type":"note","sample":true,"snippet":"Milch, Brot, Äpfel – Beispielinhalt zur Ansicht","modified":"2026-10-16T17:05:00Z","url":"mobilenotes://"},
-    {"id":"n-3","source":"notes","parent":null,"name":"Beispiel – Vortrag","kind":"file","type":"note","sample":true,"snippet":"Gliederung für den Vortrag – Beispielinhalt","modified":"2026-10-17T08:15:00Z","url":"mobilenotes://"},
-
-    {"id":"r-1","source":"reminders","parent":null,"name":"Beispiel-Liste","kind":"folder","sample":true,"modified":"2026-10-15T06:00:00Z","url":"x-apple-reminderkit://"},
-    {"id":"r-2","source":"reminders","parent":"r-1","name":"Beispiel – Handsender abholen","kind":"file","type":"reminder","sample":true,"due":"2026-10-20T09:00:00Z","modified":"2026-10-17T21:40:00Z","url":"x-apple-reminderkit://"},
-    {"id":"r-3","source":"reminders","parent":"r-1","name":"Beispiel – Rechenschaftsbericht finalisieren","kind":"file","type":"reminder","sample":true,"due":"2026-10-24T17:00:00Z","modified":"2026-10-14T07:24:00Z","url":"x-apple-reminderkit://"}
-  ],
-  "changes": [
-    {"date":"2026-10-17T22:57:54Z","type":"new","id":"19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q","name":"Notizen 2026","source":"drive"},
-    {"date":"2026-10-17T22:57:46Z","type":"new","id":"1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b","name":"Notizen-Archiv (iCloud, Okt 2026)","source":"drive"},
-    {"date":"2026-10-17T21:42:14Z","type":"new","id":"1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM","name":"2026-10-17 – Parator – Terminabstimmung Handsender Garagentor (Mail privat)","source":"drive"},
-    {"date":"2026-10-17T21:21:37Z","type":"new","id":"1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm","name":"_Schreibstil Nils.md","source":"drive"},
-    {"date":"2026-10-17T21:02:37Z","type":"new","id":"1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF","name":"00 Gemeinsam","source":"drive"},
-    {"date":"2026-10-13T20:46:32Z","type":"modified","id":"1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc","name":"Helpbus_Rechenschaftsbericht_Stand13102026_Zuordnungen.pdf","source":"drive"}
-  ]
+ "generated": "2026-10-18T08:40:00Z",
+ "sources": [
+  {
+   "id": "drive",
+   "name": "Google Drive",
+   "kind": "drive"
+  },
+  {
+   "id": "icloud",
+   "name": "iCloud Drive",
+   "kind": "icloud"
+  },
+  {
+   "id": "notes",
+   "name": "Notizen",
+   "kind": "notes"
+  },
+  {
+   "id": "reminders",
+   "name": "Erinnerungen",
+   "kind": "reminders"
+  }
+ ],
+ "items": [
+  {
+   "id": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "source": "drive",
+   "parent": null,
+   "name": "Familie Neumann",
+   "kind": "folder",
+   "modified": "2024-04-02T17:23:47Z",
+   "created": "2024-04-02T15:57:50Z",
+   "url": "https://drive.google.com/drive/folders/1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "area": "familie"
+  },
+  {
+   "id": "1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "00 Gemeinsam",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:37Z",
+   "url": "https://drive.google.com/drive/folders/1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "area": "familie"
+  },
+  {
+   "id": "1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "01 Nils",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:38Z",
+   "url": "https://drive.google.com/drive/folders/1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e",
+   "area": "nils"
+  },
+  {
+   "id": "1QnC8z3DJe_jMaCz67z2rt9-_ihk8QG0g",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "02 Julia",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:38Z",
+   "url": "https://drive.google.com/drive/folders/1QnC8z3DJe_jMaCz67z2rt9-_ihk8QG0g",
+   "area": "julia"
+  },
+  {
+   "id": "12zjaNJiXQVWGaa-MA7CwYpQ18R9wvkiF",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "03 Emma",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:39Z",
+   "url": "https://drive.google.com/drive/folders/12zjaNJiXQVWGaa-MA7CwYpQ18R9wvkiF",
+   "area": "kinder"
+  },
+  {
+   "id": "1sfMp3zsdadpECP8YB8Vxf0tVhxB1Ze9D",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "04 Paul",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:39Z",
+   "url": "https://drive.google.com/drive/folders/1sfMp3zsdadpECP8YB8Vxf0tVhxB1Ze9D",
+   "area": "kinder"
+  },
+  {
+   "id": "1W2o8pKhLvgEi1VbDFcf4dTKlNKWvuYLC",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "05 Oskar",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:40Z",
+   "url": "https://drive.google.com/drive/folders/1W2o8pKhLvgEi1VbDFcf4dTKlNKWvuYLC",
+   "area": "kinder"
+  },
+  {
+   "id": "1xjEliTJ45KxucVXf1zKYyRa03iTTaEso-3up4fU5yuU",
+   "source": "drive",
+   "parent": "1FTdK6Pa4WJXgX-DvRaNPdtk_NA6NRADs",
+   "name": "Changelog Drive-Struktur",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T21:02:50Z",
+   "url": "https://docs.google.com/document/d/1xjEliTJ45KxucVXf1zKYyRa03iTTaEso-3up4fU5yuU/edit",
+   "area": "familie"
+  },
+  {
+   "id": "1ycDGvpPvICHb_d8iMsqQqzIIz-ANG9FF",
+   "source": "drive",
+   "parent": "1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "name": "Urlaube & Ausflüge",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:49Z",
+   "url": "https://drive.google.com/drive/folders/1ycDGvpPvICHb_d8iMsqQqzIIz-ANG9FF",
+   "area": "familie"
+  },
+  {
+   "id": "1aHx1S19ri1L5R2HU1FEHpcSD9kJZN-1R",
+   "source": "drive",
+   "parent": "1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "name": "Finanzen & Verträge",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:48Z",
+   "url": "https://drive.google.com/drive/folders/1aHx1S19ri1L5R2HU1FEHpcSD9kJZN-1R",
+   "area": "familie"
+  },
+  {
+   "id": "1iNVF1Z7xBJzmlJCY9Cj1ajm43ojCFRbg",
+   "source": "drive",
+   "parent": "1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "name": "Haushalt & Wohnen",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:48Z",
+   "url": "https://drive.google.com/drive/folders/1iNVF1Z7xBJzmlJCY9Cj1ajm43ojCFRbg",
+   "area": "familie"
+  },
+  {
+   "id": "1Ithyi870KxPN5U6sXQDR1auqSyG8P2x7",
+   "source": "drive",
+   "parent": "1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e",
+   "name": "Projekte & Ideen",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:48Z",
+   "url": "https://drive.google.com/drive/folders/1Ithyi870KxPN5U6sXQDR1auqSyG8P2x7",
+   "area": "nils"
+  },
+  {
+   "id": "1yaCWeBY9MFBkZnsKZbK0s3tosw2jGFA8",
+   "source": "drive",
+   "parent": "1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e",
+   "name": "Helpbus",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:47Z",
+   "url": "https://drive.google.com/drive/folders/1yaCWeBY9MFBkZnsKZbK0s3tosw2jGFA8",
+   "area": "helpbus"
+  },
+  {
+   "id": "1hfmRch1DKQ3eQOD1hkIxVhxytwNu8SWO",
+   "source": "drive",
+   "parent": "1q6uH-IBFxLmTvc4gEJgCmGl5ri1AT93e",
+   "name": "Beruf GAUSS",
+   "kind": "folder",
+   "modified": "2026-10-17T21:02:47Z",
+   "url": "https://drive.google.com/drive/folders/1hfmRch1DKQ3eQOD1hkIxVhxytwNu8SWO",
+   "area": "gauss"
+  },
+  {
+   "id": "1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH",
+   "source": "drive",
+   "parent": null,
+   "name": "Nils – Privat",
+   "kind": "folder",
+   "modified": "2026-10-17T21:03:48Z",
+   "url": "https://drive.google.com/drive/folders/1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH",
+   "area": "nils"
+  },
+  {
+   "id": "1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY",
+   "source": "drive",
+   "parent": "1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH",
+   "name": "Nachrichten",
+   "kind": "folder",
+   "modified": "2026-10-17T21:05:31Z",
+   "url": "https://drive.google.com/drive/folders/1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY",
+   "area": "nils"
+  },
+  {
+   "id": "1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm",
+   "source": "drive",
+   "parent": "1S3b_kdHMQ-Pl11qlEFXzBAGF5uJgXbtH",
+   "name": "_Schreibstil Nils.md",
+   "kind": "file",
+   "type": "md",
+   "size": 1468,
+   "modified": "2026-10-17T21:21:37Z",
+   "url": "https://drive.google.com/file/d/1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm/view",
+   "area": "nils"
+  },
+  {
+   "id": "1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM",
+   "source": "drive",
+   "parent": "1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY",
+   "name": "2026-10-17 – Parator – Terminabstimmung Handsender Garagentor (Mail privat)",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T21:42:14Z",
+   "url": "https://docs.google.com/document/d/1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM/edit",
+   "area": "nils"
+  },
+  {
+   "id": "1zvNestXvfzowBsGwQSjQsQgWuOR8Di6GDkNV_ZKZgaU",
+   "source": "drive",
+   "parent": "1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY",
+   "name": "2026-10-17 – Frau Rinske – Entschuldigung Gruppentherapie und Anfrage für Julia (Mail privat)",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1045,
+   "modified": "2026-10-17T21:39:09Z",
+   "url": "https://docs.google.com/document/d/1zvNestXvfzowBsGwQSjQsQgWuOR8Di6GDkNV_ZKZgaU/edit",
+   "area": "nils"
+  },
+  {
+   "id": "1P1bGDSNIrnJxPDnZmV_3kQbTgLR4MrVVgBJ1nKpxyR0",
+   "source": "drive",
+   "parent": "1TnNOVI3xqnVIFSUwnaUX1yVzraJP4vcY",
+   "name": "2026-10-17 – Vermieter Dr. Fornefeld – Gesprächsangebot Telefontermin (Mail privat)",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1155,
+   "modified": "2026-10-17T21:21:15Z",
+   "url": "https://docs.google.com/document/d/1P1bGDSNIrnJxPDnZmV_3kQbTgLR4MrVVgBJ1nKpxyR0/edit",
+   "area": "nils"
+  },
+  {
+   "id": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "source": "drive",
+   "parent": null,
+   "name": "Notizen-Archiv (iCloud, Okt 2026)",
+   "kind": "folder",
+   "modified": "2026-10-17T22:57:46Z",
+   "url": "https://drive.google.com/drive/folders/1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "area": "archiv"
+  },
+  {
+   "id": "1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8",
+   "source": "drive",
+   "parent": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen 2018–2022",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T22:57:50Z",
+   "url": "https://docs.google.com/document/d/1cBw86AwGF_oUA2d1QjffwBhDKR1h_MMToBqkuByahn8/edit",
+   "area": "archiv"
+  },
+  {
+   "id": "1sO8yJtden-RqOwh7wHCl60Hla-kViry3jt-ov2xghcw",
+   "source": "drive",
+   "parent": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen 2023",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T22:57:51Z",
+   "url": "https://docs.google.com/document/d/1sO8yJtden-RqOwh7wHCl60Hla-kViry3jt-ov2xghcw/edit",
+   "area": "archiv"
+  },
+  {
+   "id": "16mhEO35Ock-byzJdDeaMd5D3JG-dW5S_ChR3v8JNsw0",
+   "source": "drive",
+   "parent": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen 2024",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T22:57:52Z",
+   "url": "https://docs.google.com/document/d/16mhEO35Ock-byzJdDeaMd5D3JG-dW5S_ChR3v8JNsw0/edit",
+   "area": "archiv"
+  },
+  {
+   "id": "1XYnrqJ-vK4JCk1iwaZynszY8U-hD1Dj07UGumzT4F6k",
+   "source": "drive",
+   "parent": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen 2025",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T22:57:53Z",
+   "url": "https://docs.google.com/document/d/1XYnrqJ-vK4JCk1iwaZynszY8U-hD1Dj07UGumzT4F6k/edit",
+   "area": "archiv"
+  },
+  {
+   "id": "19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q",
+   "source": "drive",
+   "parent": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen 2026",
+   "kind": "file",
+   "type": "gdoc",
+   "size": 1024,
+   "modified": "2026-10-17T22:57:54Z",
+   "url": "https://docs.google.com/document/d/19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q/edit",
+   "area": "archiv"
+  },
+  {
+   "id": "1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8",
+   "source": "drive",
+   "parent": null,
+   "name": "Helpbus e.V.",
+   "kind": "folder",
+   "shared": true,
+   "modified": "2026-10-17T11:37:11Z",
+   "url": "https://drive.google.com/drive/folders/1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8",
+   "area": "helpbus"
+  },
+  {
+   "id": "1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3",
+   "source": "drive",
+   "parent": "1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8",
+   "name": "Rechenschaftsbericht (Zwischenstand)",
+   "kind": "folder",
+   "modified": "2026-10-14T07:24:13Z",
+   "url": "https://drive.google.com/drive/folders/1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3",
+   "area": "helpbus"
+  },
+  {
+   "id": "1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc",
+   "source": "drive",
+   "parent": "1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3",
+   "name": "Helpbus_Rechenschaftsbericht_Stand13102026_Zuordnungen.pdf",
+   "kind": "file",
+   "type": "pdf",
+   "size": 22409578,
+   "modified": "2026-10-13T20:46:32Z",
+   "url": "https://drive.google.com/file/d/1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1RFu2dO5Ugeu8qMowxvyktKUaWlqeC0Wc",
+   "source": "drive",
+   "parent": "1Pfvo99h9QdfkgvDexNY_9gxnQXM7a9S3",
+   "name": "Helpbus_Rechenschaftsbericht_Stand07102026.pdf",
+   "kind": "file",
+   "type": "pdf",
+   "size": 22454903,
+   "modified": "2026-10-07T21:24:06Z",
+   "url": "https://drive.google.com/file/d/1RFu2dO5Ugeu8qMowxvyktKUaWlqeC0Wc/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ",
+   "source": "drive",
+   "parent": "1UkrAWAPDVZTNEktH_aYpGRaKicfzvDK8",
+   "name": "Belege",
+   "kind": "folder",
+   "modified": "2026-09-27T19:57:35Z",
+   "url": "https://drive.google.com/drive/folders/1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ",
+   "area": "helpbus"
+  },
+  {
+   "id": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "source": "drive",
+   "parent": "1UzRBB6MsSnh2l5L7H8lrYg4Cozam3_IJ",
+   "name": "Fotos",
+   "kind": "folder",
+   "modified": "2026-09-27T19:57:35Z",
+   "url": "https://drive.google.com/drive/folders/1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "area": "helpbus"
+  },
+  {
+   "id": "19PGb465i1J-bhwQj-nFisqK2ZT7MX14X",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0814.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 2763683,
+   "modified": "2026-09-27T20:02:34Z",
+   "url": "https://drive.google.com/file/d/19PGb465i1J-bhwQj-nFisqK2ZT7MX14X/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1MejDUoYFcjFZLpzi-9RdzToFL-C2GTu_",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0815.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 2119645,
+   "modified": "2026-09-27T20:02:39Z",
+   "url": "https://drive.google.com/file/d/1MejDUoYFcjFZLpzi-9RdzToFL-C2GTu_/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1PPlNP5_2lhS7N00vfcAV8RTVU6Icv8a6",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0816.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1046332,
+   "modified": "2026-09-27T20:02:38Z",
+   "url": "https://drive.google.com/file/d/1PPlNP5_2lhS7N00vfcAV8RTVU6Icv8a6/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1MYh0O85ugQSZVEtyYjWPBoSTwAC7U7Wu",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0817.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1068384,
+   "modified": "2026-09-27T20:02:39Z",
+   "url": "https://drive.google.com/file/d/1MYh0O85ugQSZVEtyYjWPBoSTwAC7U7Wu/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1yXMuDqEOj4ycglp0jMtMTO7VKDrDI669",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0818.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1222870,
+   "modified": "2026-09-27T20:02:39Z",
+   "url": "https://drive.google.com/file/d/1yXMuDqEOj4ycglp0jMtMTO7VKDrDI669/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1kPhjSJ5c3n-tPaRI7ZYXYRpbwXZj-XO2",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0819.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1112363,
+   "modified": "2026-09-27T20:02:36Z",
+   "url": "https://drive.google.com/file/d/1kPhjSJ5c3n-tPaRI7ZYXYRpbwXZj-XO2/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1GwcDeMAV3ru05ATa8YL3ln-E9bFRe9bt",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0820.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1160347,
+   "modified": "2026-09-27T20:02:39Z",
+   "url": "https://drive.google.com/file/d/1GwcDeMAV3ru05ATa8YL3ln-E9bFRe9bt/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1fGgUmymV6OBADa4bapSwju7P3wIEqLNj",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0821.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1127804,
+   "modified": "2026-09-27T20:02:37Z",
+   "url": "https://drive.google.com/file/d/1fGgUmymV6OBADa4bapSwju7P3wIEqLNj/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1BRYjoArK7P0nrl8nqXN8TRTR9W3jKhcl",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0822.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1122011,
+   "modified": "2026-09-27T20:02:37Z",
+   "url": "https://drive.google.com/file/d/1BRYjoArK7P0nrl8nqXN8TRTR9W3jKhcl/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1RU9p37ueTtTJ4LvmcknbrpY9dXhlRbd-",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0823.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 1004687,
+   "modified": "2026-09-27T20:02:38Z",
+   "url": "https://drive.google.com/file/d/1RU9p37ueTtTJ4LvmcknbrpY9dXhlRbd-/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "1lqlFcNlVou1yzgfBzphJqvk6f_nTVBMr",
+   "source": "drive",
+   "parent": "1_wOJ2yK3JWTqTi3VLfPus9s_8CYvlFm_",
+   "name": "IMG_0824.HEIC",
+   "kind": "file",
+   "type": "image",
+   "size": 874707,
+   "modified": "2026-09-27T20:02:39Z",
+   "url": "https://drive.google.com/file/d/1lqlFcNlVou1yzgfBzphJqvk6f_nTVBMr/view",
+   "area": "helpbus"
+  },
+  {
+   "id": "ic-1",
+   "source": "icloud",
+   "parent": null,
+   "name": "Dokumente",
+   "kind": "folder",
+   "sample": true,
+   "modified": "2026-10-10T09:00:00Z",
+   "url": "shareddocuments:///",
+   "area": "nils"
+  },
+  {
+   "id": "ic-2",
+   "source": "icloud",
+   "parent": "ic-1",
+   "name": "Beispiel – Mietvertrag.pdf",
+   "kind": "file",
+   "type": "pdf",
+   "sample": true,
+   "size": 348211,
+   "modified": "2026-03-04T12:00:00Z",
+   "url": "shareddocuments:///",
+   "area": "nils"
+  },
+  {
+   "id": "ic-3",
+   "source": "icloud",
+   "parent": null,
+   "name": "Beispiel – Haushaltsplan.numbers",
+   "kind": "file",
+   "type": "sheet",
+   "sample": true,
+   "size": 122000,
+   "modified": "2026-09-30T18:12:00Z",
+   "url": "shareddocuments:///",
+   "area": "nils"
+  },
+  {
+   "id": "n-1",
+   "source": "notes",
+   "parent": null,
+   "name": "Beispiel-Ordner Notizen",
+   "kind": "folder",
+   "sample": true,
+   "modified": "2026-10-12T07:30:00Z",
+   "url": "mobilenotes://",
+   "area": "nils"
+  },
+  {
+   "id": "n-2",
+   "source": "notes",
+   "parent": "n-1",
+   "name": "Beispiel – Einkaufsliste",
+   "kind": "file",
+   "type": "note",
+   "sample": true,
+   "snippet": "Milch, Brot, Äpfel – Beispielinhalt zur Ansicht",
+   "modified": "2026-10-16T17:05:00Z",
+   "url": "mobilenotes://",
+   "area": "nils"
+  },
+  {
+   "id": "n-3",
+   "source": "notes",
+   "parent": null,
+   "name": "Beispiel – Vortrag",
+   "kind": "file",
+   "type": "note",
+   "sample": true,
+   "snippet": "Gliederung für den Vortrag – Beispielinhalt",
+   "modified": "2026-10-17T08:15:00Z",
+   "url": "mobilenotes://",
+   "area": "nils"
+  },
+  {
+   "id": "r-1",
+   "source": "reminders",
+   "parent": null,
+   "name": "Beispiel-Liste",
+   "kind": "folder",
+   "sample": true,
+   "modified": "2026-10-15T06:00:00Z",
+   "url": "x-apple-reminderkit://",
+   "area": "nils"
+  },
+  {
+   "id": "r-2",
+   "source": "reminders",
+   "parent": "r-1",
+   "name": "Beispiel – Handsender abholen",
+   "kind": "file",
+   "type": "reminder",
+   "sample": true,
+   "due": "2026-10-20T09:00:00Z",
+   "modified": "2026-10-17T21:40:00Z",
+   "url": "x-apple-reminderkit://",
+   "area": "nils"
+  },
+  {
+   "id": "r-3",
+   "source": "reminders",
+   "parent": "r-1",
+   "name": "Beispiel – Rechenschaftsbericht finalisieren",
+   "kind": "file",
+   "type": "reminder",
+   "sample": true,
+   "due": "2026-10-24T17:00:00Z",
+   "modified": "2026-10-14T07:24:00Z",
+   "url": "x-apple-reminderkit://",
+   "area": "nils"
+  }
+ ],
+ "changes": [
+  {
+   "date": "2026-10-17T22:57:54Z",
+   "type": "new",
+   "id": "19unoW7PPnCwdFt8sS1aaIaIQpbVfyoZ8shdovC2Z43Q",
+   "name": "Notizen 2026",
+   "source": "drive"
+  },
+  {
+   "date": "2026-10-17T22:57:46Z",
+   "type": "new",
+   "id": "1NjOLBjjbQEaJkxxpO1mGZ8wBLM-pu58b",
+   "name": "Notizen-Archiv (iCloud, Okt 2026)",
+   "source": "drive"
+  },
+  {
+   "date": "2026-10-17T21:42:14Z",
+   "type": "new",
+   "id": "1Jul7dH3nn9fMKJ8vumjCoR1nkzKAuVGjD4qaXMovnWM",
+   "name": "2026-10-17 – Parator – Terminabstimmung Handsender Garagentor (Mail privat)",
+   "source": "drive"
+  },
+  {
+   "date": "2026-10-17T21:21:37Z",
+   "type": "new",
+   "id": "1lBoYDyL_rrZdC0ts462pT3GhWGsqoucm",
+   "name": "_Schreibstil Nils.md",
+   "source": "drive"
+  },
+  {
+   "date": "2026-10-17T21:02:37Z",
+   "type": "new",
+   "id": "1PvX_qVpzacGUVc_NAXw6IrVXdDWTo3oF",
+   "name": "00 Gemeinsam",
+   "source": "drive"
+  },
+  {
+   "date": "2026-10-13T20:46:32Z",
+   "type": "modified",
+   "id": "1gm5z2q0UwHekwrVQt15eRQtyCLeRUKrc",
+   "name": "Helpbus_Rechenschaftsbericht_Stand13102026_Zuordnungen.pdf",
+   "source": "drive"
+  }
+ ],
+ "areas": [
+  {
+   "id": "familie",
+   "name": "Familie",
+   "color": "#34c759",
+   "glyph": "house"
+  },
+  {
+   "id": "nils",
+   "name": "Nils",
+   "color": "#007aff",
+   "glyph": "person"
+  },
+  {
+   "id": "julia",
+   "name": "Julia",
+   "color": "#af52de",
+   "glyph": "person"
+  },
+  {
+   "id": "kinder",
+   "name": "Kinder",
+   "color": "#ff9500",
+   "glyph": "kids"
+  },
+  {
+   "id": "helpbus",
+   "name": "Helpbus",
+   "color": "#ffcc00",
+   "glyph": "bus"
+  },
+  {
+   "id": "gauss",
+   "name": "GAUSS",
+   "color": "#5856d6",
+   "glyph": "work"
+  },
+  {
+   "id": "archiv",
+   "name": "Archiv",
+   "color": "#8e8e93",
+   "glyph": "box"
+  }
+ ]
 }
