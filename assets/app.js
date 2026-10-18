@@ -19,8 +19,8 @@
   // ---------- Zustand ----------
   const S = {
     index: null, items: [], byId: new Map(), children: new Map(), sources: [],
-    tab: store.get('tab', 'browse'),
-    stacks: { recent: [], browse: [], changes: [] },
+    tab: ({ recent: 'search' })[store.get('tab', 'browse')] || store.get('tab', 'browse'),
+    stacks: { search: [], browse: [], changes: [] },
     view: store.get('view', 'list'), sort: store.get('sort', 'name'), dir: store.get('dir', 'asc'),
     favs: new Set(store.get('favs', [])),
     opened: store.get('opened', []),
@@ -38,6 +38,8 @@
     check: '<svg width="16" height="14" viewBox="0 0 16 14" fill="none"><path d="M1.5 7.5l4 4L14.5 2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     star: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7l-5.9 3.1 1.2-6.5L2.5 9.7l6.6-.9z"/></svg>',
     starF: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7l-5.9 3.1 1.2-6.5L2.5 9.7l6.6-.9z"/></svg>',
+    tabSearch: '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11.5" cy="11.5" r="7"/><path d="M17 17l5 5"/></svg>',
+    tabBrowseF: '<svg width="26" height="26" viewBox="0 0 26 26" fill="currentColor"><path d="M3 8.5a2.5 2.5 0 0 1 2.5-2.5h5.2l2.3 2.3H20.5A2.5 2.5 0 0 1 23 10.8v8.7a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 3 19.5z"/></svg>',
     tabRecent: '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="13" cy="13" r="9.5"/><path d="M13 7.5V13l3.8 2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     tabBrowse: '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3.5 8.5a2 2 0 0 1 2-2h5l2.2 2.3h7.8a2 2 0 0 1 2 2v8.7a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2z"/></svg>',
     tabChanges: '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 9.5A8 8 0 0 0 6 7.6M5.5 16.5A8 8 0 0 0 20 18.4"/><path d="M20.5 4.5v5h-5M5.5 21.5v-5h5"/></svg>',
@@ -186,14 +188,14 @@
   function renderApp() {
     $app.innerHTML = `<nav class="sidebar" id="sidebar"></nav><div class="stack" id="stack"></div>
       <div class="tabwrap" id="tabwrap"><div class="tabbar" id="tabbar">
-        <button class="tab" data-tab="recent">${I.tabRecent}<span>Zuletzt</span></button>
-        <button class="tab" data-tab="browse">${I.tabBrowse}<span>Durchsuchen</span></button>
-        <button class="tab" data-tab="changes">${I.tabChanges}<span>Änderungen</span></button>
-      </div><button class="searchfab" id="searchfab" aria-label="Suchen">${I.search.replace('stroke="#8e8e93"', 'stroke="currentColor"').replace('width="16" height="16"', 'width="20" height="20"')}</button></div>`;
-    document.getElementById('searchfab').addEventListener('click', () => { const t = topEl(); const inp = t && t.querySelector('.search input'); if (inp) { t.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => inp.focus(), 250); } });
-    document.getElementById('tabbar').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; const t = b.dataset.tab; if (t === S.tab) { popToRoot(); const c = topEl() && topEl().querySelector('.content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); } else switchTab(t); });
-    for (const t of ['recent', 'browse', 'changes']) if (!S.stacks[t].length) S.stacks[t].push({ type: t === 'browse' ? 'root' : t });
-    if (matchMedia('(min-width:900px)').matches && !['recent','browse','changes'].includes(S.tab)) S.tab = 'browse';
+        <button class="tab" data-tab="search"><span class="tico">${I.tabSearch}</span><span>Suchen</span></button>
+        <button class="tab" data-tab="browse"><span class="tico">${I.tabBrowseF}</span><span>Durchsuchen</span></button>
+        <button class="tab" data-tab="changes"><span class="tico">${I.tabChanges}</span><span>Aktualisieren</span></button>
+      </div></div>`;
+    document.getElementById('tabbar').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; const t = b.dataset.tab; if (t === S.tab) { popToRoot(); const c = topEl() && topEl().querySelector('.content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); } else switchTab(t);
+      if (t === 'search') { const inp = topEl() && topEl().querySelector('.search input'); if (inp) setTimeout(() => inp.focus(), 60); } });
+    for (const t of ['search', 'browse', 'changes']) if (!S.stacks[t].length) S.stacks[t].push({ type: t === 'browse' ? 'root' : t });
+    if (!['search', 'browse', 'changes'].includes(S.tab)) S.tab = 'browse';
     mountStack();
     // Service Worker
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -231,7 +233,7 @@
     const el = document.createElement('section'); el.className = 'screen'; el.dataset.type = sc.type;
     const stack = S.stacks[S.tab], depth = stack.indexOf(sc), prevTitle = depth > 0 ? screenTitle(stack[depth - 1]) : null;
     const title = screenTitle(sc);
-    const showMenu = sc.type === 'folder' || sc.type === 'source' || sc.type === 'tag' || sc.type === 'favs' || sc.type === 'recent';
+    const showMenu = sc.type === 'folder' || sc.type === 'source' || sc.type === 'tag' || sc.type === 'favs';
     const showGear = sc.type === 'root' || sc.type === 'changes';
     el.innerHTML = `<header class="nav"><div class="row">
         ${prevTitle != null ? `<button class="back" data-act="back">${I.back}<span>${esc(prevTitle.length > 14 ? 'Zurück' : prevTitle)}</span></button>` : '<span></span>'}
@@ -249,7 +251,7 @@
   }
   function screenTitle(sc) {
     switch (sc.type) {
-      case 'root': return 'Durchsuchen'; case 'recent': return 'Zuletzt'; case 'changes': return 'Änderungen';
+      case 'root': return 'Durchsuchen'; case 'search': return 'Suchen'; case 'changes': return 'Aktualisieren';
       case 'source': return SOURCE_NAME[sc.source] || sc.source; case 'folder': return (S.byId.get(sc.id) || {}).name || '';
       case 'tag': return (TAGS.find(t => t.id === sc.tag) || {}).name || ''; case 'favs': return 'Favoriten'; default: return '';
     }
@@ -258,7 +260,7 @@
 
   function screenBody(sc) {
     if (sc.type === 'root') return rootBody();
-    if (sc.type === 'recent') return searchHTML('Zuletzt geändert durchsuchen') + `<div class="results">${recentBody()}</div>`;
+    if (sc.type === 'search') return searchHTML('Dateien, Notizen, Erinnerungen') + `<div class="results">${recentBody()}</div>`;
     if (sc.type === 'changes') return changesBody();
     const items = listFor(sc);
     const ph = sc.type === 'folder' ? 'In „' + screenTitle(sc) + '“ suchen' : 'Suchen';
@@ -288,9 +290,9 @@
     if (q) files = files.filter(i => match(i, q));
     files.sort((a, b) => new Date(b.modified) - new Date(a.modified)); files = files.slice(0, 120);
     if (!files.length) return `<div class="empty"><b>Nichts gefunden</b>Keine Datei passt zu „${esc(q)}“.</div>`;
-    let out = '', last = null;
+    let out = q ? '' : '<div class="section">Zuletzt geändert</div>', last = null;
     for (const f of files) { const k = dayKey(f.modified); if (k !== last) { if (last) out += '</div>'; out += `<div class="section">${k}</div><div class="group filelist">`; last = k; } out += itemRow(f, { showPath: true }); }
-    return out + '</div>';
+    return out.replace('<div class="section">Zuletzt geändert</div><div class="section">', '<div class="section">') + '</div>';
   }
   function changesBody() {
     const gen = S.index.generated, old = (Date.now() - new Date(gen)) > 30 * 36e5;
@@ -327,7 +329,7 @@
   function match(it, q) { const s = q.toLowerCase().split(/\s+/).filter(Boolean); const hay = (it.name + ' ' + (it.snippet || '') + ' ' + typeOf(it).label + ' ' + pathOf(it).join(' ')).toLowerCase(); return s.every(w => hay.includes(w)); }
   function onSearch(inp, sc, el) {
     const q = inp.value.trim(); inp.closest('.search').classList.toggle('has', !!q); const res = el.querySelector('.results');
-    if (sc.type === 'recent') { res.innerHTML = recentBody(q); return; }
+    if (sc.type === 'search') { res.innerHTML = q ? renderItems(S.items.filter(i => match(i, q)).slice(0, 200), sc, q) : recentBody(); return; }
     if (!q) { res.innerHTML = sc.type === 'root' ? rootResults() : renderItems(listFor(sc), sc); return; }
     let pool;
     if (sc.type === 'root') pool = S.items; else if (sc.type === 'folder') pool = descendants(S.byId.get(sc.id)); else if (sc.type === 'source') pool = S.items.filter(i => i.source === sc.source); else pool = listFor(sc);
@@ -356,7 +358,7 @@
     m.style.top = (r.bottom + 6) + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
     const mi = (k, v, lbl) => `<button class="mi ${S[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}"><span>${lbl}</span><span class="chk">${I.check}</span></button>`;
     m.innerHTML = `${mi('view', 'list', 'Liste')}${mi('view', 'grid', 'Symbole')}<div class="gap"></div><div class="head">Sortieren nach</div>${mi('sort', 'name', 'Name')}${mi('sort', 'date', 'Datum')}${mi('sort', 'size', 'Größe')}${mi('sort', 'type', 'Art')}<div class="gap"></div>${mi('dir', 'asc', 'Aufsteigend')}${mi('dir', 'desc', 'Absteigend')}`;
-    m.addEventListener('click', ev => { const b = ev.target.closest('.mi'); if (!b) return; S[b.dataset.k] = b.dataset.v; store.set(b.dataset.k, b.dataset.v); closeMenu(); const inp = el.querySelector('.search input'); if (inp && inp.value.trim()) onSearch(inp, sc, el); else el.querySelector('.results').innerHTML = sc.type === 'recent' ? recentBody() : renderItems(listFor(sc), sc); });
+    m.addEventListener('click', ev => { const b = ev.target.closest('.mi'); if (!b) return; S[b.dataset.k] = b.dataset.v; store.set(b.dataset.k, b.dataset.v); closeMenu(); const inp = el.querySelector('.search input'); if (inp && inp.value.trim()) onSearch(inp, sc, el); else el.querySelector('.results').innerHTML = sc.type === 'search' ? recentBody() : renderItems(listFor(sc), sc); });
     scrim.addEventListener('click', closeMenu); document.body.append(scrim, m); S.menu = [scrim, m];
   }
   function closeMenu() { if (S.menu) { S.menu.forEach(x => x.remove()); S.menu = null; } }
@@ -460,14 +462,14 @@
     const on = (t, k, v) => cur.type === t && (k == null || cur[k] === v) ? 'on' : '';
     const srcCount = s => S.items.filter(i => i.source === s && i.kind === 'file').length;
     sb.innerHTML = `<div class="brand"><span class="mark"></span>Explorer</div>
-      <button class="item place recent ${S.tab === 'recent' ? 'on' : ''}" data-side="recent"><span class="ico">${I.clock}</span><span class="txt"><span class="name">Zuletzt</span></span></button>
+      <button class="item place recent ${S.tab === 'search' ? 'on' : ''}" data-side="search"><span class="ico">${I.tabSearch.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Suchen</span></span></button>
       <button class="item place ${S.tab === 'browse' && on('root') ? 'on' : ''}" data-side="root"><span class="ico" style="background:var(--accent)">${I.tabBrowse.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Durchsuchen</span></span></button>
-      <button class="item place ${S.tab === 'changes' ? 'on' : ''}" data-side="changes"><span class="ico" style="background:var(--purple)">${I.tabChanges.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Änderungen</span></span></button>
+      <button class="item place ${S.tab === 'changes' ? 'on' : ''}" data-side="changes"><span class="ico" style="background:var(--purple)">${I.tabChanges.replace('width="26" height="26"', 'width="14" height="14"').replace('stroke="currentColor"', 'stroke="#fff"')}</span><span class="txt"><span class="name">Aktualisieren</span></span></button>
       <div class="section">Speicherorte</div>${S.sources.map(s => `<button class="item place ${s.kind} ${S.tab === 'browse' && on('source', 'source', s.id) ? 'on' : ''}" data-side="source" data-source="${s.id}"><span class="ico">${I[s.kind] || I.drive}</span><span class="txt"><span class="name">${esc(s.name)}</span></span><span class="count">${srcCount(s.id)}</span></button>`).join('')}
       <div class="section">Favoriten</div>${[...S.favs].map(id => S.byId.get(id)).filter(Boolean).map(it => `<button class="item ${S.tab === 'browse' && on('folder', 'id', it.id) ? 'on' : ''}" data-side="${it.kind === 'folder' ? 'folder' : 'detail'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 20)}</span><span class="txt"><span class="name">${esc(it.name)}</span></span></button>`).join('') || '<div class="item plain"><span class="txt"><span class="meta">Keine Favoriten</span></span></div>'}
       <div class="section">Art</div>${TAGS.map(t => `<button class="item place tag ${S.tab === 'browse' && on('tag', 'tag', t.id) ? 'on' : ''}" data-side="tag" data-tag="${t.id}"><span class="ico"><i style="background:${t.color}"></i></span><span class="txt"><span class="name">${esc(t.name)}</span></span></button>`).join('')}`;
     sb.onclick = e => { const b = e.target.closest('[data-side]'); if (!b) return; const k = b.dataset.side;
-      if (k === 'recent' || k === 'changes') { switchTab(k); return; }
+      if (k === 'search' || k === 'changes') { switchTab(k); return; }
       if (S.tab !== 'browse') { S.tab = 'browse'; store.set('tab', 'browse'); }
       if (k === 'root') resetTo({ type: 'root' }); else if (k === 'source') resetTo({ type: 'source', source: b.dataset.source }); else if (k === 'tag') resetTo({ type: 'tag', tag: b.dataset.tag }); else if (k === 'folder') resetTo({ type: 'folder', id: b.dataset.id }); else if (k === 'detail') openSheet(S.byId.get(b.dataset.id)); };
   }
