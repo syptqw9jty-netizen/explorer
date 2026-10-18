@@ -241,7 +241,7 @@
     const content = el.querySelector('.content'), nav = el.querySelector('.nav');
     content.innerHTML = `<h1 class="large">${esc(title)}</h1>` + screenBody(sc);
     const h1 = content.querySelector('.large');
-    content.addEventListener('scroll', () => nav.classList.toggle('solid', content.scrollTop > (h1 ? h1.offsetTop + h1.offsetHeight - 6 : 28)), { passive: true });
+    content.addEventListener('scroll', () => { const nb = nav.getBoundingClientRect().bottom; nav.classList.toggle('solid', h1 ? h1.getBoundingClientRect().bottom < nb - 4 : content.scrollTop > 28); }, { passive: true });
     el.addEventListener('click', e => onClick(e, sc, el));
     el.addEventListener('input', e => { if (e.target.matches('.search input')) onSearch(e.target, sc, el); });
     attachSwipeBack(el, depth);
