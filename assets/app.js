@@ -46,6 +46,8 @@
     notes: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 7h12M6 12h12M6 17h8"/></svg>',
     reminders: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="2"/><circle cx="7" cy="17" r="2"/><path d="M12 7h7M12 17h7"/></svg>',
     clock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.3 2" stroke-linecap="round"/></svg>',
+    gear: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    face: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M9 9.5v1M15 9.5v1M12 9.5v4h-1M9 15.2a4.5 4.5 0 0 0 6 0"/></svg>',
     link: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>'
   };
   const folderSVG = (s) => `<svg width="${s}" height="${s}" viewBox="0 0 64 64"><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd0ff"/><stop offset="1" stop-color="#2f9ff3"/></linearGradient><linearGradient id="fb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb8f7"/><stop offset="1" stop-color="#2385dd"/></linearGradient></defs><path d="M6 18a4 4 0 0 1 4-4h14l5 5h25a4 4 0 0 1 4 4v27a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4z" fill="url(#fb)"/><path d="M6 26a3 3 0 0 1 3-3h46a3 3 0 0 1 3 3v24a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4z" fill="url(#fg)"/></svg>`;
@@ -125,6 +127,12 @@
     if (src === 'icloud') return { url: 'https://www.icloud.com/iclouddrive/', label: 'iCloud Drive öffnen', ext: true, hint: 'Am Desktop öffnet iCloud.com.' };
     return { url: it.url, label: 'Öffnen', ext: true };
   }
+  function altOpens(it) {
+    const out = [];
+    if (it.source === 'drive' && IS_IOS) out.push({ url: 'googledrive://file/' + it.id, label: 'Drive-App' });
+    if (it.source === 'drive' && !IS_IOS) out.push({ url: 'https://drive.google.com/open?id=' + it.id, label: 'Im Drive-Ordner', ext: true });
+    return out;
+  }
   function openItem(it) {
     const t = openTarget(it);
     S.opened = [it.id].concat(S.opened.filter(x => x !== it.id)).slice(0, 30); store.set('opened', S.opened);
@@ -171,16 +179,18 @@
     const idx = await decrypt(enc, pass);
     if (remember) store.set('pass', pass);
     ingest(idx); renderApp();
+    if (remember && !store.get('bio', null) && !store.get('bioAsked', false)) { store.set('bioAsked', true); if (await bioAvailable()) setTimeout(() => offerBio(), 600); }
   }
 
   // ---------- App-Gerüst ----------
   function renderApp() {
     $app.innerHTML = `<nav class="sidebar" id="sidebar"></nav><div class="stack" id="stack"></div>
-      <div class="tabbar" id="tabbar">
+      <div class="tabwrap" id="tabwrap"><div class="tabbar" id="tabbar">
         <button class="tab" data-tab="recent">${I.tabRecent}<span>Zuletzt</span></button>
         <button class="tab" data-tab="browse">${I.tabBrowse}<span>Durchsuchen</span></button>
         <button class="tab" data-tab="changes">${I.tabChanges}<span>Änderungen</span></button>
-      </div>`;
+      </div><button class="searchfab" id="searchfab" aria-label="Suchen">${I.search.replace('stroke="#8e8e93"', 'stroke="currentColor"').replace('width="16" height="16"', 'width="20" height="20"')}</button></div>`;
+    document.getElementById('searchfab').addEventListener('click', () => { const t = topEl(); const inp = t && t.querySelector('.search input'); if (inp) { t.querySelector('.content').scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => inp.focus(), 250); } });
     document.getElementById('tabbar').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; const t = b.dataset.tab; if (t === S.tab) { popToRoot(); const c = topEl() && topEl().querySelector('.content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); } else switchTab(t); });
     for (const t of ['recent', 'browse', 'changes']) if (!S.stacks[t].length) S.stacks[t].push({ type: t === 'browse' ? 'root' : t });
     if (matchMedia('(min-width:900px)').matches && !['recent','browse','changes'].includes(S.tab)) S.tab = 'browse';
@@ -222,14 +232,16 @@
     const stack = S.stacks[S.tab], depth = stack.indexOf(sc), prevTitle = depth > 0 ? screenTitle(stack[depth - 1]) : null;
     const title = screenTitle(sc);
     const showMenu = sc.type === 'folder' || sc.type === 'source' || sc.type === 'tag' || sc.type === 'favs' || sc.type === 'recent';
+    const showGear = sc.type === 'root' || sc.type === 'changes';
     el.innerHTML = `<header class="nav"><div class="row">
         ${prevTitle != null ? `<button class="back" data-act="back">${I.back}<span>${esc(prevTitle.length > 14 ? 'Zurück' : prevTitle)}</span></button>` : '<span></span>'}
         <div class="title">${esc(title)}</div>
-        <div class="actions">${showMenu ? `<button data-act="menu" aria-label="Ansicht und Sortierung">${I.more}</button>` : ''}</div>
+        <div class="actions">${showGear ? `<button data-act="settings" aria-label="Einstellungen">${I.gear}</button>` : ''}${showMenu ? `<button data-act="menu" aria-label="Ansicht und Sortierung">${I.more}</button>` : ''}</div>
       </div></header><div class="content"></div>`;
     const content = el.querySelector('.content'), nav = el.querySelector('.nav');
     content.innerHTML = `<h1 class="large">${esc(title)}</h1>` + screenBody(sc);
-    content.addEventListener('scroll', () => nav.classList.toggle('solid', content.scrollTop > 28), { passive: true });
+    const h1 = content.querySelector('.large');
+    content.addEventListener('scroll', () => nav.classList.toggle('solid', content.scrollTop > (h1 ? h1.offsetTop + h1.offsetHeight - 6 : 28)), { passive: true });
     el.addEventListener('click', e => onClick(e, sc, el));
     el.addEventListener('input', e => { if (e.target.matches('.search input')) onSearch(e.target, sc, el); });
     attachSwipeBack(el, depth);
@@ -300,10 +312,12 @@
     if (S.view === 'grid' && !q) return `<div class="grid">${sorted.map(it => itemCell(it)).join('')}</div>`;
     return `<div class="group filelist">${sorted.map(it => itemRow(it, { showPath })).join('')}</div><p class="subtitle" style="text-align:center;margin:12px 0 0">${plural(items.length, 'Objekt', 'Objekte')}</p>`;
   }
+  const shortPath = it => { const p = pathOf(it); return (p.length > 3 ? ['…'].concat(p.slice(-2)) : p).join(' › '); };
   function itemRow(it, o = {}) {
     const isF = it.kind === 'folder';
-    const meta = o.showPath ? pathOf(it).slice(-2).join(' › ') : isF ? plural(countIn(it), 'Objekt', 'Objekte') : [fmtDate(it.modified), it.size != null ? fmtSize(it.size) : '', it.due ? 'Fällig ' + fmtDate(it.due) : ''].filter(Boolean).join(' · ');
-    return `<button class="item" data-act="${isF ? 'folder' : 'open'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 34)}</span><span class="txt"><span class="name">${esc(it.name)}</span><span class="meta">${esc(meta)}</span></span>${it.sample ? '<span class="badge sample">Beispiel</span>' : ''}${isF ? `<span class="chev">${I.chevron}</span>` : `<span class="info" role="button" data-act="detail" data-id="${esc(it.id)}" aria-label="Details">${I.info}</span>`}</button>`;
+    const when = it.due ? 'Fällig ' + fmtDate(it.due) : fmtDate(it.modified);
+    const meta = isF ? (o.showPath ? shortPath(it) + ' · ' : '') + plural(countIn(it), 'Objekt', 'Objekte') : [shortPath(it), when].filter(Boolean).join(' · ');
+    return `<button class="item" data-act="${isF ? 'folder' : 'detail'}" data-id="${esc(it.id)}"><span class="ico">${iconOf(it, 34)}</span><span class="txt"><span class="name">${esc(it.name)}</span><span class="meta">${esc(meta)}</span></span>${it.sample ? '<span class="badge sample">Beispiel</span>' : ''}${isF ? `<span class="chev">${I.chevron}</span>` : ''}</button>`;
   }
   function itemCell(it) {
     const isF = it.kind === 'folder';
@@ -334,6 +348,7 @@
     else if (act === 'menu') openMenu(a, sc, el);
     else if (act === 'clear') { const i = a.parentElement.querySelector('input'); i.value = ''; i.dispatchEvent(new Event('input', { bubbles: true })); i.focus(); }
     else if (act === 'sync-desktop') toast('Desktop-Sync folgt in Phase 3 (Claude-Task)');
+    else if (act === 'settings') openSettings();
   }
   function openMenu(anchor, sc, el) {
     closeMenu(); const r = anchor.getBoundingClientRect();
@@ -356,6 +371,7 @@
         <div class="hero"><span class="ico">${isF ? folderSVG(96) : (it.thumb ? `<img src="${it.thumb}" alt="">` : typeOf(it).ico(96, it))}</span><div class="hname">${esc(it.name)}</div><div class="hmeta">${isF ? plural(countIn(it), 'Objekt', 'Objekte') : [typeOf(it).label, fmtSize(it.size)].filter(Boolean).join(' · ')}${it.sample ? ' · Beispiel' : ''}</div></div>
         ${isF ? `<button class="open" data-act="goto">Ordner anzeigen</button>` : ''}
         <a class="open ${isF ? 'secondary' : ''}" href="${esc(t.url)}" ${t.ext ? 'target="_blank" rel="noopener"' : ''} data-act="openlink">${I.link}<span>${esc(t.label)}</span></a>
+        <div class="btnrow">${altOpens(it).map(a => `<a class="open secondary small" href="${esc(a.url)}" ${a.ext ? 'target="_blank" rel="noopener"' : ''} data-act="openlink">${esc(a.label)}</a>`).join('')}<button class="open secondary small" data-act="share">Teilen</button></div>
         ${t.hint ? `<p class="note">${esc(t.hint)}</p>` : ''}
         ${it.snippet ? `<div class="group"><div class="snippet">${esc(it.snippet)}</div></div>` : ''}
         <div class="section">Informationen</div><div class="group">
@@ -369,6 +385,7 @@
       else if (act === 'fav') { if (S.favs.has(it.id)) S.favs.delete(it.id); else S.favs.add(it.id); store.set('favs', [...S.favs]); a.innerHTML = S.favs.has(it.id) ? I.starF : I.star; a.style.color = S.favs.has(it.id) ? 'var(--warn)' : 'var(--accent)'; toast(S.favs.has(it.id) ? 'Zu Favoriten hinzugefügt' : 'Aus Favoriten entfernt'); refreshRoot(); }
       else if (act === 'goto') { closeSheet(); push({ type: 'folder', id: it.id }); }
       else if (act === 'openlink') { if (it.sample) { e.preventDefault(); toast('Beispiel-Eintrag – echte Daten kommen mit dem Sync'); return; } S.opened = [it.id].concat(S.opened.filter(x => x !== it.id)).slice(0, 30); store.set('opened', S.opened); if (!t.ext) { e.preventDefault(); location.href = t.url; } }
+      else if (act === 'share') { if (navigator.share) navigator.share({ title: it.name, text: pathOf(it).join(' › '), url: t.url }).catch(() => {}); else (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(t.url) : Promise.reject()).then(() => toast('Link kopiert')).catch(() => toast(t.url)); }
       else if (act === 'copy') { const txt = t.url; (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Link kopiert')).catch(() => toast(txt)); }
     });
     scrim.addEventListener('click', () => closeSheet());
@@ -378,6 +395,46 @@
     sh.addEventListener('touchend', e => { if (y0 == null) return; const dy = e.changedTouches[0].clientY - y0; y0 = null; sh.style.transition = ''; if (dy > 120) closeSheet(); else sh.style.transform = ''; });
     document.body.append(scrim, sh); S.sheet = [scrim, sh];
   }
+  // ---------- Einstellungen ----------
+  const BIO_NAME = IS_IOS ? 'Face ID' : IS_WIN ? 'Windows Hello' : 'Biometrie';
+  const rnd = n => crypto.getRandomValues(new Uint8Array(n));
+  const toB64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
+  async function bioAvailable() { try { return !!(window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()); } catch (e) { return false; } }
+  async function bioEnroll() {
+    const cred = await navigator.credentials.create({ publicKey: { challenge: rnd(32), rp: { name: 'Explorer', id: location.hostname }, user: { id: rnd(16), name: 'explorer', displayName: 'Explorer' }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' }, timeout: 60000, attestation: 'none' } });
+    store.set('bio', toB64(cred.rawId)); return true;
+  }
+  async function bioVerify() {
+    const id = store.get('bio', null); if (!id) return true;
+    await navigator.credentials.get({ publicKey: { challenge: rnd(32), rpId: location.hostname, allowCredentials: [{ type: 'public-key', id: b64(id) }], userVerification: 'required', timeout: 60000 } });
+    return true;
+  }
+  function openSettings() {
+    closeSheet(true);
+    const scrim = document.createElement('div'); scrim.className = 'sheet-scrim'; const sh = document.createElement('div'); sh.className = 'sheet'; sh.setAttribute('role', 'dialog');
+    const bio = !!store.get('bio', null), glass = store.get('design', 'glass') === 'glass';
+    const row = (lbl, right, act, sub) => `<button class="item plain" data-act="${act}"><span class="txt"><span class="name">${lbl}</span>${sub ? `<span class="meta">${sub}</span>` : ''}</span>${right}</button>`;
+    const sw = on => `<span class="switch ${on ? 'on' : ''}"><i></i></span>`;
+    sh.innerHTML = `<div class="grab"></div><div class="shead"><span></span><span class="stitle">Einstellungen</span><button class="done" data-act="close">Fertig</button></div><div class="sbody">
+      <div class="section">Darstellung</div><div class="group">${row('Glas-Design', sw(glass), 'design', 'Schwebende Tab-Leiste, Suche unten, Glas-Materialien')}</div>
+      <div class="section">Sicherheit</div><div class="group">${row('Mit ' + BIO_NAME + ' schützen', sw(bio), 'bio', 'Beim Start entsperren statt Passphrase')}${row('Passphrase vergessen', '', 'forget', 'Beim nächsten Start neu eingeben')}</div>
+      <div class="section">Index</div><div class="group"><div class="kv"><span>Stand</span><span>${fmtDate(S.index.generated, true)}</span></div><div class="kv"><span>Einträge</span><span>${S.items.length}</span></div><div class="kv"><span>Quellen</span><span>${S.sources.map(x => x.name).join(', ')}</span></div></div>
+      <p class="note">Explorer · PWA · ${STANDALONE ? 'installiert' : 'im Browser'}</p></div>`;
+    sh.addEventListener('click', async e => { const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
+      if (act === 'close') closeSheet();
+      else if (act === 'design') { const g = store.get('design', 'glass') !== 'glass'; store.set('design', g ? 'glass' : 'classic'); applyDesign(); a.querySelector('.switch').classList.toggle('on', g); }
+      else if (act === 'bio') { if (store.get('bio', null)) { store.del('bio'); a.querySelector('.switch').classList.remove('on'); toast(BIO_NAME + ' deaktiviert'); return; } if (!(await bioAvailable())) { toast(BIO_NAME + ' ist hier nicht verfügbar'); return; } try { await bioEnroll(); a.querySelector('.switch').classList.add('on'); toast('Beim nächsten Start mit ' + BIO_NAME); } catch (err) { toast('Abgebrochen'); } }
+      else if (act === 'forget') { store.del('pass'); store.del('bio'); toast('Passphrase vergessen'); closeSheet(); setTimeout(() => location.reload(), 400); } });
+    scrim.addEventListener('click', () => closeSheet()); document.body.append(scrim, sh); S.sheet = [scrim, sh];
+  }
+  function offerBio() {
+    const scrim = document.createElement('div'); scrim.className = 'sheet-scrim'; const sh = document.createElement('div'); sh.className = 'sheet'; sh.setAttribute('role', 'dialog');
+    sh.innerHTML = `<div class="grab"></div><div class="sbody"><div class="hero"><span class="ico" style="color:var(--accent)">${I.face.replace('width="20" height="20"', 'width="72" height="72"')}</span><div class="hname">Mit ${BIO_NAME} entsperren?</div><div class="hmeta">Die Passphrase bleibt auf diesem Gerät gespeichert. Beim Start genügt dann ${BIO_NAME}.</div></div><button class="open" data-act="yes">${BIO_NAME} aktivieren</button><button class="open secondary" data-act="no">Später</button></div>`;
+    sh.addEventListener('click', async e => { const a = e.target.closest('[data-act]'); if (!a) return; if (a.dataset.act === 'yes') { try { await bioEnroll(); toast(BIO_NAME + ' aktiviert'); } catch (err) { toast('Abgebrochen'); } } closeSheet(); });
+    scrim.addEventListener('click', () => closeSheet()); document.body.append(scrim, sh); S.sheet = [scrim, sh];
+  }
+  function applyDesign() { document.body.classList.toggle('glass', store.get('design', 'glass') === 'glass'); }
+
   function closeSheet(now) { if (!S.sheet) return; const [sc, sh] = S.sheet; S.sheet = null; if (now) { sc.remove(); sh.remove(); return; } sh.classList.add('closing'); sc.style.opacity = 0; sc.style.transition = 'opacity .25s'; setTimeout(() => { sc.remove(); sh.remove(); }, 280); }
   function refreshRoot() { const rootScreen = stackEl() && stackEl().querySelector('.screen[data-type="root"]'); if (rootScreen) { const inp = rootScreen.querySelector('.search input'); if (!inp.value.trim()) rootScreen.querySelector('.results').innerHTML = rootResults(); } const f = stackEl() && stackEl().querySelector('.screen[data-type="favs"] .results'); if (f) f.innerHTML = renderItems(listFor({ type: 'favs' }), { type: 'favs' }); renderSidebar(); }
 
@@ -418,7 +475,15 @@
   // ---------- Start ----------
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenu(); closeSheet(); } });
   (async function start() {
+    applyDesign();
     const saved = store.get('pass', null);
+    if (saved && store.get('bio', null)) {
+      const gate = () => { $app.innerHTML = `<div class="lock"><div class="icon">${folderSVG(44)}</div><h1>Explorer</h1><p>Gesperrt</p><button class="btn" id="bio">${I.face}<span style="margin-left:8px">Mit ${BIO_NAME} entsperren</span></button><button class="link" id="usepass">Passphrase verwenden</button></div>`;
+        document.getElementById('bio').onclick = async () => { try { await bioVerify(); await boot(saved, false); } catch (e) { toast(e && e.message === 'fetch' ? 'Index nicht erreichbar' : 'Nicht erkannt'); } };
+        document.getElementById('usepass').onclick = () => renderLock(); };
+      gate(); try { await bioVerify(); await boot(saved, false); } catch (e) { /* bleibt am Gate */ }
+      return;
+    }
     if (saved) { try { await boot(saved, false); return; } catch (e) { store.del('pass'); renderLock(e && e.message === 'fetch' ? 'Index nicht erreichbar – Netz prüfen.' : 'Passphrase hat sich geändert.'); return; } }
     renderLock();
   })();
