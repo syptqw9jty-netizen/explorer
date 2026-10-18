@@ -154,6 +154,22 @@
     else { location.href = t.url; }
   }
 
+  // ---------- Sync-Endpunkt (Apps Script) ----------
+  const syncCfg = () => store.get('sync', null);
+  const idb = { open: () => new Promise((res, rej) => { const r = indexedDB.open('explorer', 1); r.onupgradeneeded = () => r.result.createObjectStore('k'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }),
+    get: async k => { try { const d = await idb.open(); return await new Promise((res, rej) => { const q = d.transaction('k').objectStore('k').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); } catch (e) { return undefined; } },
+    set: async (k, v) => { try { const d = await idb.open(); await new Promise((res, rej) => { const t = d.transaction('k', 'readwrite'); t.objectStore('k').put(v, k); t.oncomplete = res; t.onerror = () => rej(t.error); }); } catch (e) {} } };
+  async function fetchSync(refresh) {
+    const c = syncCfg(); if (!c) throw new Error('nosync');
+    const u = c.url + (c.url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(c.key) + (refresh ? '&refresh=1' : '');
+    const r = await fetch(u, { cache: 'no-store', redirect: 'follow' }); if (!r.ok) throw new Error('http ' + r.status);
+    const j = await r.json(); if (j.error) throw new Error(j.error); if (!Array.isArray(j.items)) throw new Error('format');
+    await idb.set('index', j); return j;
+  }
+  async function loadViaSync(refresh) {
+    try { return await fetchSync(refresh); } catch (e) { const cached = await idb.get('index'); if (cached) { cached.offline = true; return cached; } throw e; }
+  }
+
   // ---------- Daten laden / entschlüsseln ----------
   const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
   async function decrypt(enc, pass) {
@@ -182,16 +198,34 @@
     const go = async () => { st.textContent = 'Entschlüssele …'; try { await boot(inp.value, true); } catch (e) { inp.classList.remove('err'); void inp.offsetWidth; inp.classList.add('err'); st.textContent = e && e.message === 'fetch' ? 'Index nicht erreichbar – Netz prüfen.' : 'Passphrase passt nicht.'; } };
     document.getElementById('unlock').onclick = go; inp.onkeydown = e => { if (e.key === 'Enter') go(); };
   }
+  function renderSetup(msg) {
+    const c = syncCfg() || {};
+    $app.innerHTML = `<div class="lock">
+      <div class="icon">${folderSVG(44)}</div>
+      <h1>Explorer einrichten</h1>
+      <p>Web-App-URL und KEY aus dem Apps-Script-Projekt „Explorer Sync“ eintragen.</p>
+      <input id="surl" type="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(c.url || '')}" style="letter-spacing:0;text-align:left;font-size:14px">
+      <input id="skey" type="text" placeholder="KEY" value="${esc(c.key || '')}" autocomplete="off" style="letter-spacing:0">
+      <button class="btn" id="ssave">Verbinden</button>
+      <button class="link" id="demo">Stattdessen Demo-Index mit Passphrase</button>
+      <div class="status" id="lstatus">${esc(msg || '')}</div>
+    </div>`;
+    const st = document.getElementById('lstatus');
+    document.getElementById('ssave').onclick = async () => { const url = document.getElementById('surl').value.trim(), key = document.getElementById('skey').value.trim(); if (!/^https:\/\/script\.google\.com\//.test(url) || !key) { st.textContent = 'URL muss mit https://script.google.com/ beginnen; KEY fehlt.'; return; }
+      store.set('sync', { url, key }); st.textContent = 'Verbinde …'; try { await boot('sync', false); } catch (e) { st.textContent = 'Fehler: ' + (e && e.message || e); } };
+    document.getElementById('demo').onclick = () => { store.del('sync'); renderLock(); };
+  }
   async function loadEnc() {
     let r; try { r = await fetch('index.enc.json', { cache: 'no-cache' }); } catch (e) { r = null; }
     if (!r || !r.ok) { const c = await caches.match('index.enc.json').catch(() => null); if (!c) throw new Error('fetch'); r = c; }
     return r.json();
   }
   async function boot(pass, remember) {
-    const enc = await loadEnc();
-    const idx = await decrypt(enc, pass);
-    if (remember) store.set('pass', pass);
+    let idx;
+    if (syncCfg()) idx = await loadViaSync(false);
+    else { const enc = await loadEnc(); idx = await decrypt(enc, pass); if (remember) store.set('pass', pass); }
     ingest(idx); renderApp();
+    if (idx.offline) toast('Offline – zeige letzten Stand');
     if (remember && !store.get('bio', null) && !store.get('bioAsked', false)) { store.set('bioAsked', true); if (await bioAvailable()) setTimeout(() => offerBio(), 600); }
   }
 
@@ -321,7 +355,7 @@
     const syncBtn = IS_IOS ? `<a class="open" href="shortcuts://run-shortcut?name=${encodeURIComponent('Explorer Sync')}">Jetzt aktualisieren</a>` : `<button class="open" data-act="sync-desktop">Jetzt aktualisieren</button>`;
     return `<div class="group"><div class="status ${old ? 'old' : ''}"><span class="light"></span><span class="st"><b>${old ? 'Index älter als 30 Stunden' : 'Index aktuell'}</b><span>Letzter Sync ${fmtDate(gen)} · ${ageText(gen)} · ${S.items.length} Einträge</span></span></div></div>
       <div class="btnrow">${syncBtn}</div>
-      <p class="note">Der tägliche Sync läuft automatisch. Manuell: am iPhone startet der Button den Kurzbefehl „Explorer Sync“, am Desktop die Aktualisierung über Claude.</p>
+      <p class="note">Täglich um 05:05 baut Apps Script den Index neu; der iPhone-Kurzbefehl liefert Notizen, Erinnerungen und iCloud Drive. Manuell: am iPhone startet der Button den Kurzbefehl, am Desktop den Neuaufbau direkt.</p>
       ${list || '<div class="empty"><b>Keine Änderungen</b>Seit dem letzten Sync hat sich nichts verändert.</div>'}`;
   }
   function renderItems(items, sc, q) {
@@ -367,7 +401,7 @@
     else if (act === 'open') openItem(S.byId.get(id));
     else if (act === 'menu') openMenu(a, sc, el);
     else if (act === 'clear') { const i = a.parentElement.querySelector('input'); i.value = ''; i.dispatchEvent(new Event('input', { bubbles: true })); i.focus(); }
-    else if (act === 'sync-desktop') toast('Desktop-Sync folgt in Phase 3 (Claude-Task)');
+    else if (act === 'sync-desktop') { if (!syncCfg()) { toast('Erst Sync einrichten (Zahnrad)'); return; } toast('Index wird neu aufgebaut …'); fetchSync(true).then(idx => { ingest(idx); mountStack(); toast('Aktualisiert: ' + idx.items.length + ' Einträge'); }).catch(e => toast('Fehler: ' + (e && e.message || e))); }
     else if (act === 'settings') openSettings();
   }
   function openMenu(anchor, sc, el) {
@@ -437,15 +471,18 @@
     const sw = on => `<span class="switch ${on ? 'on' : ''}"><i></i></span>`;
     sh.innerHTML = `<div class="grab"></div><div class="shead"><span></span><span class="stitle">Einstellungen</span><button class="done" data-act="close">Fertig</button></div><div class="sbody">
       <div class="section">Darstellung</div><div class="group">${row('Glas-Design', sw(glass), 'design', 'Schwebende Tab-Leiste, Suche unten, Glas-Materialien')}</div>
+      <div class="section">Sync</div><div class="group">${row(syncCfg() ? 'Verbunden mit Apps Script' : 'Nicht verbunden', '', 'syncsetup', syncCfg() ? syncCfg().url.replace(/^https:\/\/script\.google\.com\/macros\/s\//, '…/').slice(0, 28) + '…' : 'URL und KEY eintragen')}${syncCfg() ? row('Index jetzt neu aufbauen', '', 'syncrefresh', 'Drive wird neu eingelesen (dauert einige Sekunden)') : ''}</div>
       <div class="section">Sicherheit</div><div class="group">${row('Mit ' + BIO_NAME + ' schützen', sw(bio), 'bio', 'Beim Start entsperren statt Passphrase')}${row('Passphrase vergessen', '', 'forget', 'Beim nächsten Start neu eingeben')}</div>
       <div class="section">Index</div><div class="group"><div class="kv"><span>Stand</span><span>${fmtDate(S.index.generated, true)}</span></div><div class="kv"><span>Einträge</span><span>${S.items.length}</span></div><div class="kv"><span>Quellen</span><span>${S.sources.map(x => x.name).join(', ')}</span></div></div>
       <div class="group"><button class="item plain" data-act="reload"><span class="txt"><span class="name" style="color:var(--accent)">App neu laden</span><span class="meta">Holt die neueste Version</span></span></button></div>
-      <p class="note">Explorer · ${STANDALONE ? 'installiert' : 'im Browser'} · Build 2026-10-18.6</p></div>`;
+      <p class="note">Explorer · ${STANDALONE ? 'installiert' : 'im Browser'} · Build 2026-10-18.7</p></div>`;
     sh.addEventListener('click', async e => { const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act;
       if (act === 'close') closeSheet();
       else if (act === 'design') { const g = store.get('design', 'glass') !== 'glass'; store.set('design', g ? 'glass' : 'classic'); applyDesign(); a.querySelector('.switch').classList.toggle('on', g); }
       else if (act === 'bio') { if (store.get('bio', null)) { store.del('bio'); a.querySelector('.switch').classList.remove('on'); toast(BIO_NAME + ' deaktiviert'); return; } if (!(await bioAvailable())) { toast(BIO_NAME + ' ist hier nicht verfügbar'); return; } try { await bioEnroll(); a.querySelector('.switch').classList.add('on'); toast('Beim nächsten Start mit ' + BIO_NAME); } catch (err) { toast('Abgebrochen'); } }
       else if (act === 'reload') { caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k)))).catch(() => {}).then(() => location.reload()); }
+      else if (act === 'syncsetup') { closeSheet(true); renderSetup(); }
+      else if (act === 'syncrefresh') { toast('Index wird neu aufgebaut …'); try { const idx = await fetchSync(true); ingest(idx); mountStack(); toast('Index aktualisiert: ' + idx.items.length + ' Einträge'); } catch (e) { toast('Fehler: ' + (e && e.message || e)); } }
       else if (act === 'forget') { store.del('pass'); store.del('bio'); toast('Passphrase vergessen'); closeSheet(); setTimeout(() => location.reload(), 400); } });
     scrim.addEventListener('click', () => closeSheet()); document.body.append(scrim, sh); S.sheet = [scrim, sh];
   }
@@ -497,9 +534,10 @@
 
   // ---------- Start ----------
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenu(); closeSheet(); } });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.index && syncCfg() && (Date.now() - (S.lastFetch || 0)) > 60000) { S.lastFetch = Date.now(); fetchSync(false).then(idx => { if (idx.generated !== S.index.generated) { ingest(idx); mountStack(); toast('Index aktualisiert'); } }).catch(() => {}); } });
   (async function start() {
     applyDesign();
-    const saved = store.get('pass', null);
+    const saved = store.get('pass', null) || (syncCfg() ? 'sync' : null);
     if (saved && store.get('bio', null)) {
       const gate = () => { $app.innerHTML = `<div class="lock"><div class="icon">${folderSVG(44)}</div><h1>Explorer</h1><p>Gesperrt</p><button class="btn" id="bio">${I.face}<span style="margin-left:8px">Mit ${BIO_NAME} entsperren</span></button><button class="link" id="usepass">Passphrase verwenden</button></div>`;
         document.getElementById('bio').onclick = async () => { try { await bioVerify(); await boot(saved, false); } catch (e) { toast(e && e.message === 'fetch' ? 'Index nicht erreichbar' : 'Nicht erkannt'); } };
@@ -507,7 +545,7 @@
       gate(); try { await bioVerify(); await boot(saved, false); } catch (e) { /* bleibt am Gate */ }
       return;
     }
-    if (saved) { try { await boot(saved, false); return; } catch (e) { store.del('pass'); renderLock(e && e.message === 'fetch' ? 'Index nicht erreichbar – Netz prüfen.' : 'Passphrase hat sich geändert.'); return; } }
-    renderLock();
+    if (saved) { try { await boot(saved, false); return; } catch (e) { if (syncCfg()) { renderSetup('Sync nicht erreichbar: ' + (e && e.message || '')); return; } store.del('pass'); renderLock(e && e.message === 'fetch' ? 'Index nicht erreichbar – Netz prüfen.' : 'Passphrase hat sich geändert.'); return; } }
+    renderSetup();
   })();
 })();
