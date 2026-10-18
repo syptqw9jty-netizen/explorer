@@ -1,4 +1,4 @@
-const VERSION = 'v7';
+const VERSION = 'v8';
 const CACHE = 'explorer-' + VERSION;
 const APP = ['./', 'index.html', 'assets/app.css', 'assets/app.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 // Beim Installieren immer frisch vom Netz holen (GitHub Pages cached 10 Min. per HTTP)
