@@ -26,16 +26,95 @@ function sentence(t) {
   return /[.!?…]$/.test(t) ? t : t + '.';
 }
 
+const FILLER = /(^|[\s,])(äh+m*|ähm+|öhm+|hm+|mhm|naja|quasi|sozusagen|irgendwie|halt)(?=[\s,.!?]|$)/gi;
+function clean(t) {
+  t = ' ' + t + ' ';
+  t = t.replace(FILLER, '$1').replace(/^\s*(also|ja|und|so)[,\s]+/i, ' ');
+  t = t.replace(/\b(\w+)( \1\b)+/gi, '$1'); // "die die" → "die"
+  return t.replace(/\s+([,.!?])/g, '$1').replace(/\s{2,}/g, ' ').trim();
+}
+const DAY_NOUN = { morgen: ['Ein', 'Morgen', 'der'], mittag: ['Ein', 'Mittag', 'der'], nachmittag: ['Ein', 'Nachmittag', 'der'], abend: ['Ein', 'Abend', 'der'], nacht: ['Eine', 'Nacht', 'die'] };
+const joinNames = a => a.length <= 1 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' und ' + a[a.length - 1];
+function quote(t) { return '„' + t.replace(/[„“"]/g, '') + '“'; }
+
+// Wer spricht? Tonhöhe/Sprecherlabel → Person, wenn eindeutig
+function resolveSpeaker(seg, ctx) {
+  if (seg.speaker === 'notiz') return { kind: 'self' };
+  const kids = ctx.persons.filter(p => p && !p.self);
+  if (!seg.who && ctx.persons.length === 1 && kids.length === 1) return { kind: 'other', name: kids[0].name, id: kids[0].id };
+  if (seg.who === 'Hohe Stimme' && kids.length === 1) return { kind: 'other', name: kids[0].name, id: kids[0].id };
+  if (seg.who === 'Tiefe Stimme' || !seg.who) return ctx.mode === 'raum' && !seg.who ? { kind: 'unknown' } : { kind: 'self' };
+  return { kind: 'unknown', label: seg.who };
+}
+
+// Aus Gesprochenem wird ein erzählerisch dokumentierter Eintrag — ohne KI, Wort für Wort belegbar.
+function narrate(segments, ctx, target) {
+  const { settings } = ctx; const tone = settings.tone ?? 40;
+  const me = settings.userName || 'Ich';
+  let persp = settings.perspective || 'ich';
+  if (persp === 'brief' && (!target || target.self)) persp = 'ich';
+  const d = new Date(ctx.createdAt), part = dayPart(d);
+  const dateStr = d.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
+  const others = ctx.persons.filter(p => p && !p.self).map(p => p.name);
+  const paras = [];
+  if (tone >= 20 && ctx.mode !== 'notiz') {
+    let open;
+    if (persp === 'dritte') open = `${defaultTitle(d)}, ${dateStr}. ${joinNames([settings.userName || 'Der Erzähler', ...others].filter(Boolean))} ${ctx.mode === 'raum' ? 'unterhielten sich' : others.length ? 'sprachen über den Tag' : 'erzählte vom Tag'}.`;
+    else if (persp === 'brief') open = `${target.name}, heute war ${WEEKDAYS[d.getDay()]}, der ${dateStr}, und wir haben am ${part === 'nacht' ? 'späten Abend' : DAY_NOUN[part][1]} über deinen Tag gesprochen.`;
+    else open = `${defaultTitle(d)}, ${dateStr}.` + (others.length ? ` Ich habe mit ${joinNames(others)} über den Tag gesprochen.` : '');
+    paras.push({ text: open, sources: [], frame: true });
+  }
+  let pendingQ = null, lastKey = null, used = {};
+  const verb = (t, key) => {
+    const q = /\?$/.test(t), ex = /!$/.test(t);
+    const n = used[key] = (used[key] || 0) + 1;
+    return q ? 'fragte' : ex ? 'rief' : n === 1 ? 'erzählte' : ['ergänzte', 'sagte', 'erzählte weiter'][n % 3];
+  };
+  // Segmente zu Sprecherblöcken bündeln
+  const blocks = [];
+  segments.forEach(s => {
+    if (s.speaker === 'frage') { blocks.push({ q: s }); return; }
+    const sp = resolveSpeaker(s, ctx); const key = sp.kind + (sp.name || sp.label || '');
+    const last = blocks[blocks.length - 1];
+    const text = clean(s.text); if (!text) return;
+    if (last && !last.q && last.key === key && last.segs.length < 3) { last.segs.push(s); last.texts.push(sentence(text)); }
+    else blocks.push({ key, sp, segs: [s], texts: [sentence(text)] });
+  });
+  for (const b of blocks) {
+    if (b.q) { pendingQ = b.q; continue; }
+    const body = b.texts.join(' ');
+    const src = b.segs.map(x => x.id).concat(pendingQ ? [pendingQ.id] : []);
+    const qPre = pendingQ ? `Auf die Frage ${quote(pendingQ.text)} ` : '';
+    let text;
+    if (tone < 20) {
+      const who = b.sp.kind === 'self' ? me : b.sp.kind === 'other' ? b.sp.name : (b.sp.label || '');
+      text = (pendingQ ? `Frage: ${pendingQ.text} ` : '') + (who && (others.length || ctx.mode === 'raum') ? `${who}: ` : '') + body;
+    } else if (b.sp.kind === 'self') {
+      if (persp === 'dritte') text = qPre ? `${qPre}antwortete ${me}: ${quote(body)}` : `${me} ${verb(body, b.key)}: ${quote(body)}`;
+      else text = qPre ? `${qPre.trim()}: ${body}` : body;
+    } else if (b.sp.kind === 'other') {
+      const isTarget = persp === 'brief' && target && b.sp.id === target.id;
+      if (isTarget) text = qPre ? `${qPre}hast du geantwortet: ${quote(body)}` : `Du hast erzählt: ${quote(body)}`;
+      else text = qPre ? `${qPre}antwortete ${b.sp.name}: ${quote(body)}` : `${b.sp.name} ${verb(body, b.key)}: ${quote(body)}`;
+    } else {
+      text = qPre ? `${qPre.trim()}: ${body}` : (b.sp.label ? `${b.sp.label}: ${quote(body)}` : body);
+    }
+    if (lastKey === b.key && !pendingQ && paras.length && !paras[paras.length - 1].frame && paras[paras.length - 1].text.length < 420) {
+      const p = paras[paras.length - 1]; p.text += ' ' + text; p.sources.push(...src);
+    } else paras.push({ text, sources: src });
+    lastKey = b.key; pendingQ = null;
+  }
+  if (pendingQ) paras.push({ text: pendingQ.text, sources: [pendingQ.id], question: true });
+  if (tone >= 55 && ctx.mode !== 'notiz' && paras.length > 1) {
+    const [art, noun, rel] = DAY_NOUN[part];
+    paras.push({ text: tone >= 80 ? `${art} ${noun}, ${rel} leise nachklingt.` : `${art} ${noun}, ${rel} bleiben darf.`, sources: [], frame: true });
+  }
+  return paras;
+}
+
 export function composeLocal({ segments, settings, persons, createdAt, mode }) {
   const voice = segments.filter(s => s.speaker !== 'frage');
-  const paragraphs = []; let cur = null;
-  segments.forEach((s, i) => {
-    const prev = segments[i - 1];
-    const newPara = !cur || s.speaker === 'frage' || (prev && s.t - prev.t > 9000) || cur.sources.length >= 4;
-    if (newPara) { cur = { text: '', sources: [], question: s.speaker === 'frage' }; paragraphs.push(cur); }
-    cur.text += (cur.text ? ' ' : '') + sentence(s.text); cur.sources.push(s.id);
-    if (s.speaker === 'frage') cur = null;
-  });
+  const ctx = { settings, persons: persons.filter(Boolean), createdAt, mode };
   // Themen: häufigste Substantive (großgeschrieben, nicht am Satzanfang)
   const counts = {}; const names = new Set(persons.map(p => p && p.name).concat(settings.userName || []).filter(Boolean));
   voice.forEach(s => s.text.split(/\s+/).slice(1).forEach(w => {
@@ -49,13 +128,16 @@ export function composeLocal({ segments, settings, persons, createdAt, mode }) {
       if (c.re.test(s.text)) { observations.push({ category: cat, segment: s.id, description: sentence(s.text) }); break; }
     }
   });
-  const forIds = persons.map(p => p.id);
+  const tgt = ctx.persons.length ? ctx.persons : [{ id: 'me', self: true }];
   return {
-    title: defaultTitle(new Date(createdAt)),
-    versions: forIds.map(pid => ({ for: pid, paragraphs })),
+    title: defaultTitle(new Date(createdAt)) + (topics[0] && (settings.tone ?? 40) >= 20 ? ' · ' + topics[0] : ''),
+    versions: tgt.map(p => ({ for: p.id, paragraphs: narrate(segments, ctx, p) })),
     topics, observations, composer: 'lokal'
   };
 }
+
+// Netzwerkanfragen nie endlos warten lassen
+function timed(ms) { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; }
 
 // ---------- Pseudonymisierung ----------
 function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
@@ -102,7 +184,7 @@ export function buildPrompt({ segments, settings, persons, mode, createdAt }) {
     'Andere Menschen (Kita, Freunde, Familie) nur mit Rolle oder Platzhalter, keine Details über deren Privatleben.'
   ];
   const cats = ['entwicklung'].concat(s.health ? ['gesundheit', 'schlaf'] : []).concat(s.emotions ? ['gefuehle'] : []).concat(s.conflicts ? ['konflikt'] : []);
-  const system = `Du bist der Chronist von "Spur", einem privaten Sprach-Tagebuch. Aus einem gesprochenen Transkript machst du einen Tagebucheintrag.
+  const system = `Du bist der Chronist von "Spur", einem privaten Sprach-Tagebuch. Aus einem gesprochenen Transkript machst du einen erzählerisch dokumentierten Tagebucheintrag: Du verwandelst das Gesagte in zusammenhängende Prosa, ordnest es chronologisch, lässt Füllwörter und Wiederholungen weg und setzt besonders schöne oder typische Aussagen (vor allem von Kindern) als wörtliche Zitate.
 Ton: ${toneText(settings.tone)}.
 Perspektive: ${PERSPECTIVE[settings.perspective] || PERSPECTIVE.ich}.
 Publikum: ${AUDIENCE[settings.audience] || AUDIENCE.selbst}.
@@ -113,11 +195,13 @@ Zusätzlich sammelst du "observations": rein beschreibende Beobachtungen (was, w
 Antworte ausschließlich mit JSON in genau dieser Form:
 {"title": "kurzer Titel (max. 6 Wörter)", "versions": [{"for": "<Platzhalter der Person>", "paragraphs": [{"text": "…", "sources": ["s1"]}]}], "topics": ["…"], "observations": [{"category": "${cats[0]}", "segment": "s3", "description": "…"}]}`;
   const forList = persons.map(p => ps.aliasOf(p)).join(', ');
+  const kidsOnly = persons.filter(p => p && !p.self);
+  const voiceHint = segments.some(x => x.who === 'Hohe Stimme') ? `\nHinweis: "Tiefe Stimme" ist vermutlich der Erzähler${kidsOnly.length === 1 ? `, "Hohe Stimme" vermutlich ${ps.aliasOf(kidsOnly[0])}` : ''}.` : '';
   const transcript = segments.map(x => `${x.id}${x.speaker === 'frage' ? ' (Frage der App)' : x.who ? ` (${x.who})` : ''}: ${ps.fwd(x.text)}`).join('\n');
   const user = `Datum: ${new Date(createdAt).toLocaleString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
 Modus: ${mode === 'raum' ? 'Gespräch im Raum, mehrere Stimmen (Stimme 1/2 = automatisch getrennte Sprecher; ordne sie nur zu, wenn es aus dem Inhalt eindeutig ist)' : mode === 'interview' ? 'Interview, die App stellt Fragen' : 'eine Person erzählt'}
 Erstelle je eine Version für: ${forList}
-Transkript:
+Transkript:${voiceHint}
 ${transcript}`;
   return { system, user, ps };
 }
@@ -132,7 +216,7 @@ export async function callModel(settings, system, user, { json = true, maxTokens
   const ai = settings.ai;
   if (ai.provider === 'mistral') {
     const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ai.key },
+      method: 'POST', signal: timed(90000), headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ai.key },
       body: JSON.stringify({ model: ai.model || 'mistral-large-latest', temperature: 0.5, max_tokens: maxTokens,
         ...(json ? { response_format: { type: 'json_object' } } : {}),
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }] })
@@ -142,7 +226,7 @@ export async function callModel(settings, system, user, { json = true, maxTokens
   }
   if (ai.provider === 'anthropic') {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
+      method: 'POST', signal: timed(90000),
       headers: { 'Content-Type': 'application/json', 'x-api-key': ai.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: ai.model || 'claude-sonnet-5-5', max_tokens: maxTokens, system, messages: [{ role: 'user', content: user }] })
     });
@@ -186,7 +270,7 @@ export async function transcribeRemote(settings, blob, keep = []) {
   fd.append('timestamp_granularities', 'segment');
   fd.append('diarize', 'true');
   fd.append('file', blob, 'aufnahme.' + (blob.type.includes('webm') ? 'webm' : 'm4a'));
-  const r = await fetch('https://api.mistral.ai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: 'Bearer ' + settings.ai.key }, body: fd });
+  const r = await fetch('https://api.mistral.ai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: 'Bearer ' + settings.ai.key }, body: fd, signal: timed(300000) });
   if (!r.ok) throw new Error('Verschriftlichung: ' + r.status + ' ' + (await r.text()).slice(0, 120));
   const j = await r.json();
   const speakers = {};
