@@ -54,19 +54,24 @@ export async function unlock(passcode) {
 
 export async function loadAll(key) {
   const recs = await all('records');
-  let settings = null; const entries = [];
+  let settings = null, knowledge = null; const entries = [];
   for (const r of recs) {
     try {
       const v = await openJSON(key, r.box);
-      if (r.kind === 'settings') settings = v; else if (r.kind === 'entry') entries.push(v);
+      if (r.kind === 'settings') settings = v; else if (r.kind === 'knowledge') knowledge = v; else if (r.kind === 'entry') entries.push(v);
     } catch (e) { console.warn('Eintrag nicht lesbar', r.id); }
   }
   entries.sort((a, b) => b.createdAt - a.createdAt);
-  return { settings, entries };
+  return { settings, entries, knowledge };
 }
 
 export async function saveEntry(key, entry) { await put('records', { id: entry.id, kind: 'entry', box: await sealJSON(key, entry) }); }
-export async function deleteEntry(id) { await del('records', id); await del('audio', id); }
+export async function deleteEntry(id) {
+  await del('records', id); await del('audio', id);
+  // Abschnitte einer langen Aufnahme: <id>#0, <id>#1, …
+  await tx('audio', 'readwrite', s => s.delete(IDBKeyRange.bound(id + '#', id + '#\uffff')));
+}
+export async function saveKnowledge(key, k) { await put('records', { id: 'knowledge', kind: 'knowledge', box: await sealJSON(key, k) }); }
 export async function saveSettings(key, s) { await put('records', { id: 'settings', kind: 'settings', box: await sealJSON(key, s) }); }
 
 export async function saveAudio(key, id, blob) {

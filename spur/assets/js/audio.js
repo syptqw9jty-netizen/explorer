@@ -43,8 +43,9 @@ function detectPitch(buf, sampleRate) {
 }
 
 export class Session {
-  constructor({ lang = 'de-DE', onInterim, onFinal, onState, keepAudio = true, protectRecording = false } = {}) {
-    Object.assign(this, { lang, onInterim, onFinal, onState, keepAudio, protectRecording });
+  constructor({ lang = 'de-DE', onInterim, onFinal, onState, keepAudio = true, protectRecording = false, recognize = true, onChunk = null, chunkPlan = [60000, 180000] } = {}) {
+    Object.assign(this, { lang, onInterim, onFinal, onState, keepAudio, protectRecording, recognize, onChunk, chunkPlan });
+    this.chunkIndex = 0; this.pendingChunks = [];
     this.segments = []; this.chunks = []; this.running = false; this.recognizing = false;
     this.paused = false; this.lastVoiceAt = 0; this.heardSince = 0; this.srBroken = false;
     this.pending = ''; this.lastSR = 0; this.stalls = 0; this.netErrors = 0; this.micYielded = false;
@@ -62,21 +63,44 @@ export class Session {
     this.src.connect(this.analyser);
     this.freq = new Uint8Array(this.analyser.frequencyBinCount); this.time = new Uint8Array(this.analyser.fftSize);
 
-    if (this.keepAudio && window.MediaRecorder) {
-      const mimeType = pickMime();
-      try {
-        this.rec = new MediaRecorder(this.stream, mimeType ? { mimeType, audioBitsPerSecond: 48000 } : undefined);
-        this.rec.ondataavailable = e => { if (e.data && e.data.size) this.chunks.push(e.data); };
-        this.rec.start(1000);
-      } catch (e) { console.warn('MediaRecorder', e); this.rec = null; }
-    }
     this.t0 = performance.now(); this.running = true; this.lastVoiceAt = this.t0; signal.active = true;
+    if ((this.keepAudio || this.onChunk) && window.MediaRecorder) this._startRecorder();
     await this._wake();
     this._onVis = () => { if (!document.hidden && this.running) { this._wake(); if (this.ctx.state === 'suspended') this.ctx.resume(); if (!this.recognizing) this._startRecognition(); } };
     document.addEventListener('visibilitychange', this._onVis);
     this._tick();
-    this._startRecognition();
-    this.watch = setInterval(() => this._watchdog(), 1000);
+    if (this.recognize) { this._startRecognition(); this.watch = setInterval(() => this._watchdog(), 1000); }
+    else setStatus({ speech: 'aus', reason: '' }, this.onState);
+  }
+
+  // Aufnahme in Abschnitten: jeder Abschnitt ist eine eigene, vollständige Datei.
+  // So kann während des Zuhörens schon verschriftlicht werden, und nichts geht bei einem Absturz verloren.
+  _startRecorder() {
+    const mimeType = pickMime();
+    let rec;
+    try { rec = new MediaRecorder(this.stream, mimeType ? { mimeType, audioBitsPerSecond: 48000 } : undefined); }
+    catch (e) { console.warn('MediaRecorder', e); this.rec = null; return; }
+    const parts = [], start = this.elapsed(), index = this.chunkIndex++;
+    rec.ondataavailable = e => { if (e.data && e.data.size) { parts.push(e.data); if (!this.onChunk) this.chunks.push(e.data); } };
+    rec.start(1000);
+    rec._done = new Promise(res => { rec.onstop = () => {
+      if (this.onChunk && parts.length) {
+        const blob = new Blob(parts, { type: rec.mimeType || 'audio/mp4' });
+        this.pendingChunks.push(Promise.resolve(this.onChunk({ blob, index, start, end: this.elapsed() })).catch(e => console.warn('Abschnitt', e)));
+      }
+      res();
+    }; });
+    this.rec = rec;
+    if (this.onChunk) {
+      const len = this.chunkPlan[Math.min(index, this.chunkPlan.length - 1)];
+      clearTimeout(this.rotateT); this.rotateT = setTimeout(() => this._rotate(), len);
+    }
+  }
+  _rotate() {
+    if (!this.running || this.micYielded) return;
+    const old = this.rec;
+    this._startRecorder(); // neu starten, dann alt beenden: keine Lücke
+    try { old && old.state !== 'inactive' && old.stop(); } catch { }
   }
 
   // Bildschirm wach halten — sonst pausiert iOS Seite und Mikrofon, sobald das Telefon liegt.
@@ -236,15 +260,17 @@ export class Session {
     if (this.pending) { this.addSegment(this.pending, 'voice'); this.pending = ''; }
     signal.active = false; cancelAnimationFrame(this.raf);
     let blob = null;
+    clearTimeout(this.rotateT);
     if (this.rec && this.rec.state !== 'inactive') {
-      await new Promise(res => { this.rec.onstop = res; try { this.rec.requestData(); } catch { } this.rec.stop(); });
+      const r = this.rec; try { r.requestData(); } catch { } r.stop(); await r._done;
     }
-    if (this.chunks.length) blob = new Blob(this.chunks, { type: (this.rec && this.rec.mimeType) || 'audio/mp4' });
+    if (this.onChunk) await Promise.all(this.pendingChunks);
+    else if (this.chunks.length) blob = new Blob(this.chunks, { type: (this.rec && this.rec.mimeType) || 'audio/mp4' });
     this.stream && this.stream.getTracks().forEach(t => t.stop());
     try { await this.ctx.close(); } catch { }
     try { this.lock && await this.lock.release(); } catch { }
     setStatus({ mic: 'aus', speech: 'aus' });
-    return { blob, segments: this.segments, pitchLog: this.pitchLog, durationMs, speechAvailable: !!SR && !this.srBroken, reason: signal.status.reason };
+    return { blob, chunkCount: this.chunkIndex, segments: this.segments, pitchLog: this.pitchLog, durationMs, speechAvailable: !!SR && !this.srBroken, reason: signal.status.reason };
   }
 }
 

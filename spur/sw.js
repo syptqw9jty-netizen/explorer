@@ -1,5 +1,5 @@
 // Spur — Service Worker. Speichert nur die App selbst, niemals Inhalte. Funktioniert offline.
-const VERSION = 'spur-v5';
+const VERSION = 'spur-v6';
 const APP = ['./', 'index.html', 'manifest.webmanifest', 'assets/app.css', 'assets/js/app.js', 'assets/js/store.js', 'assets/js/crypto.js', 'assets/js/audio.js', 'assets/js/ai.js', 'assets/js/orb.js', 'assets/js/local-asr.js', 'assets/js/whisper-worker.js', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {

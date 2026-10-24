@@ -1,15 +1,15 @@
 {
   "name": "Spur",
   "short_name": "Spur",
-  "description": "Erzähl einfach. Ein verschlüsseltes Sprach-Tagebuch.",
+  "description": "Erzähl einfach. Ein Familienbuch, das mitschreibt.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",
   "id": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#07070d",
-  "theme_color": "#07070d",
+  "background_color": "#efe7d8",
+  "theme_color": "#efe7d8",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },

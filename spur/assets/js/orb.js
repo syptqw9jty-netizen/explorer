@@ -10,7 +10,9 @@ const HARM = [2, 3, 5, 7];
 const RINGS = 5;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-const PITCH_HUES = [[80, 30], [135, 14], [185, 342], [235, 300], [290, 248], [420, 196]];
+// Erdtöne: tiefe Stimmen Umbra/Terrakotta, mittlere Ocker, hohe Salbei bis Tintenblau
+const PITCH_HUES = [[80, 14], [140, 24], [190, 40], [240, 80], [300, 150], [420, 212]];
+const dark = matchMedia('(prefers-color-scheme: dark)');
 export function hueForPitch(f) {
   if (f <= PITCH_HUES[0][0]) return PITCH_HUES[0][1];
   for (let i = 1; i < PITCH_HUES.length; i++) if (f <= PITCH_HUES[i][0]) {
@@ -80,21 +82,23 @@ export function createOrb(canvas) {
     // Kern, mit Aufleuchten bei erkanntem Satz
     const fl = signal.flash || 0;
     const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * (0.5 + energy * 0.25 + fl * 0.15));
-    core.addColorStop(0, `hsla(${coreHue},90%,${74 + fl * 14}%,${0.2 + energy * 0.32 + fl * 0.35})`);
-    core.addColorStop(1, `hsla(${coreHue},90%,60%,0)`);
+    const D = dark.matches;
+    core.addColorStop(0, `hsla(${coreHue},${D ? 45 : 40}%,${D ? 55 : 62}%,${0.10 + energy * 0.22 + fl * 0.25})`);
+    core.addColorStop(1, `hsla(${coreHue},40%,60%,0)`);
     ctx.fillStyle = core; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
 
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.lineJoin = 'round';
+    ctx.globalCompositeOperation = D ? 'screen' : 'multiply';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     const breath = 0.5 + 0.5 * Math.sin(t * (0.9 - calm * 0.4));
     for (let k = 0; k < RINGS; k++) {
       const kick = Math.min(1.4, ringKick[k]);
       const base = R * (0.30 + k * 0.105) * (1 + energy * 0.05 + kick * 0.035);
       const hk = (ringHue[k] - think * 30 * Math.sin(t + k) + 360) % 360;
-      const alpha = 0.3 + 0.1 * (4 - k) / 4 + energy * 0.28 + kick * 0.3 - calm * 0.08;
-      ctx.strokeStyle = `hsla(${hk},88%,${66 + k * 3 + kick * 10}%,${Math.max(0.15, alpha)})`;
-      ctx.lineWidth = 1.1 + energy * 1.2 + kick * 1.4;
-      ctx.shadowColor = `hsla(${hk},92%,65%,0.85)`; ctx.shadowBlur = 8 + energy * 16 + kick * 14;
+      const alpha = 0.42 + 0.12 * (4 - k) / 4 + energy * 0.25 + kick * 0.25 - calm * 0.1;
+      const sat = 28 + energy * 25 + kick * 20, lig = D ? 68 + kick * 8 : 40 - kick * 6;
+      ctx.strokeStyle = `hsla(${hk},${sat}%,${lig}%,${Math.max(0.2, Math.min(0.95, alpha))})`;
+      ctx.lineWidth = 1.0 + energy * 1.3 + kick * 1.6;
+      ctx.shadowColor = `hsla(${hk},40%,${D ? 60 : 45}%,${D ? 0.6 : 0.25})`; ctx.shadowBlur = D ? 6 + energy * 10 : 2 + kick * 4;
       ctx.beginPath();
       const steps = 168;
       for (let i = 0; i <= steps; i++) {

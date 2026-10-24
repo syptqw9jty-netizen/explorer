@@ -139,71 +139,14 @@ export function composeLocal({ segments, settings, persons, createdAt, mode }) {
 // Netzwerkanfragen nie endlos warten lassen
 function timed(ms) { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; }
 
-// ---------- Pseudonymisierung ----------
-function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-export function makePseudonymizer(persons, extraNames = [], userName = '') {
-  const map = []; // [real, alias]
-  if (userName && userName.trim().length > 1) map.push([userName.trim(), '[Erzähler]']);
-  persons.forEach((p, i) => { if (p.name && p.name !== 'Ich') map.push([p.name, `[Person ${String.fromCharCode(65 + i)}]`]); });
-  extraNames.filter(Boolean).forEach((n, i) => map.push([n.trim(), `[Name ${i + 1}]`]));
-  const fwd = s => map.reduce((t, [real, alias]) => t.replace(new RegExp(`(?<![\\wÄÖÜäöüß])${escapeRe(real)}(?![\\wÄÖÜäöüß])`, 'gi'), alias), s);
-  const back = s => map.reduce((t, [real, alias]) => t.split(alias).join(real), s);
-  const aliasOf = p => (map.find(m => m[0] === p.name) || [null, p.name === 'Ich' ? 'Ich (Erzähler)' : p.name])[1];
-  return { fwd, back, aliasOf };
-}
-
-function toneText(v) {
-  if (v < 20) return 'sachlich und knapp, wie ein gutes Protokoll; keine Ausschmückung';
-  if (v < 45) return 'klar und warm, nüchtern im Kern, mit einem leisen erzählerischen Ton';
-  if (v < 70) return 'erzählerisch, mit Atmosphäre und Wärme, aber ohne Kitsch';
-  if (v < 88) return 'literarisch, bildhaft und poetisch, doch immer wahrhaftig';
-  return 'sehr poetisch, fast wie Prosa-Lyrik, ohne Fakten zu verändern';
-}
-const PERSPECTIVE = {
-  ich: 'aus der Ich-Perspektive des Erzählers (des Elternteils bzw. der Person, die spricht)',
-  brief: 'als Brief an die Person, für die der Eintrag ist ("Liebe/r …"), in der Du-Form',
-  dritte: 'in der dritten Person, wie eine ruhige Chronik'
-};
-const AUDIENCE = {
-  selbst: 'Leser ist der Erzähler selbst, als persönliches Tagebuch',
-  spaeter: 'Leser ist die Person, für die der Eintrag ist, wenn sie später erwachsen ist; der Text soll für sie verständlich und liebevoll sein'
-};
-
-export function buildPrompt({ segments, settings, persons, mode, createdAt }) {
-  const ps = makePseudonymizer(persons, settings.extraNames, settings.userName);
-  const s = settings.sensitive;
-  const rules = [
-    'Erfinde nichts. Jede Aussage muss aus dem Transkript belegbar sein.',
-    'Jeder Absatz nennt in "sources" die IDs der Transkript-Segmente, auf denen er beruht.',
-    'Keine Diagnosen, keine psychologischen Deutungen, keine Bewertungen von Personen.',
-    'Platzhalter wie [Person A] oder [Name 1] exakt so übernehmen, niemals Namen erfinden.',
-    s.health ? 'Gesundheit, Schlaf und Körperliches dürfen vorkommen, sachlich.' : 'Lass Gesundheitliches, Krankheit und Körperliches vollständig weg.',
-    s.emotions ? 'Starke Gefühle dürfen vorkommen, behutsam beschrieben.' : 'Beschreibe starke negative Gefühle nur sehr zurückhaltend.',
-    s.conflicts ? 'Konflikte dürfen vorkommen, fair und ohne Schuldzuweisung.' : 'Lass Streit und Konflikte weg.',
-    s.places ? 'Orte dürfen genannt werden.' : 'Nenne keine konkreten Adressen oder identifizierenden Orte; allgemein umschreiben ("auf dem Spielplatz").',
-    'Andere Menschen (Kita, Freunde, Familie) nur mit Rolle oder Platzhalter, keine Details über deren Privatleben.'
-  ];
-  const cats = ['entwicklung'].concat(s.health ? ['gesundheit', 'schlaf'] : []).concat(s.emotions ? ['gefuehle'] : []).concat(s.conflicts ? ['konflikt'] : []);
-  const system = `Du bist der Chronist von "Spur", einem privaten Sprach-Tagebuch. Aus einem gesprochenen Transkript machst du einen erzählerisch dokumentierten Tagebucheintrag: Du verwandelst das Gesagte in zusammenhängende Prosa, ordnest es chronologisch, lässt Füllwörter und Wiederholungen weg und setzt besonders schöne oder typische Aussagen (vor allem von Kindern) als wörtliche Zitate.
-Ton: ${toneText(settings.tone)}.
-Perspektive: ${PERSPECTIVE[settings.perspective] || PERSPECTIVE.ich}.
-Publikum: ${AUDIENCE[settings.audience] || AUDIENCE.selbst}.
-Sprache: Deutsch. Länge: dem Inhalt angemessen, eher kurz.
-Regeln:
-- ${rules.join('\n- ')}
-Zusätzlich sammelst du "observations": rein beschreibende Beobachtungen (was, wann, in welcher Situation) für ein späteres Gespräch, z. B. mit einer Ärztin. Nur Kategorien: ${cats.join(', ')}. Ohne Deutung.
-Antworte ausschließlich mit JSON in genau dieser Form:
-{"title": "kurzer Titel (max. 6 Wörter)", "versions": [{"for": "<Platzhalter der Person>", "paragraphs": [{"text": "…", "sources": ["s1"]}]}], "topics": ["…"], "observations": [{"category": "${cats[0]}", "segment": "s3", "description": "…"}]}`;
-  const forList = persons.map(p => ps.aliasOf(p)).join(', ');
-  const kidsOnly = persons.filter(p => p && !p.self);
-  const voiceHint = segments.some(x => x.who === 'Hohe Stimme') ? `\nHinweis: "Tiefe Stimme" ist vermutlich der Erzähler${kidsOnly.length === 1 ? `, "Hohe Stimme" vermutlich ${ps.aliasOf(kidsOnly[0])}` : ''}.` : '';
-  const transcript = segments.map(x => `${x.id}${x.speaker === 'frage' ? ' (Frage der App)' : x.who ? ` (${x.who})` : ''}: ${ps.fwd(x.text)}`).join('\n');
-  const user = `Datum: ${new Date(createdAt).toLocaleString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-Modus: ${mode === 'raum' ? 'Gespräch im Raum, mehrere Stimmen (Stimme 1/2 = automatisch getrennte Sprecher; ordne sie nur zu, wenn es aus dem Inhalt eindeutig ist)' : mode === 'interview' ? 'Interview, die App stellt Fragen' : 'eine Person erzählt'}
-Erstelle je eine Version für: ${forList}
-Transkript:${voiceHint}
-${transcript}`;
-  return { system, user, ps };
+// ---------- Modelle ----------
+// Hören: Mistral Voxtral (Sprechertrennung, leise Stimmen, Kinder). Schreiben: Claude (bestes Deutsch, langer Kontext).
+export const MODELS = { listen: 'voxtral-mini-latest', claude: 'claude-sonnet-5-5', mistral: 'mistral-large-latest' };
+export function writerOf(settings) {
+  const k = settings.keys || {};
+  if (k.anthropic) return 'anthropic';
+  if (k.mistral) return 'mistral';
+  return null;
 }
 
 function extractJSON(text) {
@@ -212,81 +155,168 @@ function extractJSON(text) {
   return JSON.parse(text.slice(a, b + 1));
 }
 
-export async function callModel(settings, system, user, { json = true, maxTokens = 3000 } = {}) {
-  const ai = settings.ai;
-  if (ai.provider === 'mistral') {
+export async function callModel(settings, system, user, { json = true, maxTokens = 3000, timeout = 120000 } = {}) {
+  const w = writerOf(settings); const k = settings.keys || {};
+  if (w === 'anthropic') {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', signal: timed(timeout),
+      headers: { 'Content-Type': 'application/json', 'x-api-key': k.anthropic, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: settings.writerModel || MODELS.claude, max_tokens: maxTokens, system, messages: [{ role: 'user', content: user }] })
+    });
+    if (!r.ok) throw new Error('Claude: ' + r.status + ' ' + (await r.text()).slice(0, 160));
+    const j = await r.json(); return j.content.map(c => c.text || '').join('');
+  }
+  if (w === 'mistral') {
     const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
-      method: 'POST', signal: timed(90000), headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ai.key },
-      body: JSON.stringify({ model: ai.model || 'mistral-large-latest', temperature: 0.5, max_tokens: maxTokens,
+      method: 'POST', signal: timed(timeout), headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + k.mistral },
+      body: JSON.stringify({ model: MODELS.mistral, temperature: 0.5, max_tokens: maxTokens,
         ...(json ? { response_format: { type: 'json_object' } } : {}),
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }] })
     });
     if (!r.ok) throw new Error('Mistral: ' + r.status + ' ' + (await r.text()).slice(0, 160));
     return (await r.json()).choices[0].message.content;
   }
-  if (ai.provider === 'anthropic') {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', signal: timed(90000),
-      headers: { 'Content-Type': 'application/json', 'x-api-key': ai.key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: ai.model || 'claude-sonnet-5-5', max_tokens: maxTokens, system, messages: [{ role: 'user', content: user }] })
-    });
-    if (!r.ok) throw new Error('Anthropic: ' + r.status + ' ' + (await r.text()).slice(0, 160));
-    const j = await r.json(); return j.content.map(c => c.text || '').join('');
-  }
-  throw new Error('Keine KI eingerichtet');
+  throw new Error('Kein Schlüssel für das Schreiben hinterlegt');
+}
+
+// ---------- Erzählweise ----------
+export function toneText(v) {
+  if (v < 15) return 'Dokumentation: nüchtern, präzise, chronologisch. Kurze klare Sätze, keine Ausschmückung, keine Wertung.';
+  if (v < 40) return 'Dokumentierend mit Wärme: genau und klar, aber lebendig. Kleine Details und O-Töne dürfen bleiben.';
+  if (v < 65) return 'Erzählerisch-dokumentarisch: wie ein gutes Tagebuch. Szenen, Übergänge und Atmosphäre – alles aus dem Gesagten.';
+  if (v < 85) return 'Erzählerisch: wie eine kleine Familiengeschichte, mit Bogen, Bildern und Rhythmus – jedes Detail belegt.';
+  return 'Literarisch erzählt: dicht, bildhaft, mit eigener Sprache – aber ohne Erfundenes.';
+}
+const PERSPECTIVE = {
+  ich: 'Ich-Perspektive des Erzählers (die Person, die das Tagebuch führt).',
+  brief: 'Als Brief an die Person, für die die Version ist, in der Du-Form. Für den Erzähler selbst: Ich-Perspektive.',
+  dritte: 'Dritte Person, wie eine ruhige Familienchronik.'
+};
+const AUDIENCE = {
+  selbst: 'Der Erzähler selbst liest es als persönliches Tagebuch.',
+  spaeter: 'Die Person, für die die Version ist, liest es später als Erwachsene/r. Verständlich, liebevoll, mit nötigem Kontext.'
+};
+export const KNOWLEDGE_TYPES = { person: 'Menschen', ort: 'Orte', wort: 'Wörter & Ausdrücke', ritual: 'Rituale & Gewohnheiten', vorliebe: 'Vorlieben', ereignis: 'Ereignisse', sonstiges: 'Sonstiges' };
+
+function knowledgeText(kn) {
+  if (!kn || !kn.length) return '(noch nichts)';
+  return kn.slice(-150).map(x => `- ${KNOWLEDGE_TYPES[x.type] || x.type}: ${x.key} — ${x.value}`).join('\n');
+}
+
+export function buildPrompt({ segments, settings, persons, mode, createdAt, knowledge = [] }) {
+  const s = settings.sensitive || {};
+  const me = settings.userName || 'der Erzähler';
+  const cats = ['entwicklung'].concat(s.health ? ['gesundheit', 'schlaf'] : []).concat(s.emotions ? ['gefuehle'] : []).concat(s.conflicts ? ['konflikt'] : []);
+  const rules = [
+    'Erfinde nichts. Jede Aussage muss aus dem Transkript oder dem bekannten Wissen belegbar sein. Wissen nur als Kontext nutzen, nicht nacherzählen.',
+    'Jeder Absatz und jedes Zitat nennt in "sources" die Segment-IDs, auf denen es beruht.',
+    'Arbeite heraus, was zählt: Neues, Bewegendes, Lustiges, Wiederkehrendes und Bedeutsames bekommt Raum (bei längeren Texten mit kurzen Zwischenüberschriften). Alltägliches und Leerlauf werden knapp zusammengefasst oder weggelassen.',
+    'Typische oder besonders schöne Sätze – vor allem von Kindern – als wörtliches Zitat ("quote") mit Sprecher. Zitate behutsam glätten, Kindersprache aber erhalten.',
+    'Hat die Spracherkennung offensichtlich falsch gehört (Namen, Kinderwörter, Orte laut Wissen oder Zusammenhang), korrigiere es in der Erzählung und liste es unter "corrections". Bei echter Unsicherheit nicht raten, sondern neutral formulieren.',
+    'Keine Diagnosen, keine psychologischen Deutungen, keine Bewertungen von Personen.',
+    s.health ? 'Gesundheit und Schlaf dürfen sachlich vorkommen.' : 'Gesundheitliches und Körperliches weglassen.',
+    s.conflicts ? 'Konflikte fair und ohne Schuldzuweisung.' : 'Streit und Konflikte weglassen oder nur andeuten.',
+    'Stimme: Schreibe so, dass sich der Erzähler wiedererkennt. Übernimm Wortwahl, Satzlänge, Humor und Anredeformen aus seinem Stilprofil und seinen eigenen Worten im Transkript.'
+  ];
+  const system = `Du bist der Chronist von "Spur", einem Familienbuch, das mitschreibt. Aus gesprochener Sprache – oft lange, ungeordnete Gespräche im Raum – machst du einen Eintrag, der sich liest wie eine Seite aus einem guten Tagebuch: dokumentiert, wahr, erzählt.
+Erzählweise: ${toneText(settings.tone ?? 40)}
+Perspektive: ${PERSPECTIVE[settings.perspective] || PERSPECTIVE.ich}
+Leser: ${AUDIENCE[settings.audience] || AUDIENCE.selbst}
+Sprache: Deutsch, neue Rechtschreibung, typografische Anführungszeichen „…“.
+Regeln:
+- ${rules.join('\n- ')}
+
+Antworte ausschließlich mit JSON:
+{"title":"Titel, max. 6 Wörter, konkret statt allgemein",
+ "lead":"ein bis zwei Sätze, die den Kern des Eintrags fassen",
+ "versions":[{"for":"<Name>","paragraphs":[{"type":"h","text":"Zwischenüberschrift"},{"type":"p","text":"…","sources":["s1","s2"]},{"type":"quote","text":"…","who":"<Name>","sources":["s3"]}]}],
+ "highlights":[{"text":"der eine Moment, in einem Satz","sources":["s3"]}],
+ "topics":["max. 6 Schlagworte"],
+ "observations":[{"category":"${cats[0]}","segment":"s3","description":"rein beschreibend: was, wann, in welcher Situation"}],
+ "knowledge":[{"type":"person|ort|wort|ritual|vorliebe|ereignis|sonstiges","key":"kurz","value":"was man wissen sollte"}],
+ "corrections":[{"segment":"s5","from":"falsch gehört","to":"richtig"}],
+ "voice_profile":"aktualisiertes Stilprofil"}
+Hinweise: "observations" nur Kategorien ${cats.join(', ')}; für ein späteres Gespräch, etwa mit einer Ärztin. "knowledge" nur NEUE, dauerhaft nützliche Fakten, die noch nicht im Wissen stehen (oder Änderungen). "voice_profile": Stilprofil von ${me} (max. 600 Zeichen: Wortwahl, typische Wendungen, Satzlänge, Humor, Kosenamen, Dialekt). Aktualisiere es nur, wenn genug eigene Sprache von ${me} vorkommt, sonst gib das bisherige unverändert zurück.`;
+  const kids = persons.filter(p => p && !p.self);
+  const names = persons.map(p => p.self ? (settings.userName || 'Ich (Erzähler)') : p.name);
+  const label = x => x.speaker === 'frage' ? 'Frage der App' : x.speaker === 'notiz' ? 'Notiz' : x.who ? (x.who === 'Tiefe Stimme' ? `${x.who} – vermutlich ${me}` : x.who === 'Hohe Stimme' && kids.length === 1 ? `${x.who} – vermutlich ${kids[0].name}` : x.who) : '';
+  const fmt = ms => { const m = Math.floor(ms / 60000), sec = Math.floor(ms / 1000) % 60; return `${m}:${String(sec).padStart(2, '0')}`; };
+  const transcript = segments.map(x => `${x.id} [${fmt(x.t || 0)}]${label(x) ? ' (' + label(x) + ')' : ''}: ${x.text}`).join('\n');
+  const user = `Datum: ${new Date(createdAt).toLocaleString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+Situation: ${mode === 'raum' ? 'Telefon lag im Raum, Familie im Gespräch. Mehrere Stimmen, oft durcheinander.' : mode === 'interview' ? 'Interview: Die App hat Fragen gestellt.' : mode === 'notiz' ? 'Geschriebene Notiz.' : 'Eine Person erzählt.'}
+Erzähler: ${settings.userName || 'unbekannt'}. Beteiligte: ${names.join(', ')}.
+Versionen schreiben für: ${names.join(', ')}
+
+Bekanntes Wissen über die Familie:
+${knowledgeText(knowledge)}
+
+Stilprofil des Erzählers:
+${settings.voiceProfile || '(noch keins – leite es aus seinen Worten ab)'}
+
+Transkript:
+${transcript}`;
+  return { system, user };
 }
 
 export async function composeAI(ctx) {
-  const { system, user, ps } = buildPrompt(ctx);
-  const raw = await callModel(ctx.settings, system, user);
+  const { system, user } = buildPrompt(ctx);
+  const long = ctx.segments.length > 120;
+  const raw = await callModel(ctx.settings, system, user, { maxTokens: long ? 12000 : 6000, timeout: long ? 300000 : 150000 });
   const j = extractJSON(raw);
   const validIds = new Set(ctx.segments.map(s => s.id));
-  const aliasToId = {}; ctx.persons.forEach(p => { aliasToId[ps.aliasOf(p)] = p.id; });
+  const keep = ids => (ids || []).filter(id => validIds.has(id));
+  const nameToId = {}; ctx.persons.forEach(p => { nameToId[(p.self ? (ctx.settings.userName || 'Ich') : p.name).toLowerCase()] = p.id; if (p.self) nameToId['ich'] = p.id; });
   const versions = (j.versions || []).map((v, i) => ({
-    for: aliasToId[v.for] || (ctx.persons[i] || ctx.persons[0]).id,
-    paragraphs: (v.paragraphs || []).map(p => ({ text: ps.back(String(p.text || '')), sources: (p.sources || []).filter(id => validIds.has(id)) }))
-  }));
+    for: nameToId[String(v.for || '').toLowerCase().replace(/ \(.*\)$/, '')] || (ctx.persons[i] || ctx.persons[0]).id,
+    paragraphs: (v.paragraphs || []).map(p => {
+      const t = String(p.text || '').trim(); if (!t) return null;
+      if (p.type === 'h') return { heading: true, text: t, sources: [] };
+      if (p.type === 'quote') return { quote: true, text: t.replace(/^[„"»]|[“"«]$/g, ''), who: p.who || '', sources: keep(p.sources) };
+      return { text: t, sources: keep(p.sources) };
+    }).filter(Boolean)
+  })).filter(v => v.paragraphs.length);
   return {
-    title: ps.back(String(j.title || defaultTitle(new Date(ctx.createdAt)))),
+    title: String(j.title || defaultTitle(new Date(ctx.createdAt))),
+    lead: String(j.lead || ''),
     versions: versions.length ? versions : composeLocal(ctx).versions,
-    topics: (j.topics || []).map(t => ps.back(String(t))).slice(0, 6),
-    observations: (j.observations || []).filter(o => CATS[o.category]).map(o => ({ category: o.category, segment: validIds.has(o.segment) ? o.segment : null, description: ps.back(String(o.description || '')) })),
-    composer: ctx.settings.ai.provider
+    highlights: (j.highlights || []).map(x => ({ text: String(x.text || ''), sources: keep(x.sources) })).filter(x => x.text).slice(0, 5),
+    topics: (j.topics || []).map(String).slice(0, 6),
+    observations: (j.observations || []).filter(o => CATS[o.category]).map(o => ({ category: o.category, segment: validIds.has(o.segment) ? o.segment : null, description: String(o.description || '') })),
+    knowledge: (j.knowledge || []).filter(x => x && x.key && x.value).map(x => ({ type: KNOWLEDGE_TYPES[x.type] ? x.type : 'sonstiges', key: String(x.key).trim(), value: String(x.value).trim() })),
+    corrections: (j.corrections || []).filter(c => c && validIds.has(c.segment) && c.from && c.to),
+    voiceProfile: typeof j.voice_profile === 'string' ? j.voice_profile.trim().slice(0, 800) : '',
+    composer: writerOf(ctx.settings)
   };
 }
 
 export async function followUpQuestion(settings, persons, recent) {
-  const ps = makePseudonymizer(persons, settings.extraNames, settings.userName);
-  const system = 'Du führst ein behutsames Abend-Interview für ein Tagebuch. Stelle genau EINE kurze, offene Nachfrage auf Deutsch (max. 14 Wörter), die an das Gesagte anknüpft. Keine Ratschläge, keine Deutung. Nur die Frage, ohne Anführungszeichen.';
-  const out = await callModel(settings, system, recent.map(s => ps.fwd(s.text)).join('\n'), { json: false, maxTokens: 60 });
-  return ps.back(out.trim().split('\n')[0].replace(/^["„»]|["“«]$/g, ''));
+  const system = 'Du führst ein behutsames Gespräch für ein Familientagebuch. Stelle genau EINE kurze, offene Nachfrage auf Deutsch (max. 14 Wörter), die an das Gesagte anknüpft. Keine Ratschläge, keine Deutung. Nur die Frage.';
+  const out = await callModel(settings, system, recent.map(s => s.text).join('\n'), { json: false, maxTokens: 60, timeout: 20000 });
+  return out.trim().split('\n')[0].replace(/^["„»]|["“«]$/g, '');
 }
 
-// Fallback: Transkription der Aufnahme über Mistral (Voxtral), wenn das Gerät keine Spracherkennung liefert.
-export async function transcribeRemote(settings, blob, keep = []) {
-  if (settings.ai.provider !== 'mistral' || !settings.ai.key) throw new Error('Genaue Verschriftlichung braucht Mistral (EU) mit Schlüssel');
+// ---------- Hören: Voxtral ----------
+// Liefert rohe Teile mit Zeit (relativ zur Datei) und Sprecher-ID der Datei.
+export async function transcribeVoxtral(settings, blob) {
+  const key = (settings.keys || {}).mistral;
+  if (!key) throw new Error('Für genaues Hören fehlt der Mistral-Schlüssel');
   const fd = new FormData();
-  fd.append('model', 'voxtral-mini-latest');
+  fd.append('model', MODELS.listen);
   fd.append('timestamp_granularities', 'segment');
   fd.append('diarize', 'true');
   fd.append('file', blob, 'aufnahme.' + (blob.type.includes('webm') ? 'webm' : 'm4a'));
-  const r = await fetch('https://api.mistral.ai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: 'Bearer ' + settings.ai.key }, body: fd, signal: timed(300000) });
-  if (!r.ok) throw new Error('Verschriftlichung: ' + r.status + ' ' + (await r.text()).slice(0, 120));
+  const r = await fetch('https://api.mistral.ai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: 'Bearer ' + key }, body: fd, signal: timed(300000) });
+  if (!r.ok) throw new Error('Hören (Mistral): ' + r.status + ' ' + (await r.text()).slice(0, 120));
   const j = await r.json();
-  const speakers = {};
-  const label = s => { const k = s.speaker_id ?? s.speaker ?? s.speaker_label; if (k === undefined || k === null) return null; if (!(k in speakers)) speakers[k] = 'Stimme ' + (Object.keys(speakers).length + 1); return speakers[k]; };
-  const parts = (j.segments && j.segments.length ? j.segments.map(s => ({ text: s.text, t: Math.round((s.start || 0) * 1000), who: label(s) }))
-    : String(j.text || '').split(/(?<=[.!?])\s+/).map((text, i) => ({ text, t: i * 4000, who: null })));
-  // gleiche Stimme direkt hintereinander zusammenfassen
-  const merged = [];
-  parts.filter(p => p.text && p.text.trim()).forEach(p => {
-    const last = merged[merged.length - 1];
-    if (last && last.who === p.who && p.t - last.t < 15000 && last.text.length < 260) last.text += ' ' + p.text.trim();
-    else merged.push({ t: p.t, text: p.text.trim(), who: p.who });
-  });
-  // Interviewfragen der App an ihrer Zeitstelle erhalten
-  const all = merged.map(p => ({ ...p, speaker: 'voice' })).concat(keep.map(k => ({ ...k }))).sort((a, b) => a.t - b.t);
-  return all.map((p, i) => { const o = { id: 's' + (i + 1), t: p.t, text: p.text, speaker: p.speaker }; if (p.who && Object.keys(speakers).length > 1) o.who = p.who; return o; });
+  const segs = j.segments && j.segments.length ? j.segments : [{ text: j.text || '', start: 0, end: 0 }];
+  return segs.map(x => ({ text: String(x.text || '').trim(), t: Math.round((x.start || 0) * 1000), tEnd: Math.round((x.end || x.start || 0) * 1000), spk: x.speaker_id ?? x.speaker ?? x.speaker_label ?? null })).filter(x => x.text);
+}
+
+// Kompatibel für ganze Aufnahmen (z. B. „Neu verschriftlichen“)
+export async function transcribeRemote(settings, blob, keep = []) {
+  const parts = await transcribeVoxtral(settings, blob);
+  const all = parts.map(p => ({ t: p.t, text: p.text, speaker: 'voice' })).concat(keep).sort((a, b) => a.t - b.t);
+  return all.map((p, i) => ({ id: 's' + (i + 1), t: p.t, text: p.text, speaker: p.speaker }));
 }
 
 // Interviewfragen ohne KI — ruhig, offen, für Erwachsene und für den Abend mit Kind.

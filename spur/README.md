@@ -1,36 +1,24 @@
-# Spur — MVP
+# Spur
 
-Erzähl einfach. Spur hört zu und macht daraus ein Tagebuch, für dich und die Menschen, die dir wichtig sind.
+Ein Familienbuch, das mitschreibt. Diktat an, Telefon hinlegen, leben – Spur hört zu und erzählt daraus Seiten, die sich lesen wie ein gutes Tagebuch.
 
-## Architektur
+## Ablauf
+1. **Erzählen** – Modus *Raum* (lange Familiengespräche), *Erzählen* (eine Person) oder *Interview* (Spur fragt).
+2. **Hören** – die Aufnahme läuft in Abschnitten (erst 45 s, dann je 2,5 min). Jeder Abschnitt wird verschlüsselt gesichert und sofort verschriftlicht. Text erscheint schon während des Zuhörens; ein Absturz verliert höchstens den laufenden Abschnitt.
+3. **Stimmen** – Voxtral trennt Sprecher je Abschnitt; Spur ordnet sie über die mitgeschriebene Tonhöhe abschnittsübergreifend zu (tiefe/hohe Stimme → Erzähler/Kind).
+4. **Schreiben** – Claude macht aus dem Transkript eine Seite: Titel, Lead, Absätze, Zwischenüberschriften, Zitate, Höhepunkte. Erzählweise per Regler von *sachlich* bis *erzählerisch*.
+5. **Lernen** – jede Seite liefert neues **Wissen** (Menschen, Orte, Kinderwörter, Rituale …) und schreibt die **Erzählstimme** fort. Beides fließt in jede weitere Seite: richtige Schreibweisen, Kontext, Korrekturen von Fehlhörern, ein Ton, in dem man sich wiedererkennt.
+6. **Buch** – Kapitel nach Monaten, Suche, Höhepunkte, Beobachtungsprotokoll. *Als Buch drucken* erzeugt ein A5-Buch mit Titelseite (Druck → PDF → Print on Demand).
 
-**Reine Client-App (PWA)**, gehostet als statische Seite auf GitHub Pages. Kein Server, kein Konto.
+## Modelle
+| Aufgabe | Modell | Warum |
+|---|---|---|
+| Hören | Mistral **Voxtral Mini Transcribe** | Sprechertrennung, leise Stimmen, Kinder, Deutsch |
+| Schreiben, Wissen, Stimme | **Claude Sonnet** (wählbar) | bestes Deutsch, langer Kontext für Stunden an Gespräch |
+| Ohne Schlüssel | Live-Diktat / Whisper auf dem Gerät + lokale Ordnung | funktioniert, aber ohne Umformulierung |
 
-| Schicht | Umsetzung |
-|---|---|
-| Schlüssel | Passcode → PBKDF2-SHA-256 (310 000 Runden) → AES-GCM-256, nur im Arbeitsspeicher |
-| Speicher | IndexedDB, jeder Datensatz einzeln verschlüsselt (Einträge, Einstellungen, Audio) |
-| Aufnahme | MediaRecorder (Audio, verschlüsselt gespeichert, abschaltbar) + Web Audio Analyser für die Klangkugel |
-| Transkription | Web Speech API des Geräts (bei Apple teils über Apple-Server); Fallback: Mistral Voxtral (EU), nur auf Wunsch |
-| Quelle der Wahrheit | Rohtranskript in Segmenten mit Zeitstempel, unverändert |
-| Erzählung | abgeleitet; jeder Absatz verweist auf seine Segmente (antippen zeigt das Gesagte) |
-| KI (optional) | Mistral (EU) oder Claude, eigener API-Schlüssel, direkt aus dem Browser. Namen werden vorher durch Platzhalter ersetzt, nur Text wird gesendet |
-| Ohne KI | lokale Ordnung in Absätze, Themen, Stichwort-Beobachtungen |
-| Beobachtungen | rein beschreibendes Protokoll (Gesundheit, Schlaf, Gefühle, Entwicklung, Konflikt), je nach Einstellung, teilbar fürs Arztgespräch |
-| Schutz | Content-Security-Policy erlaubt nur die eigene Seite und die zwei KI-Endpunkte; Auto-Sperre; verschlüsselte Sicherung |
+## Technik
+Statische PWA (GitHub Pages), IndexedDB mit AES-GCM-256 (Schlüssel aus Passcode), Bildschirm-Wachhaltung, Ruhemodus, Service Worker offline. Schlüssel für Mistral und Claude liegen verschlüsselt auf dem Gerät und gehen direkt an den jeweiligen Anbieter.
 
-## Modi
-- **Erzählen** — frei sprechen
-- **Raum** — Telefon hinlegen, Gespräch mitschreiben
-- **Interview** — Spur stellt Fragen per Sprachausgabe, nächste Frage nach Stille (mit KI: Nachfragen)
-
-## Grenzen des MVP
-- iOS-Spracherkennung im Home-Bildschirm-Modus kann je nach iOS-Version eingeschränkt sein; die Aufnahme läuft dann trotzdem.
-- Keine Sprechertrennung, kein Druck, kein Teilen zwischen Geräten (kommt mit der nativen App / Sync-Schicht).
-- Passcode vergessen = Daten weg. Das ist Absicht.
-
-## Nächste Schritte
-1. Face ID per Passkey (WebAuthn PRF) statt Passcode
-2. Geräte-Sync Ende-zu-Ende verschlüsselt
-3. Native iOS-App (SwiftUI, On-Device-Transkription mit SpeechAnalyzer)
-4. Jahresband als Druck, mit QR-Codes zur echten Stimme
+## Gestaltung
+Papier, Sepia-Tinte, warmes Licht. Buchschrift (Iowan Old Style / Palatino), Kapitälchen für Auszeichnungen, Initiale, Zitate mit Ockerlinie. Dieselbe Typografie in App und Druck, damit ein gedrucktes Jahr aussieht wie die App.
