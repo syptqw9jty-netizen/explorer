@@ -1,6 +1,6 @@
 // Spur — Service Worker. Speichert nur die App selbst, niemals Inhalte. Funktioniert offline.
-const VERSION = 'spur-v3';
-const APP = ['./', 'index.html', 'manifest.webmanifest', 'assets/app.css', 'assets/js/app.js', 'assets/js/store.js', 'assets/js/crypto.js', 'assets/js/audio.js', 'assets/js/ai.js', 'assets/js/orb.js', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
+const VERSION = 'spur-v4';
+const APP = ['./', 'index.html', 'manifest.webmanifest', 'assets/app.css', 'assets/js/app.js', 'assets/js/store.js', 'assets/js/crypto.js', 'assets/js/audio.js', 'assets/js/ai.js', 'assets/js/orb.js', 'assets/js/local-asr.js', 'assets/js/whisper-worker.js', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => Promise.all(APP.map(u => fetch(u, { cache: 'reload' }).then(r => r.ok && c.put(u, r))))).then(() => self.skipWaiting()));

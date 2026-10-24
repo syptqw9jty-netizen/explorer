@@ -234,3 +234,17 @@ textarea.note{width:100%;min-height:42vh;border-radius:22px;padding:18px;border:
 @media (min-width:900px){.view{padding-top:96px}.stage{width:min(380px,46vh)}}
 
 .raw .who{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+
+/* Erzählen: kein Scrollen, alles passt sich der Höhe an */
+#v-heute{overflow:hidden;padding-bottom:calc(var(--sab) + 92px)}
+body.rec #v-heute{padding-bottom:calc(var(--sab) + 18px)}
+#v-heute .today{height:100%;min-height:0}
+#v-heute .today>*{flex:none}
+.stagebox{flex:1 1 auto!important;min-height:120px;width:100%;container-type:size;display:grid;place-items:center}
+#v-heute .stage{width:min(92cqw,92cqh,400px);margin:0}
+.question:empty{display:none}
+.question{min-height:0;margin-bottom:4px}
+#v-heute .greet{margin:4px 0 12px}
+#v-heute .live{min-height:2.8em}
+@media (max-height:700px){#v-heute .greet{font-size:25px;margin:2px 0 8px}#v-heute .forrow{margin:8px 0 0}#v-heute .hint{display:none}#v-heute .question{font-size:20px}#v-heute .live{min-height:2.6em;max-height:2.9em}}
+.btn{white-space:nowrap}

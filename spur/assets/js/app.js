@@ -3,6 +3,7 @@ import * as store from './store.js';
 import { Session, speak, speechSupported, ttsSupported, signal } from './audio.js';
 import { composeLocal, composeAI, followUpQuestion, transcribeRemote, QUESTIONS, CATEGORY_LABELS, dayPart } from './ai.js';
 import { createOrb } from './orb.js';
+import { transcribeLocal, preload, onProgress, MODEL_SIZE } from './local-asr.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -174,7 +175,7 @@ function renderToday() {
     <div class="seg glass pill" role="radiogroup" id="modes">${MODES.map(([k, l]) => `<button data-m="${k}" class="${st.mode === k ? 'on' : ''}" role="radio" aria-checked="${st.mode === k}">${l}</button>`).join('')}</div>
     <div class="forrow" id="forrow"><span class="lbl">für</span>${st.persons.map(p => `<button class="chip glass ${st.lastFor.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${h(p.self ? (st.userName || 'Mich') : p.name)}</button>`).join('')}</div>
     <div class="question" id="question" aria-live="polite"></div>
-    <div class="stage"><button class="orb" id="orb" aria-label="Aufnahme starten"><div class="sphere"></div><canvas></canvas><span class="label" id="orblabel">Tippen zum ${st.mode === 'interview' ? 'Beginnen' : 'Erzählen'}</span><i class="ring-hint"></i></button></div>
+    <div class="stagebox"><div class="stage"><button class="orb" id="orb" aria-label="Aufnahme starten"><div class="sphere"></div><canvas></canvas><span class="label" id="orblabel">Tippen zum ${st.mode === 'interview' ? 'Beginnen' : 'Erzählen'}</span><i class="ring-hint"></i></button></div></div>
     <div class="live" id="live" aria-live="polite"></div><div class="status" id="status"></div>
     <div class="controls idle" id="controls"><div class="hint" id="hint">${MODE_HINT[st.mode]}</div><button class="link" id="note">${icon('pen')} Etwas aufschreiben</button></div>
   </div>`;
@@ -265,7 +266,12 @@ async function discard() {
   const s = S.session; S.session = null; endUI(); await s.stop(); renderToday();
 }
 
-const postOn = () => S.settings.ai.provider === 'mistral' && !!S.settings.ai.key && S.settings.postTranscribe !== false;
+const postMode = () => {
+  const t = S.settings.transcriber || (S.settings.ai.provider === 'mistral' && S.settings.ai.key && S.settings.postTranscribe !== false ? 'mistral' : 'live');
+  if (t === 'mistral' && !(S.settings.ai.provider === 'mistral' && S.settings.ai.key)) return null;
+  return t === 'live' ? null : t;
+};
+const postOn = () => !!postMode();
 const personsFor = () => S.settings.lastFor.map(id => S.settings.persons.find(p => p.id === id)).filter(Boolean);
 
 async function finish() {
@@ -278,12 +284,25 @@ async function finish() {
     personIds: [...S.settings.lastFor], segments: res.segments, hasAudio: !!res.blob, reason: res.reason || ''
   };
   const voice = res.segments.filter(x => x.speaker !== 'frage');
-  if (res.blob && (postOn() || (!voice.length && S.settings.ai.provider === 'mistral' && S.settings.ai.key))) {
+  const pm = postMode();
+  if (res.blob && pm) {
+    const keep = res.segments.filter(x => x.speaker === 'frage');
     try {
-      $('#orblabel').innerHTML = 'Wird genau verschriftlicht …';
-      const segs = await transcribeRemote(S.settings, res.blob, res.segments.filter(x => x.speaker === 'frage'));
-      if (segs.some(x => x.speaker === 'voice')) { entry.segments = segs; entry.transcribedBy = 'voxtral'; }
-    } catch (e) { toast('Genaue Verschriftlichung nicht möglich, Live-Text bleibt.'); entry.reason = e.message; }
+      let segs;
+      if (pm === 'local') {
+        const lbl = $('#orblabel');
+        onProgress(p => { if (!lbl) return; lbl.innerHTML = p.phase === 'download' ? `Lade Sprachmodell<b>${Math.round(p.ratio * 100)} %</b>` : p.phase === 'working' ? 'Verschriftlicht auf dem Gerät …' : 'Sprachmodell bereit …'; });
+        lbl.innerHTML = 'Bereite Verschriftlichung vor …';
+        segs = await transcribeLocal(res.blob, { quality: S.settings.localQuality || 'genau', pitchLog: res.pitchLog, keep });
+      } else {
+        $('#orblabel').innerHTML = 'Wird genau verschriftlicht …';
+        segs = await transcribeRemote(S.settings, res.blob, keep);
+      }
+      if (segs.some(x => x.speaker === 'voice')) { entry.segments = segs; entry.transcribedBy = pm === 'local' ? 'whisper' : 'voxtral'; }
+      else if (!voice.length) entry.reason = 'Auch die genaue Verschriftlichung hat keinen Text gefunden.';
+    } catch (e) { console.warn(e); toast('Genaue Verschriftlichung nicht möglich, Live-Text bleibt.'); entry.reason = (pm === 'local' ? 'Auf dem Gerät: ' : '') + e.message; }
+  } else if (res.blob && !voice.length && S.settings.ai.provider === 'mistral' && S.settings.ai.key) {
+    try { entry.segments = await transcribeRemote(S.settings, res.blob, []); entry.transcribedBy = 'voxtral'; } catch (e) { entry.reason = e.message; }
   }
   if (res.blob && S.settings.keepAudio) await store.saveAudio(S.key, entry.id, res.blob); else entry.hasAudio = false;
   await compose(entry);
@@ -400,7 +419,7 @@ function openEntry(id) {
     const v = versions[ver] || versions[0] || { paragraphs: [] };
     let html = `<div class="wrap"><div class="entry-date">${fmtDate(e.createdAt, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${new Date(e.createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</div>
       <h2 class="entry-title" id="etitle">${h(e.title || 'Ohne Titel')}</h2>
-      <div class="badge">${e.composer && e.composer !== 'lokal' ? icon('spark') + ' erzählt mit KI' : 'lokal geordnet'}${e.durationMs ? ' · ' + fmtTime(e.durationMs) : ''}</div>
+      <div class="badge">${e.composer && e.composer !== 'lokal' ? icon('spark') + ' erzählt mit KI' : 'lokal geordnet'}${e.transcribedBy === 'whisper' ? ' · auf dem Gerät verschriftlicht' : e.transcribedBy === 'voxtral' ? ' · verschriftlicht mit Mistral' : ''}${e.durationMs ? ' · ' + fmtTime(e.durationMs) : ''}</div>
       ${e.hasAudio ? `<div class="player glass pill" id="player"><button class="pp" id="pp" aria-label="Abspielen">${icon('play')}</button><div class="track"><i id="prog"></i></div><small id="ptime">${fmtTime(e.durationMs)}</small></div>` : '<div style="height:18px"></div>'}
       <div class="seg glass pill small" id="etabs">${[['erzaehlung', 'Erzählung'], ['original', 'Original'], ['obs', 'Beobachtungen']].map(([k, l]) => `<button data-t="${k}" class="${tab === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
     if (versions.length > 1 && tab === 'erzaehlung') html += `<div class="forrow" style="justify-content:flex-start"><span class="lbl">Version für</span>${versions.map((x, i) => `<button class="chip glass ${i === ver ? 'on' : ''}" data-v="${i}">${h(x.for === 'me' ? (st.userName || 'Mich') : personName(x.for))}</button>`).join('')}</div>`;
@@ -580,8 +599,14 @@ function openSettings() {
       <div class="row"><span class="k">Anbieter<small>Ohne KI ordnet Spur lokal. Mit KI entsteht eine echte Erzählung.</small></span><select id="prov"><option value="none">Keine KI</option><option value="mistral">Mistral (EU)</option><option value="anthropic">Claude (Anthropic)</option></select></div>
       <div class="row" id="keyrow"><span class="k">API-Schlüssel<small>Verschlüsselt gespeichert, geht nur an den Anbieter.</small></span><input type="password" id="akey" value="${h(st.ai.key)}" placeholder="einfügen" autocomplete="off"></div>
       <div class="row" id="modelrow"><span class="k">Modell</span><input type="text" id="amodel" value="${h(st.ai.model)}" placeholder="Standard"></div>
-      <div class="row" id="postrow"><span class="k">Genau verschriftlichen<small>Nach der Aufnahme mit Mistral Voxtral: erkennt leise Stimmen und Kinder besser, trennt Sprecher. Sendet die Aufnahme an Mistral (EU).</small></span>${sw('postTranscribe', st.postTranscribe !== false)}</div>
       <div class="row"><span class="k" style="font-size:13px;color:var(--fg3)">Vor dem Senden werden alle eingetragenen Namen durch Platzhalter ersetzt. Gesendet wird nur Text. Die Aufnahme geht nur bei „Genau verschriftlichen“ an Mistral, Namen darin lassen sich dort nicht ersetzen.</span></div>
+    </div>
+
+    <div class="group-t">Verschriftlichung</div>
+    <div class="group glass">
+      <div class="row"><span class="k">Text entsteht<small id="trhint"></small></span><select id="trans"><option value="live">Live</option><option value="local">Auf dem Gerät</option><option value="mistral">Mistral (EU)</option></select></div>
+      <div class="row" id="lqrow"><span class="k">Modell<small>Genau erkennt Kinder und leise Stimmen besser, braucht mehr Zeit.</small></span><select id="lq"><option value="genau">Genau (~${MODEL_SIZE.genau} MB)</option><option value="schnell">Schnell (~${MODEL_SIZE.schnell} MB)</option></select></div>
+      <div class="row" id="lqload"><button class="link" id="preload" style="padding:0">${icon('plus')} Modell jetzt laden (einmalig, am besten im WLAN)</button></div>
     </div>
 
     <div class="group-t">Aufnahme & Schutz</div>
@@ -603,7 +628,21 @@ function openSettings() {
 
   const body = $('.sheet .body');
   $('#persp', body).value = st.perspective; $('#aud', body).value = st.audience; $('#prov', body).value = st.ai.provider; $('#lockmin', body).value = String(st.autoLockMin);
-  const showAI = () => { const on = st.ai.provider !== 'none'; $('#keyrow').style.display = on ? '' : 'none'; $('#modelrow').style.display = on ? '' : 'none'; $('#postrow').style.display = st.ai.provider === 'mistral' ? '' : 'none'; $('#amodel').placeholder = st.ai.provider === 'mistral' ? 'mistral-large-latest' : 'claude-sonnet-5-5'; };
+  st.transcriber = st.transcriber || (postMode() || 'live'); $('#trans', body).value = st.transcriber; $('#lq', body).value = st.localQuality || 'genau';
+  const showTr = () => {
+    const t = st.transcriber; $('#lqrow').style.display = $('#lqload').style.display = t === 'local' ? '' : 'none';
+    $('#trhint').textContent = { live: 'Schnell, aber nur nahe, deutliche Stimmen. Auf dem iPhone über Apple.', local: 'Nach der Aufnahme, komplett privat. Die Aufnahme verlässt das Gerät nicht. Sprecher werden nach Tonhöhe getrennt.', mistral: 'Nach der Aufnahme, sehr genau, trennt Sprecher. Die Aufnahme geht an Mistral (EU). Braucht Mistral-Schlüssel unten.' }[t];
+  };
+  showTr();
+  $('#trans', body).onchange = e => { st.transcriber = e.target.value; showTr(); persist(); if (st.transcriber === 'mistral' && !(st.ai.provider === 'mistral' && st.ai.key)) toast('Bitte unten Mistral und Schlüssel eintragen.'); };
+  $('#lq', body).onchange = e => { st.localQuality = e.target.value; persist(); };
+  $('#preload', body).onclick = async () => {
+    const b = $('#preload'); b.disabled = true;
+    onProgress(p => { b.textContent = p.phase === 'download' ? `Lädt … ${Math.round(p.ratio * 100)} % von ${p.mb} MB` : p.phase === 'ready' ? `Bereit (${p.device === 'webgpu' ? 'Grafikchip' : 'Prozessor'})` : b.textContent; });
+    try { await preload(st.localQuality || 'genau'); b.textContent = 'Modell ist geladen und offline verfügbar.'; }
+    catch (err) { b.textContent = 'Laden fehlgeschlagen: ' + err.message; b.disabled = false; }
+  };
+  const showAI = () => { const on = st.ai.provider !== 'none'; $('#keyrow').style.display = on ? '' : 'none'; $('#modelrow').style.display = on ? '' : 'none';  $('#amodel').placeholder = st.ai.provider === 'mistral' ? 'mistral-large-latest' : 'claude-sonnet-5-5'; };
   showAI();
   const persist = () => save();
   $('#uname').onchange = e => { st.userName = e.target.value.trim(); persist(); };

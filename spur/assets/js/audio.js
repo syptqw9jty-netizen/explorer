@@ -48,7 +48,7 @@ export class Session {
     this.segments = []; this.chunks = []; this.running = false; this.recognizing = false;
     this.paused = false; this.lastVoiceAt = 0; this.heardSince = 0; this.srBroken = false;
     this.pending = ''; this.lastSR = 0; this.stalls = 0; this.netErrors = 0; this.micYielded = false;
-    this.floor = 0.004; this.peak = 0.05; this.fast = 0; this.slow = 0; this.lastOnset = 0; this.pitchHist = []; this.frame = 0;
+    this.floor = 0.004; this.peak = 0.05; this.fast = 0; this.slow = 0; this.lastOnset = 0; this.pitchHist = []; this.frame = 0; this.pitchLog = [];
   }
 
   async start() {
@@ -118,7 +118,7 @@ export class Session {
       if (esum > 0.4) { const c = (wsum / esum) / 7; signal.centroid += (c - signal.centroid) * 0.04; }
       if (lvl > 0.14 && (this.frame++ & 1) === 0) {
         const f = detectPitch(this.time, this.ctx.sampleRate);
-        if (f) { this.pitchHist.push(f); if (this.pitchHist.length > 7) this.pitchHist.shift(); const s = [...this.pitchHist].sort((a, b) => a - b); signal.pitch = s[s.length >> 1]; }
+        if (f) { this.pitchLog.push({ t: this.elapsed(), f: Math.round(f) }); this.pitchHist.push(f); if (this.pitchHist.length > 7) this.pitchHist.shift(); const s = [...this.pitchHist].sort((a, b) => a - b); signal.pitch = s[s.length >> 1]; }
       }
       if (lvl > 0.12) { if (!this.heardSince) this.heardSince = now; this.lastVoiceAt = now; }
     } else {
@@ -244,7 +244,7 @@ export class Session {
     try { await this.ctx.close(); } catch { }
     try { this.lock && await this.lock.release(); } catch { }
     setStatus({ mic: 'aus', speech: 'aus' });
-    return { blob, segments: this.segments, durationMs, speechAvailable: !!SR && !this.srBroken, reason: signal.status.reason };
+    return { blob, segments: this.segments, pitchLog: this.pitchLog, durationMs, speechAvailable: !!SR && !this.srBroken, reason: signal.status.reason };
   }
 }
 
