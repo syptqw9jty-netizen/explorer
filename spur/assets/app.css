@@ -232,3 +232,5 @@ textarea.note{width:100%;min-height:42vh;border-radius:22px;padding:18px;border:
 .toast.on{transform:translate(-50%,0)}
 
 @media (min-width:900px){.view{padding-top:96px}.stage{width:min(380px,46vh)}}
+
+.raw .who{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}

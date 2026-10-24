@@ -206,7 +206,7 @@ async function begin() {
   const live = $('#live'); live.innerHTML = '';
   let finals = [];
   const s = new Session({
-    keepAudio: st.keepAudio,
+    keepAudio: st.keepAudio || postOn(), protectRecording: postOn(),
     onInterim: t => { live.innerHTML = finals.slice(-2).map(x => `<span>${h(x)}</span>`).join(' ') + (t ? ` <em>${h(t)}</em>` : ''); },
     onFinal: seg => { if (seg.speaker !== 'frage') { showStatus(signal.status); finals = s.segments.filter(x => x.speaker === 'voice').map(x => x.text); live.innerHTML = finals.slice(-2).map(x => `<span>${h(x)}</span>`).join(' '); } },
     onState: x => showStatus(x)
@@ -265,6 +265,7 @@ async function discard() {
   const s = S.session; S.session = null; endUI(); await s.stop(); renderToday();
 }
 
+const postOn = () => S.settings.ai.provider === 'mistral' && !!S.settings.ai.key && S.settings.postTranscribe !== false;
 const personsFor = () => S.settings.lastFor.map(id => S.settings.persons.find(p => p.id === id)).filter(Boolean);
 
 async function finish() {
@@ -276,11 +277,15 @@ async function finish() {
     id: uid(), kind: 'aufnahme', createdAt: Date.now() - res.durationMs, durationMs: res.durationMs, mode: S.settings.mode,
     personIds: [...S.settings.lastFor], segments: res.segments, hasAudio: !!res.blob, reason: res.reason || ''
   };
-  if (res.blob) await store.saveAudio(S.key, entry.id, res.blob);
   const voice = res.segments.filter(x => x.speaker !== 'frage');
-  if (!voice.length && res.blob && S.settings.ai.provider === 'mistral') {
-    try { $('#orblabel').innerHTML = 'Wird verschriftlicht …'; entry.segments = await transcribeRemote(S.settings, res.blob); } catch (e) { toast(e.message); }
+  if (res.blob && (postOn() || (!voice.length && S.settings.ai.provider === 'mistral' && S.settings.ai.key))) {
+    try {
+      $('#orblabel').innerHTML = 'Wird genau verschriftlicht …';
+      const segs = await transcribeRemote(S.settings, res.blob, res.segments.filter(x => x.speaker === 'frage'));
+      if (segs.some(x => x.speaker === 'voice')) { entry.segments = segs; entry.transcribedBy = 'voxtral'; }
+    } catch (e) { toast('Genaue Verschriftlichung nicht möglich, Live-Text bleibt.'); entry.reason = e.message; }
   }
+  if (res.blob && S.settings.keepAudio) await store.saveAudio(S.key, entry.id, res.blob); else entry.hasAudio = false;
   await compose(entry);
   await store.saveEntry(S.key, entry); S.entries.unshift(entry);
   S.busy = false; renderToday(); openEntry(entry.id);
@@ -406,7 +411,7 @@ function openEntry(id) {
       if (v.paragraphs.length) html += `<div class="hint" style="margin:0">Tippe auf einen Absatz, um zu sehen, was wirklich gesagt wurde.</div>`;
       if ((e.topics || []).length) html += `<div class="tags" style="margin-top:16px">${e.topics.map(t => `<span class="tag">${h(t)}</span>`).join('')}</div>`;
     } else if (tab === 'original') {
-      html += `<div class="raw">${(e.segments || []).map(s => `<div><time>${s.t ? fmtTime(s.t) : ''}</time><span class="${s.speaker === 'frage' ? 'q' : ''}">${h(s.text)}</span></div>`).join('') || '<p class="disclaimer">Kein Transkript vorhanden.</p>'}</div>`;
+      html += `<div class="raw">${(e.segments || []).map(s => `<div><time>${s.t ? fmtTime(s.t) : ''}</time><span class="${s.speaker === 'frage' ? 'q' : ''}">${s.who ? `<b class="who">${h(s.who)}</b> ` : ''}${h(s.text)}</span></div>`).join('') || '<p class="disclaimer">Kein Transkript vorhanden.</p>'}</div>`;
       if (e.hasAudio && st.ai.provider === 'mistral') html += `<div class="actions" style="border:0;margin-top:10px"><button class="btn glass pill small" id="retrans">${icon('mic')} Neu verschriftlichen (Mistral)</button></div>`;
     } else {
       const obs = e.observations || [];
@@ -575,7 +580,8 @@ function openSettings() {
       <div class="row"><span class="k">Anbieter<small>Ohne KI ordnet Spur lokal. Mit KI entsteht eine echte Erzählung.</small></span><select id="prov"><option value="none">Keine KI</option><option value="mistral">Mistral (EU)</option><option value="anthropic">Claude (Anthropic)</option></select></div>
       <div class="row" id="keyrow"><span class="k">API-Schlüssel<small>Verschlüsselt gespeichert, geht nur an den Anbieter.</small></span><input type="password" id="akey" value="${h(st.ai.key)}" placeholder="einfügen" autocomplete="off"></div>
       <div class="row" id="modelrow"><span class="k">Modell</span><input type="text" id="amodel" value="${h(st.ai.model)}" placeholder="Standard"></div>
-      <div class="row"><span class="k" style="font-size:13px;color:var(--fg3)">Vor dem Senden werden alle eingetragenen Namen durch Platzhalter ersetzt. Gesendet wird nur Text, nie die Aufnahme (außer bei „Neu verschriftlichen“).</span></div>
+      <div class="row" id="postrow"><span class="k">Genau verschriftlichen<small>Nach der Aufnahme mit Mistral Voxtral: erkennt leise Stimmen und Kinder besser, trennt Sprecher. Sendet die Aufnahme an Mistral (EU).</small></span>${sw('postTranscribe', st.postTranscribe !== false)}</div>
+      <div class="row"><span class="k" style="font-size:13px;color:var(--fg3)">Vor dem Senden werden alle eingetragenen Namen durch Platzhalter ersetzt. Gesendet wird nur Text. Die Aufnahme geht nur bei „Genau verschriftlichen“ an Mistral, Namen darin lassen sich dort nicht ersetzen.</span></div>
     </div>
 
     <div class="group-t">Aufnahme & Schutz</div>
@@ -597,7 +603,7 @@ function openSettings() {
 
   const body = $('.sheet .body');
   $('#persp', body).value = st.perspective; $('#aud', body).value = st.audience; $('#prov', body).value = st.ai.provider; $('#lockmin', body).value = String(st.autoLockMin);
-  const showAI = () => { const on = st.ai.provider !== 'none'; $('#keyrow').style.display = on ? '' : 'none'; $('#modelrow').style.display = on ? '' : 'none'; $('#amodel').placeholder = st.ai.provider === 'mistral' ? 'mistral-large-latest' : 'claude-sonnet-5-5'; };
+  const showAI = () => { const on = st.ai.provider !== 'none'; $('#keyrow').style.display = on ? '' : 'none'; $('#modelrow').style.display = on ? '' : 'none'; $('#postrow').style.display = st.ai.provider === 'mistral' ? '' : 'none'; $('#amodel').placeholder = st.ai.provider === 'mistral' ? 'mistral-large-latest' : 'claude-sonnet-5-5'; };
   showAI();
   const persist = () => save();
   $('#uname').onchange = e => { st.userName = e.target.value.trim(); persist(); };
@@ -613,7 +619,7 @@ function openSettings() {
   $('#aud').onchange = e => { st.audience = e.target.value; persist(); };
   $$('[data-sw]', body).forEach(b => b.onclick = () => {
     const k = b.dataset.sw; let on;
-    if (k === 'keepAudio') { st.keepAudio = !st.keepAudio; on = st.keepAudio; } else { st.sensitive[k] = !st.sensitive[k]; on = st.sensitive[k]; }
+    if (k === 'keepAudio') { st.keepAudio = !st.keepAudio; on = st.keepAudio; } else if (k === 'postTranscribe') { st.postTranscribe = st.postTranscribe === false; on = st.postTranscribe; } else { st.sensitive[k] = !st.sensitive[k]; on = st.sensitive[k]; }
     b.classList.toggle('on', on); b.setAttribute('aria-checked', on); persist();
   });
   $('#extra').onchange = e => { st.extraNames = e.target.value.split(',').map(x => x.trim()).filter(Boolean); persist(); };

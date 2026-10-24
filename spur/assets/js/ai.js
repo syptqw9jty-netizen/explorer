@@ -113,9 +113,9 @@ Zusätzlich sammelst du "observations": rein beschreibende Beobachtungen (was, w
 Antworte ausschließlich mit JSON in genau dieser Form:
 {"title": "kurzer Titel (max. 6 Wörter)", "versions": [{"for": "<Platzhalter der Person>", "paragraphs": [{"text": "…", "sources": ["s1"]}]}], "topics": ["…"], "observations": [{"category": "${cats[0]}", "segment": "s3", "description": "…"}]}`;
   const forList = persons.map(p => ps.aliasOf(p)).join(', ');
-  const transcript = segments.map(x => `${x.id}${x.speaker === 'frage' ? ' (Frage der App)' : ''}: ${ps.fwd(x.text)}`).join('\n');
+  const transcript = segments.map(x => `${x.id}${x.speaker === 'frage' ? ' (Frage der App)' : x.who ? ` (${x.who})` : ''}: ${ps.fwd(x.text)}`).join('\n');
   const user = `Datum: ${new Date(createdAt).toLocaleString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-Modus: ${mode === 'raum' ? 'Gespräch im Raum, mehrere Stimmen' : mode === 'interview' ? 'Interview, die App stellt Fragen' : 'eine Person erzählt'}
+Modus: ${mode === 'raum' ? 'Gespräch im Raum, mehrere Stimmen (Stimme 1/2 = automatisch getrennte Sprecher; ordne sie nur zu, wenn es aus dem Inhalt eindeutig ist)' : mode === 'interview' ? 'Interview, die App stellt Fragen' : 'eine Person erzählt'}
 Erstelle je eine Version für: ${forList}
 Transkript:
 ${transcript}`;
@@ -179,17 +179,30 @@ export async function followUpQuestion(settings, persons, recent) {
 }
 
 // Fallback: Transkription der Aufnahme über Mistral (Voxtral), wenn das Gerät keine Spracherkennung liefert.
-export async function transcribeRemote(settings, blob) {
-  if (settings.ai.provider !== 'mistral') throw new Error('Nachträgliche Transkription geht nur mit Mistral (EU)');
+export async function transcribeRemote(settings, blob, keep = []) {
+  if (settings.ai.provider !== 'mistral' || !settings.ai.key) throw new Error('Genaue Verschriftlichung braucht Mistral (EU) mit Schlüssel');
   const fd = new FormData();
-  fd.append('model', 'voxtral-mini-latest'); fd.append('language', 'de');
+  fd.append('model', 'voxtral-mini-latest');
+  fd.append('timestamp_granularities', 'segment');
+  fd.append('diarize', 'true');
   fd.append('file', blob, 'aufnahme.' + (blob.type.includes('webm') ? 'webm' : 'm4a'));
   const r = await fetch('https://api.mistral.ai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: 'Bearer ' + settings.ai.key }, body: fd });
-  if (!r.ok) throw new Error('Transkription: ' + r.status);
+  if (!r.ok) throw new Error('Verschriftlichung: ' + r.status + ' ' + (await r.text()).slice(0, 120));
   const j = await r.json();
-  const parts = (j.segments && j.segments.length ? j.segments.map(s => ({ text: s.text, t: Math.round((s.start || 0) * 1000) }))
-    : String(j.text || '').split(/(?<=[.!?])\s+/).map((text, i) => ({ text, t: i * 4000 })));
-  return parts.filter(p => p.text && p.text.trim()).map((p, i) => ({ id: 's' + (i + 1), t: p.t, text: p.text.trim(), speaker: 'voice' }));
+  const speakers = {};
+  const label = s => { const k = s.speaker_id ?? s.speaker ?? s.speaker_label; if (k === undefined || k === null) return null; if (!(k in speakers)) speakers[k] = 'Stimme ' + (Object.keys(speakers).length + 1); return speakers[k]; };
+  const parts = (j.segments && j.segments.length ? j.segments.map(s => ({ text: s.text, t: Math.round((s.start || 0) * 1000), who: label(s) }))
+    : String(j.text || '').split(/(?<=[.!?])\s+/).map((text, i) => ({ text, t: i * 4000, who: null })));
+  // gleiche Stimme direkt hintereinander zusammenfassen
+  const merged = [];
+  parts.filter(p => p.text && p.text.trim()).forEach(p => {
+    const last = merged[merged.length - 1];
+    if (last && last.who === p.who && p.t - last.t < 15000 && last.text.length < 260) last.text += ' ' + p.text.trim();
+    else merged.push({ t: p.t, text: p.text.trim(), who: p.who });
+  });
+  // Interviewfragen der App an ihrer Zeitstelle erhalten
+  const all = merged.map(p => ({ ...p, speaker: 'voice' })).concat(keep.map(k => ({ ...k }))).sort((a, b) => a.t - b.t);
+  return all.map((p, i) => { const o = { id: 's' + (i + 1), t: p.t, text: p.text, speaker: p.speaker }; if (p.who && Object.keys(speakers).length > 1) o.who = p.who; return o; });
 }
 
 // Interviewfragen ohne KI — ruhig, offen, für Erwachsene und für den Abend mit Kind.

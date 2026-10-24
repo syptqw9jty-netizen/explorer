@@ -43,8 +43,8 @@ function detectPitch(buf, sampleRate) {
 }
 
 export class Session {
-  constructor({ lang = 'de-DE', onInterim, onFinal, onState, keepAudio = true } = {}) {
-    Object.assign(this, { lang, onInterim, onFinal, onState, keepAudio });
+  constructor({ lang = 'de-DE', onInterim, onFinal, onState, keepAudio = true, protectRecording = false } = {}) {
+    Object.assign(this, { lang, onInterim, onFinal, onState, keepAudio, protectRecording });
     this.segments = []; this.chunks = []; this.running = false; this.recognizing = false;
     this.paused = false; this.lastVoiceAt = 0; this.heardSince = 0; this.srBroken = false;
     this.pending = ''; this.lastSR = 0; this.stalls = 0; this.netErrors = 0; this.micYielded = false;
@@ -181,6 +181,7 @@ export class Session {
   // Wenn Mikrofon und Erkennung sich gegenseitig blockieren: Text geht vor, Aufnahme endet hier.
   _yieldMic() {
     if (this.micYielded) return;
+    if (this.protectRecording) { setStatus({ reason: '' , speech: 'Vorschau pausiert' }, this.onState); return; }
     this.micYielded = true; signal.synthetic = true;
     try { if (this.rec && this.rec.state !== 'inactive') this.rec.stop(); } catch { }
     this.stream.getTracks().forEach(t => t.stop());
@@ -195,13 +196,13 @@ export class Session {
     if (!this.recognizing) { this._startRecognition(); return; }
     const voiceRecently = now - this.lastVoiceAt < 3000;
     // läuft, aber seit 8 s kein Lebenszeichen, obwohl gesprochen wird → hängt
-    if (now - this.lastSR > 8000 && (voiceRecently || this.micYielded)) {
+    if (now - this.lastSR > (isIOS ? 5000 : 8000) && (voiceRecently || this.micYielded)) {
       this.stalls++;
       setStatus({ speech: 'startet neu' }, this.onState);
       try { this.sr.abort(); } catch { }
       this.recognizing = false; this._startRecognition();
-      const heard = this.segments.some(s => s.speaker === 'voice');
-      if (this.stalls >= 2 && !heard && !this.micYielded) this._yieldMic();
+      // iOS gibt das Mikrofon nach der ersten Sitzung oft nicht mehr frei → Text geht vor
+      if (this.stalls >= 2 && !this.micYielded) this._yieldMic();
     }
   }
 
