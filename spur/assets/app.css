@@ -34,14 +34,17 @@ input,textarea,select{font:inherit;color:inherit}
 svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
 /* ---------- Atmosphäre ---------- */
-.ambient{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(70px) saturate(140%);opacity:.75}
-@media (prefers-color-scheme:dark){.ambient{opacity:.55}}
-.ambient i{position:absolute;border-radius:50%;width:60vmax;height:60vmax;mix-blend-mode:normal;animation:drift 28s var(--ease) infinite alternate}
-.ambient i:nth-child(1){background:var(--blob1);left:-10%;top:-5%}
-.ambient i:nth-child(2){background:var(--blob2);right:-15%;top:25%;animation-duration:34s;animation-delay:-8s}
-.ambient i:nth-child(3){background:var(--blob3);left:15%;bottom:-25%;animation-duration:40s;animation-delay:-16s;opacity:.8}
-@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(6vmax,-4vmax) scale(1.08)}100%{transform:translate(-5vmax,5vmax) scale(.95)}}
-body.rec .ambient i{animation-duration:14s}
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ambient i{position:absolute;width:120vmax;height:120vmax;border-radius:50%;will-change:transform;opacity:.9}
+.ambient i:nth-child(1){left:-55vmax;top:-60vmax;background:radial-gradient(closest-side,var(--blob1),transparent);animation:flow1 95s ease-in-out infinite alternate}
+.ambient i:nth-child(2){right:-60vmax;top:-10vmax;background:radial-gradient(closest-side,var(--blob2),transparent);animation:flow2 120s ease-in-out infinite alternate}
+.ambient i:nth-child(3){left:-30vmax;bottom:-70vmax;background:radial-gradient(closest-side,var(--blob3),transparent);animation:flow3 140s ease-in-out infinite alternate;opacity:.75}
+@media (prefers-color-scheme:dark){.ambient i{opacity:.78}.ambient i:nth-child(3){opacity:.6}
+ body[data-daypart]{--blob1:#ff6a2c;--blob2:#5b2fff;--blob3:#c42a72}
+ body[data-daypart=morgen]{--blob1:#ff8f2c;--blob2:#2f6bff;--blob3:#b8329a}}
+@keyframes flow1{0%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(18vmax,10vmax,0) scale(1.12)}66%{transform:translate3d(6vmax,26vmax,0) scale(.94)}100%{transform:translate3d(24vmax,4vmax,0) scale(1.06)}}
+@keyframes flow2{0%{transform:translate3d(0,0,0) scale(1)}40%{transform:translate3d(-22vmax,18vmax,0) scale(.92)}75%{transform:translate3d(-8vmax,34vmax,0) scale(1.1)}100%{transform:translate3d(-28vmax,12vmax,0) scale(1)}}
+@keyframes flow3{0%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(26vmax,-20vmax,0) scale(.95)}100%{transform:translate3d(10vmax,-34vmax,0) scale(1.12)}}
 @media (prefers-reduced-motion:reduce){.ambient i{animation:none}}
 .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
@@ -114,6 +117,8 @@ body.rec .ring-hint{display:none}
 .note-link{padding-top:10px}
 body.rec #greet,body.rec #modes,body.rec #forrow,body.rec .note-link{display:none}
 body.rec .date{margin-bottom:10px}
+.status{font-size:12px;font-weight:600;color:var(--fg3);letter-spacing:.02em;min-height:16px;margin-top:4px;max-width:340px;line-height:1.4}
+.status.warn{color:var(--danger)}
 .controls.idle{flex-direction:column;align-items:center;gap:2px;margin-top:6px}
 .controls.idle .hint{margin-top:0}
 .btn.round{width:50px;padding:0}

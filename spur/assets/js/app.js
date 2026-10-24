@@ -175,7 +175,7 @@ function renderToday() {
     <div class="forrow" id="forrow"><span class="lbl">für</span>${st.persons.map(p => `<button class="chip glass ${st.lastFor.includes(p.id) ? 'on' : ''}" data-p="${p.id}">${h(p.self ? (st.userName || 'Mich') : p.name)}</button>`).join('')}</div>
     <div class="question" id="question" aria-live="polite"></div>
     <div class="stage"><button class="orb" id="orb" aria-label="Aufnahme starten"><div class="sphere"></div><canvas></canvas><span class="label" id="orblabel">Tippen zum ${st.mode === 'interview' ? 'Beginnen' : 'Erzählen'}</span><i class="ring-hint"></i></button></div>
-    <div class="live" id="live" aria-live="polite"></div>
+    <div class="live" id="live" aria-live="polite"></div><div class="status" id="status"></div>
     <div class="controls idle" id="controls"><div class="hint" id="hint">${MODE_HINT[st.mode]}</div><button class="link" id="note">${icon('pen')} Etwas aufschreiben</button></div>
   </div>`;
   S.orb = createOrb($('#orb canvas'));
@@ -190,6 +190,15 @@ function renderToday() {
   $('#note').onclick = openNote;
 }
 
+function showStatus(x) {
+  const el = $('#status'); if (!el) return;
+  const n = S.session ? S.session.segments.filter(s => s.speaker === 'voice').length : 0;
+  const mic = x.mic === 'an' ? 'Mikrofon an' : x.mic === 'frei' ? 'Mikrofon an die Erkennung übergeben' : 'Mikrofon aus';
+  const sp = { 'hört': 'Erkennung hört zu', startet: 'Erkennung startet …', 'startet neu': 'Erkennung startet neu …', aus: 'Erkennung aus', fehlt: 'keine Spracherkennung' }[x.speech] || '';
+  el.textContent = x.reason ? x.reason : `${mic} · ${sp}${n ? ` · ${n} ${n > 1 ? 'Sätze' : 'Satz'} erkannt` : ''}`;
+  el.classList.toggle('warn', !!x.reason && x.mic !== 'frei');
+}
+
 let timerH = 0, interviewH = 0, qIndex = 0, interviewState = null;
 
 async function begin() {
@@ -199,8 +208,8 @@ async function begin() {
   const s = new Session({
     keepAudio: st.keepAudio,
     onInterim: t => { live.innerHTML = finals.slice(-2).map(x => `<span>${h(x)}</span>`).join(' ') + (t ? ` <em>${h(t)}</em>` : ''); },
-    onFinal: seg => { if (seg.speaker !== 'frage') { finals.push(seg.text); live.innerHTML = finals.slice(-3).map(x => `<span>${h(x)}</span>`).join(' '); } },
-    onState: x => { if (x.speech === 'unavailable') toast('Spracherkennung nicht verfügbar. Die Aufnahme läuft weiter.'); }
+    onFinal: seg => { if (seg.speaker !== 'frage') { showStatus(signal.status); finals = s.segments.filter(x => x.speaker === 'voice').map(x => x.text); live.innerHTML = finals.slice(-2).map(x => `<span>${h(x)}</span>`).join(' '); } },
+    onState: x => showStatus(x)
   });
   try { await s.start(); }
   catch (e) { toast('Ohne Mikrofon geht es nicht. Bitte Zugriff erlauben.'); return; }
@@ -213,7 +222,6 @@ async function begin() {
   const ctr = $('#controls'); ctr.classList.remove('idle');
   ctr.innerHTML = `<button class="btn glass round danger" id="discard" aria-label="Verwerfen">${icon('x')}</button>${st.mode === 'interview' ? `<button class="btn glass pill" id="nextq">Nächste Frage ${icon('next')}</button>` : ''}<button class="btn primary" id="done">${icon('check')} Fertig</button>`;
   $('#done').onclick = finish; $('#discard').onclick = discard;
-  if (!speechSupported) toast('Dieser Browser erkennt keine Sprache. Die Aufnahme wird trotzdem gespeichert.');
   if (st.mode === 'interview') startInterview(s);
 }
 
@@ -266,7 +274,7 @@ async function finish() {
   const res = await s.stop();
   const entry = {
     id: uid(), kind: 'aufnahme', createdAt: Date.now() - res.durationMs, durationMs: res.durationMs, mode: S.settings.mode,
-    personIds: [...S.settings.lastFor], segments: res.segments, hasAudio: !!res.blob
+    personIds: [...S.settings.lastFor], segments: res.segments, hasAudio: !!res.blob, reason: res.reason || ''
   };
   if (res.blob) await store.saveAudio(S.key, entry.id, res.blob);
   const voice = res.segments.filter(x => x.speaker !== 'frage');
@@ -284,7 +292,7 @@ async function compose(entry) {
   let out;
   if (!entry.segments.filter(x => x.speaker !== 'frage').length) {
     out = { title: composeLocal(ctx).title, versions: ctx.persons.map(p => ({ for: p.id, paragraphs: [] })), topics: [], observations: [], composer: 'lokal' };
-    entry.note = entry.hasAudio ? 'Kein Text erkannt. Die Aufnahme ist gespeichert.' : 'Kein Text erkannt.';
+    entry.note = (entry.hasAudio ? 'Kein Text erkannt. Die Aufnahme ist gespeichert und lässt sich nachhören.' : 'Kein Text erkannt.') + (entry.reason ? ' ' + entry.reason : '');
   } else if (S.settings.ai.provider !== 'none' && S.settings.ai.key) {
     try { out = await composeAI(ctx); delete entry.note; }
     catch (e) { console.warn(e); toast('KI nicht erreichbar, lokal geordnet.'); out = composeLocal(ctx); entry.note = 'Lokal geordnet. ' + e.message; }
