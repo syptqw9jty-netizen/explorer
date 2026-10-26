@@ -1,0 +1,375 @@
+{
+ "produkte": {
+  "hoodie": {
+   "aktiv": true,
+   "artikelnr": "HD-GRM",
+   "beschreibung": "Kapuzenpullover in Grau meliert mit Kängurutasche und weißen Kordeln. Bildmarke zweifarbig auf der Brust.",
+   "demo": true,
+   "ekNetto": 24.5,
+   "fotos": [
+    {
+     "id": "hoodie.svg",
+     "url": "demo/hoodie.svg"
+    }
+   ],
+   "fulfillment": "intern",
+   "kategorie": "Kleidung",
+   "lieferantId": "",
+   "lieferzeit": "",
+   "marke": "GAUSS LVS",
+   "marktpreis": null,
+   "max": 1,
+   "name": "Hoodie, Grau meliert",
+   "sort": 20,
+   "ust": 19,
+   "varianten": [
+    {
+     "bestand": 4,
+     "name": "S",
+     "sku": "HD-GRM-S"
+    },
+    {
+     "bestand": 6,
+     "name": "M",
+     "sku": "HD-GRM-M"
+    },
+    {
+     "bestand": 6,
+     "name": "L",
+     "sku": "HD-GRM-L"
+    },
+    {
+     "bestand": 4,
+     "name": "XL",
+     "sku": "HD-GRM-XL"
+    },
+    {
+     "bestand": 2,
+     "name": "XXL",
+     "sku": "HD-GRM-XXL"
+    }
+   ],
+   "vk": 29,
+   "werbemittel": {
+    "artikelnr": "HD-GRM",
+    "id": "hoodie"
+   },
+   "highlight": true,
+   "highlightSort": 1,
+   "highlightText": "Teamkollektion",
+   "highlightSatz": "Weich, warm und mit Kängurutasche",
+   "szene": {
+    "id": "szene-hoodie.jpg",
+    "url": "demo/szene-hoodie.jpg"
+   },
+   "szeneFokus": "mitte"
+  },
+  "tragetasche": {
+   "name": "Tragetasche Baumwolle, Navy",
+   "beschreibung": "Tragetasche aus fester Baumwolle in Navy mit langen Henkeln. Bildmarke und Schriftzug GAUSS LVS in Weiß und Magenta.",
+   "kategorie": "Alltag",
+   "marke": "GAUSS LVS",
+   "aktiv": true,
+   "sort": 55,
+   "vk": 9,
+   "ekNetto": 6,
+   "marktpreis": null,
+   "ust": 19,
+   "max": 3,
+   "fulfillment": "lieferant",
+   "lieferantId": "werbemittel-weser",
+   "lieferzeit": "ca. 10 Werktage",
+   "artikelnr": "TT-NAV",
+   "werbemittel": {
+    "artikelnr": ""
+   },
+   "fotos": [
+    {
+     "id": "szene-tasche.jpg",
+     "url": "demo/szene-tasche.jpg"
+    }
+   ],
+   "varianten": [],
+   "bestand": 0,
+   "demo": true,
+   "highlight": true,
+   "highlightSort": 3,
+   "highlightText": "Neu",
+   "highlightSatz": "Für Messe, Einkauf und Laptop",
+   "szene": {
+    "id": "szene-tasche.jpg",
+    "url": "demo/szene-tasche.jpg"
+   },
+   "szeneFokus": "mitte"
+  },
+  "becher": {
+   "aktiv": true,
+   "artikelnr": "BE-300-01",
+   "beschreibung": "Weißer Keramikbecher, 300 ml, spülmaschinenfest. Bildmarke zweifarbig und Schriftzug GAUSS LVS im Siebdruck.",
+   "bestand": 44,
+   "demo": true,
+   "ekNetto": 4.9,
+   "fotos": [
+    {
+     "id": "becher.svg",
+     "url": "demo/becher.svg"
+    }
+   ],
+   "fulfillment": "intern",
+   "kategorie": "Alltag",
+   "lieferantId": "",
+   "lieferzeit": "",
+   "marke": "GAUSS LVS",
+   "marktpreis": null,
+   "max": 4,
+   "name": "Kaffeebecher Keramik, weiß",
+   "sort": 50,
+   "ust": 19,
+   "varianten": [],
+   "vk": 6,
+   "werbemittel": {
+    "artikelnr": "BE-300-01",
+    "id": "becher"
+   },
+   "highlight": true,
+   "highlightSort": 5,
+   "highlightSatz": "Für den Kaffee am Schreibtisch",
+   "szene": {
+    "id": "szene-becher.jpg",
+    "url": "demo/szene-becher.jpg"
+   },
+   "szeneFokus": "unten"
+  },
+  "t-shirt": {
+   "aktiv": true,
+   "artikelnr": "TS-NAV",
+   "beschreibung": "Rundhals-T-Shirt aus Bio-Baumwolle in Navy. Bildmarke klein auf der Brust, Rückendruck GAUSS LVS · Paderborn.",
+   "demo": true,
+   "ekNetto": 8.9,
+   "fotos": [
+    {
+     "id": "tshirt.svg",
+     "url": "demo/tshirt.svg"
+    },
+    {
+     "id": "tshirt-ruecken.svg",
+     "url": "demo/tshirt-ruecken.svg"
+    }
+   ],
+   "fulfillment": "intern",
+   "kategorie": "Kleidung",
+   "lieferantId": "",
+   "lieferzeit": "",
+   "marke": "GAUSS LVS",
+   "marktpreis": null,
+   "max": 2,
+   "name": "T-Shirt Team, Navy",
+   "sort": 10,
+   "ust": 19,
+   "varianten": [
+    {
+     "bestand": 10,
+     "name": "S",
+     "sku": "TS-NAV-S"
+    },
+    {
+     "bestand": 18,
+     "name": "M",
+     "sku": "TS-NAV-M"
+    },
+    {
+     "bestand": 18,
+     "name": "L",
+     "sku": "TS-NAV-L"
+    },
+    {
+     "bestand": 10,
+     "name": "XL",
+     "sku": "TS-NAV-XL"
+    },
+    {
+     "bestand": 5,
+     "name": "XXL",
+     "sku": "TS-NAV-XXL"
+    }
+   ],
+   "vk": 12,
+   "werbemittel": {
+    "artikelnr": "TS-NAV",
+    "id": "t-shirt"
+   },
+   "highlight": false
+  },
+  "kugelschreiber": {
+   "aktiv": true,
+   "artikelnr": "KS-MAG-01",
+   "beschreibung": "Drehkugelschreiber aus Aluminium in GAUSS-Magenta mit verchromtem Clip und Spitze. Schriftzug GAUSS weiß gelasert, blaue Mine.",
+   "bestand": 50,
+   "demo": true,
+   "ekNetto": 1.35,
+   "fotos": [
+    {
+     "id": "kugelschreiber.svg",
+     "url": "demo/kugelschreiber.svg"
+    }
+   ],
+   "fulfillment": "intern",
+   "kategorie": "Büro",
+   "lieferantId": "",
+   "lieferzeit": "",
+   "marke": "GAUSS LVS",
+   "marktpreis": null,
+   "max": 10,
+   "name": "Kugelschreiber Metall, Magenta",
+   "sort": 40,
+   "ust": 19,
+   "varianten": [],
+   "vk": 1.6,
+   "werbemittel": {
+    "artikelnr": "KS-MAG-01",
+    "id": "kugelschreiber"
+   }
+  },
+  "trinkflasche": {
+   "name": "Trinkflasche Edelstahl, Navy",
+   "beschreibung": "Isolierte Trinkflasche aus Edelstahl, 500 ml, in Navy matt mit Edelstahldeckel. Bildmarke und Schriftzug GAUSS LVS.",
+   "kategorie": "Alltag",
+   "marke": "GAUSS LVS",
+   "aktiv": true,
+   "sort": 56,
+   "vk": 19,
+   "ekNetto": 13,
+   "marktpreis": null,
+   "ust": 19,
+   "max": 2,
+   "fulfillment": "lieferant",
+   "lieferantId": "werbemittel-weser",
+   "lieferzeit": "ca. 10 Werktage",
+   "artikelnr": "TF-NAV-500",
+   "werbemittel": {
+    "artikelnr": ""
+   },
+   "fotos": [
+    {
+     "id": "szene-flasche.jpg",
+     "url": "demo/szene-flasche.jpg"
+    }
+   ],
+   "varianten": [],
+   "bestand": 0,
+   "demo": true,
+   "highlight": true,
+   "highlightSort": 4,
+   "highlightText": "Neu",
+   "highlightSatz": "Hält Getränke stundenlang kalt oder warm",
+   "szene": {
+    "id": "szene-flasche.jpg",
+    "url": "demo/szene-flasche.jpg"
+   },
+   "szeneFokus": "mitte"
+  },
+  "cap": {
+   "name": "Cap, Navy",
+   "beschreibung": "Baseballcap aus Baumwolle in Navy mit verstellbarem Riemen. Bildmarke und Schriftzug GAUSS LVS gestickt.",
+   "kategorie": "Kleidung",
+   "marke": "GAUSS LVS",
+   "aktiv": true,
+   "sort": 25,
+   "vk": 14,
+   "ekNetto": 9.5,
+   "marktpreis": null,
+   "ust": 19,
+   "max": 2,
+   "fulfillment": "lieferant",
+   "lieferantId": "textil-druckwerk",
+   "lieferzeit": "ca. 10 Werktage",
+   "artikelnr": "CP-NAV",
+   "werbemittel": {
+    "artikelnr": ""
+   },
+   "fotos": [
+    {
+     "id": "szene-cap.jpg",
+     "url": "demo/szene-cap.jpg"
+    }
+   ],
+   "varianten": [],
+   "bestand": 0,
+   "demo": true,
+   "highlight": true,
+   "highlightSort": 2,
+   "highlightText": "Neu",
+   "highlightSatz": "Gestickt, Einheitsgröße mit Riemen",
+   "szene": {
+    "id": "szene-cap.jpg",
+    "url": "demo/szene-cap.jpg"
+   },
+   "szeneFokus": "oben"
+  },
+  "notizbuch": {
+   "aktiv": true,
+   "artikelnr": "NB-A5-01",
+   "beschreibung": "Notizbuch im Format A5 mit dunkelblauem Hardcover, Bildmarke tonig geprägt, Gummiband in Magenta. 160 Seiten, dotted.",
+   "bestand": 51,
+   "demo": true,
+   "ekNetto": 6.8,
+   "fotos": [
+    {
+     "id": "notizbuch.svg",
+     "url": "demo/notizbuch.svg"
+    },
+    {
+     "id": "notizbuch-innen.svg",
+     "url": "demo/notizbuch-innen.svg"
+    }
+   ],
+   "fulfillment": "intern",
+   "kategorie": "Büro",
+   "lieferantId": "",
+   "lieferzeit": "",
+   "marke": "GAUSS LVS",
+   "marktpreis": null,
+   "max": 2,
+   "name": "Notizbuch A5, Hardcover",
+   "sort": 30,
+   "ust": 19,
+   "varianten": [],
+   "vk": 8.1,
+   "werbemittel": {
+    "artikelnr": "NB-A5-01",
+    "id": "notizbuch"
+   }
+  }
+ },
+ "reservierungen": {},
+ "bestellungen": {},
+ "gutscheine": {},
+ "gutscheinpruefung": {},
+ "lieferanten": {
+  "textil-druckwerk": {
+   "name": "Textil Druckwerk Bielefeld",
+   "art": "lieferant",
+   "email": "",
+   "ansprechpartner": "",
+   "kundennr": "",
+   "vorlage": "Guten Tag {ansprechpartner},\n\nbitte liefern Sie folgende Artikel zu unserer Bestellung {bestellnr}:\n\n{positionen}\n\nLieferadresse:\n{lieferadresse}\n\nKundennummer: {kundennr}\n\nVielen Dank und freundliche Grüße\n{firma}"
+  },
+  "werbemittel-weser": {
+   "name": "Werbemittel Weser GmbH",
+   "art": "lieferant",
+   "email": "",
+   "ansprechpartner": "",
+   "kundennr": "",
+   "vorlage": "Guten Tag {ansprechpartner},\n\nbitte liefern Sie folgende Artikel zu unserer Bestellung {bestellnr}:\n\n{positionen}\n\nLieferadresse:\n{lieferadresse}\n\nKundennummer: {kundennr}\n\nVielen Dank und freundliche Grüße\n{firma}"
+  }
+ },
+ "einstellungen": {
+  "allgemein": {
+   "firma": "GAUSS LVS",
+   "sachbezugGrenze": 50,
+   "mailModus": "entwurf",
+   "autoLieferant": true,
+   "autoRechnung": true
+  }
+ }
+}

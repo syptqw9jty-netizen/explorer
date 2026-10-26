@@ -1,0 +1,16 @@
+{
+  "name": "GAUSS Shop",
+  "short_name": "Shop",
+  "lang": "de",
+  "description": "Mitarbeitershop von GAUSS LVS: Kleidung und Werbeartikel bestellen.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f9fafc",
+  "theme_color": "#f9fafc",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

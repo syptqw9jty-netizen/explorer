@@ -1,0 +1,2038 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Mitarbeitershop von GAUSS LVS: Kleidung und Werbeartikel bestellen, per Gehaltsabzug oder Überweisung.">
+<meta name="theme-color" content="#f9fafc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b111f" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shop">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Shop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600&display=swap">
+<style>
+/*
+ * GAUSS Shop — interner Mitarbeitershop, Schwester von Werbemittel und Design Bibliothek.
+ * Tokens und Rollen 1:1 aus Werbemittel (Stand 26.10.2026). Ausprägung Unternehmen: Magenta (--marke-hue 345).
+ * Layout: eine Spalte, Seitentitel, sticky Leiste (Shop / Bestellungen / Verwaltung), Produktraster,
+ * alles Weitere als Sheet von unten. Warenkorb als Leiste am unteren Rand.
+ */
+:root{
+  --font-ui:"Funnel Sans",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+  --neutral-0:oklch(1 0 0);--neutral-50:oklch(0.985 0.004 265);--neutral-100:oklch(0.965 0.007 265);--neutral-200:oklch(0.92 0.01 265);
+  --neutral-300:oklch(0.85 0.014 265);--neutral-400:oklch(0.71 0.02 265);--neutral-500:oklch(0.58 0.028 265);--neutral-600:oklch(0.48 0.038 265);
+  --neutral-700:oklch(0.4 0.048 265);--neutral-800:oklch(0.34 0.035 265);--neutral-900:oklch(0.27 0.04 265);--neutral-950:oklch(0.22 0.045 265);
+  --marke-hue:345;
+  --marke-050:oklch(0.97 0.016 var(--marke-hue));--marke-100:oklch(0.94 0.033 var(--marke-hue));--marke-200:oklch(0.89 0.064 var(--marke-hue));
+  --marke-300:oklch(0.82 0.11 var(--marke-hue));--marke-400:oklch(0.75 0.148 var(--marke-hue));--marke-500:oklch(0.68 0.163 var(--marke-hue));
+  --marke-600:oklch(0.6 0.153 var(--marke-hue));--marke-700:oklch(0.52 0.136 var(--marke-hue));
+  --status-fehler-text:oklch(0.5 0.18 25);--status-fehler-flaeche:oklch(0.965 0.02 25);
+  --status-erfolg-text:oklch(0.47 0.11 150);--status-erfolg-flaeche:oklch(0.965 0.03 150);
+  --status-info-text:oklch(0.48 0.14 250);--status-info-flaeche:oklch(0.965 0.02 250);
+  --status-warnung-text:oklch(0.5 0.105 85);--status-warnung-flaeche:oklch(0.97 0.055 92);
+  --background:var(--neutral-50);--leiste:var(--neutral-100);--rahmenflaeche:var(--neutral-50);--objekt:var(--neutral-0);--erhoeht:var(--neutral-200);
+  --tastenflaeche:var(--neutral-100);--popover:var(--neutral-0);--linie:var(--neutral-200);--rahmen:var(--neutral-500);
+  --tinte-text:oklch(0.31 0.072 262);--foreground:var(--tinte-text);--text-sekundaer:oklch(0.45 0.062 262);--tertiaer:oklch(0.52 0.05 262);
+  --deaktiviert:var(--neutral-400);--primary:var(--tinte-text);--primary-foreground:var(--neutral-0);
+  --hover:color-mix(in oklab,var(--neutral-950) 6%,transparent);--pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
+  --ort-aktiv:var(--neutral-300);--gewaehlt:var(--marke-600);--gewaehlt-text-flaeche:var(--marke-700);--gewaehlt-text-farbe:var(--neutral-0);
+  --zaehler:var(--marke-600);--fokus:var(--marke-700);--fokus-innen:var(--neutral-0);--link:var(--marke-700);
+  --logo:var(--tinte-text);--logo-marke:var(--marke-600);--logo-marke-schatten:var(--marke-700);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 20%,transparent);--schatten-farbe:var(--neutral-950);
+  --schatten-widget:0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
+  --schatten-hoch:0 20px 48px -16px color-mix(in oklab,var(--schatten-farbe) 16%,transparent),0 4px 14px -8px color-mix(in oklab,var(--schatten-farbe) 8%,transparent);
+  --inhalt:680px;--radius-aktion:999px;--radius-zeile:8px;--radius-block:12px;--radius-karte:16px;--radius-flaeche:20px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --dunkel-seite:oklch(0.16 0.028 265);--dunkel-karte:oklch(0.20 0.03 265);--dunkel-erhoeht:oklch(0.245 0.032 265);--dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);--status-fehler-flaeche:oklch(0.29 0.06 25);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);--status-info-flaeche:oklch(0.29 0.06 250);--status-warnung-text:oklch(0.85 0.13 88);--status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite);--leiste:var(--dunkel-seite);--rahmenflaeche:var(--dunkel-seite);--objekt:var(--dunkel-karte);--erhoeht:var(--dunkel-erhoeht);
+  --tastenflaeche:var(--dunkel-erhoeht);--popover:var(--dunkel-karte);--linie:var(--dunkel-linie);--rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50);--text-sekundaer:var(--neutral-300);--tertiaer:var(--neutral-300);--deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50);--primary-foreground:var(--neutral-950);--hover:color-mix(in oklab,white 8%,transparent);--pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht);--gewaehlt:var(--marke-500);--zaehler:var(--marke-500);--gewaehlt-text-flaeche:var(--marke-300);--gewaehlt-text-farbe:var(--neutral-950);
+  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-marke:var(--marke-400);--logo-marke-schatten:var(--marke-600);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);--schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --dunkel-seite:oklch(0.16 0.028 265);--dunkel-karte:oklch(0.20 0.03 265);--dunkel-erhoeht:oklch(0.245 0.032 265);--dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);--status-fehler-flaeche:oklch(0.29 0.06 25);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);--status-info-flaeche:oklch(0.29 0.06 250);--status-warnung-text:oklch(0.85 0.13 88);--status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite);--leiste:var(--dunkel-seite);--rahmenflaeche:var(--dunkel-seite);--objekt:var(--dunkel-karte);--erhoeht:var(--dunkel-erhoeht);
+  --tastenflaeche:var(--dunkel-erhoeht);--popover:var(--dunkel-karte);--linie:var(--dunkel-linie);--rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50);--text-sekundaer:var(--neutral-300);--tertiaer:var(--neutral-300);--deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50);--primary-foreground:var(--neutral-950);--hover:color-mix(in oklab,white 8%,transparent);--pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht);--gewaehlt:var(--marke-500);--zaehler:var(--marke-500);--gewaehlt-text-flaeche:var(--marke-300);--gewaehlt-text-farbe:var(--neutral-950);
+  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-marke:var(--marke-400);--logo-marke-schatten:var(--marke-600);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);--schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--background);color:var(--foreground);font-family:var(--font-ui);font-size:15px;line-height:22px;letter-spacing:-.0025em;
+  font-feature-settings:"cv01","cv09","ss03","calt","liga";-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--rahmenflaeche)}
+::selection{background:color-mix(in oklab,var(--marke-500) 28%,transparent)}
+button,input,textarea,select{font:inherit;color:inherit;letter-spacing:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
+.wrap{max-width:var(--inhalt);margin:0 auto;padding-block:16px 48px}
+
+.etikett{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer)}
+.titel-seite{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.titel-app{font-size:34px;line-height:40px;letter-spacing:-.025em}
+.titel-bereich{font-size:17px;line-height:24px;font-weight:600;letter-spacing:-.016em;margin:0}
+.titel-karte{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;margin:0}
+.meta{font-size:13px;line-height:20px;color:var(--text-sekundaer)}
+.zahl{font-variant-numeric:tabular-nums}
+
+.kopf{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.zeichen{width:28px;height:28px;color:var(--logo);flex:none}
+.seitenkopf{display:grid;gap:4px}
+
+.leiste{position:relative;z-index:5;background:var(--rahmenflaeche);
+  margin:16px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
+  display:grid;gap:10px;grid-template-columns:minmax(0,1fr);border-bottom:1px solid transparent}
+.leiste.schwebend{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 57px);margin:0;z-index:8;
+  padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2));
+  border-bottom-color:var(--linie);box-shadow:var(--schatten-hoch);animation:panel-ein 240ms cubic-bezier(.22,1,.36,1) both}
+.leiste.schwebend .filter{margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2)));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2))}
+@keyframes panel-ein{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
+.minikopf{position:fixed;left:0;right:0;top:0;z-index:9;background:var(--rahmenflaeche);border-bottom:1px solid var(--linie);
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2)) 0 max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));
+  transform:translateY(-100%);transition:transform 160ms ease-out;visibility:hidden}
+.minikopf.on{transform:none;visibility:visible}
+.minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.minikopf .zeichen{width:24px;height:24px}
+.minikopf .kopf-titel{display:flex;align-items:center;gap:10px;font-size:17px;line-height:24px;font-weight:500;letter-spacing:-.016em;margin:0 auto 0 8px;white-space:nowrap;min-width:0}
+.minikopf .kopf-titel::before{content:"";flex:none;width:2px;height:20px;border-radius:1px;background:color-mix(in oklab,var(--foreground) 22%,transparent)}
+.icon-taste.frei{width:40px;height:40px}
+.icon-taste.frei::after{content:"";position:absolute;inset:-2px}
+.icon-taste.frei svg{transition:transform 160ms ease-out}
+.mini-filter[aria-expanded="true"]{background-color:var(--ort-aktiv)}
+.mini-filter[aria-expanded="true"] .pfeil{transform:rotate(180deg)}
+.icon-taste.mini-filter{width:auto;min-width:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px 0 16px;font-size:14px;font-weight:500;white-space:nowrap;flex:none}
+@media (max-width:359px){.mini-filter-text{display:none}.icon-taste.mini-filter{width:40px;padding:0}}
+.merk-taste{position:relative;flex:none}
+.merk-taste svg{width:20px;height:20px}
+.zaehler-zahl{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);
+  font-size:11px;line-height:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--rahmenflaeche)}
+.kopf .merk-taste{margin-left:auto}
+.umschalter{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
+.umschalter button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);
+  display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;white-space:nowrap}
+.umschalter button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.umschalter button[aria-pressed="true"]{background-color:var(--ort-aktiv);color:var(--foreground);font-weight:600}
+.umschalter .zahl{color:var(--tertiaer);font-weight:500}
+
+.suche{position:relative}
+.suche svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
+.suche input{width:100%;height:44px;border:1px solid var(--linie);border-radius:var(--radius-aktion);background:var(--objekt);padding:0 16px 0 42px;font-size:16px}
+.suche input::placeholder{color:var(--tertiaer)}
+.suche input:hover{border-color:var(--rahmen)}
+.suche input::-webkit-search-cancel-button{display:none}
+.filter{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding:2px max(16px,env(safe-area-inset-right,0px)) 2px 0}
+.filter::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid var(--linie);
+  background:var(--objekt);color:var(--text-sekundaer);font-size:13px;font-weight:500;white-space:nowrap;position:relative}
+.chip::after{content:"";position:absolute;inset:-4px 0}
+.chip:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.chip[aria-pressed="true"]{background-color:var(--gewaehlt-text-flaeche);border-color:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-weight:600}
+.chip .zahl{opacity:.75}
+
+.bereich{margin-top:20px;display:grid;gap:10px}
+.bereich>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-inline:4px;min-height:36px}
+.karte{background:var(--objekt);border:1px solid var(--linie);border-radius:var(--radius-karte);box-shadow:var(--schatten-widget);overflow:hidden}
+.zeile{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;border:0;background:transparent;
+  padding:12px 16px;min-height:76px;position:relative;transition:background-color 120ms ease;color:inherit}
+.zeile+.zeile{box-shadow:inset 0 1px 0 var(--linie)}
+button.zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.zeile .info{min-width:0;display:grid;gap:2px}
+.zeile .t{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zeile .info>.meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zeile .rechts{display:grid;justify-items:end;gap:4px;text-align:right}
+.zeile .rechts b{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.zeile.ohne-bild{grid-template-columns:minmax(0,1fr) auto}
+.chev{width:7px;height:12px;color:var(--tertiaer)}
+.zeile .t.zwei-zeilen{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:20px}
+.zeile .unten-z{display:flex;margin-top:4px}
+.zeile .rechts{grid-auto-flow:column;align-items:center;gap:10px}
+.kuerzel-marke{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:var(--leiste);border:1px solid var(--linie);font-size:12px;line-height:18px;font-weight:600;letter-spacing:.04em;vertical-align:1px}
+.p-info .etikett{font-size:10px;line-height:14px}
+.karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;overscroll-behavior-x:contain}
+.karussell::-webkit-scrollbar{display:none}
+.karussell li{flex:none;width:min(72%,280px);scroll-snap-align:start;display:flex}
+.fotokarte{position:relative;width:100%;aspect-ratio:4/5;max-width:100%;border:0;padding:0;border-radius:var(--radius-karte);overflow:hidden;background:var(--primary);color:#fff;text-align:left;
+  box-shadow:var(--schatten-widget);isolation:isolate;display:block}
+.fotokarte .fk-bild{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 400ms cubic-bezier(.22,1,.36,1)}
+.fotokarte:not(.mit-szene){background:#1f2a4d}
+.fotokarte:not(.mit-szene) .fk-bild{inset:10px 10px auto 10px;width:calc(100% - 20px);height:calc(100% - 132px);border-radius:calc(var(--radius-karte) - 6px);background:var(--leiste)}
+.fotokarte:not(.mit-szene) .fk-scrim{display:none}
+.fotokarte:not(.mit-szene):hover .fk-bild{transform:none}
+.fotokarte .fk-leer{position:absolute;inset:0 0 132px;display:grid;place-items:center;color:color-mix(in oklab,var(--primary-foreground) 60%,transparent)}
+.fotokarte .fk-leer svg{width:48px;height:48px}
+.fotokarte .fk-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgb(10 14 30 / 0) 38%,rgb(10 14 30 / .38) 62%,rgb(10 14 30 / .82) 100%)}
+.fotokarte .fk-marke{position:absolute;left:12px;top:12px;z-index:1;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:var(--marke-700);color:#fff;font-size:12px;font-weight:600;letter-spacing:.01em}
+.fotokarte .fk-text{position:absolute;left:16px;right:60px;bottom:16px;z-index:1;display:grid;gap:2px;text-shadow:0 1px 2px rgb(0 0 0 / .25)}
+.fotokarte .fk-kat{font-size:11px;line-height:16px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.fotokarte .fk-name{font-size:20px;line-height:24px;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+.fotokarte .fk-satz{font-size:14px;line-height:19px;opacity:.9;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.fotokarte .fk-preis{margin-top:6px;font-size:14px;line-height:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.fotokarte .fk-pfeil{position:absolute;right:14px;bottom:16px;z-index:1;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .92);color:#1b2342}
+.fotokarte:hover .fk-bild{transform:scale(1.03)}
+.fotokarte:focus-visible{outline:2px solid var(--fokus);outline-offset:3px}
+.karussell li{width:min(80%,300px)}
+.kopf-rechts{display:flex;align-items:center;gap:12px}
+.hl-pfeile{display:none;gap:8px}
+.hl-pfeile .icon-taste{width:36px;height:36px}
+@media (min-width:1024px){.hl-pfeile{display:flex}}
+.szene-feld{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:start}
+.szene-vorschau{position:relative;width:96px;aspect-ratio:4/5;border-radius:var(--radius-zeile);overflow:hidden;border:1px solid var(--linie);background:var(--leiste)}
+.szene-vorschau img{width:100%;height:100%;object-fit:cover;display:block}
+.szene-vorschau .weg{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--linie);background:var(--objekt);display:grid;place-items:center;padding:0}
+.szene-hinzu{width:96px;aspect-ratio:4/5;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:6px;color:var(--text-sekundaer);font-size:12px;font-weight:500;cursor:pointer;background:var(--objekt);text-align:center;padding:6px}
+.szene-hinzu svg{width:22px;height:22px}
+@media (prefers-reduced-motion:reduce){.fotokarte .fk-bild{transition:none}}
+@media (min-width:1024px){.karussell{flex-wrap:nowrap;margin:0;padding:2px 0 10px}.karussell li{width:calc((100% - (var(--n,3) - 1) * 12px) / var(--n,3))}.karussell[style*="--n:1"] .fotokarte,.karussell[style*="--n:2"] .fotokarte{aspect-ratio:3/2}.fotokarte .fk-name{font-size:24px;line-height:28px}}
+
+.kachel{width:48px;height:48px;border-radius:var(--radius-block);background:var(--leiste);border:1px solid var(--linie);color:var(--text-sekundaer);display:grid;place-items:center;flex:none;overflow:hidden;position:relative}
+.kachel svg{width:22px;height:22px}
+.kachel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-aktion);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;
+  border:1px solid color-mix(in oklab,currentColor 30%,transparent)}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.st-erfolg{background:var(--status-erfolg-flaeche);color:var(--status-erfolg-text)}
+.badge.st-info{background:var(--status-info-flaeche);color:var(--status-info-text)}
+.badge.st-warnung{background:var(--status-warnung-flaeche);color:var(--status-warnung-text)}
+.badge.st-fehler{background:var(--status-fehler-flaeche);color:var(--status-fehler-text)}
+.badge.st-neutral{background:var(--leiste);color:var(--text-sekundaer)}
+.badge.klein{height:22px;padding:0 8px}
+
+/* Produktraster */
+.produkte{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:640px){.produkte{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.produkt{display:grid;grid-template-rows:auto 1fr;gap:10px;padding:8px 8px 12px;border-radius:var(--radius-karte);border:1px solid var(--linie);background:var(--objekt);
+  box-shadow:var(--schatten-widget);text-align:left;color:inherit;min-width:0}
+.produkt:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.p-bild{aspect-ratio:4/5;max-width:100%;border-radius:calc(var(--radius-karte) - 8px);background:var(--leiste);overflow:hidden;display:grid;place-items:center;color:var(--tertiaer);position:relative}
+.p-bild img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.p-bild svg{width:36px;height:36px}
+.p-bild .badge{position:absolute;left:8px;top:8px;z-index:1}
+.p-info{display:grid;gap:2px;padding-inline:4px;min-width:0;align-content:start}
+.p-name{font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.012em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.p-preis{font-size:15px;line-height:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.p-preis s{font-weight:400;color:var(--tertiaer);margin-left:6px;font-size:13px}
+.p-hinweis{font-size:12px;line-height:16px;color:var(--text-sekundaer)}
+.produkt.aus .p-bild img{filter:grayscale(1);opacity:.6}
+
+.leer{padding:40px 24px;text-align:center}
+.leer .titel-karte{margin-bottom:4px}
+.leer .aktionen{justify-content:center}
+.hinweis{margin:16px 4px 0;font-size:13px;line-height:20px;color:var(--tertiaer);text-wrap:balance}
+.vorschau{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:var(--radius-block);
+  background:var(--status-info-flaeche);border:1px solid color-mix(in oklab,var(--status-info-text) 40%,var(--status-info-flaeche));color:var(--foreground);font-size:13px;line-height:20px}
+.vorschau.warn{background:var(--status-warnung-flaeche);border-color:color-mix(in oklab,var(--status-warnung-text) 40%,var(--status-warnung-flaeche))}
+.vorschau svg{flex:none;width:18px;height:18px;margin-top:1px}
+
+/* Sheet */
+.backdrop{position:fixed;inset:0;background:var(--popup-backdrop);z-index:20;opacity:0;transition:opacity 240ms cubic-bezier(.22,1,.36,1)}
+.backdrop.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--background);border-radius:var(--radius-flaeche) var(--radius-flaeche) 0 0;
+  box-shadow:var(--schatten-hoch);max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;overscroll-behavior:contain;
+  transform:translateY(100%);transition:transform 240ms cubic-bezier(.22,1,.36,1);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet.on{transform:none}
+@media (min-width:720px){.sheet{left:50%;width:640px;margin-left:-320px}
+  .galerie{margin:0;padding:0}.galerie .p-bild{width:min(48%,280px)}.galerie .p-bild:only-child{width:min(56%,300px)}}
+.griff{position:sticky;top:0;background:var(--background);padding:8px 0 6px;display:flex;justify-content:center;z-index:3}
+.griff i{width:36px;height:5px;border-radius:3px;background:var(--erhoeht)}
+.griff .icon-taste{position:absolute;right:0;top:6px;width:36px;height:36px}
+.griff .zurueck{position:absolute;left:0;top:2px}
+.detail{display:grid;gap:20px;padding-top:6px}
+.sheet-fuss{position:sticky;bottom:calc(-28px - env(safe-area-inset-bottom,0px));z-index:2;display:flex;gap:8px;
+  margin:4px calc(-1 * max(16px,env(safe-area-inset-right,0px))) calc(-28px - env(safe-area-inset-bottom,0px));
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + 28px + env(safe-area-inset-bottom,0px));
+  background:var(--background);border-top:1px solid var(--linie)}
+.sheet-fuss .taste{flex:1 1 0;padding:0 12px;min-width:0}
+.held{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:center}
+.held .kachel{width:72px;height:72px;border-radius:var(--radius-karte)}
+.held h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.held .meta{margin-top:4px}
+.abschnitt{display:grid;gap:10px;min-width:0}
+.abschnitt>.titel-bereich,.abschnitt>.kopfzeile{padding-inline:4px}
+.kopfzeile{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.innen{padding:16px;display:grid;gap:12px}
+
+.icon-taste{width:44px;height:44px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--objekt);color:var(--foreground);display:grid;place-items:center;padding:0;position:relative}
+.icon-taste:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.zurueck{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--text-sekundaer);font-size:15px;font-weight:500;min-height:44px;padding:0 8px 0 0;border-radius:var(--radius-aktion)}
+.zurueck:hover{color:var(--foreground)}
+.aktionen{display:flex;gap:8px;flex-wrap:wrap}
+.taste{flex:1 1 150px;min-height:44px;padding:0 20px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:15px;font-weight:500;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color 120ms ease;text-align:center}
+.taste.primaer{background:var(--primary);color:var(--primary-foreground)}
+.taste.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 12%,transparent),color-mix(in oklab,var(--primary-foreground) 12%,transparent))}
+.taste.sekundaer{background:var(--objekt);border-color:var(--linie);color:var(--foreground)}
+.taste.sekundaer:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.taste.gefahr{background:var(--objekt);border-color:var(--linie);color:var(--status-fehler-text)}
+.taste:disabled{color:var(--deaktiviert);background:var(--tastenflaeche);cursor:default}
+.taste.klein{flex:none;min-height:36px;padding:0 14px;font-size:13px}
+.taste.ganz{width:100%;flex:none}
+.taste svg{flex:none;width:18px;height:18px}
+.text{margin:0;font-size:15px;line-height:24px;color:var(--text-sekundaer);max-width:65ch}
+
+dl{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0}
+dt,dd{padding:12px 16px;font-size:15px;line-height:22px}
+dt{color:var(--tertiaer);padding-right:8px}
+dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--linie)}
+dt.summe,dt.summe+dd{font-weight:600;color:var(--foreground)}
+dd.minus{color:var(--status-erfolg-text)}
+
+/* Formulare */
+.formular{display:grid;gap:14px;min-width:0}
+.gruppe{display:grid;gap:6px;min-width:0}
+.gruppe>label,.gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
+.gruppe .meta{margin:0}
+.eingabe{width:100%;min-width:0;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:16px}
+.eingabe:hover{border-color:var(--foreground)}
+textarea.eingabe{height:auto;min-height:96px;padding:10px 12px;line-height:22px;resize:vertical}
+select.eingabe{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 18px) 19px,calc(100% - 13px) 19px;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}
+input.datum{-webkit-appearance:none;appearance:none;display:block;text-align:left;line-height:42px}
+.eingabe.code{text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.eingabe.kurz{max-width:120px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.zwei{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:420px){.zwei.umbruch{grid-template-columns:1fr}}
+.feld-zeile{display:flex;gap:8px;align-items:center}
+.feld-zeile .eingabe{flex:1}
+.fehler-text{margin:0;font-size:13px;line-height:20px;color:var(--status-fehler-text);font-weight:500}
+.ok-text{margin:0;font-size:13px;line-height:20px;color:var(--status-erfolg-text);font-weight:500}
+.check{display:flex;align-items:flex-start;gap:10px;min-height:44px;font-size:15px;line-height:22px;color:var(--foreground);padding-top:10px}
+.check input{width:20px;height:20px;accent-color:var(--gewaehlt);flex:none;margin:1px 0 0}
+.segment{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
+.segment button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);padding:0 6px}
+.segment button[aria-pressed="true"]{background:var(--objekt);color:var(--foreground);font-weight:600;box-shadow:0 1px 2px color-mix(in oklab,var(--neutral-950) 12%,transparent)}
+.wahl{display:flex;flex-wrap:wrap;gap:6px}
+.schalter-zeile{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 16px}
+.schalter-zeile+.schalter-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.schalter-zeile .meta{display:block}
+.schalter{position:relative;width:48px;height:28px;min-width:48px;border-radius:999px;border:0;background:var(--rahmen);padding:0;flex:none}
+.schalter span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--neutral-0);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform 160ms ease}
+.schalter[aria-checked="true"]{background:var(--gewaehlt)}
+.schalter[aria-checked="true"] span{transform:translateX(20px)}
+
+/* Produkt im Sheet */
+.galerie{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));scroll-padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.galerie::-webkit-scrollbar{display:none}
+.galerie .p-bild{flex:none;width:min(62%,280px);scroll-snap-align:start;border-radius:var(--radius-block)}
+.galerie .p-bild:only-child{width:min(70%,300px)}
+.fuss-grund{position:absolute;left:0;right:0;bottom:100%;padding:6px max(16px,env(safe-area-inset-left,0px));font-size:13px;line-height:18px;color:var(--text-sekundaer);background:var(--background);text-align:center}
+.preiszeile{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.preiszeile b{font-size:24px;line-height:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.var-wahl{display:flex;flex-wrap:wrap;gap:8px}
+.var{min-width:56px;min-height:44px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--objekt);font-size:15px;font-weight:500;display:grid;place-items:center;line-height:16px}
+.var small{display:block;font-size:11px;font-weight:500;color:var(--tertiaer)}
+.var:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.var[aria-pressed="true"]{background:var(--gewaehlt-text-flaeche);border-color:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-weight:600}
+.var[aria-pressed="true"] small{color:inherit;opacity:.85}
+.var:disabled{color:var(--deaktiviert);text-decoration:line-through;cursor:default;background:var(--tastenflaeche)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--linie);border-radius:var(--radius-aktion);background:var(--objekt);height:44px;flex:none}
+.stepper button{width:44px;height:42px;border:0;background:transparent;border-radius:var(--radius-aktion);display:grid;place-items:center;color:var(--foreground);padding:0}
+.stepper button:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.stepper button:disabled{color:var(--deaktiviert)}
+.stepper output{min-width:32px;text-align:center;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Warenkorb */
+.korb-leiste{position:fixed;z-index:15;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:calc(var(--inhalt) - 32px);margin:0 auto;
+  display:flex;align-items:center;gap:12px;min-height:56px;padding:0 20px;border:0;border-radius:var(--radius-aktion);
+  background:var(--primary);color:var(--primary-foreground);box-shadow:var(--schatten-hoch);font-size:15px;font-weight:500;animation:hoch 240ms cubic-bezier(.22,1,.36,1) both}
+.korb-leiste b{margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums}
+.korb-leiste .anzahl{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-size:12px;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+@keyframes hoch{from{opacity:0;translate:0 16px}to{opacity:1;translate:0 0}}
+.position{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;padding:12px 16px;align-items:start}
+.position+.position{box-shadow:inset 0 1px 0 var(--linie)}
+.position .info{display:grid;gap:2px;min-width:0}
+.position .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.position .unten{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap}
+.position .betrag{font-weight:600;font-variant-numeric:tabular-nums}
+.position .weg{border:0;background:transparent;color:var(--text-sekundaer);font-size:13px;font-weight:500;min-height:44px;padding:0 4px;text-decoration:underline;text-underline-offset:2px}
+
+/* Bestellverlauf */
+.verlauf{list-style:none;margin:0;padding:8px 16px;display:grid}
+.verlauf li{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:40px;position:relative}
+.verlauf li::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--erhoeht);border:2px solid var(--objekt);box-shadow:0 0 0 1px var(--linie);justify-self:center}
+.verlauf li:last-child::before{background:var(--gewaehlt);box-shadow:0 0 0 1px var(--gewaehlt)}
+.verlauf li+li::after{content:"";position:absolute;left:7px;top:-12px;height:24px;width:2px;background:var(--linie);z-index:-0}
+.verlauf .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Verwaltung */
+.kennzahlen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:640px){.kennzahlen{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.kennzahl{background:var(--objekt);border:1px solid var(--linie);border-radius:var(--radius-block);padding:12px 14px;display:grid;gap:2px;min-width:0}
+.kennzahl b{font-size:20px;line-height:26px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kennzahl.warn{border-color:color-mix(in oklab,var(--status-warnung-text) 45%,var(--linie));background:var(--status-warnung-flaeche)}
+.tabelle-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;line-height:20px;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:left;white-space:nowrap}
+th{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer);background:var(--leiste)}
+td.r,th.r{text-align:right}
+tbody tr+tr td{box-shadow:inset 0 1px 0 var(--linie)}
+tfoot td{font-weight:600;box-shadow:inset 0 1px 0 var(--rahmen)}
+td .warn-text{color:var(--status-warnung-text);font-weight:600}
+.monat-wahl{display:flex;align-items:center;gap:8px}
+.monat-wahl .t{min-width:132px;text-align:center;font-weight:600}
+.code-block{margin:0;padding:12px 14px;border-radius:var(--radius-block);background:var(--leiste);border:1px solid var(--linie);font:13px/20px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto}
+.foto-reihe{display:flex;gap:8px;flex-wrap:wrap}
+.foto{width:80px;height:100px;border-radius:var(--radius-zeile);border:1px solid var(--linie);overflow:hidden;position:relative;background:var(--leiste)}
+.foto img{width:100%;height:100%;object-fit:cover;display:block}
+.foto .weg{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--linie);background:var(--objekt);display:grid;place-items:center;padding:0}
+.foto-hinzu{width:80px;height:100px;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:4px;color:var(--text-sekundaer);font-size:12px;font-weight:500;cursor:pointer;background:var(--objekt);text-align:center;padding:4px}
+.foto-hinzu svg{width:20px;height:20px}
+.var-tabelle{display:grid;gap:8px}
+.var-zeile{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) minmax(0,.9fr) 44px;gap:8px;align-items:center}
+.var-zeile.kopf-z{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer)}
+.var-zeile .icon-taste{width:44px;height:44px}
+.fuss{margin-top:28px;display:grid;justify-items:center;gap:8px}
+.fuss #verwaltung-taste{min-height:44px;padding:0 18px;font-size:14px}
+.kopf .zurueck{margin-left:auto}
+.kopf .zurueck:not([hidden])+.merk-taste{margin-left:0}
+.setup{display:grid}
+.setup button{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;min-height:56px;padding:8px 16px;border:0;background:transparent;text-align:left;color:inherit}
+.setup button+button{box-shadow:inset 0 1px 0 var(--linie)}
+.setup button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.setup .kreis{width:18px;height:18px;border-radius:50%;border:2px solid var(--status-warnung-text)}
+.setup .info{display:grid;min-width:0}
+.setup .meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button.kennzahl{text-align:left;color:inherit;font:inherit}
+button.kennzahl:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.fuss .segment{width:min(100%,320px)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
+  background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
+  transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.hoch{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.sr-only{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (min-width:1024px){
+  :root{--inhalt:1040px}
+  .wrap{padding-block:32px 64px}
+  .titel-app{font-size:40px;line-height:48px}
+  .produkte{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .filter{flex-wrap:wrap;overflow:visible;margin-right:0;padding-right:0}
+  .leiste:not(.schwebend){grid-template-columns:minmax(320px,400px) minmax(0,1fr);align-items:center}
+  .leiste:not(.schwebend) .filter{grid-column:1/-1}
+  .leiste:not(.schwebend)>.filter:only-child{grid-column:1/-1}
+  .produkt .p-bild{aspect-ratio:1/1}
+  .sheet{width:720px;margin-left:-360px}
+}
+@media (max-width:359px){.titel-app{font-size:30px;line-height:36px}.produkte{gap:8px}.var-zeile{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 64px 44px}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important;animation-duration:0ms!important}}
+</style>
+
+<div class="minikopf" id="minikopf" aria-hidden="true">
+  <div class="innen-kopf">
+    <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
+      <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
+      <defs>
+        <linearGradient id="lm-oben-m" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".32" style="stop-color:var(--logo-marke)"/></linearGradient>
+        <linearGradient id="lm-rechts-m" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".45" style="stop-color:var(--logo-marke)"/></linearGradient>
+      </defs>
+      <path fill="url(#lm-oben-m)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="url(#lm-rechts-m)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
+    </svg>
+    <p class="kopf-titel" id="mini-titel">Shop</p>
+    <button class="icon-taste frei merk-taste" data-act="kasse" id="mini-korb" aria-label="Warenkorb" tabindex="-1"></button>
+    <button class="icon-taste frei mini-filter" id="mini-filter" aria-expanded="false" aria-controls="leiste" aria-label="Suche und Bereiche" tabindex="-1">
+      <span class="mini-filter-text">Filtern</span>
+      <svg class="pfeil" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 5 5 5 5-5"/></svg>
+    </button>
+  </div>
+</div>
+
+<main class="wrap" id="wrap">
+  <div class="kopf">
+    <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
+      <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
+      <defs>
+        <linearGradient id="lm-oben" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".32" style="stop-color:var(--logo-marke)"/></linearGradient>
+        <linearGradient id="lm-rechts" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".45" style="stop-color:var(--logo-marke)"/></linearGradient>
+      </defs>
+      <path fill="url(#lm-oben)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="url(#lm-rechts)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
+    </svg>
+    <button class="zurueck" data-act="bereich" data-b="shop" id="kopf-zurueck" hidden><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 1 1 7l6 6"/></svg>Zum Shop</button>
+    <button class="icon-taste merk-taste" data-act="kasse" id="kopf-korb" aria-label="Warenkorb"></button>
+  </div>
+  <header class="seitenkopf">
+    <h1 class="titel-seite titel-app" id="titel">Shop</h1>
+    <p class="meta zahl" id="summary" style="margin:0">Sortiment wird geladen …</p>
+  </header>
+
+  <div id="leiste-platz"><div class="leiste" id="leiste"></div></div>
+  <div id="inhalt"></div>
+  <div id="hinweis-box"></div>
+
+  <div class="fuss">
+    <button class="taste sekundaer klein" data-act="bereich" data-b="verwaltung" id="verwaltung-taste" hidden></button>
+    <span class="etikett" style="margin-top:12px">Darstellung</span>
+    <div class="segment" role="group" aria-label="Darstellung" id="modus">
+      <button data-act="modus" data-m="system">System</button><button data-act="modus" data-m="hell">Hell</button><button data-act="modus" data-m="dunkel">Dunkel</button>
+    </div>
+    <button class="zurueck" data-act="abmelden" id="abmelden-taste" style="font-size:13px" hidden>Abmelden</button>
+  </div>
+</main>
+
+<div class="backdrop" id="backdrop" data-act="schliessen" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details" hidden>
+  <div class="griff" id="griff"><i></i>
+    <button class="icon-taste" data-act="schliessen" aria-label="Schließen"><svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div>
+  <div class="detail" id="detail"></div>
+</section>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="foto-datei" accept="image/*" multiple hidden>
+<input type="file" id="szene-datei" accept="image/*" hidden>
+
+<script>
+/* Fehler sichtbar machen, statt still stehenzubleiben */
+window.addEventListener("error", e => { const m = document.getElementById("summary"); if (m) m.textContent = "Technischer Hinweis: " + (e.message || "Skriptfehler") + (e.lineno ? " (Zeile " + e.lineno + ")" : ""); });
+window.addEventListener("unhandledrejection", e => { const m = document.getElementById("summary"); if (m && /geladen/.test(m.textContent)) m.textContent = "Technischer Hinweis: " + (e.reason?.message || e.reason?.code || e.reason); });
+</script>
+<script>
+/* ===== Konfiguration ===== */
+const KATEGORIEN = ["Kleidung", "Büro", "Alltag", "Sonstiges"];
+const GROESSEN = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+const FUL = {
+  intern: { l: "Aus dem Lager", h: "Ausgabe aus dem eigenen Bestand, gebucht in Werbemittel" },
+  lieferant: { l: "Lieferant per Mail", h: "Bestellung geht als Mail an den Lieferanten" },
+  pod: { l: "Print on Demand", h: "Auftrag wird für den Anbieter vorbereitet" }
+};
+const STATUS = {
+  eingegangen: { l: "Eingegangen", c: "st-info" },
+  angenommen: { l: "In Bearbeitung", c: "st-info" },
+  bestellt: { l: "Beim Lieferanten", c: "st-warnung" },
+  bereit: { l: "Abholbereit", c: "st-erfolg" },
+  abgeschlossen: { l: "Abgeschlossen", c: "st-neutral" },
+  storniert: { l: "Storniert", c: "st-fehler" }
+};
+const OFFEN = ["eingegangen", "angenommen", "bestellt", "bereit"];
+const ZAHLWEG = { gehalt: "Gehaltsabzug", ueberweisung: "Überweisung", keine: "Keine Zahlung" };
+const POD_ANBIETER = ["Printful", "Spreadshirt", "Printify", "Gelato", "Anderer Anbieter"];
+const PFX = "gshop.";
+const STANDARD_VORLAGE = "Guten Tag {ansprechpartner},\n\nbitte liefern Sie folgende Artikel zu unserer Bestellung {bestellnr}:\n\n{positionen}\n\nLieferadresse:\n{lieferadresse}\n\nKundennummer: {kundennr}\n\nVielen Dank und freundliche Grüße\n{firma}";
+
+/* ===== Helfer ===== */
+const ls = {
+  get(k, d){ try { const v = localStorage.getItem(PFX + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(PFX + k, JSON.stringify(v)); } catch {} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss");
+const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "").slice(0, 16) : Date.now().toString(36) + Math.random().toString(36).slice(2, 8));
+const r2 = n => Math.round((Number(n) || 0) * 100) / 100;
+const euro = n => Number(n || 0).toLocaleString("de-DE", { style: "currency", currency: "EUR" });
+const zahl = n => Number(n || 0).toLocaleString("de-DE");
+const heute = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const fmt = iso => { if (!iso) return ""; const d = new Date(String(iso).length === 10 ? iso + "T12:00:00" : iso); return isNaN(d) ? "" : new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d); };
+const fmtZeit = iso => { const d = new Date(iso); return isNaN(d) ? "" : new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(d); };
+const monatName = ym => { const d = new Date(ym + "-15T12:00:00"); return new Intl.DateTimeFormat("de-DE", { month: "long", year: "numeric" }).format(d); };
+const plural = (n, e, m) => `${zahl(n)} ${n === 1 ? e : m}`;
+const num = v => { const n = parseFloat(String(v ?? "").replace(/\./g, "").replace(",", ".")); return isNaN(n) ? 0 : n; };
+const numFeld = n => n === undefined || n === null || n === "" ? "" : String(n).replace(".", ",");
+const val = id => { const e = document.getElementById(id); return e ? e.value.trim() : ""; };
+const kuerzelOk = k => /^[A-ZÄÖÜ]{2,3}$/.test(k);
+const mailOk = m => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
+async function sha(t){
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("gauss-shop:" + String(t).trim().toUpperCase()));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("").slice(0, 40);
+}
+const ICON = {
+  chev: `<svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg>`,
+  zurueck: `<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 1 1 7l6 6"/></svg>`,
+  plus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`,
+  minus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>`,
+  weg: `<svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>`,
+  suche: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="6"/><path d="m13 13 4.5 4.5"/></svg>`,
+  tasche: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>`,
+  zahnrad: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`,
+  info: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg>`,
+  pdf: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg>`,
+  mail: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>`,
+  kopie: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>`,
+  kamera: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`
+};
+const KAT_ICON = {
+  "Kleidung": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 4 6.5l1.8 4 2.2-.9V20h8V9.6l2.2.9 1.8-4L15 4a3 3 0 0 1-6 0z"/></svg>`,
+  "Büro": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.5 4.5l4 4L9 19l-5 1 1-5z"/><path d="M13.5 6.5l4 4"/></svg>`,
+  "Alltag": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v7a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/></svg>`,
+  "Sonstiges": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>`
+};
+const fotoUrl = f => f ? (f.url || (f.id ? "/_blob/" + f.id : "")) : "";
+const kachel = p => { const u = fotoUrl((p?.fotos || [])[0]); return `<span class="kachel" aria-hidden="true">${u ? `<img src="${esc(u)}" alt="" loading="lazy">` : (KAT_ICON[p?.kategorie] || KAT_ICON.Sonstiges)}</span>`; };
+const badge = s => `<span class="badge klein ${STATUS[s]?.c || "st-neutral"}">${esc(STATUS[s]?.l || s)}</span>`;
+
+/* ===== Zustand ===== */
+const S = {
+  produkte: [], res: [], einst: {}, mein: null, alle: [], gut: [], lief: [],
+  uid: null, me: null, admin: false, geladen: false, fehler: "", ohneDb: false, schreibGesperrt: false,
+  bereich: "shop", tab: "shop", sub: "bestellungen", q: "", kat: "", bf: "offen", monat: heute().slice(0, 7),
+  stack: [], busy: false
+};
+let CART = ls.get("cart", []);
+let DB = null, USER = null, CAP = { dl: null, assets: null, mcp: undefined };
+const E = () => S.einst || {};
+
+/* ===== Abgeleitete Werte ===== */
+const produkt = id => S.produkte.find(p => p.id === id);
+const aktiveProdukte = () => S.produkte.filter(p => p.aktiv !== false).sort((a, b) => (a.sort ?? 99) - (b.sort ?? 99) || String(a.name).localeCompare(b.name, "de"));
+const vars = p => (p.varianten && p.varianten.length) ? p.varianten : [{ name: "", bestand: p.bestand || 0 }];
+function reserviert(pid, v){
+  let n = 0;
+  for (const r of S.res) if (r.status === "offen") for (const x of r.positionen || []) if (x.p === pid && (x.v || "") === (v || "") && x.intern) n += Number(x.m || 0);
+  return n;
+}
+function frei(p, v){
+  if (p.fulfillment !== "intern") return Infinity;
+  const va = vars(p).find(x => (x.name || "") === (v || ""));
+  return Math.max(0, Number(va?.bestand || 0) - reserviert(p.id, v));
+}
+const freiGesamt = p => p.fulfillment !== "intern" ? Infinity : vars(p).reduce((s, v) => s + frei(p, v.name), 0);
+const imKorb = (pid, v) => CART.filter(c => c.p === pid && (v === undefined || (c.v || "") === (v || ""))).reduce((s, c) => s + c.m, 0);
+const meineAuftraege = () => Object.values(S.mein?.orders || {}).sort((a, b) => String(b.am).localeCompare(a.am));
+const alleAuftraege = () => S.alle.flatMap(d => Object.values(d.orders || {}).map(o => ({ ...o, uid: d.uid }))).sort((a, b) => String(b.am).localeCompare(a.am));
+const auftrag = (u, nr) => { const d = S.alle.find(x => x.uid === u); return d?.orders?.[nr] ? { ...d.orders[nr], uid: u } : null; };
+function bereitsBestellt(pid){
+  let n = 0;
+  for (const o of meineAuftraege()) if (o.status !== "storniert") for (const x of o.positionen || []) if (x.produktId === pid) n += x.menge;
+  return n;
+}
+const lieferant = id => S.lief.find(l => l.id === id);
+function preisHinweis(p){
+  if (p.fulfillment === "intern"){
+    const f = freiGesamt(p);
+    if (f <= 0) return { t: "Ausverkauft", c: "st-fehler", aus: true };
+    if (f <= 3) return { t: `Nur noch ${f}`, c: "st-warnung" };
+    return null;
+  }
+  return { t: p.lieferzeit ? `Lieferzeit ${p.lieferzeit}` : "Wird bestellt", c: "st-info" };
+}
+
+/* ===== Speicher ===== */
+function fehlerText(e){
+  if (e?.code === "quota_exceeded") return "Der Speicher ist voll. Bitte alte Einträge entfernen.";
+  if (e?.code === "invalid_argument") return "Keine Berechtigung zum Speichern. Der Shop braucht mindestens die Freigabe „Mitwirkende“.";
+  if (e?.code === "resource_exhausted") return "Zu viele Aktionen in kurzer Zeit. Bitte kurz warten.";
+  return "Speichern fehlgeschlagen. Bitte noch einmal versuchen.";
+}
+const docs = snap => snap.docs.map(d => ({ id: d.id, ...d.data() }));
+function abo(ref, fn, name){
+  try {
+    return ref.onSnapshot(s => { try { fn(s); } catch (e){ S.fehler = `${name}: ${e?.message || e}`; } nachLaden(); },
+      e => { S.fehler = `${name}: ${e?.code || ""} ${e?.message || ""}`.trim(); if (e.code !== "revoked") toast(`Verbindung (${name}) unterbrochen. Bitte Seite neu laden.`); nachLaden(); });
+  } catch (e){ S.fehler = `${name}: ${e?.message || e}`; }
+}
+async function ladeProdukte(){
+  try { const s = await DB.collection("produkte").get(); if (!S.geladen || !S.produkte.length){ S.produkte = docs(s); S.geladen = true; render(); } }
+  catch (e){ S.fehler = `Sortiment: ${e?.code || ""} ${e?.message || ""}`.trim(); S.geladen = true; render(); }
+}
+/* ===== Eigenständige App (PWA auf GitHub Pages) ===== */
+/* API_URL: Web-App-URL aus shop/apps-script/Code.gs. Leer = Vorschau mit Demodaten, nur auf diesem Gerät.
+   Im Claude-Artifact wird stattdessen der Artifact-Speicher genutzt. */
+const CONFIG = { API_URL: "" };
+const IM_ARTIFACT = !!(window.claude && typeof window.claude.use === "function");
+const EIGEN = { modus: "", me: null, store: {}, hoerer: [], token: "", angemeldet: null };
+const eKlon = x => x == null ? x : JSON.parse(JSON.stringify(x));
+function eMisch(alt, neu){
+  const o = { ...(alt || {}) };
+  for (const [k, v] of Object.entries(neu)) o[k] = v && typeof v === "object" && !Array.isArray(v) && o[k] && typeof o[k] === "object" && !Array.isArray(o[k]) ? eMisch(o[k], v) : v;
+  return o;
+}
+const eSnapDoc = (col, id, roh) => { const d = roh !== undefined ? roh : EIGEN.store[col]?.[id]; return { id, exists: !!d, data: () => eKlon(d), metadata: {} }; };
+function eSnapCol(col){ const l = Object.keys(EIGEN.store[col] || {}).sort().map(id => eSnapDoc(col, id)); return { docs: l, size: l.length, empty: !l.length, docChanges: () => [], metadata: {} }; }
+function eMelden(col){ for (const h of [...EIGEN.hoerer]) if (!col || h.col === col) { try { h.fn(h.id ? eSnapDoc(h.col, h.id) : eSnapCol(h.col)); } catch {} } }
+const eFehler = (code, message) => Object.assign(new Error(message || code), { code });
+async function eApi(p, ms = 30000){
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ ...p, token: EIGEN.token }), signal: ctl.signal });
+    const j = await r.json();
+    if (!j.ok){ if (j.code === "anmeldung"){ abmelden(); } throw eFehler(j.code || "api", j.error || "Speichern fehlgeschlagen."); }
+    return j;
+  } catch (e){
+    if (e.name === "AbortError") throw eFehler("unavailable", "Zeitüberschreitung. Bitte noch einmal versuchen.");
+    if (e.code) throw e;
+    throw eFehler("unavailable", "Keine Verbindung zum Shop-Server. Bitte die Internetverbindung prüfen.");
+  } finally { clearTimeout(t); }
+}
+async function eLaden(still){
+  if (EIGEN.modus !== "server" || !EIGEN.token) return;
+  try { const j = await eApi({ action: "liste" }); EIGEN.me = j.me; EIGEN.store = j.data || {}; ls.set("cache", { me: j.me, data: j.data }); eMelden(); }
+  catch (e){ if (!still) toast(e.message); }
+}
+function eSchreiben(col, id, art, data){
+  const s = (EIGEN.store[col] ||= {});
+  if (art === "del") delete s[id];
+  else if (art === "update"){ if (!s[id]) return Promise.reject(eFehler("invalid_argument", "Eintrag nicht gefunden.")); s[id] = eMisch(s[id], eKlon(data)); }
+  else s[id] = eKlon(data);
+  eMelden(col);
+  if (EIGEN.modus === "vorschau"){ ls.set("vorschau", EIGEN.store); return Promise.resolve(); }
+  return eApi({ action: art, col, id, data }).then(() => {}).catch(async e => { await eLaden(true); throw e; });
+}
+const eDb = {
+  collection(col){
+    const ref = { path: col,
+      onSnapshot(fn){ const h = { col, fn }; EIGEN.hoerer.push(h); setTimeout(() => fn(eSnapCol(col)), 0); return () => { EIGEN.hoerer = EIGEN.hoerer.filter(x => x !== h); }; },
+      get: async () => eSnapCol(col), doc: id => eDb.doc(col + "/" + id), where: () => ref, orderBy: () => ref, limit: () => ref };
+    return ref;
+  },
+  doc(path){
+    const [col, id] = path.split("/");
+    return { id, path,
+      onSnapshot(fn){ const h = { col, id, fn }; EIGEN.hoerer.push(h); setTimeout(() => fn(eSnapDoc(col, id)), 0); return () => { EIGEN.hoerer = EIGEN.hoerer.filter(x => x !== h); }; },
+      async get(){
+        if (EIGEN.modus === "server" && col === "gutscheinpruefung"){ try { const j = await eApi({ action: "get", col, id }); return eSnapDoc(col, id, j.doc || null); } catch { return eSnapDoc(col, id, null); } }
+        return eSnapDoc(col, id);
+      },
+      set: d => eSchreiben(col, id, "set", d), update: d => eSchreiben(col, id, "update", d), delete: () => eSchreiben(col, id, "del") };
+  }
+};
+const eUser = {
+  id: async () => EIGEN.me?.id || null, canEdit: async () => !!EIGEN.me?.admin, isOwner: async () => false,
+  can: async () => (EIGEN.me?.id ? true : false),
+  me: async () => ({ id: EIGEN.me?.id || null, name: EIGEN.me?.name || "", email: EIGEN.me?.email || null, avatarUrl: "", color: "", isOwner: false, canEdit: !!EIGEN.me?.admin })
+};
+const eDownloads = { save: async ({ filename, data }) => {
+  const blob = data instanceof Blob ? data : new Blob([data]), u = URL.createObjectURL(blob), a = document.createElement("a");
+  a.href = u; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000); return { status: "saved" };
+} };
+const eAssets = { upload: async datei => {
+  const dataUrl = await new Promise((ok, nein) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = nein; r.readAsDataURL(datei); });
+  const j = await eApi({ action: "upload", dataUrl }, 90000); return { id: j.id, url: j.url };
+} };
+function abmelden(){ ls.set("token", ""); ls.set("cache", null); location.reload(); }
+EIGEN.start = (async () => {
+  if (IM_ARTIFACT) return;
+  if (!CONFIG.API_URL){
+    EIGEN.modus = "vorschau"; EIGEN.me = { id: "vorschau", name: "Vorschau", email: null, admin: true };
+    const v = ls.get("vorschau", null);
+    if (v) EIGEN.store = v;
+    else { try { const r = await fetch("demo/daten.json", { cache: "no-store" }); EIGEN.store = await r.json(); } catch { EIGEN.store = {}; } }
+    return;
+  }
+  EIGEN.modus = "server"; EIGEN.token = ls.get("token", "");
+  const c = ls.get("cache", null);
+  if (c && EIGEN.token){ EIGEN.me = c.me; EIGEN.store = c.data || {}; }
+  if (!EIGEN.token){ S.anmeldung = { schritt: "email" }; await new Promise(ok => { EIGEN.angemeldet = ok; }); }
+  await eLaden(true);
+  setInterval(() => { if (!document.hidden && !S.busy && !S.stack.length) eLaden(true); }, 20000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !S.busy) eLaden(true); });
+})();
+async function eigenUse(n){
+  await EIGEN.start;
+  if (n === "db") return eDb;
+  if (n === "user") return eUser;
+  if (n === "downloads") return eDownloads;
+  if (n === "assets") return EIGEN.modus === "server" && EIGEN.me?.admin ? eAssets : null;
+  return null;
+}
+function renderAnmeldung(){
+  const a = S.anmeldung;
+  return `<div class="karte innen formular" style="margin-top:20px;max-width:440px">
+    <div class="abschnitt" style="gap:4px"><h2 class="titel-bereich">Anmelden</h2><p class="meta" style="margin:0">${a.schritt === "email" ? "Mit der Firmen-Adresse anmelden. Du bekommst einen sechsstelligen Code per Mail." : `Code aus der Mail an <b>${esc(a.email)}</b> eingeben.`}</p></div>
+    ${a.schritt === "email" ? `<div class="gruppe"><label for="anm-mail">E-Mail</label><input class="eingabe" id="anm-mail" type="email" autocomplete="email" inputmode="email" value="${esc(a.email || "")}" placeholder="vorname.nachname@…"></div>
+      <button class="taste primaer" data-act="anm-code" ${a.busy ? "disabled" : ""}>${a.busy ? "Wird gesendet …" : "Code senden"}</button>`
+    : `<div class="gruppe"><label for="anm-code">Code</label><input class="eingabe code" id="anm-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></div>
+      <div class="aktionen"><button class="taste sekundaer" data-act="anm-zurueck">Andere Adresse</button><button class="taste primaer" data-act="anm-login" ${a.busy ? "disabled" : ""}>${a.busy ? "Prüfe …" : "Anmelden"}</button></div>`}
+    ${a.fehler ? `<p class="fehler-text" role="alert">${esc(a.fehler)}</p>` : ""}
+  </div>`;
+}
+
+async function start(){
+  setzeModus(ls.get("modus", "system"));
+  render();
+  const use = n => IM_ARTIFACT ? window.claude.use(n).catch(() => null) : eigenUse(n);
+  const [db, user] = await Promise.all([use("db"), use("user")]);
+  USER = user;
+  if (!db){ S.ohneDb = true; S.geladen = true; render(); return; }
+  DB = db;
+  /* Sortiment zuerst: es hängt an keiner Personen-Abfrage */
+  abo(db.collection("produkte"), s => { S.produkte = docs(s); S.geladen = true; }, "Sortiment");
+  abo(db.collection("reservierungen"), s => { S.res = docs(s); }, "Bestand");
+  abo(db.doc("einstellungen/allgemein"), d => { S.einst = d.exists ? d.data() : {}; }, "Einstellungen");
+  ladeProdukte();
+  setTimeout(() => { if (!S.produkte.length) ladeProdukte(); }, 5000);
+  if (user){
+    try {
+      const [id, adm, me] = await Promise.all([user.id(), user.canEdit(), user.me()]);
+      S.uid = id; S.admin = !!adm; S.me = me;
+      const kann = typeof user.can === "function" ? await user.can("data.write").catch(() => null) : null;
+      if (kann === false && !S.admin) S.schreibGesperrt = true;
+    } catch (e){ S.fehler = `Anmeldung: ${e?.message || e}`; }
+  }
+  if (S.uid) abo(db.doc("bestellungen/" + S.uid), d => { S.mein = d.exists ? d.data() : null; }, "Bestellungen");
+  if (S.admin){
+    abo(db.collection("bestellungen"), s => { S.alle = s.docs.map(d => ({ uid: d.id, ...d.data() })); }, "alle Bestellungen");
+    abo(db.collection("gutscheine"), s => { S.gut = docs(s); }, "Gutscheine");
+    abo(db.collection("lieferanten"), s => { S.lief = docs(s); }, "Lieferanten");
+  }
+  use("downloads").then(x => CAP.dl = x);
+  use("assets").then(x => CAP.assets = x);
+  render();
+}
+let renderGeplant = false;
+function nachLaden(){
+  if (renderGeplant) return; renderGeplant = true;
+  setTimeout(() => {
+    renderGeplant = false; render();
+    const v = oben();
+    if (v && !S.busy && !tippt() && ["produkt", "bestellung", "auftrag", "kasse-fertig"].includes(v.view)) renderSheet();
+  }, 0);
+}
+const tippt = () => { const a = document.activeElement; return !!(a && $("#sheet").contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); };
+
+/* ===== Darstellung ===== */
+function setzeModus(m){
+  if (m === "hell") document.documentElement.setAttribute("data-theme", "light");
+  else if (m === "dunkel") document.documentElement.setAttribute("data-theme", "dark");
+  else document.documentElement.removeAttribute("data-theme");
+  ls.set("modus", m);
+  document.querySelectorAll("#modus button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.m === m)));
+}
+let toastT;
+function toast(t){
+  const e = $("#toast"); e.textContent = t; e.classList.add("on");
+  clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove("on"), 3200);
+}
+
+/* ===== Hauptansicht ===== */
+function render(){
+  const ap = aktiveProdukte();
+  if (!S.admin) S.bereich = "shop";
+  const verw = S.bereich === "verwaltung";
+  const neu = S.admin ? alleAuftraege().filter(o => o.status === "eingegangen").length : 0;
+  $("#titel").textContent = verw ? "Verwaltung" : "Shop";
+  $("#mini-titel").textContent = verw ? "Verwaltung" : "Shop";
+  $(".mini-filter-text").textContent = verw ? "Bereiche" : "Filtern";
+  $("#kopf-zurueck").hidden = !verw;
+  $("#summary").textContent = !S.geladen ? "Sortiment wird geladen …" : verw ? `Mitarbeitershop · ${neu ? plural(neu, "neue Bestellung", "neue Bestellungen") : "keine neuen Bestellungen"}` : `Mitarbeitershop GAUSS LVS · ${plural(ap.length, "Artikel", "Artikel")}`;
+  const vt = $("#verwaltung-taste"); vt.hidden = !S.admin;
+  vt.innerHTML = verw ? `${ICON.zurueck}Zurück zum Shop` : `${ICON.zahnrad}Verwaltung${neu ? ` <span class="badge klein st-info">${neu} neu</span>` : ""}`;
+  vt.dataset.b = verw ? "shop" : "verwaltung";
+
+  let l = "";
+  if (verw){
+    const subs = [["bestellungen", "Bestellungen"], ["produkte", "Produkte"], ["gutscheine", "Gutscheine"], ["lieferanten", "Lieferanten"], ["buchhaltung", "Buchhaltung"], ["einstellungen", "Einstellungen"]];
+    l = `<div class="filter" role="group" aria-label="Verwaltung">${subs.map(([k, t]) => `<button class="chip" data-act="sub" data-sub="${k}" aria-pressed="${S.sub === k}">${t}${k === "bestellungen" && neu ? ` <span class="zahl">${neu}</span>` : ""}</button>`).join("")}</div>`;
+  } else {
+    const meine = meineAuftraege().filter(o => OFFEN.includes(o.status)).length;
+    const tabs = [["shop", "Shop", ""], ["bestellungen", "Meine Bestellungen", meine || ""]];
+    if (!tabs.some(t => t[0] === S.tab)) S.tab = "shop";
+    l = `<div class="umschalter" role="group" aria-label="Bereich">${tabs.map(([k, t, n]) => `<button data-act="tab" data-tab="${k}" aria-pressed="${S.tab === k}">${t}${n ? ` <span class="zahl">${n}</span>` : ""}</button>`).join("")}</div>`;
+    if (S.tab === "shop"){
+      const kats = KATEGORIEN.filter(k => ap.some(p => p.kategorie === k));
+      l += `<div class="suche">${ICON.suche}<input id="q" type="search" placeholder="Artikel suchen …" autocomplete="off" enterkeyhint="search" aria-label="Artikel suchen" value="${esc(S.q)}"></div>`;
+      if (kats.length > 1) l += `<div class="filter" role="group" aria-label="Kategorie"><button class="chip" data-act="kat" data-k="" aria-pressed="${!S.kat}">Alle</button>${kats.map(k => `<button class="chip" data-act="kat" data-k="${esc(k)}" aria-pressed="${S.kat === k}">${esc(k)}</button>`).join("")}</div>`;
+    }
+  }
+  const leiste = $("#leiste"), fokus = document.activeElement?.id === "q", pos = fokus ? $("#q").selectionStart : 0;
+  leiste.innerHTML = l;
+  if (fokus){ const q = $("#q"); if (q){ q.focus(); try { q.setSelectionRange(pos, pos); } catch {} } }
+
+  let h = "";
+  if (S.anmeldung){ $("#leiste").innerHTML = ""; $("#inhalt").innerHTML = renderAnmeldung(); $("#hinweis-box").innerHTML = ""; $("#summary").textContent = "Mitarbeitershop GAUSS LVS"; $("#verwaltung-taste").hidden = true; for (const id of ["#kopf-korb", "#mini-korb"]) $(id).hidden = true; return; }
+  if (S.ohneDb) h = `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Shop nicht verbunden</p><p class="meta" style="margin:0">Der Shop braucht den gemeinsamen Speicher. Bitte die Seite in claude.ai öffnen und angemeldet sein.</p></div>`;
+  else if (verw) h = renderVerwaltung();
+  else if (S.tab === "shop") h = renderShop(ap);
+  else h = renderMeine();
+  $("#inhalt").innerHTML = h;
+
+  let hin = "";
+  if (S.schreibGesperrt) hin = `<div class="vorschau warn">${ICON.info}<span>Mit der aktuellen Freigabe lässt sich nur schauen. Zum Bestellen braucht es die Freigabe „Mitwirkende“.</span></div>`;
+  if (!verw && S.tab === "shop" && !S.ohneDb) hin += `<p class="hinweis">Preise inklusive Umsatzsteuer. Bezahlt wird per Gehaltsabzug oder Überweisung${E().abholort ? `, abgeholt wird bei ${esc(E().abholort)}` : ""}.</p>`;
+  if (EIGEN.modus === "vorschau") hin += `<div class="vorschau">${ICON.info}<span>Vorschau ohne Server: Bestellungen und Änderungen bleiben auf diesem Gerät. Für den Betrieb das Apps Script einrichten und die Adresse in der App eintragen.</span></div>`;
+  $("#hinweis-box").innerHTML = hin;
+  const ab = $("#abmelden-taste"); if (ab){ ab.hidden = EIGEN.modus !== "server" || !EIGEN.me; ab.textContent = EIGEN.me?.email ? `Abmelden (${EIGEN.me.email})` : "Abmelden"; }
+  renderKorb();
+}
+function renderKorb(){
+  const n = CART.reduce((t, c) => t + c.m, 0), shop = S.bereich === "shop";
+  const korbIcon = `${ICON.tasche}${n ? `<span class="zaehler-zahl">${n}</span>` : ""}`;
+  for (const id of ["#kopf-korb", "#mini-korb"]){ const t = $(id); t.innerHTML = korbIcon; t.setAttribute("aria-label", n ? `Warenkorb, ${n} Artikel` : "Warenkorb, leer"); t.hidden = !shop; }
+}
+function highlights(ap){
+  const verfuegbar = p => p.fulfillment !== "intern" || freiGesamt(p) > 0;
+  const gesetzt = ap.filter(p => p.highlight && verfuegbar(p)).sort((a, b) => (a.highlightSort ?? a.sort ?? 99) - (b.highlightSort ?? b.sort ?? 99));
+  if (gesetzt.length) return gesetzt.slice(0, 6).map(p => ({ p, label: p.highlightText || "" }));
+  const menge = new Map();
+  for (const r0 of S.res) if (r0.status !== "storniert") for (const x of r0.positionen || []) menge.set(x.p, (menge.get(x.p) || 0) + Number(x.m || 0));
+  return ap.filter(p => menge.get(p.id) && verfuegbar(p)).sort((a, b) => menge.get(b.id) - menge.get(a.id)).slice(0, 4).map(p => ({ p, label: "", auto: true }));
+}
+function produktKarte(p){
+  const u = fotoUrl((p.fotos || [])[0]), h = preisHinweis(p);
+  const markt = p.marktpreis && p.marktpreis > p.vk ? `<s>${euro(p.marktpreis)}</s>` : "";
+  return `<button class="produkt${h?.aus ? " aus" : ""}" data-act="produkt" data-id="${esc(p.id)}">
+    <span class="p-bild">${h ? `<span class="badge klein ${h.c}">${esc(h.t)}</span>` : ""}${u ? `<img src="${esc(u)}" alt="" loading="lazy">` : (KAT_ICON[p.kategorie] || KAT_ICON.Sonstiges)}</span>
+    <span class="p-info"><span class="etikett">${esc(p.kategorie || "")}</span><span class="p-name">${esc(p.name)}</span><span class="p-preis">${euro(p.vk)}${markt}</span>
+    ${vars(p).length > 1 ? `<span class="p-hinweis">${esc(vars(p).map(v => v.name).join(" · "))}</span>` : ""}</span></button>`;
+}
+function renderShop(ap){
+  const diag = S.fehler ? `<p class="fehler-text" style="margin-top:10px">Technischer Hinweis: ${esc(S.fehler)}</p>` : "";
+  if (!S.geladen) return `<div class="karte leer" style="margin-top:20px"><p class="meta" style="margin:0">Sortiment wird geladen …</p>${diag}</div>`;
+  if (!ap.length) return `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Noch keine Artikel im Shop</p><p class="meta" style="margin:0">${S.admin ? "Produkte legst du unten über „Verwaltung“ an und schaltest sie dort frei." : "Das Sortiment wird gerade vorbereitet."}</p>${diag}${S.admin ? `<div class="aktionen" style="margin-top:14px"><button class="taste primaer klein" data-act="neu-produkt">Produkt anlegen</button></div>` : ""}</div>`;
+  const w = norm(S.q).split(/\s+/).filter(Boolean);
+  const l = ap.filter(p => (!S.kat || p.kategorie === S.kat) && (!w.length || w.every(x => norm([p.name, p.kategorie, p.marke, p.beschreibung, vars(p).map(v => v.name).join(" ")].join(" ")).includes(x))));
+  if (!l.length) return `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Nichts gefunden</p><p class="meta" style="margin:0">Andere Suche oder Kategorie versuchen.</p></div>`;
+  const hl = !w.length && !S.kat ? highlights(ap) : [];
+  const FOKUS = { oben: "center 18%", mitte: "center 50%", unten: "center 82%" };
+  const hlHtml = hl.length ? `<section class="bereich"><header><h2 class="titel-bereich">Highlights</h2><span class="kopf-rechts"><span class="meta">${hl.some(x => x.auto) ? "Am häufigsten bestellt" : ""}</span>${hl.length > 3 ? `<span class="hl-pfeile"><button class="icon-taste" data-act="hl-scroll" data-d="-1" aria-label="Vorherige Highlights">${ICON.zurueck}</button><button class="icon-taste" data-act="hl-scroll" data-d="1" aria-label="Weitere Highlights"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 6 6-6 6"/></svg></button></span>` : ""}</span></header>
+    <ul class="karussell" aria-label="Highlights" style="--n:${Math.min(3, hl.length)}">${hl.map(({ p, label }) => {
+      const szene = fotoUrl(p.szene), u = szene || fotoUrl((p.fotos || [])[0]), vs = vars(p);
+      return `<li><button class="fotokarte${szene ? " mit-szene" : ""}" data-act="produkt" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, ${euro(p.vk)}">
+        ${u ? `<img class="fk-bild" src="${esc(u)}" alt="" loading="lazy" style="object-position:${FOKUS[p.szeneFokus] || FOKUS.mitte}">` : `<span class="fk-leer">${KAT_ICON[p.kategorie] || KAT_ICON.Sonstiges}</span>`}
+        <span class="fk-scrim" aria-hidden="true"></span>
+        ${label ? `<span class="fk-marke">${esc(label)}</span>` : ""}
+        <span class="fk-text"><span class="fk-kat">${esc(p.kategorie || "")}</span><span class="fk-name">${esc(p.name)}</span>${p.highlightSatz ? `<span class="fk-satz">${esc(p.highlightSatz)}</span>` : ""}
+          <span class="fk-preis">${euro(p.vk)}${vs.length > 1 ? ` · ${esc(vs[0].name)}–${esc(vs[vs.length - 1].name)}` : ""}</span></span>
+        <span class="fk-pfeil" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      </button></li>`; }).join("")}</ul></section>` : "";
+  const ord = k => { const i = KATEGORIEN.indexOf(k); return i < 0 ? 99 : i; };
+  const sortiert = [...l].sort((a, b) => ord(a.kategorie) - ord(b.kategorie));
+  const titel = w.length ? `${plural(l.length, "Treffer", "Treffer")}` : (S.kat || "Sortiment");
+  return hlHtml + `<section class="bereich"><header><h2 class="titel-bereich">${esc(titel)}</h2><span class="meta zahl">${w.length ? "" : plural(l.length, "Artikel", "Artikel")}</span></header><div class="produkte">${sortiert.map(produktKarte).join("")}</div></section>`;
+}
+function auftragZeile(o, act){
+  const pos = o.positionen || [], erst = produkt(pos[0]?.produktId) || { kategorie: "Sonstiges", fotos: [] };
+  const titel = pos.length === 1 ? pos[0].name : `${pos[0]?.name || "Bestellung"} und ${plural(pos.length - 1, "weiterer Artikel", "weitere Artikel")}`;
+  return `<button class="zeile" data-act="${act}" data-nr="${esc(o.nr)}" data-uid="${esc(o.uid || "")}">${kachel(erst)}
+    <span class="info"><span class="t zwei-zeilen">${act === "auftrag" ? `<span class="kuerzel-marke">${esc(o.kuerzel)}</span>` : ""}${esc(titel)}</span><span class="meta zahl">${esc(o.nr.replace(/^SHOP-/, ""))} · ${fmt(o.am)}</span><span class="unten-z">${badge(o.status)}</span></span>
+    <span class="rechts"><b>${euro(o.summe)}</b>${ICON.chev}</span></button>`;
+}
+function renderMeine(){
+  if (!S.uid) return `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Nicht angemeldet</p><p class="meta" style="margin:0">Eigene Bestellungen sind nur angemeldet sichtbar.</p></div>`;
+  const l = meineAuftraege();
+  if (!l.length) return `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Noch keine Bestellungen</p><p class="meta" style="margin:0">Bestellungen erscheinen hier mit ihrem aktuellen Stand.</p><div class="aktionen" style="margin-top:14px"><button class="taste sekundaer klein" data-act="tab" data-tab="shop">Zum Shop</button></div></div>`;
+  const offen = l.filter(o => OFFEN.includes(o.status)), rest = l.filter(o => !OFFEN.includes(o.status));
+  let h = "";
+  if (offen.length) h += `<section class="bereich"><header><h2 class="titel-bereich">Laufend</h2><span class="meta zahl">${offen.length}</span></header><div class="karte">${offen.map(o => auftragZeile(o, "bestellung")).join("")}</div></section>`;
+  if (rest.length) h += `<section class="bereich"><header><h2 class="titel-bereich">Erledigt</h2><span class="meta zahl">${rest.length}</span></header><div class="karte">${rest.map(o => auftragZeile(o, "bestellung")).join("")}</div></section>`;
+  return h;
+}
+
+/* ===== Verwaltung ===== */
+function setupPunkte(){
+  const e = E(), l = [];
+  if (!e.anschrift) l.push(["einstellungen", "Anschrift der Firma eintragen", "Steht auf jeder Rechnung"]);
+  if (!e.ustId && !e.steuernr) l.push(["einstellungen", "USt-IdNr. oder Steuernummer eintragen", "Pflichtangabe auf Rechnungen"]);
+  if (!e.iban) l.push(["einstellungen", "IBAN eintragen", "Für Bestellungen per Überweisung"]);
+  if (!e.buchhaltungEmail) l.push(["einstellungen", "E-Mail der Buchhaltung eintragen", "Rechnungen in Kopie, Monatsbericht"]);
+  if (!e.abholort) l.push(["einstellungen", "Abholort festlegen", "Erscheint im Shop und bei Bestellungen"]);
+  const ohneMail = S.lief.filter(x => !x.email && x.art !== "pod" && S.produkte.some(p => p.lieferantId === x.id && p.aktiv !== false));
+  if (ohneMail.length) l.push(["lieferanten", `${plural(ohneMail.length, "Lieferant", "Lieferanten")} ohne E-Mail`, ohneMail.map(x => x.name).join(", ")]);
+  return l;
+}
+function renderVerwaltung(){
+  if (S.sub !== "bestellungen") return verwaltungInhalt();
+  const sp = setupPunkte();
+  const setup = sp.length ? `<section class="bereich"><header><h2 class="titel-bereich">Vor dem Start</h2><span class="meta zahl">${sp.length} offen</span></header>
+    <div class="karte setup">${sp.map(([sub, t, m]) => `<button data-act="sub" data-sub="${sub}" data-fokus="1"><span class="kreis" aria-hidden="true"></span><span class="info"><b style="font-weight:600">${esc(t)}</b><span class="meta">${esc(m)}</span></span>${ICON.chev}</button>`).join("")}</div></section>` : "";
+  return renderUebersicht() + verwaltungInhalt() + setup;
+}
+function renderUebersicht(){
+  const a = alleAuftraege(), ym = heute().slice(0, 7);
+  const n = f => a.filter(f).length;
+  const umsatz = r2(a.filter(o => o.status === "abgeschlossen" && String(o.abgeschlossenAm || "").startsWith(ym)).reduce((t, o) => t + o.summe, 0));
+  const knapp = S.produkte.filter(p => p.aktiv !== false && p.fulfillment === "intern" && vars(p).some(v => frei(p, v.name) <= 1)).length;
+  return `<section class="bereich"><header><h2 class="titel-bereich">Übersicht</h2></header><div class="kennzahlen">
+    <button class="kennzahl" data-act="bf" data-f="neu"><span class="etikett">Neu</span><b>${n(o => o.status === "eingegangen")}</b><span class="meta">zum Annehmen</span></button>
+    <button class="kennzahl" data-act="bf" data-f="offen"><span class="etikett">In Arbeit</span><b>${n(o => ["angenommen", "bestellt", "bereit"].includes(o.status))}</b><span class="meta">${n(o => o.status === "bereit")} abholbereit</span></button>
+    <button class="kennzahl" data-act="sub" data-sub="buchhaltung"><span class="etikett">Umsatz ${new Intl.DateTimeFormat("de-DE", { month: "long" }).format(new Date())}</span><b>${euro(umsatz)}</b><span class="meta">abgeschlossen</span></button>
+    <button class="kennzahl ${knapp ? "warn" : ""}" data-act="sub" data-sub="produkte"><span class="etikett">Bestand</span><b>${knapp ? plural(knapp, "Artikel", "Artikel") : "Im Rahmen"}</b><span class="meta">${knapp ? "fast leer" : "alle Größen vorrätig"}</span></button>
+  </div></section>`;
+}
+function verwaltungInhalt(){
+  switch (S.sub){
+    case "produkte": return renderAdminProdukte();
+    case "gutscheine": return renderAdminGutscheine();
+    case "lieferanten": return renderAdminLieferanten();
+    case "buchhaltung": return renderBuchhaltung();
+    case "einstellungen": return renderEinstellungen();
+    default: return renderAdminBestellungen();
+  }
+}
+function renderAdminBestellungen(){
+  const alle = alleAuftraege();
+  const filter = { offen: o => OFFEN.includes(o.status), neu: o => o.status === "eingegangen", abgeschlossen: o => o.status === "abgeschlossen", storniert: o => o.status === "storniert", alle: () => true };
+  const namen = { neu: "Neu", offen: "Offen", abgeschlossen: "Abgeschlossen", storniert: "Storniert", alle: "Alle" };
+  const l = alle.filter(filter[S.bf]);
+  let h = `<section class="bereich"><header><h2 class="titel-bereich">Bestellungen</h2></header><div class="filter" role="group" aria-label="Status">${Object.keys(namen).map(k => `<button class="chip" data-act="bf" data-f="${k}" aria-pressed="${S.bf === k}">${namen[k]} <span class="zahl">${alle.filter(filter[k]).length}</span></button>`).join("")}</div>`;
+  h += l.length ? `<div class="karte">${l.map(o => auftragZeile(o, "auftrag")).join("")}</div>` : `<div class="karte leer"><p class="titel-karte">Keine Bestellungen</p><p class="meta" style="margin:0">${alle.length ? "In diesem Status liegt gerade nichts." : "Sobald Mitarbeitende bestellen, erscheinen die Bestellungen hier."}</p></div>`;
+  h += `</section>`;
+  const wm = werbemittelOffen();
+  if (wm.length){
+    const text = wm.map(x => `${fmt(x.am)} · ${x.nr} · ${x.kuerzel} · ${x.menge} × ${x.name}${x.variante ? ` (${x.variante})` : ""}${x.wmNr ? ` · Art.-Nr. ${x.wmNr}` : ""}`).join("\n");
+    h += `<section class="bereich"><header><h2 class="titel-bereich">In Werbemittel zu buchen</h2><span class="meta zahl">${wm.length}</span></header>
+      <div class="karte innen"><p class="meta" style="margin:0">Ausgaben aus abgeschlossenen Bestellungen. Als Ausgabe in Werbemittel buchen, dann hier abhaken.</p>
+      <pre class="code-block" id="wm-text">${esc(text)}</pre>
+      <div class="aktionen"><button class="taste sekundaer" data-act="kopieren" data-quelle="wm-text">${ICON.kopie}Liste kopieren</button><button class="taste primaer" data-act="wm-erledigt">Als gebucht markieren</button></div></div></section>`;
+  }
+  return h;
+}
+function werbemittelOffen(){
+  const out = [];
+  for (const o of alleAuftraege()) if (o.werbemittel?.offen) for (const x of o.positionen || []) if (x.fulfillment === "intern"){
+    const p = produkt(x.produktId);
+    out.push({ nr: o.nr, am: o.abgeschlossenAm || o.am, kuerzel: o.kuerzel, menge: x.menge, name: x.name, variante: x.variante, wmNr: p?.werbemittel?.artikelnr || "", uid: o.uid });
+  }
+  return out;
+}
+function renderAdminProdukte(){
+  const l = [...S.produkte].sort((a, b) => (a.aktiv === false) - (b.aktiv === false) || (a.sort ?? 99) - (b.sort ?? 99) || String(a.name).localeCompare(b.name, "de"));
+  let h = `<section class="bereich"><header><h2 class="titel-bereich">Produkte</h2><button class="taste primaer klein" data-act="neu-produkt">${ICON.plus}Neu</button></header>`;
+  if (!l.length) return h + `<div class="karte leer"><p class="titel-karte">Noch keine Produkte</p><p class="meta" style="margin:0">Jedes Produkt bekommt Preis, Varianten und einen Bestellweg: Lager, Lieferant per Mail oder Print on Demand.</p></div></section>`;
+  h += `<div class="karte">${l.map(p => {
+    const f = p.fulfillment === "intern" ? `Lager · ${zahl(freiGesamt(p))} frei` : p.fulfillment === "lieferant" ? `Lieferant · ${esc(lieferant(p.lieferantId)?.name || "nicht gewählt")}` : `Print on Demand · ${esc(lieferant(p.lieferantId)?.name || "nicht gewählt")}`;
+    return `<button class="zeile" data-act="edit-produkt" data-id="${esc(p.id)}">${kachel(p)}<span class="info"><span class="t">${esc(p.name)}</span><span class="meta">${f}</span></span>
+      <span class="rechts"><b>${euro(p.vk)}</b>${p.aktiv === false ? `<span class="badge klein st-neutral">Entwurf</span>` : p.highlight ? `<span class="badge klein st-info">Highlight</span>` : `<span class="badge klein st-erfolg">Im Shop</span>`}</span></button>`;
+  }).join("")}</div></section>`;
+  return h;
+}
+const gutscheinNutzung = h => S.res.filter(r => r.gutschein === h && r.status !== "storniert").length;
+function gutscheinStatus(g){
+  const t = heute();
+  if (g.aktiv === false) return { l: "Pausiert", c: "st-neutral" };
+  if (g.bis && g.bis < t) return { l: "Abgelaufen", c: "st-neutral" };
+  if (g.von && g.von > t) return { l: "Geplant", c: "st-info" };
+  if (g.maxGesamt && gutscheinNutzung(g.hash) >= g.maxGesamt) return { l: "Aufgebraucht", c: "st-warnung" };
+  return { l: "Aktiv", c: "st-erfolg" };
+}
+const gutscheinWert = g => g.typ === "prozent" ? `${zahl(g.wert)} % Rabatt` : g.typ === "betrag" ? `${euro(g.wert)} Rabatt` : "Ein Artikel gratis";
+function renderAdminGutscheine(){
+  const l = [...S.gut].sort((a, b) => String(b.angelegt || "").localeCompare(a.angelegt || ""));
+  let h = `<section class="bereich"><header><h2 class="titel-bereich">Gutscheine</h2><button class="taste primaer klein" data-act="neu-gutschein">${ICON.plus}Neu</button></header>`;
+  if (!l.length) return h + `<div class="karte leer"><p class="titel-karte">Noch keine Gutscheine</p><p class="meta" style="margin:0">Codes mit Prozent- oder Betragsrabatt oder einem Gratisartikel, begrenzt nach Zeitraum, Anzahl, Person und Kategorie.</p></div></section>`;
+  h += `<div class="karte">${l.map(g => { const st = gutscheinStatus(g), n = gutscheinNutzung(g.hash);
+    return `<button class="zeile ohne-bild" data-act="edit-gutschein" data-id="${esc(g.id)}"><span class="info"><span class="t" style="letter-spacing:.06em">${esc(g.code)}</span>
+      <span class="meta">${gutscheinWert(g)} · ${n}${g.maxGesamt ? ` von ${g.maxGesamt}` : ""} eingelöst${g.bis ? ` · bis ${fmt(g.bis)}` : ""}</span></span>
+      <span class="rechts"><span class="badge klein ${st.c}">${st.l}</span></span></button>`; }).join("")}</div></section>`;
+  return h;
+}
+function renderAdminLieferanten(){
+  const l = [...S.lief].sort((a, b) => String(a.name).localeCompare(b.name, "de"));
+  let h = `<section class="bereich"><header><h2 class="titel-bereich">Lieferanten und Anbieter</h2><button class="taste primaer klein" data-act="neu-lieferant">${ICON.plus}Neu</button></header>`;
+  if (!l.length) return h + `<div class="karte leer"><p class="titel-karte">Noch keine Lieferanten</p><p class="meta" style="margin:0">Lieferanten bekommen Bestellungen per Mail. Print-on-Demand-Anbieter bekommen einen vorbereiteten Auftrag.</p></div></section>`;
+  h += `<div class="karte">${l.map(x => `<button class="zeile ohne-bild" data-act="edit-lieferant" data-id="${esc(x.id)}"><span class="info"><span class="t">${esc(x.name)}</span>
+    <span class="meta">${x.art === "pod" ? `Print on Demand${x.anbieter ? ` · ${esc(x.anbieter)}` : ""}` : "Lieferant"} · ${x.email ? esc(x.email) : "E-Mail fehlt"}</span></span>
+    <span class="rechts">${x.email ? "" : `<span class="badge klein st-warnung">Unvollständig</span>`}${S.produkte.filter(p => p.lieferantId === x.id).length ? `<span class="meta">${plural(S.produkte.filter(p => p.lieferantId === x.id).length, "Produkt", "Produkte")}</span>` : ""}</span></button>`).join("")}</div></section>`;
+  return h;
+}
+
+/* ===== Berechnung ===== */
+function berechne(items, gut){
+  const pos = items.map(c => {
+    const p = produkt(c.p); if (!p) return null;
+    const summe = r2(p.vk * c.m);
+    return { produktId: p.id, name: p.name, variante: c.v || "", menge: c.m, einzel: p.vk, summe, ust: Number(p.ust ?? 19), ekNetto: Number(p.ekNetto || 0),
+      marktpreis: Number(p.marktpreis || p.vk), fulfillment: p.fulfillment || "intern", lieferantId: p.lieferantId || "", kategorie: p.kategorie, rabatt: 0 };
+  }).filter(Boolean);
+  const zw = r2(pos.reduce((s, x) => s + x.summe, 0));
+  let rabatt = 0;
+  if (gut){
+    const elig = pos.filter(x => (!gut.kategorien?.length || gut.kategorien.includes(x.kategorie)));
+    const es = elig.reduce((s, x) => s + x.summe, 0);
+    if (gut.typ === "prozent") rabatt = r2(es * Number(gut.wert || 0) / 100);
+    else if (gut.typ === "betrag") rabatt = r2(Math.min(Number(gut.wert || 0), es));
+    else if (gut.typ === "gratis" && elig.length) rabatt = Math.min(...elig.map(x => x.einzel));
+    let rest = rabatt;
+    elig.forEach((x, i) => { const a = i === elig.length - 1 ? r2(rest) : r2(rabatt * x.summe / (es || 1)); x.rabatt = a; rest = r2(rest - a); });
+  }
+  for (const x of pos){
+    x.bezahlt = r2(x.summe - x.rabatt);
+    x.netto = r2(x.bezahlt / (1 + x.ust / 100));
+    x.ustBetrag = r2(x.bezahlt - x.netto);
+  }
+  return { positionen: pos, zwischensumme: zw, rabatt: r2(rabatt), summe: r2(zw - rabatt) };
+}
+async function pruefeGutschein(code){
+  const c = code.trim().toUpperCase(); if (!c) return { fehler: "Bitte einen Code eingeben." };
+  const h = await sha(c);
+  const d = await DB.doc("gutscheinpruefung/" + h).get();
+  if (!d.exists) return { fehler: "Diesen Gutscheincode gibt es nicht." };
+  const g = { ...d.data(), hash: h, code: c }, t = heute();
+  if (g.aktiv === false) return { fehler: "Dieser Gutschein ist pausiert." };
+  if (g.von && g.von > t) return { fehler: `Dieser Gutschein gilt erst ab ${fmt(g.von)}.` };
+  if (g.bis && g.bis < t) return { fehler: `Dieser Gutschein ist am ${fmt(g.bis)} abgelaufen.` };
+  if (g.maxGesamt && gutscheinNutzung(h) >= g.maxGesamt) return { fehler: "Dieser Gutschein ist bereits aufgebraucht." };
+  const meine = S.res.filter(r => r.gutschein === h && r.wer === S.uid && r.status !== "storniert").length;
+  if (g.maxProPerson && meine >= g.maxProPerson) return { fehler: "Diesen Gutschein hast du bereits eingelöst." };
+  const k = (ls.get("kuerzel", "") || "").toUpperCase();
+  if (g.nurKuerzel && g.nurKuerzel.split(/[\s,;]+/).filter(Boolean).map(x => x.toUpperCase()).indexOf(k) < 0) return { fehler: "Dieser Gutschein ist an andere Personen vergeben. Bitte zuerst das Kürzel eintragen." };
+  const elig = CART.some(c2 => !g.kategorien?.length || g.kategorien.includes(produkt(c2.p)?.kategorie));
+  if (!elig) return { fehler: `Dieser Gutschein gilt nur für ${g.kategorien.join(", ")}.` };
+  return { gut: g };
+}
+
+/* ===== Sheet ===== */
+const oben = () => S.stack[S.stack.length - 1];
+function oeffne(view, data = {}){ S.stack.push({ view, ...data }); zeigeSheet(); }
+function ersetze(view, data = {}){ S.stack[S.stack.length - 1] = { view, ...data }; renderSheet(); }
+function zurueck(){ S.stack.pop(); if (S.stack.length) renderSheet(); else schliesse(); }
+function zeigeSheet(){
+  setFilter(false); $("#toast").classList.remove("on");
+  const sh = $("#sheet"), bd = $("#backdrop");
+  if (sh.hidden){ sh.hidden = false; bd.hidden = false; requestAnimationFrame(() => { sh.classList.add("on"); bd.classList.add("on"); }); document.body.style.overflow = "hidden"; }
+  renderSheet(); sh.scrollTop = 0; renderKorb();
+}
+function schliesse(){
+  S.stack = []; S.busy = false;
+  const sh = $("#sheet"), bd = $("#backdrop");
+  sh.classList.remove("on"); bd.classList.remove("on"); document.body.style.overflow = "";
+  setTimeout(() => { if (!S.stack.length){ sh.hidden = true; bd.hidden = true; } }, 240);
+  render();
+}
+function renderSheet(){
+  const v = oben(); if (!v) return;
+  const griff = $("#griff");
+  griff.querySelector(".zurueck")?.remove();
+  if (S.stack.length > 1) griff.insertAdjacentHTML("afterbegin", `<button class="zurueck" data-act="zurueck">${ICON.zurueck}Zurück</button>`);
+  const f = { produkt: sheetProdukt, kasse: sheetKasse, "kasse-fertig": sheetFertig, bestellung: sheetBestellung, auftrag: sheetAuftrag,
+    "produkt-edit": sheetProduktEdit, "gutschein-edit": sheetGutscheinEdit, "lieferant-edit": sheetLieferantEdit, frage: sheetFrage, pod: sheetPod }[v.view];
+  $("#detail").innerHTML = f ? f(v) : "";
+  $("#sheet").setAttribute("aria-label", { produkt: "Artikel", kasse: "Warenkorb", bestellung: "Bestellung", auftrag: "Bestellung" }[v.view] || "Bearbeiten");
+}
+
+/* ----- Produkt (Mitarbeitende) ----- */
+function sheetProdukt(v){
+  const p = produkt(v.id); if (!p) return `<p class="meta">Dieser Artikel ist nicht mehr verfügbar.</p>`;
+  const vs = vars(p), mehr = vs.length > 1;
+  if (v.var === undefined){ const erste = vs.find(x => frei(p, x.name) - imKorb(p.id, x.name) > 0); v.var = mehr ? (erste ? erste.name : null) : vs[0].name; }
+  if (!v.m) v.m = 1;
+  const fotos = (p.fotos || []).map(fotoUrl).filter(Boolean);
+  const rest = v.var === null ? 0 : frei(p, v.var) - imKorb(p.id, v.var);
+  const maxP = p.max ? Math.max(0, p.max - bereitsBestellt(p.id) - imKorb(p.id)) : Infinity;
+  const grenze = Math.min(rest, maxP);
+  if (v.m > grenze) v.m = Math.max(1, grenze);
+  const kannRein = !S.schreibGesperrt && v.var !== null && grenze >= 1;
+  let grund = "";
+  if (v.var === null && mehr) grund = vs.some(x => frei(p, x.name) > 0) ? "Der freie Bestand liegt schon im Warenkorb." : "Gerade ausverkauft.";
+  else if (rest <= 0) grund = imKorb(p.id, v.var) ? "Der freie Bestand liegt schon im Warenkorb." : "Diese Variante ist gerade ausverkauft.";
+  else if (maxP <= 0) grund = `Höchstens ${p.max} Stück pro Person, ${bereitsBestellt(p.id) ? "bereits bestellt" : "schon im Warenkorb"}.`;
+  const lief = p.fulfillment === "intern" ? `Abholung${E().abholort ? ` bei ${esc(E().abholort)}` : " im Büro"}` : `Wird bestellt${p.lieferzeit ? `, Lieferzeit ${esc(p.lieferzeit)}` : ""}`;
+  return `
+    <div class="galerie">${fotos.length ? fotos.map(u => `<span class="p-bild"><img src="${esc(u)}" alt=""></span>`).join("") : `<span class="p-bild">${KAT_ICON[p.kategorie] || KAT_ICON.Sonstiges}</span>`}</div>
+    <div class="abschnitt" style="gap:6px">
+      <span class="etikett">${esc(p.kategorie || "")}${p.marke ? ` · ${esc(p.marke)}` : ""}</span>
+      <h2 class="titel-seite" style="font-size:24px;line-height:30px">${esc(p.name)}</h2>
+      <div class="preiszeile"><b>${euro(p.vk)}</b>${p.marktpreis && p.marktpreis > p.vk ? `<span class="meta"><s>${euro(p.marktpreis)}</s> regulär</span>` : ""}<span class="meta">inkl. ${p.ust ?? 19} % USt</span></div>
+    </div>
+    ${p.beschreibung ? `<p class="text">${esc(p.beschreibung)}</p>` : ""}
+    ${mehr ? `<div class="abschnitt"><div class="kopfzeile"><span class="gruppe-titel">Größe</span>${p.fulfillment === "intern" && v.var ? `<span class="meta zahl">${zahl(Math.max(0, rest))} verfügbar</span>` : ""}</div>
+      <div class="var-wahl" role="group" aria-label="Größe">${vs.map(x => { const f = frei(p, x.name) - imKorb(p.id, x.name);
+        return `<button class="var" data-act="var" data-v="${esc(x.name)}" aria-pressed="${v.var === x.name}" ${f <= 0 ? "disabled" : ""}>${esc(x.name)}${p.fulfillment === "intern" && f > 0 && f <= 3 ? `<small>noch ${f}</small>` : ""}</button>`; }).join("")}</div></div>` : ""}
+    <div class="abschnitt"><div class="kopfzeile"><span class="gruppe-titel">Menge</span></div>
+      <div class="feld-zeile"><div class="stepper"><button data-act="menge" data-d="-1" aria-label="Weniger" ${v.m <= 1 ? "disabled" : ""}>${ICON.minus}</button><output class="zahl">${v.m}</output><button data-act="menge" data-d="1" aria-label="Mehr" ${v.m >= grenze ? "disabled" : ""}>${ICON.plus}</button></div>
+      </div></div>
+    <div class="karte"><dl><dt>Lieferung</dt><dd>${lief}</dd>${p.max ? `<dt>Pro Person</dt><dd>höchstens ${p.max}</dd>` : ""}${p.artikelnr ? `<dt>Artikelnummer</dt><dd>${esc(p.artikelnr)}</dd>` : ""}</dl></div>
+    ${S.admin ? `<div class="aktionen"><button class="taste sekundaer klein" data-act="edit-produkt" data-id="${esc(p.id)}">Produkt bearbeiten</button></div>` : ""}
+    <div class="sheet-fuss">${grund ? `<span class="fuss-grund" role="status">${grund}</span>` : ""}<button class="taste primaer" data-act="in-korb" ${kannRein ? "" : "disabled"}>${ICON.tasche}In den Warenkorb · ${euro(p.vk * v.m)}</button></div>`;
+}
+
+/* ----- Kasse ----- */
+function sheetKasse(v){
+  CART = CART.filter(c => produkt(c.p));
+  if (!CART.length) return `<div class="leer" style="padding-top:28px"><span class="kachel" style="width:64px;height:64px;margin:0 auto 14px">${ICON.tasche}</span><p class="titel-karte">Der Warenkorb ist leer</p><p class="meta" style="margin:0">Artikel antippen, Größe wählen und hinzufügen.</p><div class="aktionen" style="margin-top:16px;justify-content:center"><button class="taste sekundaer klein" data-act="schliessen">Zum Sortiment</button></div></div>`;
+  const b = berechne(CART, v.gut);
+  const k = v.kuerzel ?? ls.get("kuerzel", ""), name = v.name ?? (ls.get("name", "") || S.me?.name || ""), mail = v.email ?? (ls.get("email", "") || S.me?.email || "");
+  const zw = v.zahlweg || (b.summe <= 0 ? "keine" : ls.get("zahlweg", "gehalt"));
+  if (b.summe > 0 && zw === "keine") v.zahlweg = "gehalt";
+  const zahlweg = b.summe <= 0 ? "keine" : (v.zahlweg || zw);
+  return `
+    <div class="abschnitt" style="gap:4px"><span class="etikett">Warenkorb</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">${plural(CART.reduce((s, c) => s + c.m, 0), "Artikel", "Artikel")}</h2></div>
+    <div class="karte">${CART.map((c, i) => { const p = produkt(c.p), x = b.positionen[i];
+      const max = Math.min(frei(p, c.v) - imKorb(p.id, c.v) + c.m, p.max ? p.max - bereitsBestellt(p.id) - imKorb(p.id) + c.m : Infinity);
+      return `<div class="position">${kachel(p)}<div class="info"><span class="t">${esc(p.name)}</span><span class="meta">${c.v ? `Größe ${esc(c.v)} · ` : ""}${euro(p.vk)} · ${p.fulfillment === "intern" ? "Abholung" : "wird bestellt"}</span>
+        <div class="unten"><div class="stepper"><button data-act="korb-menge" data-i="${i}" data-d="-1" aria-label="Weniger">${ICON.minus}</button><output class="zahl">${c.m}</output><button data-act="korb-menge" data-i="${i}" data-d="1" aria-label="Mehr" ${c.m >= max ? "disabled" : ""}>${ICON.plus}</button></div>
+        <span class="betrag">${euro(x.summe)}</span></div></div></div>`; }).join("")}</div>
+
+    <div class="abschnitt"><h3 class="titel-bereich">Gutschein</h3>
+      <div class="karte innen">${v.gut ? `<div class="kopfzeile"><span><b style="letter-spacing:.06em">${esc(v.gut.code)}</b> <span class="meta">${gutscheinWert(v.gut)}</span></span><button class="taste sekundaer klein" data-act="gutschein-weg">Entfernen</button></div>`
+        : `<div class="feld-zeile"><input class="eingabe code" id="k-code" placeholder="Code" autocomplete="off" autocapitalize="characters" aria-label="Gutscheincode" value="${esc(v.codeEingabe || "")}"><button class="taste sekundaer klein" style="min-height:44px" data-act="gutschein-pruefen">Einlösen</button></div>`}
+        ${v.gutFehler ? `<p class="fehler-text">${esc(v.gutFehler)}</p>` : ""}</div></div>
+
+    <div class="karte"><dl><dt>Zwischensumme</dt><dd>${euro(b.zwischensumme)}</dd>${b.rabatt ? `<dt>Gutschein</dt><dd class="minus">− ${euro(b.rabatt)}</dd>` : ""}<dt class="summe">Gesamt</dt><dd class="summe">${euro(b.summe)}</dd></dl></div>
+
+    <div class="abschnitt"><h3 class="titel-bereich">Angaben</h3>
+      <div class="karte innen formular">
+        <div class="zwei umbruch"><div class="gruppe"><label for="k-kuerzel">Kürzel</label><input class="eingabe kurz" id="k-kuerzel" maxlength="3" autocomplete="off" autocapitalize="characters" value="${esc(k)}" placeholder="ABC"></div>
+        <div class="gruppe"><label for="k-name">Name</label><input class="eingabe" id="k-name" autocomplete="name" value="${esc(name)}"></div></div>
+        <div class="gruppe"><label for="k-mail">E-Mail für die Rechnung</label><input class="eingabe" id="k-mail" type="email" autocomplete="email" value="${esc(mail)}"></div>
+        ${b.summe > 0 ? `<div class="gruppe"><span class="gruppe-titel">Bezahlung</span><div class="segment" role="group" aria-label="Bezahlung"><button data-act="zahlweg" data-z="gehalt" aria-pressed="${zahlweg === "gehalt"}">Gehaltsabzug</button><button data-act="zahlweg" data-z="ueberweisung" aria-pressed="${zahlweg === "ueberweisung"}">Überweisung</button></div>
+          <p class="meta">${zahlweg === "gehalt" ? "Der Betrag wird mit der nächsten Gehaltsabrechnung einbehalten." : "Die Rechnung kommt per Mail, mit Bankverbindung und Verwendungszweck."}</p></div>` : `<p class="meta">Durch den Gutschein ist nichts zu bezahlen.</p>`}
+        ${zahlweg === "gehalt" ? `<label class="check"><input type="checkbox" id="k-ok" ${v.ok ? "checked" : ""}>Ich bin einverstanden, dass ${euro(b.summe)} von meinem Gehalt einbehalten werden.</label>` : ""}
+        <div class="gruppe"><label for="k-hinweis">Hinweis (optional)</label><input class="eingabe" id="k-hinweis" value="${esc(v.hinweis || "")}" placeholder="z. B. Abholung erst ab Montag"></div>
+        ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
+      </div></div>
+    <p class="hinweis" style="margin-top:0">Mit der Bestellung entsteht ein Kauf bei ${esc(E().firma || "GAUSS LVS")}. Rechnungen gehen an die Buchhaltung. Stornieren geht, solange die Bestellung noch nicht bearbeitet wird.</p>
+    <div class="sheet-fuss"><button class="taste primaer" data-act="bestellen" ${S.busy || S.schreibGesperrt ? "disabled" : ""}>${S.busy ? "Wird gesendet …" : `Verbindlich bestellen · ${euro(b.summe)}`}</button></div>`;
+}
+function merkeKasse(v){
+  if (!$("#k-name")) return;
+  v.kuerzel = val("k-kuerzel").toUpperCase(); v.name = val("k-name"); v.email = val("k-mail"); v.hinweis = val("k-hinweis");
+  v.ok = !!$("#k-ok")?.checked; if ($("#k-code")) v.codeEingabe = val("k-code");
+}
+async function naechsteNr(){
+  const y = new Date().getFullYear(), pre = `SHOP-${y}-`;
+  let n = S.res.filter(r => r.id.startsWith(pre)).reduce((m, r) => Math.max(m, parseInt(r.id.slice(pre.length)) || 0), 0) + 1;
+  for (let i = 0; i < 5; i++){
+    const id = pre + String(n).padStart(4, "0");
+    const d = await DB.doc("reservierungen/" + id).get();
+    if (!d.exists) return id;
+    n++;
+  }
+  return pre + String(n).padStart(4, "0") + "-" + uid().slice(0, 3);
+}
+async function bestellen(v){
+  merkeKasse(v);
+  const b = berechne(CART, v.gut);
+  const zahlweg = b.summe <= 0 ? "keine" : (v.zahlweg || ls.get("zahlweg", "gehalt"));
+  v.fehler = "";
+  if (!kuerzelOk(v.kuerzel)) v.fehler = "Bitte das Kürzel mit 2 oder 3 Buchstaben eintragen.";
+  else if (!v.name) v.fehler = "Bitte den Namen eintragen.";
+  else if (!mailOk(v.email)) v.fehler = "Bitte eine gültige E-Mail-Adresse eintragen.";
+  else if (zahlweg === "gehalt" && !v.ok) v.fehler = "Für den Gehaltsabzug bitte das Einverständnis bestätigen.";
+  else if (!S.uid) v.fehler = "Zum Bestellen bitte angemeldet sein.";
+  for (const c of CART){ const p = produkt(c.p); if (!v.fehler && p.fulfillment === "intern" && frei(p, c.v) < imKorb(p.id, c.v)) v.fehler = `${p.name}${c.v ? ` (${c.v})` : ""} ist nicht mehr in dieser Menge verfügbar.`; }
+  if (v.fehler){ renderSheet(); $("#detail .fehler-text[role=alert]")?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+  ls.set("kuerzel", v.kuerzel); ls.set("name", v.name); ls.set("email", v.email); if (zahlweg !== "keine") ls.set("zahlweg", zahlweg);
+  S.busy = true; renderSheet();
+  try {
+    const nr = await naechsteNr(), jetzt = new Date().toISOString();
+    const order = { nr, am: jetzt, kuerzel: v.kuerzel, name: v.name, email: v.email, zahlweg, einverstanden: zahlweg === "gehalt" ? jetzt : null, hinweis: v.hinweis || "",
+      positionen: b.positionen, zwischensumme: b.zwischensumme, rabatt: b.rabatt, summe: b.summe,
+      gutschein: v.gut ? { code: v.gut.code, hash: v.gut.hash, typ: v.gut.typ, wert: v.gut.wert } : null,
+      status: "eingegangen", verlauf: [{ s: "eingegangen", am: jetzt }] };
+    await DB.doc("reservierungen/" + nr).set({ nr, am: jetzt, wer: S.uid, status: "offen", gutschein: v.gut?.hash || null,
+      positionen: b.positionen.map(x => ({ p: x.produktId, v: x.variante, m: x.menge, intern: x.fulfillment === "intern" })) });
+    const ref = DB.doc("bestellungen/" + S.uid), da = await ref.get();
+    if (da.exists) await ref.update({ kuerzel: v.kuerzel, name: v.name, email: v.email, orders: { [nr]: order } });
+    else await ref.set({ kuerzel: v.kuerzel, name: v.name, email: v.email, orders: { [nr]: order } });
+    CART = []; ls.set("cart", CART); S.busy = false;
+    ersetze("kasse-fertig", { nr });
+  } catch (e){ S.busy = false; v.fehler = fehlerText(e); renderSheet(); }
+}
+function sheetFertig(v){
+  const o = S.mein?.orders?.[v.nr];
+  return `<div class="leer" style="padding-top:24px"><span class="kachel" style="width:64px;height:64px;margin:0 auto 14px;color:var(--status-erfolg-text);background:var(--status-erfolg-flaeche)"><svg width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8.5 3.2 3L13 4.5"/></svg></span>
+    <h2 class="titel-seite" style="font-size:24px;line-height:30px">Bestellung ist eingegangen</h2>
+    <p class="meta" style="margin:6px 0 0">Bestellnummer <b class="zahl">${esc(v.nr)}</b>${o ? ` · ${euro(o.summe)}` : ""}. Den Stand gibt es unter Bestellungen. Sobald sie abholbereit ist, steht es dort.</p></div>
+    <div class="aktionen"><button class="taste sekundaer" data-act="pdf-bestaetigung" data-nr="${esc(v.nr)}" ${o ? "" : "disabled"}>${ICON.pdf}Bestätigung als PDF</button><button class="taste primaer" data-act="zu-bestellungen">Zu meinen Bestellungen</button></div>`;
+}
+
+/* ----- Bestellung (Mitarbeitende) ----- */
+function positionenKarte(o, mitFul){
+  return `<div class="karte">${(o.positionen || []).map(x => { const p = produkt(x.produktId) || { kategorie: x.kategorie };
+    return `<div class="position">${kachel(p)}<div class="info"><span class="t">${esc(x.name)}</span><span class="meta">${x.variante ? `Größe ${esc(x.variante)} · ` : ""}${x.menge} × ${euro(x.einzel)}${mitFul ? ` · ${esc(FUL[x.fulfillment]?.l || "")}${x.fulfillment !== "intern" && lieferant(x.lieferantId) ? ` (${esc(lieferant(x.lieferantId).name)})` : ""}` : ""}</span>
+      <div class="unten" style="margin-top:2px"><span class="meta">${x.rabatt ? `Gutschein − ${euro(x.rabatt)}` : ""}</span><span class="betrag">${euro(x.bezahlt ?? x.summe)}</span></div></div></div>`; }).join("")}
+    <dl>${o.rabatt ? `<dt>Gutschein ${esc(o.gutschein?.code || "")}</dt><dd class="minus">− ${euro(o.rabatt)}</dd>` : ""}<dt class="summe">Gesamt</dt><dd class="summe">${euro(o.summe)}</dd><dt>Bezahlung</dt><dd>${ZAHLWEG[o.zahlweg] || ""}</dd></dl></div>`;
+}
+function verlaufKarte(o){
+  return `<div class="karte"><ul class="verlauf">${(o.verlauf || []).map(x => `<li><span>${esc(STATUS[x.s]?.l || x.s)}${x.notiz ? ` <span class="meta">· ${esc(x.notiz)}</span>` : ""}</span><span class="d">${fmtZeit(x.am)}</span></li>`).join("")}</ul></div>`;
+}
+function sheetBestellung(v){
+  const o = S.mein?.orders?.[v.nr]; if (!o) return `<p class="meta">Bestellung nicht gefunden.</p>`;
+  const abholung = o.status === "bereit" ? `<div class="vorschau">${ICON.info}<span>Abholbereit${E().abholort ? ` bei ${esc(E().abholort)}` : ""}. Bitte die Bestellnummer nennen.</span></div>` : "";
+  return `
+    <div class="abschnitt" style="gap:6px"><span class="etikett zahl">${esc(o.nr)} · ${fmt(o.am)}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">Bestellung</h2><div>${badge(o.status)}</div></div>
+    ${abholung}
+    <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3>${positionenKarte(o, false)}</div>
+    <div class="abschnitt"><h3 class="titel-bereich">Verlauf</h3>${verlaufKarte(o)}</div>
+    <div class="aktionen"><button class="taste sekundaer" data-act="pdf-bestaetigung" data-nr="${esc(o.nr)}">${ICON.pdf}Bestätigung als PDF</button>
+    ${o.status === "eingegangen" ? `<button class="taste gefahr" data-act="selbst-storno" data-nr="${esc(o.nr)}">Stornieren</button>` : ""}</div>`;
+}
+
+/* ----- Bestellung (Verwaltung) ----- */
+function sheetAuftrag(v){
+  const o = auftrag(v.uid, v.nr); if (!o) return `<p class="meta">Bestellung nicht gefunden.</p>`;
+  const pos = o.positionen || [];
+  const gruppen = {};
+  for (const x of pos) if (x.fulfillment !== "intern"){ (gruppen[x.lieferantId || "?"] ||= []).push(x); }
+  const aktion = [];
+  if (o.status === "eingegangen") aktion.push(`<button class="taste primaer" data-act="status" data-s="angenommen">Annehmen</button>`);
+  if (["angenommen", "bestellt"].includes(o.status)) aktion.push(`<button class="taste primaer" data-act="status" data-s="bereit">Abholbereit melden</button>`);
+  if (o.status === "bereit") aktion.push(`<button class="taste primaer" data-act="status" data-s="abgeschlossen">Ausgegeben, abschließen</button>`);
+  if (OFFEN.includes(o.status)) aktion.push(`<button class="taste gefahr" data-act="storno-frage">Stornieren</button>`);
+  const lieferBlock = Object.keys(gruppen).length && !["abgeschlossen", "storniert"].includes(o.status) ? `<div class="abschnitt"><h3 class="titel-bereich">Lieferanten und Anbieter</h3><div class="karte">${Object.entries(gruppen).map(([lid, xs]) => {
+      const l = lieferant(lid), gesendet = o.lieferanten?.[lid];
+      const pod = l?.art === "pod";
+      return `<div class="schalter-zeile"><span><b>${esc(l?.name || "Kein Lieferant gewählt")}</b><span class="meta">${plural(xs.reduce((s, x) => s + x.menge, 0), "Stück", "Stück")} · ${gesendet ? `${gesendet.art === "pod" ? "übergeben" : gesendet.art === "entwurf" ? "Mail-Entwurf erstellt" : "Mail gesendet"} ${fmtZeit(gesendet.am)}` : "noch nicht bestellt"}</span></span>
+        <span class="aktionen" style="flex:none">${pod ? `<button class="taste sekundaer klein" data-act="pod" data-lid="${esc(lid)}">Auftrag</button>` : ""}${l?.email ? `<button class="taste ${gesendet ? "sekundaer" : "primaer"} klein" data-act="lieferant-mail" data-lid="${esc(lid)}">${ICON.mail}${gesendet ? "Erneut" : "Bestellen"}</button>` : `<span class="badge klein st-warnung">E-Mail fehlt</span>`}</span></div>`; }).join("")}</div></div>` : "";
+  return `
+    <div class="abschnitt" style="gap:6px"><span class="etikett zahl">${esc(o.nr)} · ${fmtZeit(o.am)}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">${esc(o.name)} <span class="meta" style="font-size:17px">${esc(o.kuerzel)}</span></h2><div>${badge(o.status)}</div></div>
+    ${aktion.length ? `<div class="aktionen">${aktion.join("")}</div>` : ""}
+    ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
+    ${o.hinweis ? `<div class="vorschau">${ICON.info}<span>Hinweis: ${esc(o.hinweis)}</span></div>` : ""}
+    <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3>${positionenKarte(o, true)}</div>
+    ${lieferBlock}
+    <div class="abschnitt"><h3 class="titel-bereich">Rechnung und Buchhaltung</h3><div class="karte">
+      <dl><dt>E-Mail</dt><dd>${esc(o.email)}</dd><dt>Bezahlung</dt><dd>${ZAHLWEG[o.zahlweg] || ""}${o.einverstanden ? ` · Einverständnis ${fmt(o.einverstanden)}` : ""}</dd>
+      <dt>Rechnung</dt><dd>${o.rechnung ? `${o.rechnung.art === "entwurf" ? "Entwurf erstellt" : "gesendet"} ${fmtZeit(o.rechnung.am)}` : "noch nicht versendet"}</dd>
+      ${o.werbemittel ? `<dt>Werbemittel</dt><dd>${o.werbemittel.offen ? "Ausgabe noch zu buchen" : `gebucht ${fmt(o.werbemittel.am)}`}</dd>` : ""}</dl>
+      <div class="innen" style="padding-top:0"><div class="aktionen"><button class="taste sekundaer" data-act="pdf-rechnung">${ICON.pdf}Als PDF</button><button class="taste sekundaer" data-act="rechnung-mail" ${o.status === "storniert" ? "disabled" : ""}>${ICON.mail}Per Mail</button></div></div></div></div>
+    <div class="abschnitt"><h3 class="titel-bereich">Verlauf</h3>${verlaufKarte(o)}</div>
+    <div class="abschnitt"><h3 class="titel-bereich">Interne Notiz</h3><div class="karte innen"><textarea class="eingabe" id="a-notiz" placeholder="Nur in der Verwaltung sichtbar">${esc(o.notizIntern || "")}</textarea><div class="aktionen"><button class="taste sekundaer klein" data-act="notiz-speichern">Notiz speichern</button></div></div></div>`;
+}
+function sheetFrage(v){
+  return `<div class="abschnitt" style="gap:8px;padding-top:8px"><h2 class="titel-seite" style="font-size:22px;line-height:28px">${esc(v.titel)}</h2><p class="text">${esc(v.text)}</p></div>
+    <div class="aktionen"><button class="taste sekundaer" data-act="zurueck">Abbrechen</button><button class="taste ${v.gefahr ? "gefahr" : "primaer"}" data-act="frage-ja">${esc(v.ja)}</button></div>`;
+}
+function podAuftrag(o, lid){
+  const l = lieferant(lid), e = E();
+  return {
+    anbieter: l?.anbieter || l?.name || "", shop_id: l?.shopId || "", external_id: o.nr,
+    recipient: { name: e.firma || "GAUSS LVS", attention: `${o.name} (${o.kuerzel})`, address: e.anschrift || "", email: e.shopEmail || "" },
+    items: (o.positionen || []).filter(x => x.lieferantId === lid).map(x => { const p = produkt(x.produktId), va = p ? vars(p).find(y => (y.name || "") === (x.variante || "")) : null;
+      return { name: x.name, variant: x.variante || null, sku: va?.extSku || va?.sku || "", quantity: x.menge }; })
+  };
+}
+function sheetPod(v){
+  const o = auftrag(v.uid, v.nr), l = lieferant(v.lid);
+  const json = JSON.stringify(podAuftrag(o, v.lid), null, 2);
+  return `<div class="abschnitt" style="gap:6px"><span class="etikett">Print on Demand</span><h2 class="titel-seite" style="font-size:22px;line-height:28px">Auftrag für ${esc(l?.name || "Anbieter")}</h2></div>
+    <p class="text">Die Daten sind im Aufbau der gängigen Anbieter-Schnittstellen vorbereitet: Bestellnummer, Lieferadresse und Artikel mit Anbieter-SKU. Eine direkte Übertragung braucht den API-Schlüssel des Anbieters und einen kleinen Server, der ihn sicher hält. Bis dahin hier kopieren und im Anbieter-Portal anlegen${l?.email ? " oder per Mail senden" : ""}.</p>
+    <pre class="code-block" id="pod-json">${esc(json)}</pre>
+    <div class="aktionen"><button class="taste sekundaer" data-act="kopieren" data-quelle="pod-json">${ICON.kopie}Kopieren</button><button class="taste primaer" data-act="pod-erledigt" data-lid="${esc(v.lid)}">Als übergeben markieren</button></div>`;
+}
+
+/* ----- Produkt bearbeiten ----- */
+function leeresProdukt(){ return { name: "", beschreibung: "", kategorie: "Kleidung", marke: "GAUSS LVS", aktiv: false, ekNetto: "", vk: "", marktpreis: "", ust: 19, max: 0, fulfillment: "intern", lieferantId: "", lieferzeit: "", artikelnr: "", werbemittel: { artikelnr: "" }, varianten: [], fotos: [], sort: 50 }; }
+function sheetProduktEdit(v){
+  const p = v.p;
+  const lieferanten = S.lief.filter(l => p.fulfillment === "pod" ? l.art === "pod" : l.art !== "pod");
+  const vsZeilen = (p.varianten || []).map((x, i) => `<div class="var-zeile"><input class="eingabe" data-var="${i}" data-feld="name" value="${esc(x.name)}" aria-label="Variante ${i + 1}" placeholder="M"><input class="eingabe" data-var="${i}" data-feld="${p.fulfillment === "intern" ? "sku" : "extSku"}" value="${esc(p.fulfillment === "intern" ? x.sku || "" : x.extSku || "")}" aria-label="SKU" placeholder="SKU"><input class="eingabe zahl" data-var="${i}" data-feld="bestand" inputmode="numeric" value="${p.fulfillment === "intern" ? esc(x.bestand ?? 0) : "–"}" ${p.fulfillment === "intern" ? "" : "disabled"} aria-label="Bestand"><button class="icon-taste" data-act="var-weg" data-i="${i}" aria-label="Variante entfernen">${ICON.weg}</button></div>`).join("");
+  const ek = num(p.ekNetto), vk = num(p.vk), ust = Number(p.ust || 19);
+  const marge = vk && ek ? r2(vk / (1 + ust / 100) - ek) : null;
+  return `
+    <div class="abschnitt" style="gap:4px"><span class="etikett">${v.id ? "Produkt bearbeiten" : "Neues Produkt"}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">${esc(p.name || "Ohne Namen")}</h2></div>
+    <div class="karte"><div class="schalter-zeile"><span><b>Im Shop sichtbar</b><span class="meta">Aus: als Entwurf gespeichert</span></span><button class="schalter" role="switch" data-act="p-aktiv" aria-checked="${p.aktiv !== false}" aria-label="Im Shop sichtbar"><span></span></button></div>
+      <div class="schalter-zeile"><span><b>Als Highlight zeigen</b><span class="meta">Groß oben im Shop, unter den Filtern</span></span><button class="schalter" role="switch" data-act="p-hl" aria-checked="${!!p.highlight}" aria-label="Als Highlight zeigen"><span></span></button></div>
+      ${p.highlight ? `<div class="innen formular" style="padding-top:4px">
+        <div class="gruppe"><span class="gruppe-titel">Szenenfoto</span>
+          <div class="szene-feld">${fotoUrl(p.szene) ? `<span class="szene-vorschau"><img src="${esc(fotoUrl(p.szene))}" alt="" style="object-position:${{ oben: "center 18%", unten: "center 82%" }[p.szeneFokus] || "center"}"><button class="weg" data-act="szene-weg" aria-label="Szenenfoto entfernen">${ICON.weg}</button></span>`
+            : CAP.assets ? `<label class="szene-hinzu" for="szene-datei">${ICON.kamera}Foto wählen</label>` : `<span class="szene-hinzu">${ICON.kamera}</span>`}
+            <p class="meta">Ein Foto mit Menschen, die das Produkt tragen oder benutzen. Hochformat wirkt am besten, ab 1200 px Breite. Ohne Szenenfoto zeigt die Karte das Produktfoto.</p></div></div>
+        ${fotoUrl(p.szene) ? `<div class="gruppe"><span class="gruppe-titel">Bildausschnitt</span><div class="segment" role="group" aria-label="Bildausschnitt">${[["oben", "Oben"], ["mitte", "Mitte"], ["unten", "Unten"]].map(([k, t]) => `<button data-act="p-fokus" data-f="${k}" aria-pressed="${(p.szeneFokus || "mitte") === k}">${t}</button>`).join("")}</div><p class="meta">Oben, wenn Gesichter am oberen Bildrand sind.</p></div>` : ""}
+        <div class="zwei umbruch"><div class="gruppe"><label for="p-hltext">Etikett</label><input class="eingabe" id="p-hltext" maxlength="24" value="${esc(p.highlightText || "")}" placeholder="z. B. Neu, Teamkollektion"></div>
+          <div class="gruppe"><label for="p-hlsatz">Kurzer Satz</label><input class="eingabe" id="p-hlsatz" maxlength="70" value="${esc(p.highlightSatz || "")}" placeholder="z. B. Für Messe und Büro"></div></div>
+      </div>` : ""}</div>
+    <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3><div class="karte innen formular">
+      <div class="gruppe"><label for="p-name">Name</label><input class="eingabe" id="p-name" value="${esc(p.name)}" placeholder="T-Shirt Team, Navy"></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="p-kat">Kategorie</label><select class="eingabe" id="p-kat">${KATEGORIEN.map(k => `<option ${p.kategorie === k ? "selected" : ""}>${k}</option>`).join("")}</select></div>
+        <div class="gruppe"><label for="p-marke">Marke</label><select class="eingabe" id="p-marke">${["GAUSS LVS", "SoPart", "Neutral"].map(k => `<option ${p.marke === k ? "selected" : ""}>${k}</option>`).join("")}</select></div></div>
+      <div class="gruppe"><label for="p-beschr">Beschreibung</label><textarea class="eingabe" id="p-beschr">${esc(p.beschreibung)}</textarea></div>
+      <div class="gruppe"><span class="gruppe-titel">Fotos</span><div class="foto-reihe">${(p.fotos || []).map((f, i) => `<span class="foto"><img src="${esc(fotoUrl(f))}" alt=""><button class="weg" data-act="foto-weg" data-i="${i}" aria-label="Foto entfernen">${ICON.weg}</button></span>`).join("")}
+        ${CAP.assets ? `<label class="foto-hinzu" for="foto-datei">${ICON.kamera}Foto</label>` : `<span class="meta">${!IM_ARTIFACT && EIGEN.modus === "vorschau" ? "Fotos hochladen geht erst mit verbundenem Server." : "Fotos hochladen ist nur mit Bearbeitungsrecht möglich."}</span>`}</div></div>
+    </div></div>
+    <div class="abschnitt"><h3 class="titel-bereich">Preis</h3><div class="karte innen formular">
+      <div class="zwei"><div class="gruppe"><label for="p-vk">Preis im Shop, brutto</label><input class="eingabe zahl" id="p-vk" inputmode="decimal" value="${esc(numFeld(p.vk))}" placeholder="12,00"></div>
+        <div class="gruppe"><label for="p-ek">Einkauf, netto</label><input class="eingabe zahl" id="p-ek" inputmode="decimal" value="${esc(numFeld(p.ekNetto))}" placeholder="8,90"></div></div>
+      <div class="zwei"><div class="gruppe"><label for="p-ust">USt-Satz</label><select class="eingabe" id="p-ust"><option value="19" ${ust === 19 ? "selected" : ""}>19 %</option><option value="7" ${ust === 7 ? "selected" : ""}>7 %</option></select></div>
+        <div class="gruppe"><label for="p-markt">Marktpreis, brutto</label><input class="eingabe zahl" id="p-markt" inputmode="decimal" value="${esc(numFeld(p.marktpreis))}" placeholder="optional"></div></div>
+      <p class="meta">${marge === null ? "Der Marktpreis ist der übliche Endpreis. Liegt der Shop-Preis darunter, zählt die Differenz als geldwerter Vorteil." : marge < 0 ? `Verkauf unter Einkaufspreis: ${euro(-marge)} netto je Stück. Das betrifft die Umsatzsteuer (Mindestbemessung) und wird in der Buchhaltung ausgewiesen.` : `Deckungsbeitrag ${euro(marge)} netto je Stück.`}</p>
+      <div class="gruppe"><label for="p-max">Höchstmenge pro Person</label><input class="eingabe zahl kurz" style="text-transform:none;letter-spacing:0;font-weight:400" id="p-max" inputmode="numeric" value="${p.max || ""}" placeholder="frei"></div>
+    </div></div>
+    <div class="abschnitt"><h3 class="titel-bereich">Bestellweg</h3><div class="karte innen formular">
+      <div class="segment" role="group" aria-label="Bestellweg">${Object.entries(FUL).map(([k, f]) => `<button data-act="p-ful" data-f="${k}" aria-pressed="${p.fulfillment === k}">${k === "intern" ? "Lager" : k === "lieferant" ? "Lieferant" : "Print on Demand"}</button>`).join("")}</div>
+      <p class="meta">${FUL[p.fulfillment].h}.</p>
+      ${p.fulfillment === "intern" ? `<div class="gruppe"><label for="p-wm">Artikelnummer in Werbemittel</label><input class="eingabe" id="p-wm" value="${esc(p.werbemittel?.artikelnr || "")}" placeholder="TS-NAV"><p class="meta">Damit erscheint jede Ausgabe in der Liste „In Werbemittel zu buchen“.</p></div>`
+        : `<div class="gruppe"><label for="p-lief">${p.fulfillment === "pod" ? "Anbieter" : "Lieferant"}</label>${lieferanten.length ? `<select class="eingabe" id="p-lief"><option value="">Bitte wählen</option>${lieferanten.map(l => `<option value="${esc(l.id)}" ${p.lieferantId === l.id ? "selected" : ""}>${esc(l.name)}</option>`).join("")}</select>` : `<p class="meta">Noch kein ${p.fulfillment === "pod" ? "Print-on-Demand-Anbieter" : "Lieferant"} angelegt.</p><button class="taste sekundaer klein" style="justify-self:start" data-act="neu-lieferant" data-art="${p.fulfillment === "pod" ? "pod" : "lieferant"}">${ICON.plus}Anlegen</button>`}</div>
+        <div class="gruppe"><label for="p-lz">Lieferzeit</label><input class="eingabe" id="p-lz" value="${esc(p.lieferzeit || "")}" placeholder="ca. 10 Werktage"></div>`}
+      <div class="gruppe"><label for="p-anr">Artikelnummer im Shop</label><input class="eingabe" id="p-anr" value="${esc(p.artikelnr || "")}" placeholder="optional"></div>
+    </div></div>
+    <div class="abschnitt"><div class="kopfzeile"><h3 class="titel-bereich">Varianten</h3><span class="aktionen"><button class="taste sekundaer klein" data-act="var-groessen">Größen S–XXL</button><button class="taste sekundaer klein" data-act="var-neu">${ICON.plus}Variante</button></span></div>
+      <div class="karte innen">${vsZeilen ? `<div class="var-tabelle"><div class="var-zeile kopf-z"><span>Variante</span><span>${p.fulfillment === "intern" ? "SKU" : "SKU beim Anbieter"}</span><span>Bestand</span><span></span></div>${vsZeilen}</div>`
+        : `${p.fulfillment === "intern" ? `<div class="gruppe"><label for="p-bestand">Bestand</label><input class="eingabe zahl kurz" style="text-transform:none;letter-spacing:0;font-weight:400" id="p-bestand" inputmode="numeric" value="${esc(p.bestand ?? 0)}"></div>` : ""}<p class="meta">Ohne Varianten wird der Artikel als ein Stück geführt. Für Kleidung Größen anlegen.</p>`}</div></div>
+    ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
+    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="produkt-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="produkt-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+}
+function merkeProdukt(v){
+  const p = v.p; if (!$("#p-name")) return;
+  p.name = val("p-name"); p.kategorie = val("p-kat"); p.marke = val("p-marke"); p.beschreibung = $("#p-beschr").value.trim();
+  p.vk = $("#p-vk").value; p.ekNetto = $("#p-ek").value; p.ust = Number(val("p-ust")); p.marktpreis = $("#p-markt").value; p.max = parseInt(val("p-max")) || 0;
+  p.artikelnr = val("p-anr");
+  if ($("#p-hltext")) p.highlightText = val("p-hltext");
+  if ($("#p-hlsatz")) p.highlightSatz = val("p-hlsatz");
+  if ($("#p-wm")) p.werbemittel = { ...(p.werbemittel || {}), artikelnr: val("p-wm") };
+  if ($("#p-lief")) p.lieferantId = val("p-lief");
+  if ($("#p-lz")) p.lieferzeit = val("p-lz");
+  if ($("#p-bestand")) p.bestand = parseInt(val("p-bestand")) || 0;
+  document.querySelectorAll("[data-var]").forEach(e => { const x = p.varianten[+e.dataset.var]; if (!x) return; const f = e.dataset.feld; x[f] = f === "bestand" ? (parseInt(e.value) || 0) : e.value.trim(); });
+}
+async function produktSpeichern(v){
+  merkeProdukt(v); const p = v.p;
+  const vk = num(p.vk);
+  v.fehler = !p.name ? "Bitte einen Namen eintragen." : !(vk > 0) ? "Bitte einen Preis eintragen." : (p.fulfillment !== "intern" && !p.lieferantId && p.aktiv !== false) ? "Für diesen Bestellweg bitte einen Lieferanten wählen oder das Produkt als Entwurf speichern." : "";
+  if (!v.fehler && p.varianten.some(x => !x.name)) v.fehler = "Jede Variante braucht eine Bezeichnung.";
+  if (v.fehler) return renderSheet();
+  const daten = { ...p, vk: r2(vk), ekNetto: r2(num(p.ekNetto)), marktpreis: num(p.marktpreis) ? r2(num(p.marktpreis)) : null, geaendert: new Date().toISOString() };
+  delete daten.id;
+  if (daten.fulfillment !== "intern") daten.varianten = daten.varianten.map(x => ({ ...x, bestand: 0 }));
+  S.busy = true; renderSheet();
+  try {
+    const id = v.id || (norm(p.name).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "produkt") + "-" + uid().slice(0, 4);
+    await DB.doc("produkte/" + id).set(daten);
+    S.busy = false; toast("Produkt gespeichert"); zurueck();
+  } catch (e){ S.busy = false; v.fehler = fehlerText(e); renderSheet(); }
+}
+
+/* ----- Gutschein bearbeiten ----- */
+function zufallsCode(){ const z = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c = ""; const a = crypto.getRandomValues(new Uint8Array(8)); for (const x of a) c += z[x % z.length]; return c; }
+function sheetGutscheinEdit(v){
+  const g = v.g;
+  return `
+    <div class="abschnitt" style="gap:4px"><span class="etikett">${v.id ? "Gutschein bearbeiten" : "Neuer Gutschein"}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px;letter-spacing:.04em">${esc(g.code || "Code")}</h2>
+      ${v.id ? `<span class="meta">${gutscheinNutzung(g.hash)} mal eingelöst</span>` : ""}</div>
+    <div class="karte"><div class="schalter-zeile"><span><b>Aktiv</b><span class="meta">Pausierte Codes lassen sich nicht einlösen</span></span><button class="schalter" role="switch" data-act="g-aktiv" aria-checked="${g.aktiv !== false}" aria-label="Aktiv"><span></span></button></div></div>
+    <div class="karte innen formular">
+      <div class="gruppe"><label for="g-code">Code</label><div class="feld-zeile"><input class="eingabe code" id="g-code" value="${esc(g.code)}" autocomplete="off" autocapitalize="characters"><button class="taste sekundaer klein" style="min-height:44px" data-act="g-zufall">Erzeugen</button></div></div>
+      <div class="gruppe"><span class="gruppe-titel">Art</span><div class="segment" role="group" aria-label="Art">${[["prozent", "Prozent"], ["betrag", "Betrag"], ["gratis", "Gratisartikel"]].map(([k, t]) => `<button data-act="g-typ" data-t="${k}" aria-pressed="${g.typ === k}">${t}</button>`).join("")}</div></div>
+      ${g.typ !== "gratis" ? `<div class="gruppe"><label for="g-wert">${g.typ === "prozent" ? "Rabatt in Prozent" : "Rabatt in Euro"}</label><input class="eingabe zahl kurz" style="text-transform:none;letter-spacing:0;font-weight:400" id="g-wert" inputmode="decimal" value="${esc(numFeld(g.wert))}"></div>` : `<p class="meta">Der günstigste passende Artikel im Warenkorb kostet nichts (ein Stück).</p>`}
+      <div class="zwei"><div class="gruppe"><label for="g-von">Gültig ab</label><input class="eingabe datum" type="date" id="g-von" value="${esc(g.von || "")}"></div><div class="gruppe"><label for="g-bis">Gültig bis</label><input class="eingabe datum" type="date" id="g-bis" value="${esc(g.bis || "")}"></div></div>
+      <div class="zwei"><div class="gruppe"><label for="g-max">Einlösungen gesamt</label><input class="eingabe zahl" id="g-max" inputmode="numeric" value="${g.maxGesamt || ""}" placeholder="unbegrenzt"></div><div class="gruppe"><label for="g-pp">Pro Person</label><input class="eingabe zahl" id="g-pp" inputmode="numeric" value="${g.maxProPerson || ""}" placeholder="unbegrenzt"></div></div>
+      <div class="gruppe"><label for="g-wer">Nur für Kürzel</label><input class="eingabe" id="g-wer" value="${esc(g.nurKuerzel || "")}" placeholder="leer = alle, sonst z. B. NN, ABC" style="text-transform:uppercase"></div>
+      <div class="gruppe"><span class="gruppe-titel">Gilt für</span><div class="wahl">${KATEGORIEN.map(k => `<button class="chip" data-act="g-kat" data-k="${esc(k)}" aria-pressed="${(g.kategorien || []).includes(k)}">${esc(k)}</button>`).join("")}</div><p class="meta">Keine Auswahl: gilt für alles.</p></div>
+      <div class="gruppe"><label for="g-notiz">Notiz</label><input class="eingabe" id="g-notiz" value="${esc(g.notiz || "")}" placeholder="z. B. Willkommenspaket"></div>
+    </div>
+    ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
+    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="gutschein-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="gutschein-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+}
+function merkeGutschein(v){
+  const g = v.g; if (!$("#g-code")) return;
+  g.code = val("g-code").toUpperCase().replace(/\s+/g, ""); if ($("#g-wert")) g.wert = $("#g-wert").value;
+  g.von = val("g-von"); g.bis = val("g-bis"); g.maxGesamt = parseInt(val("g-max")) || 0; g.maxProPerson = parseInt(val("g-pp")) || 0;
+  g.nurKuerzel = val("g-wer").toUpperCase(); g.notiz = val("g-notiz");
+}
+async function gutscheinSpeichern(v){
+  merkeGutschein(v); const g = v.g;
+  v.fehler = !/^[A-Z0-9-]{4,24}$/.test(g.code) ? "Der Code braucht 4 bis 24 Zeichen aus Buchstaben, Ziffern oder Bindestrich." :
+    g.typ !== "gratis" && !(num(g.wert) > 0) ? "Bitte einen Rabattwert eintragen." : g.typ === "prozent" && num(g.wert) > 100 ? "Mehr als 100 Prozent geht nicht." :
+    g.von && g.bis && g.von > g.bis ? "Das Enddatum liegt vor dem Startdatum." : "";
+  if (!v.fehler && S.gut.some(x => x.code === g.code && x.id !== v.id)) v.fehler = "Diesen Code gibt es schon.";
+  if (v.fehler) return renderSheet();
+  S.busy = true; renderSheet();
+  try {
+    const hash = await sha(g.code), alt = v.id ? S.gut.find(x => x.id === v.id)?.hash : null;
+    const regel = { typ: g.typ, wert: g.typ === "gratis" ? 0 : r2(num(g.wert)), von: g.von || "", bis: g.bis || "", maxGesamt: g.maxGesamt, maxProPerson: g.maxProPerson,
+      kategorien: g.kategorien || [], nurKuerzel: g.nurKuerzel || "", aktiv: g.aktiv !== false };
+    const id = v.id || uid();
+    await DB.doc("gutscheinpruefung/" + hash).set(regel);
+    await DB.doc("gutscheine/" + id).set({ ...regel, code: g.code, hash, notiz: g.notiz || "", angelegt: g.angelegt || new Date().toISOString() });
+    if (alt && alt !== hash) await DB.doc("gutscheinpruefung/" + alt).delete();
+    S.busy = false; toast("Gutschein gespeichert"); zurueck();
+  } catch (e){ S.busy = false; v.fehler = fehlerText(e); renderSheet(); }
+}
+
+/* ----- Lieferant bearbeiten ----- */
+function sheetLieferantEdit(v){
+  const l = v.l, pod = l.art === "pod";
+  return `
+    <div class="abschnitt" style="gap:4px"><span class="etikett">${v.id ? "Bearbeiten" : "Neu anlegen"}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">${esc(l.name || (pod ? "Print-on-Demand-Anbieter" : "Lieferant"))}</h2></div>
+    <div class="karte innen formular">
+      <div class="segment" role="group" aria-label="Art"><button data-act="l-art" data-a="lieferant" aria-pressed="${!pod}">Lieferant</button><button data-act="l-art" data-a="pod" aria-pressed="${pod}">Print on Demand</button></div>
+      <div class="gruppe"><label for="l-name">Name</label><input class="eingabe" id="l-name" value="${esc(l.name)}"></div>
+      ${pod ? `<div class="zwei umbruch"><div class="gruppe"><label for="l-anb">Anbieter</label><select class="eingabe" id="l-anb">${POD_ANBIETER.map(a => `<option ${l.anbieter === a ? "selected" : ""}>${a}</option>`).join("")}</select></div><div class="gruppe"><label for="l-shop">Shop- oder Store-ID</label><input class="eingabe" id="l-shop" value="${esc(l.shopId || "")}" placeholder="beim Anbieter"></div></div>` : ""}
+      <div class="gruppe"><label for="l-mail">E-Mail für Bestellungen${pod ? " (optional)" : ""}</label><input class="eingabe" id="l-mail" type="email" value="${esc(l.email || "")}"></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="l-ap">Ansprechpartner</label><input class="eingabe" id="l-ap" value="${esc(l.ansprechpartner || "")}"></div><div class="gruppe"><label for="l-kd">Kundennummer</label><input class="eingabe" id="l-kd" value="${esc(l.kundennr || "")}"></div></div>
+      <div class="gruppe"><label for="l-vorlage">Mail-Vorlage</label><textarea class="eingabe" id="l-vorlage" style="min-height:200px">${esc(l.vorlage || STANDARD_VORLAGE)}</textarea>
+        <p class="meta">Platzhalter: {bestellnr} {positionen} {lieferadresse} {ansprechpartner} {kundennr} {firma}</p></div>
+      ${pod ? `<p class="meta">Die Schnittstelle ist vorbereitet: Aufträge entstehen im Datenformat der Anbieter. Für die automatische Übertragung braucht es den API-Schlüssel und einen Server, der ihn hält; der Schlüssel gehört nicht in diese Seite.</p>` : ""}
+    </div>
+    ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
+    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="lieferant-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="lieferant-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+}
+function merkeLieferant(v){
+  const l = v.l; if (!$("#l-name")) return;
+  l.name = val("l-name"); l.email = val("l-mail"); l.ansprechpartner = val("l-ap"); l.kundennr = val("l-kd"); l.vorlage = $("#l-vorlage").value;
+  if ($("#l-anb")){ l.anbieter = val("l-anb"); l.shopId = val("l-shop"); }
+}
+async function lieferantSpeichern(v){
+  merkeLieferant(v); const l = v.l;
+  v.fehler = !l.name ? "Bitte einen Namen eintragen." : l.email && !mailOk(l.email) ? "Die E-Mail-Adresse sieht nicht gültig aus." : "";
+  if (v.fehler) return renderSheet();
+  S.busy = true; renderSheet();
+  try {
+    const id = v.id || uid(), d = { ...l }; delete d.id;
+    await DB.doc("lieferanten/" + id).set(d);
+    S.busy = false; toast("Gespeichert");
+    const unten = S.stack[S.stack.length - 2];
+    if (unten?.view === "produkt-edit" && !v.id){ unten.p.lieferantId = id; }
+    zurueck();
+  } catch (e){ S.busy = false; v.fehler = fehlerText(e); renderSheet(); }
+}
+
+/* ----- Buchhaltung ----- */
+function buchungsZeilen(ym){
+  const out = [];
+  for (const o of alleAuftraege()){
+    if (o.status !== "abgeschlossen") continue;
+    const d = String(o.abgeschlossenAm || o.am).slice(0, 7); if (d !== ym) continue;
+    for (const x of o.positionen || []){
+      const vorteil = r2(Math.max(0, x.marktpreis * x.menge - x.bezahlt));
+      const ekGesamt = r2(x.ekNetto * x.menge), mindest = x.netto < ekGesamt;
+      out.push({ o, x, vorteil, ekGesamt, mindest });
+    }
+  }
+  return out;
+}
+function personenSummen(z){
+  const m = new Map();
+  for (const r of z){
+    const k = r.o.kuerzel; const p = m.get(k) || { kuerzel: k, name: r.o.name, gehalt: 0, ueberweisung: 0, vorteil: 0, brutto: 0 };
+    p.brutto = r2(p.brutto + r.x.bezahlt); p.vorteil = r2(p.vorteil + r.vorteil);
+    if (r.o.zahlweg === "gehalt") p.gehalt = r2(p.gehalt + r.x.bezahlt); else if (r.o.zahlweg === "ueberweisung") p.ueberweisung = r2(p.ueberweisung + r.x.bezahlt);
+    m.set(k, p);
+  }
+  return [...m.values()].sort((a, b) => a.kuerzel.localeCompare(b.kuerzel));
+}
+function renderBuchhaltung(){
+  const z = buchungsZeilen(S.monat), pers = personenSummen(z), grenze = Number(E().sachbezugGrenze ?? 50);
+  const brutto = r2(z.reduce((s, r) => s + r.x.bezahlt, 0)), netto = r2(z.reduce((s, r) => s + r.x.netto, 0)), rabatt = r2(z.reduce((s, r) => s + r.x.rabatt, 0));
+  const ueber = pers.filter(p => p.vorteil > grenze).length, mind = z.filter(r => r.mindest).length;
+  const belege = new Set(z.map(r => r.o.nr)).size;
+  let h = `<section class="bereich"><header><h2 class="titel-bereich">Monatsabschluss</h2>
+    <span class="monat-wahl"><button class="icon-taste" data-act="monat" data-d="-1" aria-label="Vormonat">${ICON.zurueck}</button><span class="t">${monatName(S.monat)}</span><button class="icon-taste" data-act="monat" data-d="1" aria-label="Folgemonat"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 6 6-6 6"/></svg></button></span></header>
+    <div class="kennzahlen"><div class="kennzahl"><span class="etikett">Umsatz brutto</span><b>${euro(brutto)}</b><span class="meta">${plural(belege, "Rechnung", "Rechnungen")}</span></div>
+      <div class="kennzahl"><span class="etikett">Netto · USt</span><b>${euro(netto)}</b><span class="meta">USt ${euro(r2(brutto - netto))}</span></div>
+      <div class="kennzahl"><span class="etikett">Gutscheine</span><b>${euro(rabatt)}</b><span class="meta">gewährter Rabatt</span></div>
+      <div class="kennzahl ${ueber ? "warn" : ""}"><span class="etikett">Sachbezug</span><b>${ueber ? plural(ueber, "Person", "Personen") : "im Rahmen"}</b><span class="meta">${ueber ? `über ${euro(grenze)} im Monat` : `Freigrenze ${euro(grenze)}`}</span></div></div>`;
+  if (!z.length) h += `<div class="karte leer"><p class="titel-karte">Keine abgeschlossenen Bestellungen</p><p class="meta" style="margin:0">Gezählt werden Bestellungen mit Abschluss in ${monatName(S.monat)}.</p></div>`;
+  else h += `<div class="karte"><div class="tabelle-wrap"><table><thead><tr><th>Kürzel</th><th>Name</th><th class="r">Gehaltsabzug</th><th class="r">Überweisung</th><th class="r">Geldwerter Vorteil</th></tr></thead>
+    <tbody>${pers.map(p => `<tr><td><b>${esc(p.kuerzel)}</b></td><td>${esc(p.name)}</td><td class="r">${euro(p.gehalt)}</td><td class="r">${euro(p.ueberweisung)}</td><td class="r">${p.vorteil > grenze ? `<span class="warn-text">${euro(p.vorteil)}</span>` : euro(p.vorteil)}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td colspan="2">Summe</td><td class="r">${euro(pers.reduce((s, p) => s + p.gehalt, 0))}</td><td class="r">${euro(pers.reduce((s, p) => s + p.ueberweisung, 0))}</td><td class="r">${euro(pers.reduce((s, p) => s + p.vorteil, 0))}</td></tr></tfoot></table></div></div>`;
+  if (mind) h += `<div class="vorschau warn">${ICON.info}<span>${plural(mind, "Position liegt", "Positionen liegen")} unter dem Einkaufspreis. Die Umsatzsteuer bemisst sich dann mindestens am Einkaufspreis; die Spalte „Mindestbemessung“ im Export weist die Differenz aus.</span></div>`;
+  h += `<div class="aktionen"><button class="taste sekundaer" data-act="export-csv" ${z.length ? "" : "disabled"}>${ICON.pdf}CSV für die Buchhaltung</button><button class="taste sekundaer" data-act="export-pdf" ${z.length ? "" : "disabled"}>${ICON.pdf}Monatsbericht PDF</button>
+    <button class="taste primaer" data-act="monat-mail" ${z.length ? "" : "disabled"}>${ICON.mail}An Buchhaltung senden</button></div>
+    <p class="hinweis" style="margin-top:4px">Geldwerter Vorteil: Marktpreis abzüglich gezahltem Preis, je Person und Monat. Steuerliche Bewertung (Sachbezugsfreigrenze, Rabattfreibetrag, Mindestbemessung) bitte mit der Steuerberatung abstimmen.</p></section>`;
+  return h;
+}
+function csvMonat(ym){
+  const e = E(), z = buchungsZeilen(ym);
+  const n = v => Number(v || 0).toFixed(2).replace(".", ",");
+  const q = s => `"${String(s ?? "").replace(/"/g, '""')}"`;
+  const kopf = ["Belegdatum", "Belegnummer", "Kürzel", "Name", "Artikel", "Variante", "Menge", "Brutto", "Netto", "USt-Satz", "USt", "Rabatt", "Zahlweg", "Erlöskonto", "Kostenstelle", "Geldwerter Vorteil", "EK netto gesamt", "Mindestbemessung Differenz netto", "Gutschein"];
+  const zeilen = z.map(r => [fmt(r.o.abgeschlossenAm || r.o.am), r.o.nr, r.o.kuerzel, r.o.name, r.x.name, r.x.variante, r.x.menge, n(r.x.bezahlt), n(r.x.netto), r.x.ust, n(r.x.ustBetrag), n(r.x.rabatt),
+    ZAHLWEG[r.o.zahlweg] || "", e.erloeskonto || "", e.kostenstelle || "", n(r.vorteil), n(r.ekGesamt), r.mindest ? n(r.ekGesamt - r.x.netto) : "0,00", r.o.gutschein?.code || ""]);
+  return "﻿" + [kopf, ...zeilen].map(z2 => z2.map(q).join(";")).join("\r\n");
+}
+
+/* ----- Einstellungen ----- */
+function renderEinstellungen(){
+  const e = E();
+  const sch = (k, t, m) => `<div class="schalter-zeile"><span><b>${t}</b><span class="meta">${m}</span></span><button class="schalter" role="switch" data-act="e-schalter" data-k="${k}" aria-checked="${!!e[k]}" aria-label="${t}"><span></span></button></div>`;
+  return `<section class="bereich"><header><h2 class="titel-bereich">Automatik</h2></header>
+    <div class="karte">${sch("autoLieferant", "Lieferanten beim Annehmen anschreiben", "Erzeugt die Bestellmail für jeden Lieferanten der Bestellung")}
+      ${sch("autoRechnung", "Rechnung beim Abschluss mailen", "An Besteller:in, Buchhaltung in Kopie, PDF im Anhang")}
+      <div class="schalter-zeile"><span><b>Mails</b><span class="meta">Entwurf: liegt in Gmail zum Prüfen bereit</span></span><span class="segment" style="width:200px;flex:none" role="group" aria-label="Mailversand"><button data-act="e-mailmodus" data-m="entwurf" aria-pressed="${(e.mailModus || "entwurf") === "entwurf"}">Entwurf</button><button data-act="e-mailmodus" data-m="senden" aria-pressed="${e.mailModus === "senden"}">Senden</button></span></div></div>
+    <p class="hinweis" style="margin-top:0">${IM_ARTIFACT ? "Mails gehen über das Gmail-Konto der Person, die in der Verwaltung klickt. Gmail muss in claude.ai verbunden sein." : "Mails gehen über das Gmail-Konto, unter dem der Shop-Server läuft."}</p></section>
+  <section class="bereich"><header><h2 class="titel-bereich">Firma und Rechnung</h2></header>
+    <div class="karte innen formular">
+      <div class="gruppe"><label for="e-firma">Firma</label><input class="eingabe" id="e-firma" value="${esc(e.firma || "")}" placeholder="GAUSS LVS GmbH"></div>
+      <div class="gruppe"><label for="e-anschrift">Anschrift</label><textarea class="eingabe" id="e-anschrift" placeholder="Straße Nr.&#10;PLZ Ort">${esc(e.anschrift || "")}</textarea></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="e-ustid">USt-IdNr.</label><input class="eingabe" id="e-ustid" value="${esc(e.ustId || "")}"></div><div class="gruppe"><label for="e-stnr">Steuernummer</label><input class="eingabe" id="e-stnr" value="${esc(e.steuernr || "")}"></div></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="e-iban">IBAN</label><input class="eingabe" id="e-iban" value="${esc(e.iban || "")}"></div><div class="gruppe"><label for="e-bank">Bank</label><input class="eingabe" id="e-bank" value="${esc(e.bank || "")}"></div></div>
+      <div class="gruppe"><label for="e-abhol">Abholort</label><input class="eingabe" id="e-abhol" value="${esc(e.abholort || "")}" placeholder="z. B. Empfang, 1. OG"></div>
+    </div></section>
+  <section class="bereich"><header><h2 class="titel-bereich">Buchhaltung</h2></header>
+    <div class="karte innen formular">
+      <div class="zwei umbruch"><div class="gruppe"><label for="e-bh">E-Mail Buchhaltung</label><input class="eingabe" id="e-bh" type="email" value="${esc(e.buchhaltungEmail || "")}"></div><div class="gruppe"><label for="e-shopmail">E-Mail Shop (Kopie, Antworten)</label><input class="eingabe" id="e-shopmail" type="email" value="${esc(e.shopEmail || "")}"></div></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="e-konto">Erlöskonto</label><input class="eingabe" id="e-konto" value="${esc(e.erloeskonto || "")}" placeholder="z. B. 8400"></div><div class="gruppe"><label for="e-kst">Kostenstelle</label><input class="eingabe" id="e-kst" value="${esc(e.kostenstelle || "")}" placeholder="z. B. Personal"></div></div>
+      <div class="gruppe"><label for="e-grenze">Sachbezugsfreigrenze pro Monat (Euro)</label><input class="eingabe zahl kurz" style="text-transform:none;letter-spacing:0;font-weight:400" id="e-grenze" inputmode="decimal" value="${esc(numFeld(e.sachbezugGrenze ?? 50))}"></div>
+    </div>
+    <div class="aktionen"><button class="taste primaer" data-act="e-speichern">Einstellungen speichern</button></div></section>`;
+}
+async function einstellungenSpeichern(){
+  const d = { firma: val("e-firma"), anschrift: $("#e-anschrift").value.trim(), ustId: val("e-ustid"), steuernr: val("e-stnr"), iban: val("e-iban"), bank: val("e-bank"),
+    abholort: val("e-abhol"), buchhaltungEmail: val("e-bh"), shopEmail: val("e-shopmail"), erloeskonto: val("e-konto"), kostenstelle: val("e-kst"), sachbezugGrenze: num(val("e-grenze")) || 50 };
+  for (const k of ["buchhaltungEmail", "shopEmail"]) if (d[k] && !mailOk(d[k])) return toast("Eine E-Mail-Adresse sieht nicht gültig aus.");
+  try { await speichereEinst(d); toast("Einstellungen gespeichert"); } catch (e){ toast(fehlerText(e)); }
+}
+async function speichereEinst(d){
+  const ref = DB.doc("einstellungen/allgemein");
+  if (Object.keys(S.einst).length) await ref.update(d); else await ref.set({ mailModus: "entwurf", ...d });
+}
+
+/* ===== Statuswechsel ===== */
+async function setzeStatus(o, s, extra = {}, notiz){
+  const jetzt = new Date().toISOString();
+  const patch = { status: s, verlauf: [...(o.verlauf || []), { s, am: jetzt, ...(notiz ? { notiz } : {}) }], ...extra };
+  if (s === "abgeschlossen") patch.abgeschlossenAm = jetzt;
+  await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: patch } });
+  const rs = s === "storniert" ? "storniert" : s === "abgeschlossen" ? "erledigt" : "offen";
+  try { await DB.doc("reservierungen/" + o.nr).update({ status: rs }); } catch {}
+  return { ...o, ...patch };
+}
+async function statusAktion(v, s){
+  let o = auftrag(v.uid, v.nr); if (!o) return;
+  S.busy = true; v.fehler = "";
+  try {
+    if (s === "abgeschlossen"){
+      const intern = (o.positionen || []).filter(x => x.fulfillment === "intern");
+      const proP = {};
+      for (const x of intern){ (proP[x.produktId] ||= []).push(x); }
+      for (const [pid, xs] of Object.entries(proP)){
+        const p = produkt(pid); if (!p) continue;
+        if (p.varianten?.length){
+          const neu = p.varianten.map(va => { const m = xs.filter(x => (x.variante || "") === (va.name || "")).reduce((t, x) => t + x.menge, 0); return m ? { ...va, bestand: Math.max(0, Number(va.bestand || 0) - m) } : va; });
+          await DB.doc("produkte/" + pid).update({ varianten: neu });
+        } else {
+          await DB.doc("produkte/" + pid).update({ bestand: Math.max(0, Number(p.bestand || 0) - xs.reduce((t, x) => t + x.menge, 0)) });
+        }
+      }
+      o = await setzeStatus(o, s, intern.length ? { werbemittel: { offen: true } } : {});
+      toast("Abgeschlossen, Bestand gebucht");
+      if (E().autoRechnung) await rechnungMailen(o, true);
+    } else if (s === "angenommen"){
+      o = await setzeStatus(o, s);
+      toast("Angenommen");
+      if (E().autoLieferant){
+        const lids = [...new Set((o.positionen || []).filter(x => x.fulfillment === "lieferant").map(x => x.lieferantId))];
+        for (const lid of lids) if (lieferant(lid)?.email) await lieferantMailen(o, lid, true);
+      }
+    } else {
+      o = await setzeStatus(o, s);
+      toast(STATUS[s].l);
+    }
+  } catch (e){ v.fehler = e?.mailFehler || fehlerText(e); }
+  S.busy = false; renderSheet();
+}
+
+/* ===== Gmail ===== */
+async function gmail(args){
+  if (!IM_ARTIFACT){
+    if (EIGEN.modus !== "server") throw { mailFehler: "In der Vorschau ohne Server werden keine Mails versendet." };
+    const modus = E().mailModus === "senden" ? "senden" : "entwurf";
+    try { await eApi({ action: "mail", modus, ...args }, 90000); return modus === "senden" ? "gesendet" : "entwurf"; }
+    catch (e){ throw { mailFehler: "Die Mail ließ sich nicht erstellen: " + (e.message || "unbekannter Fehler") }; }
+  }
+  if (CAP.mcp === undefined) CAP.mcp = window.claude?.use ? await window.claude.use("mcp").catch(() => null) : null;
+  if (!CAP.mcp) throw { mailFehler: "Mailversand ist in dieser Ansicht nicht verfügbar. Bitte den Shop in claude.ai öffnen." };
+  const tool = E().mailModus === "senden" ? "send_message" : "create_draft";
+  try {
+    await CAP.mcp.callTool("Gmail", tool, args);
+    return tool === "send_message" ? "gesendet" : "entwurf";
+  } catch (e){
+    const m = {
+      server_not_connected: "Gmail ist nicht verbunden. Bitte in claude.ai unter Einstellungen › Konnektoren verbinden.",
+      needs_reauth: "Gmail muss neu verbunden werden: claude.ai › Einstellungen › Konnektoren.",
+      selection_required: "Bitte in claude.ai das Gmail-Konto für diese Seite wählen.",
+      not_in_manifest: "Der Gmail-Zugriff für diese Seite wurde nicht erlaubt.",
+      approval_required: "Der Mailversand braucht deine Freigabe. Bitte erneut klicken und erlauben.",
+      blocked_by_policy: "Gmail ist für dieses Konto durch die Organisation gesperrt.",
+      tool_error: "Gmail hat die Mail abgelehnt: " + (e.message || "")
+    }[e?.code] || "Die Mail ließ sich nicht erstellen. Bitte in Gmail prüfen, ob sie trotzdem angelegt wurde.";
+    throw { mailFehler: m };
+  }
+}
+const b64 = s => btoa(unescape(encodeURIComponent(s)));
+function positionenText(xs){ return xs.map(x => { const p = produkt(x.produktId), va = p ? vars(p).find(y => (y.name || "") === (x.variante || "")) : null;
+  return `- ${x.menge} × ${x.name}${x.variante ? `, Größe ${x.variante}` : ""}${va?.extSku ? ` (Art.-Nr. ${va.extSku})` : ""}`; }).join("\n"); }
+async function lieferantMailen(o, lid, still){
+  const l = lieferant(lid), e = E(); if (!l?.email) throw { mailFehler: "Für diesen Lieferanten fehlt die E-Mail-Adresse." };
+  const xs = (o.positionen || []).filter(x => x.lieferantId === lid);
+  const body = (l.vorlage || STANDARD_VORLAGE).replace(/\{bestellnr\}/g, o.nr).replace(/\{positionen\}/g, positionenText(xs))
+    .replace(/\{lieferadresse\}/g, [e.firma, `z. Hd. ${o.name}`, e.anschrift].filter(Boolean).join("\n")).replace(/\{ansprechpartner\}/g, l.ansprechpartner || "")
+    .replace(/\{kundennr\}/g, l.kundennr || "–").replace(/\{firma\}/g, e.firma || "GAUSS LVS").replace(/Guten Tag ,/, "Guten Tag,");
+  const art = await gmail({ to: [l.email], cc: e.shopEmail ? [e.shopEmail] : [], subject: `Bestellung ${o.nr} – ${e.firma || "GAUSS LVS"}`, body });
+  const jetzt = new Date().toISOString();
+  await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: { lieferanten: { [lid]: { art, am: jetzt } } } } });
+  const frisch = o;
+  if (["eingegangen", "angenommen"].includes(frisch.status)) await setzeStatus({ ...frisch, lieferanten: { ...(frisch.lieferanten || {}), [lid]: { art, am: jetzt } } }, "bestellt", {}, l.name);
+  toast(art === "entwurf" ? `Mail an ${l.name} liegt als Entwurf in Gmail` : `Bestellung an ${l.name} gesendet`);
+}
+async function rechnungMailen(o, still){
+  const e = E();
+  if (!mailOk(o.email || "")) throw { mailFehler: "Für diese Bestellung fehlt eine gültige E-Mail-Adresse." };
+  const pdf = await belegPdf(o, "rechnung");
+  const cc = [e.buchhaltungEmail, e.shopEmail].filter(x => x && mailOk(x));
+  const zahl = o.zahlweg === "gehalt" ? "Der Betrag wird mit der nächsten Gehaltsabrechnung einbehalten." : o.zahlweg === "ueberweisung" ? `Bitte überweise den Betrag${e.iban ? ` auf ${e.iban}` : ""} mit dem Verwendungszweck ${o.nr}.` : "Es ist nichts zu bezahlen.";
+  const body = `Hallo ${o.name.split(" ")[0]},\n\nanbei die Rechnung zu deiner Bestellung ${o.nr} über ${euro(o.summe)}.\n${zahl}\n\nViele Grüße\n${e.firma || "GAUSS LVS"}`;
+  const art = await gmail({ to: [o.email], cc, subject: `Rechnung ${o.nr} – Mitarbeitershop`, body, attachments: [{ filename: `Rechnung_${o.nr}.pdf`, mimeType: "application/pdf", content: pdf.b64 }] });
+  await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: { rechnung: { art, am: new Date().toISOString() } } } });
+  toast(art === "entwurf" ? "Rechnung liegt als Entwurf in Gmail" : "Rechnung gesendet");
+}
+
+/* ===== PDF ===== */
+let LOGO = null;
+async function logoPng(){
+  if (LOGO !== null) return LOGO;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.31 156.31" width="312" height="312"><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" stop-color="#a33a6a"/><stop offset=".32" stop-color="#c24b80"/></linearGradient><linearGradient id="b" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" stop-color="#a33a6a"/><stop offset=".45" stop-color="#c24b80"/></linearGradient></defs><polygon fill="#26335d" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="url(#a)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="url(#b)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="#26335d" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg>`;
+  try {
+    const img = new Image(); img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    await img.decode();
+    const c = document.createElement("canvas"); c.width = 312; c.height = 312; c.getContext("2d").drawImage(img, 0, 0, 312, 312);
+    LOGO = c.toDataURL("image/png");
+  } catch { LOGO = ""; }
+  return LOGO;
+}
+const pEuro = n => Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+async function pdfKopf(doc, titel){
+  const e = E(), logo = await logoPng(), M = 20;
+  if (logo) doc.addImage(logo, "PNG", M, 16, 10, 10);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(38, 51, 93);
+  doc.text(e.firma || "GAUSS LVS", M + 14, 20.5);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(90, 100, 130);
+  doc.text("Mitarbeitershop", M + 14, 24.8);
+  const adr = (e.anschrift || "").split("\n").filter(Boolean);
+  if (adr.length) doc.text(adr, 190, 18, { align: "right" });
+  doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(38, 51, 93);
+  doc.text(titel, M, 48);
+  return M;
+}
+let PDFLIB = null;
+function ladePdf(){
+  if (window.jspdf) return Promise.resolve(window.jspdf);
+  return PDFLIB ||= new Promise((ok, nein) => { const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    sc.onload = () => window.jspdf ? ok(window.jspdf) : nein(new Error("PDF-Bibliothek fehlt")); sc.onerror = () => { PDFLIB = null; nein(new Error("PDF-Bibliothek ließ sich nicht laden")); }; document.head.appendChild(sc); });
+}
+async function belegPdf(o, art){
+  const { jsPDF } = await ladePdf(); const doc = new jsPDF({ unit: "mm", format: "a4" }); const e = E();
+  const titel = art === "rechnung" ? "Rechnung" : "Bestellbestätigung";
+  const M = await pdfKopf(doc, titel);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(38, 51, 93);
+  const datum = art === "rechnung" ? (o.abgeschlossenAm || new Date().toISOString()) : o.am;
+  const links = [o.name, `Kürzel ${o.kuerzel}`, o.email];
+  const rechts = [[art === "rechnung" ? "Rechnungsnummer" : "Bestellnummer", o.nr], ["Datum", fmt(datum)], ["Bestellt am", fmt(o.am)], ["Bezahlung", ZAHLWEG[o.zahlweg] || ""]];
+  doc.text(links.filter(Boolean), M, 60);
+  rechts.forEach(([k, w], i) => { doc.setTextColor(110, 118, 145); doc.text(k, 130, 60 + i * 5); doc.setTextColor(38, 51, 93); doc.text(String(w), 190, 60 + i * 5, { align: "right" }); });
+  let y = 88;
+  const kopf = () => { doc.setFontSize(8); doc.setTextColor(110, 118, 145); doc.text("ARTIKEL", M, y); doc.text("MENGE", 120, y, { align: "right" }); doc.text("EINZEL", 145, y, { align: "right" }); doc.text("USt", 160, y, { align: "right" }); doc.text("BETRAG", 190, y, { align: "right" });
+    y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(38, 51, 93); };
+  kopf();
+  for (const x of o.positionen || []){
+    if (y > 250){ doc.addPage(); y = 24; kopf(); }
+    const name = doc.splitTextToSize(x.name + (x.variante ? `, Größe ${x.variante}` : ""), 88);
+    doc.text(name, M, y); doc.text(String(x.menge), 120, y, { align: "right" }); doc.text(pEuro(x.einzel), 145, y, { align: "right" }); doc.text(`${x.ust} %`, 160, y, { align: "right" }); doc.text(pEuro(x.summe), 190, y, { align: "right" });
+    y += name.length * 4.6 + 2.4;
+  }
+  doc.line(M, y - 2, 190, y - 2); y += 4;
+  const zeile = (k, w, fett) => { doc.setFont("helvetica", fett ? "bold" : "normal"); doc.text(k, 145, y, { align: "right" }); doc.text(w, 190, y, { align: "right" }); y += 5.4; };
+  zeile("Zwischensumme", pEuro(o.zwischensumme));
+  if (o.rabatt) zeile(`Gutschein ${o.gutschein?.code || ""}`, "- " + pEuro(o.rabatt));
+  const proSatz = {};
+  for (const x of o.positionen || []){ const s = (proSatz[x.ust] ||= { n: 0, u: 0 }); s.n = r2(s.n + x.netto); s.u = r2(s.u + x.ustBetrag); }
+  for (const [satz, s] of Object.entries(proSatz)){ zeile(`Netto ${satz} %`, pEuro(s.n)); zeile(`USt ${satz} %`, pEuro(s.u)); }
+  y += 1; zeile("Gesamt", pEuro(o.summe), true);
+  doc.setFont("helvetica", "normal"); y += 8; doc.setFontSize(9.5);
+  const hinweis = art !== "rechnung" ? "Diese Bestätigung ist keine Rechnung. Die Rechnung folgt nach der Ausgabe." :
+    o.zahlweg === "gehalt" ? `Der Betrag wird mit der Gehaltsabrechnung einbehalten (Einverständnis vom ${fmt(o.einverstanden)}).` :
+    o.zahlweg === "ueberweisung" ? `Bitte überweisen Sie den Betrag innerhalb von 14 Tagen${e.iban ? ` auf ${e.iban}${e.bank ? ` (${e.bank})` : ""}` : ""}. Verwendungszweck: ${o.nr}.` : "Es ist nichts zu bezahlen.";
+  doc.text(doc.splitTextToSize(hinweis + (art === "rechnung" ? " Leistungsdatum entspricht dem Rechnungsdatum." : ""), 170), M, y);
+  doc.setFontSize(7.5); doc.setTextColor(110, 118, 145);
+  doc.text([e.firma || "GAUSS LVS", [e.ustId ? `USt-IdNr. ${e.ustId}` : "", e.steuernr ? `Steuernummer ${e.steuernr}` : ""].filter(Boolean).join(" · ")].filter(Boolean), M, 284);
+  const uri = doc.output("datauristring");
+  return { blob: doc.output("blob"), b64: uri.slice(uri.indexOf(",") + 1) };
+}
+async function monatsPdf(ym){
+  const { jsPDF } = await ladePdf(); const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const M = await pdfKopf(doc, "Monatsbericht"), z = buchungsZeilen(ym), pers = personenSummen(z), grenze = Number(E().sachbezugGrenze ?? 50);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.setTextColor(90, 100, 130); doc.text(monatName(ym), M, 56);
+  let y = 70;
+  const sp = [M, 40, 120, 150, 190];
+  doc.setFontSize(8); doc.setTextColor(110, 118, 145);
+  ["KÜRZEL", "NAME", "GEHALTSABZUG", "ÜBERWEISUNG", "VORTEIL"].forEach((t, i) => doc.text(t, sp[i], y, i >= 2 ? { align: "right" } : undefined));
+  y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(38, 51, 93);
+  for (const p of pers){
+    if (y > 260){ doc.addPage(); y = 24; }
+    doc.text(p.kuerzel, sp[0], y); doc.text(doc.splitTextToSize(p.name, 60)[0], sp[1], y); doc.text(pEuro(p.gehalt), sp[2], y, { align: "right" }); doc.text(pEuro(p.ueberweisung), sp[3], y, { align: "right" });
+    doc.text(pEuro(p.vorteil) + (p.vorteil > grenze ? " *" : ""), sp[4], y, { align: "right" }); y += 6;
+  }
+  doc.line(M, y - 2, 190, y - 2); y += 4; doc.setFont("helvetica", "bold");
+  doc.text("Summe", sp[0], y); doc.text(pEuro(pers.reduce((s, p) => s + p.gehalt, 0)), sp[2], y, { align: "right" }); doc.text(pEuro(pers.reduce((s, p) => s + p.ueberweisung, 0)), sp[3], y, { align: "right" }); doc.text(pEuro(pers.reduce((s, p) => s + p.vorteil, 0)), sp[4], y, { align: "right" });
+  doc.setFont("helvetica", "normal"); y += 12;
+  const brutto = r2(z.reduce((s, r) => s + r.x.bezahlt, 0)), netto = r2(z.reduce((s, r) => s + r.x.netto, 0));
+  doc.text([`Umsatz brutto ${pEuro(brutto)} · netto ${pEuro(netto)} · USt ${pEuro(brutto - netto)}`, `Rechnungen: ${new Set(z.map(r => r.o.nr)).size} · Positionen unter Einkaufspreis: ${z.filter(r => r.mindest).length}`], M, y);
+  y += 14; doc.setFontSize(8); doc.setTextColor(110, 118, 145);
+  doc.text(doc.splitTextToSize(`* über der Sachbezugsfreigrenze von ${pEuro(grenze)} im Monat. Geldwerter Vorteil = Marktpreis abzüglich gezahltem Preis. Einzelpositionen in der beigefügten CSV-Datei.`, 170), M, y);
+  const uri = doc.output("datauristring");
+  return { blob: doc.output("blob"), b64: uri.slice(uri.indexOf(",") + 1) };
+}
+async function speichern(name, data){
+  if (!CAP.dl){ toast("Speichern ist in dieser Ansicht nicht verfügbar."); return; }
+  try { await CAP.dl.save({ filename: name, data }); } catch (e){ if (e?.code !== "declined") toast("Die Datei ließ sich nicht speichern."); }
+}
+
+/* Große Handyfotos vor dem Hochladen verkleinern: lädt schneller, spart Speicher */
+async function verkleinere(datei, max){
+  try {
+    if (!/^image\/(jpeg|png|webp|heic|heif)/.test(datei.type) && datei.type) return datei;
+    const bmp = await createImageBitmap(datei);
+    const f = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    if (f === 1 && datei.size < 1.5e6 && datei.type === "image/jpeg") return datei;
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * f); c.height = Math.round(bmp.height * f);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(ok => c.toBlob(ok, "image/jpeg", 0.85));
+    return blob ? new File([blob], (datei.name || "foto").replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" }) : datei;
+  } catch { return datei; }
+}
+
+/* ===== Aktionen ===== */
+document.addEventListener("input", e => {
+  if (e.target.id === "q"){ S.q = e.target.value; render(); }
+});
+document.addEventListener("change", async e => {
+  if (e.target.id === "foto-datei" || e.target.id === "szene-datei"){
+    const v = oben(); if (v?.view !== "produkt-edit" || !CAP.assets) return;
+    const szene = e.target.id === "szene-datei";
+    merkeProdukt(v);
+    const dateien = [...e.target.files]; e.target.value = "";
+    if (!dateien.length) return;
+    S.busy = true; toast(szene ? "Szenenfoto wird hochgeladen …" : "Fotos werden hochgeladen …");
+    for (const f of dateien){
+      try {
+        const a = await CAP.assets.upload(await verkleinere(f, szene ? 2000 : 1600));
+        if (szene) v.p.szene = { id: a.id, url: a.url }; else v.p.fotos = [...(v.p.fotos || []), { id: a.id, url: a.url }];
+      } catch { toast("Ein Foto ließ sich nicht hochladen. Bitte ein JPG oder PNG unter 20 MB wählen."); }
+    }
+    S.busy = false; renderSheet();
+  }
+  if (e.target.id === "p-lief"){ const v = oben(); if (v?.view === "produkt-edit") v.p.lieferantId = e.target.value; }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && S.stack.length) schliesse();
+  if (e.key === "Enter" && e.target.id === "anm-mail"){ e.preventDefault(); document.querySelector('[data-act="anm-code"]')?.click(); }
+  if (e.key === "Enter" && e.target.id === "anm-code"){ e.preventDefault(); document.querySelector('[data-act="anm-login"]')?.click(); }
+  if (e.key === "Enter" && e.target.id === "k-code"){ e.preventDefault(); document.querySelector('[data-act="gutschein-pruefen"]')?.click(); }
+});
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const a = b.dataset.act, v = oben();
+  switch (a){
+    case "modus": setzeModus(b.dataset.m); break;
+    case "abmelden": abmelden(); break;
+    case "anm-zurueck": S.anmeldung = { schritt: "email", email: S.anmeldung.email }; render(); break;
+    case "anm-code": {
+      const email = val("anm-mail").toLowerCase(); S.anmeldung.email = email;
+      if (!mailOk(email)){ S.anmeldung.fehler = "Bitte eine gültige E-Mail-Adresse eingeben."; render(); break; }
+      S.anmeldung.busy = true; S.anmeldung.fehler = ""; render();
+      try { await eApi({ action: "code", email }); S.anmeldung = { schritt: "code", email }; render(); setTimeout(() => $("#anm-code")?.focus(), 50); }
+      catch (er){ S.anmeldung.busy = false; S.anmeldung.fehler = er.message; render(); }
+      break;
+    }
+    case "anm-login": {
+      const code = val("anm-code"); S.anmeldung.busy = true; S.anmeldung.fehler = ""; render();
+      try { const j = await eApi({ action: "anmelden", email: S.anmeldung.email, code }); EIGEN.token = j.token; ls.set("token", j.token); S.anmeldung = null; render(); EIGEN.angemeldet?.(); }
+      catch (er){ S.anmeldung.busy = false; S.anmeldung.fehler = er.message; render(); }
+      break;
+    }
+    case "tab": S.tab = b.dataset.tab; render(); window.scrollTo({ top: 0 }); break;
+    case "bereich": S.bereich = b.dataset.b; setFilter(false); render(); window.scrollTo({ top: 0 }); break;
+    case "sub": S.sub = b.dataset.sub; render(); if (b.dataset.fokus) document.getElementById("leiste-platz").scrollIntoView({ block: "start", behavior: "smooth" }); break;
+    case "kat": S.kat = b.dataset.k; render(); break;
+    case "hl-scroll": { const k = document.querySelector(".karussell"); k?.scrollBy({ left: Number(b.dataset.d) * k.clientWidth, behavior: "smooth" }); break; }
+    case "bf": S.bf = b.dataset.f; S.sub = "bestellungen"; render(); break;
+    case "schliessen": schliesse(); break;
+    case "zurueck": zurueck(); break;
+    case "zu-bestellungen": S.tab = "bestellungen"; schliesse(); break;
+
+    case "produkt": oeffne("produkt", { id: b.dataset.id }); break;
+    case "var": v.var = b.dataset.v; v.m = 1; renderSheet(); break;
+    case "menge": v.m = Math.max(1, (v.m || 1) + Number(b.dataset.d)); renderSheet(); break;
+    case "in-korb": {
+      const ex = CART.find(c => c.p === v.id && (c.v || "") === (v.var || ""));
+      if (ex) ex.m += v.m; else CART.push({ p: v.id, v: v.var || "", m: v.m });
+      ls.set("cart", CART); schliesse(); toast(`Im Warenkorb · ${plural(CART.reduce((t, c) => t + c.m, 0), "Artikel", "Artikel")}, ${euro(CART.reduce((t, c) => t + (produkt(c.p)?.vk || 0) * c.m, 0))}`);
+      const kk = $("#minikopf").classList.contains("on") ? $("#mini-korb") : $("#kopf-korb"); kk.animate?.([{ transform: "scale(1)" }, { transform: "scale(1.15)" }, { transform: "scale(1)" }], { duration: 320 }); break;
+    }
+    case "kasse": oeffne("kasse", {}); break;
+    case "korb-menge": {
+      merkeKasse(v);
+      const c = CART[+b.dataset.i]; c.m += Number(b.dataset.d);
+      if (c.m <= 0) CART.splice(+b.dataset.i, 1);
+      ls.set("cart", CART);
+      if (v.gut){ const r = await pruefeGutschein(v.gut.code); if (r.fehler){ v.gut = null; v.gutFehler = r.fehler; } }
+      if (!CART.length){ schliesse(); break; }
+      renderSheet(); break;
+    }
+    case "gutschein-pruefen": {
+      merkeKasse(v); if (v.kuerzel) ls.set("kuerzel", v.kuerzel);
+      b.disabled = true; const r = await pruefeGutschein(v.codeEingabe || "");
+      if (r.fehler){ v.gutFehler = r.fehler; v.gut = null; } else { v.gut = r.gut; v.gutFehler = ""; v.codeEingabe = ""; }
+      renderSheet(); break;
+    }
+    case "gutschein-weg": merkeKasse(v); v.gut = null; renderSheet(); break;
+    case "zahlweg": merkeKasse(v); v.zahlweg = b.dataset.z; renderSheet(); break;
+    case "bestellen": await bestellen(v); break;
+    case "bestellung": oeffne("bestellung", { nr: b.dataset.nr }); break;
+    case "pdf-bestaetigung": { const o = S.mein?.orders?.[b.dataset.nr] || (v?.view === "auftrag" ? auftrag(v.uid, v.nr) : null); if (!o) break; const p = await belegPdf(o, "bestaetigung"); speichern(`Bestellbestaetigung_${o.nr}.pdf`, p.blob); break; }
+    case "selbst-storno": oeffne("frage", { titel: "Bestellung stornieren?", text: "Die Bestellung wird storniert und der Bestand wieder freigegeben.", ja: "Stornieren", gefahr: true, ziel: "selbst-storno", nr: b.dataset.nr }); break;
+
+    case "frage-ja": {
+      const unten = S.stack[S.stack.length - 2];
+      if (v.ziel === "selbst-storno"){
+        const o = S.mein?.orders?.[v.nr];
+        if (o?.status !== "eingegangen"){ toast("Die Bestellung wird schon bearbeitet. Bitte die Verwaltung ansprechen."); zurueck(); break; }
+        try { await setzeStatus({ ...o, uid: S.uid }, "storniert", {}, "durch Besteller:in"); toast("Bestellung storniert"); } catch (er){ toast(fehlerText(er)); }
+        zurueck();
+      } else if (v.ziel === "storno"){
+        const o = auftrag(unten.uid, unten.nr);
+        try { await setzeStatus(o, "storniert", {}, "durch Verwaltung"); toast("Bestellung storniert"); } catch (er){ toast(fehlerText(er)); }
+        zurueck();
+      } else if (v.ziel === "produkt-loeschen"){
+        try { await DB.doc("produkte/" + unten.id).delete(); toast("Produkt gelöscht"); S.stack.pop(); zurueck(); } catch (er){ toast(fehlerText(er)); }
+      } else if (v.ziel === "gutschein-loeschen"){
+        try { const g = S.gut.find(x => x.id === unten.id); if (g?.hash) await DB.doc("gutscheinpruefung/" + g.hash).delete(); await DB.doc("gutscheine/" + unten.id).delete(); toast("Gutschein gelöscht"); S.stack.pop(); zurueck(); } catch (er){ toast(fehlerText(er)); }
+      } else if (v.ziel === "lieferant-loeschen"){
+        try { await DB.doc("lieferanten/" + unten.id).delete(); toast("Gelöscht"); S.stack.pop(); zurueck(); } catch (er){ toast(fehlerText(er)); }
+      }
+      break;
+    }
+
+    /* Verwaltung: Bestellungen */
+    case "auftrag": oeffne("auftrag", { nr: b.dataset.nr, uid: b.dataset.uid }); break;
+    case "status": await statusAktion(v, b.dataset.s); break;
+    case "storno-frage": oeffne("frage", { titel: "Bestellung stornieren?", text: "Reservierter Bestand wird wieder frei. Bereits verschickte Lieferantenbestellungen bitte selbst absagen.", ja: "Stornieren", gefahr: true, ziel: "storno" }); break;
+    case "lieferant-mail": {
+      b.disabled = true; v.fehler = "";
+      try { await lieferantMailen(auftrag(v.uid, v.nr), b.dataset.lid); } catch (er){ v.fehler = er?.mailFehler || fehlerText(er); }
+      renderSheet(); break;
+    }
+    case "pod": oeffne("pod", { uid: v.uid, nr: v.nr, lid: b.dataset.lid }); break;
+    case "pod-erledigt": {
+      const o = auftrag(v.uid, v.nr), jetzt = new Date().toISOString();
+      try {
+        await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: { lieferanten: { [v.lid]: { art: "pod", am: jetzt } } } } });
+        if (["eingegangen", "angenommen"].includes(o.status)) await setzeStatus(o, "bestellt", {}, lieferant(v.lid)?.name);
+        toast("Als übergeben markiert"); zurueck();
+      } catch (er){ toast(fehlerText(er)); }
+      break;
+    }
+    case "pdf-rechnung": { const o = auftrag(v.uid, v.nr); const p = await belegPdf(o, "rechnung"); speichern(`Rechnung_${o.nr}.pdf`, p.blob); break; }
+    case "rechnung-mail": {
+      b.disabled = true; v.fehler = "";
+      try { await rechnungMailen(auftrag(v.uid, v.nr)); } catch (er){ v.fehler = er?.mailFehler || fehlerText(er); }
+      renderSheet(); break;
+    }
+    case "notiz-speichern": {
+      try { await DB.doc("bestellungen/" + v.uid).update({ orders: { [v.nr]: { notizIntern: $("#a-notiz").value.trim() } } }); toast("Notiz gespeichert"); } catch (er){ toast(fehlerText(er)); }
+      break;
+    }
+    case "kopieren": {
+      const t = document.getElementById(b.dataset.quelle)?.textContent || "";
+      try { await navigator.clipboard.writeText(t); toast("Kopiert"); }
+      catch { const r = document.createRange(); r.selectNodeContents(document.getElementById(b.dataset.quelle)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Text markiert, bitte kopieren"); }
+      break;
+    }
+    case "wm-erledigt": {
+      const nrs = new Map(); for (const x of werbemittelOffen()) nrs.set(x.nr, x.uid);
+      try { for (const [nr, u] of nrs) await DB.doc("bestellungen/" + u).update({ orders: { [nr]: { werbemittel: { offen: false, am: new Date().toISOString() } } } }); toast("In Werbemittel gebucht"); }
+      catch (er){ toast(fehlerText(er)); }
+      break;
+    }
+
+    /* Verwaltung: Produkte */
+    case "neu-produkt": oeffne("produkt-edit", { id: null, p: leeresProdukt() }); break;
+    case "edit-produkt": { const p = produkt(b.dataset.id); oeffne("produkt-edit", { id: p.id, p: structuredClone({ ...leeresProdukt(), ...p }) }); break; }
+    case "p-aktiv": merkeProdukt(v); v.p.aktiv = v.p.aktiv === false; renderSheet(); break;
+    case "p-hl": merkeProdukt(v); v.p.highlight = !v.p.highlight; renderSheet(); break;
+    case "p-fokus": merkeProdukt(v); v.p.szeneFokus = b.dataset.f; renderSheet(); break;
+    case "szene-weg": merkeProdukt(v); v.p.szene = null; renderSheet(); break;
+    case "p-ful": merkeProdukt(v); if (v.p.fulfillment !== b.dataset.f){ v.p.fulfillment = b.dataset.f; v.p.lieferantId = ""; } renderSheet(); break;
+    case "var-neu": merkeProdukt(v); v.p.varianten = [...(v.p.varianten || []), { name: "", sku: "", bestand: 0 }]; renderSheet(); break;
+    case "var-groessen": { merkeProdukt(v); const da = new Set((v.p.varianten || []).map(x => x.name)); v.p.varianten = [...(v.p.varianten || []), ...["S", "M", "L", "XL", "XXL"].filter(g => !da.has(g)).map(g => ({ name: g, sku: "", bestand: 0 }))]; renderSheet(); break; }
+    case "var-weg": merkeProdukt(v); v.p.varianten.splice(+b.dataset.i, 1); renderSheet(); break;
+    case "foto-weg": merkeProdukt(v); v.p.fotos.splice(+b.dataset.i, 1); renderSheet(); break;
+    case "produkt-speichern": await produktSpeichern(v); break;
+    case "produkt-loeschen": oeffne("frage", { titel: "Produkt löschen?", text: "Das Produkt verschwindet aus Shop und Verwaltung. Bestehende Bestellungen bleiben erhalten. Zum vorübergehenden Ausblenden reicht der Schalter „Im Shop sichtbar“.", ja: "Löschen", gefahr: true, ziel: "produkt-loeschen" }); break;
+
+    /* Verwaltung: Gutscheine */
+    case "neu-gutschein": oeffne("gutschein-edit", { id: null, g: { code: zufallsCode(), typ: "prozent", wert: 10, aktiv: true, maxProPerson: 1, kategorien: [] } }); break;
+    case "edit-gutschein": { const g = S.gut.find(x => x.id === b.dataset.id); oeffne("gutschein-edit", { id: g.id, g: structuredClone(g) }); break; }
+    case "g-aktiv": merkeGutschein(v); v.g.aktiv = v.g.aktiv === false; renderSheet(); break;
+    case "g-zufall": merkeGutschein(v); v.g.code = zufallsCode(); renderSheet(); break;
+    case "g-typ": merkeGutschein(v); v.g.typ = b.dataset.t; renderSheet(); break;
+    case "g-kat": { merkeGutschein(v); const k = b.dataset.k, l = new Set(v.g.kategorien || []); l.has(k) ? l.delete(k) : l.add(k); v.g.kategorien = [...l]; renderSheet(); break; }
+    case "gutschein-speichern": await gutscheinSpeichern(v); break;
+    case "gutschein-loeschen": oeffne("frage", { titel: "Gutschein löschen?", text: "Der Code lässt sich danach nicht mehr einlösen. Bisherige Bestellungen behalten ihren Rabatt.", ja: "Löschen", gefahr: true, ziel: "gutschein-loeschen" }); break;
+
+    /* Verwaltung: Lieferanten */
+    case "neu-lieferant": if (v?.view === "produkt-edit") merkeProdukt(v); oeffne("lieferant-edit", { id: null, l: { name: "", art: b.dataset.art || "lieferant", email: "", vorlage: STANDARD_VORLAGE } }); break;
+    case "edit-lieferant": { const l = lieferant(b.dataset.id); oeffne("lieferant-edit", { id: l.id, l: structuredClone(l) }); break; }
+    case "l-art": merkeLieferant(v); v.l.art = b.dataset.a; renderSheet(); break;
+    case "lieferant-speichern": await lieferantSpeichern(v); break;
+    case "lieferant-loeschen": oeffne("frage", { titel: "Löschen?", text: "Produkte mit diesem Lieferanten brauchen danach einen neuen Bestellweg.", ja: "Löschen", gefahr: true, ziel: "lieferant-loeschen" }); break;
+
+    /* Verwaltung: Buchhaltung */
+    case "monat": { const [y, m] = S.monat.split("-").map(Number), d = new Date(y, m - 1 + Number(b.dataset.d), 15); S.monat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; render(); break; }
+    case "export-csv": speichern(`Shop_${S.monat}.csv`, new Blob([csvMonat(S.monat)], { type: "text/csv" })); break;
+    case "export-pdf": { const p = await monatsPdf(S.monat); speichern(`Shop_Monatsbericht_${S.monat}.pdf`, p.blob); break; }
+    case "monat-mail": {
+      const e2 = E();
+      if (!mailOk(e2.buchhaltungEmail || "")){ toast("Bitte zuerst die E-Mail der Buchhaltung in den Einstellungen eintragen."); break; }
+      b.disabled = true;
+      try {
+        const p = await monatsPdf(S.monat);
+        const art = await gmail({ to: [e2.buchhaltungEmail], cc: e2.shopEmail ? [e2.shopEmail] : [], subject: `Mitarbeitershop ${monatName(S.monat)}`,
+          body: `Hallo,\n\nanbei der Monatsbericht des Mitarbeitershops für ${monatName(S.monat)}: Übersicht je Person als PDF, Einzelpositionen als CSV.\n\nViele Grüße`,
+          attachments: [{ filename: `Shop_Monatsbericht_${S.monat}.pdf`, mimeType: "application/pdf", content: p.b64 }, { filename: `Shop_${S.monat}.csv`, mimeType: "text/csv", content: b64(csvMonat(S.monat)) }] });
+        toast(art === "entwurf" ? "Monatsbericht liegt als Entwurf in Gmail" : "Monatsbericht gesendet");
+      } catch (er){ toast(er?.mailFehler || "Senden fehlgeschlagen."); }
+      b.disabled = false; break;
+    }
+
+    /* Verwaltung: Einstellungen */
+    case "e-schalter": { const k = b.dataset.k; try { await speichereEinst({ [k]: !E()[k] }); } catch (er){ toast(fehlerText(er)); } break; }
+    case "e-mailmodus": try { await speichereEinst({ mailModus: b.dataset.m }); } catch (er){ toast(fehlerText(er)); } break;
+    case "e-speichern": await einstellungenSpeichern(); break;
+  }
+});
+
+/* ===== Mini-Kopf: erscheint, sobald die Leiste aus dem Bild ist ===== */
+const platz = $("#leiste-platz"), leisteEl = $("#leiste"), mini = $("#minikopf"), miniTaste = $("#mini-filter");
+let miniAn = false;
+function setFilter(offen){
+  offen = offen && miniAn; miniTaste.setAttribute("aria-expanded", String(offen));
+  if (offen && !leisteEl.classList.contains("schwebend")){ platz.style.height = platz.offsetHeight + "px"; leisteEl.classList.add("schwebend"); }
+  if (!offen && leisteEl.classList.contains("schwebend")){ leisteEl.classList.remove("schwebend"); platz.style.height = ""; }
+}
+function pruefeMini(){
+  const an = platz.getBoundingClientRect().bottom < 0;
+  if (an === miniAn) return;
+  miniAn = an; mini.classList.toggle("on", an); mini.setAttribute("aria-hidden", String(!an));
+  miniTaste.tabIndex = an ? 0 : -1; $("#mini-korb").tabIndex = an ? 0 : -1;
+  if (!an) setFilter(false);
+}
+miniTaste.addEventListener("click", () => setFilter(miniTaste.getAttribute("aria-expanded") !== "true"));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.stack.length && leisteEl.classList.contains("schwebend")){ setFilter(false); miniTaste.focus(); } });
+document.addEventListener("click", e => { if (leisteEl.classList.contains("schwebend") && e.target.closest("[data-act=tab],[data-act=sub],[data-act=bereich]")) setTimeout(() => { setFilter(false); window.scrollTo({ top: 0 }); }, 0); });
+window.addEventListener("scroll", pruefeMini, { passive: true });
+window.addEventListener("resize", pruefeMini, { passive: true });
+
+if (!IM_ARTIFACT && "serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+
+try { start().catch(e => { S.fehler = "Start: " + (e?.message || e); S.geladen = true; render(); }); } catch (e){ document.getElementById("summary").textContent = "Technischer Hinweis: " + e.message; }
+</script>
+
+</body>
+</html>
