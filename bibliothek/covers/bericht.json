@@ -1,5 +1,12 @@
 {
- "richards-facebook-marketing": null,
+ "richards-facebook-marketing": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/1717864538.01.LZZZZZZZ.jpg",
+  "groesse": [
+   333,
+   500
+  ]
+ },
  "dark-horse-digital-innovation-playbook": {
   "quelle": "verlag",
   "url": "https://www.murmann-verlag.de/cdn/shop/products/200416_Digital_Innovation_Playbook_7Aufl_Gender_3D_1_800x.png?v=1656317064",
@@ -16,7 +23,14 @@
    565
   ]
  },
- "bloem-branded-protest": null,
+ "bloem-branded-protest": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/9063695411.01.LZZZZZZZ.jpg",
+  "groesse": [
+   346,
+   500
+  ]
+ },
  "franken-ideenraeume-gestalten": {
   "quelle": "verlag",
   "url": "https://www.shaker.de/Cover/978-3-8440-2094-6_Cover_b.gif",
@@ -25,8 +39,22 @@
    283
   ]
  },
- "rustler-denkwerkzeuge-der-kreativitaet-u": null,
- "sinek-frag-immer-erst": null,
+ "rustler-denkwerkzeuge-der-kreativitaet-u": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3907100816.01.LZZZZZZZ.jpg",
+  "groesse": [
+   333,
+   500
+  ]
+ },
+ "sinek-frag-immer-erst": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3868815384.01.LZZZZZZZ.jpg",
+  "groesse": [
+   382,
+   500
+  ]
+ },
  "murphy-cultures-of-growth": {
   "quelle": "verlag",
   "url": "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982172756/cultures-of-growth-9781982172756_lg.jpg",
@@ -43,7 +71,14 @@
    272
   ]
  },
- "thaler-nudge": null,
+ "thaler-nudge": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/0141040017.01.LZZZZZZZ.jpg",
+  "groesse": [
+   318,
+   500
+  ]
+ },
  "kahneman-thinking-fast-and-slow": {
   "quelle": "verlag",
   "url": "https://cdn.penguin.co.uk/dam-assets/books/9780141033570/9780141033570-jacket-large.jpg",
@@ -52,9 +87,30 @@
    500
   ]
  },
- "pereira-digital-nudge": null,
- "hofmann-neuro-design": null,
- "harff-corporate-nudging": null,
+ "pereira-digital-nudge": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/8594377150.01.LZZZZZZZ.jpg",
+  "groesse": [
+   480,
+   720
+  ]
+ },
+ "hofmann-neuro-design": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3770564200.01.LZZZZZZZ.jpg",
+  "groesse": [
+   336,
+   500
+  ]
+ },
+ "harff-corporate-nudging": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3648137387.01.LZZZZZZZ.jpg",
+  "groesse": [
+   343,
+   500
+  ]
+ },
  "eyal-hooked": {
   "quelle": "openlibrary",
   "url": "https://covers.openlibrary.org/b/isbn/9783868815368-L.jpg?default=false",
@@ -63,7 +119,14 @@
    500
   ]
  },
- "heeren-das-google-analytics-praxisbuch": null,
+ "heeren-das-google-analytics-praxisbuch": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/1981846387.01.LZZZZZZZ.jpg",
+  "groesse": [
+   355,
+   500
+  ]
+ },
  "cohn-agile-estimating-and-planning": {
   "quelle": "verlag",
   "url": "https://www.pearson.com/store/pmccommercewebservices/v2/medias/size-W370-A1000-60-79-40-A100060794079-A100060794079-Lrg.jpg?context=bWFzdGVyfGltYWdlc3wxMTM2Nzl8aW1hZ2UvanBlZ3xzeXMtbWFzdGVyL2ltYWdlcy9oNTUvaGEwLzE1NTI0NzEyMTIwMzUwL3NpemVfVzM3MF8vQTEwMDAvNjAvNzkvNDAvQTEwMDA2MDc5NDA3OS9BMTAwMDYwNzk0MDc5X0xyZy5qcGd8NGY4MjQ2MGU2YmQ3YTUxN2Y0MjZiYTQzMGI3N2IxZWMzNWY5ODA5ZmQ4YTc0NTE3N2M0YzQ5YjdlNGFmOWM1Ng&imwidth=3840",
@@ -80,7 +143,14 @@
    400
   ]
  },
- "pichler-agiles-produktmanagement-mit-scr": null,
+ "pichler-agiles-produktmanagement-mit-scr": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3864901421.01.LZZZZZZZ.jpg",
+  "groesse": [
+   342,
+   500
+  ]
+ },
  "pichler-scrum": {
   "quelle": "openlibrary",
   "url": "https://covers.openlibrary.org/b/isbn/9783898644785-L.jpg?default=false",
@@ -97,9 +167,30 @@
    242
   ]
  },
- "laloux-reinventing-organizations": null,
- "laloux-reinventing-organizations-2": null,
- "oestereich-agile-organisationsentwicklung": null,
+ "laloux-reinventing-organizations": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3800649136.01.LZZZZZZZ.jpg",
+  "groesse": [
+   400,
+   599
+  ]
+ },
+ "laloux-reinventing-organizations-2": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3800649136.01.LZZZZZZZ.jpg",
+  "groesse": [
+   400,
+   599
+  ]
+ },
+ "oestereich-agile-organisationsentwicklung": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3800660768.01.LZZZZZZZ.jpg",
+  "groesse": [
+   480,
+   380
+  ]
+ },
  "keeley-ten-types-of-innovation": {
   "quelle": "openlibrary",
   "url": "https://covers.openlibrary.org/b/isbn/9781118504246-L.jpg?default=false",
@@ -108,7 +199,14 @@
    315
   ]
  },
- "strange-do-fly": null,
+ "strange-do-fly": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/1452171475.01.LZZZZZZZ.jpg",
+  "groesse": [
+   330,
+   500
+  ]
+ },
  "shayler-do-disrupt": {
   "quelle": "openlibrary",
   "url": "https://covers.openlibrary.org/b/isbn/9781452171456-L.jpg?default=false",
@@ -125,8 +223,36 @@
    260
   ]
  },
- "klassen-grundkurs-digitales-video": null,
- "baumann-foerdermittel-akquirieren": null,
- "baumann-der-exzellente-eu-projektantrag": null,
- "abdullah-corporate-design": null
+ "klassen-grundkurs-digitales-video": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3836228351.01.LZZZZZZZ.jpg",
+  "groesse": [
+   480,
+   559
+  ]
+ },
+ "baumann-foerdermittel-akquirieren": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3791035975.01.LZZZZZZZ.jpg",
+  "groesse": [
+   330,
+   500
+  ]
+ },
+ "baumann-der-exzellente-eu-projektantrag": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3791051474.01.LZZZZZZZ.jpg",
+  "groesse": [
+   341,
+   500
+  ]
+ },
+ "abdullah-corporate-design": {
+  "quelle": "amazon",
+  "url": "https://images-na.ssl-images-amazon.com/images/P/3874395979.01.LZZZZZZZ.jpg",
+  "groesse": [
+   436,
+   599
+  ]
+ }
 }
