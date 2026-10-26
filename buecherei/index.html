@@ -238,8 +238,10 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cover .ca{font-weight:500;opacity:.75;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;position:relative}
 .zeile .cover .ct{font-size:6.5px}.zeile .cover .ca{font-size:5px}
 .gross .cover .ct{font-size:14px}.gross .cover .ca{font-size:9px}
-.cover.foto{padding:0;background:var(--erhoeht)}
-.cover.foto img{display:block;width:100%;height:100%;object-fit:cover}
+.cover-bild{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;background:var(--erhoeht)}
+.quellen{margin:0 4px;display:grid;gap:4px;font-size:13px;line-height:20px;color:var(--tertiaer)}
+.quellen p{margin:0}
+.quellen a{color:var(--link);text-underline-offset:2px}
 
 /* Badge: Statuspille mit Punkt */
 .badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-aktion);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;
@@ -282,7 +284,15 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .status-zeile{display:grid;gap:6px}
 .feld{display:grid;gap:6px;margin-top:14px}
 .feld label{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer)}
-.feld input{height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:16px}
+.kuerzel{border:0;margin:0;padding:0;display:grid;gap:8px}
+.kuerzel legend{padding:0;margin-bottom:8px;font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer)}
+.kuerzel .meta{margin:0}
+.kuerzel-felder{display:flex;gap:8px}
+.k-feld{width:52px;height:56px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);text-align:center;
+  font-size:22px;line-height:1;font-weight:600;text-transform:uppercase;letter-spacing:0;caret-color:var(--fokus);padding:0}
+.k-feld:hover{border-color:var(--foreground)}
+.k-feld[aria-invalid="true"]{border-color:var(--status-fehler-text)}
+.kuerzel-text{font-weight:600;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .aktionen{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 .taste{flex:1 1 150px;min-height:44px;padding:0 20px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:15px;font-weight:500;
   display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color 120ms ease}
@@ -398,7 +408,8 @@ const BOOKS = [
     beschreibung:"Konkrete Handgriffe, mit denen Oberflächen ruhiger und klarer wirken: Hierarchie, Abstände, Farbe, Schatten. Viele Vorher-nachher-Beispiele, besonders hilfreich für Entwickler:innen." }
 ];
 
-/* Standard für Standort und Eigentum; je Buch überschreibbar. cover: Pfad zum eigenen Foto, z. B. "covers/rams.jpg". */
+/* Standard für Standort und Eigentum; je Buch überschreibbar.
+   cover: URL des Original-Covers (sonst per ISBN), quellen: [{titel, url}] für Beschreibung und Cover. */
 const STANDARD = { standort: "SoPart-6.0-Raum · 1. OG · Bücherregal", eigentum: "NNE" };
 BOOKS.forEach(b => { b.standort ??= STANDARD.standort; b.eigentum ??= STANDARD.eigentum; });
 
@@ -417,7 +428,7 @@ const LocalStore = {
     const loans = ls.get("bib.loans", []); const now = new Date().toISOString();
     if (p.action === "borrow"){
       if (loans.some(l => l.bookId === p.bookId && !l.returnedAt)) throw new Error("Dieses Buch ist gerade verliehen.");
-      loans.push({ id: uid(), bookId: p.bookId, name: p.name, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
+      loans.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
     } else {
       const l = loans.find(x => x.id === p.loanId);
       if (!l || l.returnedAt) throw new Error("Diese Ausleihe ist schon abgeschlossen.");
@@ -464,10 +475,15 @@ function status(id){
 const TONES = ["a","b","c","d"], FORMS = ["kreis","halb","balken","quadrat"];
 function hash(s){ let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
 function cover(b){
-  if (b.cover) return `<div class="cover foto" aria-hidden="true"><img src="${esc(b.cover)}" alt="" loading="lazy" decoding="async"></div>`;
   const h = hash(b.id), t = TONES[h % 4], f = FORMS[(h >> 3) % 4];
   const last = (b.autor || "").split(",")[0].trim().split(" ").pop();
-  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel)}</div><div class="ca">${esc(last)}</div></div>`;
+  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel)}</div><div class="ca">${esc(last)}</div>${coverUrl(b) ? `<img class="cover-bild" src="${esc(coverUrl(b))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>`;
+}
+/* Original-Cover: eigene URL (b.cover) oder per ISBN über Open Library; fehlt es, bleibt die Tafel sichtbar. */
+function coverUrl(b){
+  if (b.cover) return b.cover;
+  const isbn = String(b.isbn || "").replace(/[^0-9X]/gi, "");
+  return isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg?default=false` : "";
 }
 
 /* ===== Liste ===== */
@@ -509,16 +525,18 @@ function renderDetail(){
   let st;
   if (!l){
     st = `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
-      <form id="ausleihen" class="feld" autocomplete="on">
-        <label for="name">Dein Name</label>
-        <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Vor- und Nachname" value="${esc(ls.get("bib.name", ""))}" required>
+      <form id="ausleihen" class="feld" autocomplete="off" novalidate>
+        <fieldset class="kuerzel"><legend>Dein Kürzel</legend>
+          <div class="kuerzel-felder">${[0,1,2].map(i => `<input id="k${i}" class="k-feld" data-i="${i}" maxlength="1" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Buchstabe ${i + 1}" value="${esc((ls.get("bib.kuerzel", "")[i]) || "")}">`).join("")}</div>
+          <p class="meta" id="kuerzel-hinweis">2 oder 3 Buchstaben, z. B. NNE</p>
+        </fieldset>
         <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Ausleihen</button></div>
       </form>`;
   } else {
     const d = days(l.dueAt);
     const frist = d < 0 ? `seit ${tage(-d)} überfällig` : d === 0 ? "heute fällig" : `noch ${tage(d)}`;
     st = `<div class="status-zeile"><span><span class="badge ${s.cls}">${esc(s.label)}</span></span>
-        <p class="titel-karte" style="margin-top:6px">Bei ${esc(l.name)}</p>
+        <p class="titel-karte" style="margin-top:6px">Bei <span class="kuerzel-text">${esc(l.kuerzel || l.name)}</span></p>
         <p class="meta zahl" style="margin:0">Seit ${fmt(l.borrowedAt)} · zurück bis ${fmt(l.dueAt)} (${frist})${l.extended ? " · verlängert" : ""}</p></div>
       <div class="aktionen">
         <button class="taste primaer" data-act="return" ${S.busy ? "disabled" : ""}>Zurückgeben</button>
@@ -533,12 +551,22 @@ function renderDetail(){
       <div class="tags">${(b.themen || []).map(t => `<button class="tag" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div></div></section>
     ${angaben.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${angaben.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
     <section class="abschnitt"><h3 class="titel-bereich">Gelesen von</h3><div class="karte">
-      <ul class="historie">${h.length ? h.map(x => `<li><span>${esc(x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
+      <ul class="historie">${h.length ? h.map(x => `<li><span class="kuerzel-text">${esc(x.kuerzel || x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
         : `<li class="keine">Noch niemand. Du kannst die erste Person sein.</li>`}</ul></div></section>
     <div><button class="taste sekundaer" id="teilen" style="width:100%">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M12 8a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
       Link kopieren</button><div id="linkplatz"></div></div>
+    ${quellenHtml(b)}
     ${b.beispiel ? `<p class="hinweis" style="margin:0 4px">Beispieleintrag bis zur Inventur.</p>` : ""}`;
+}
+function quellenHtml(b){
+  const q = [...(b.quellen || [])];
+  const isbn = String(b.isbn || "").replace(/[^0-9X]/gi, "");
+  if (isbn && !b.cover) q.push({ titel: "Open Library (Cover)", url: `https://openlibrary.org/isbn/${isbn}` });
+  if (!q.length) return "";
+  return `<div class="quellen"><p class="etikett">Quellen</p>
+    <p>${q.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titel)}</a>`).join(" · ")}</p>
+    <p>Cover © jeweiliger Verlag bzw. Rechteinhaber, eingebunden zur Kennzeichnung des Buchs. Beschreibung als eigene Zusammenfassung.</p></div>`;
 }
 
 function openSheet(id, push = true){
@@ -588,9 +616,32 @@ $("#backdrop").addEventListener("click", closeSheet);
 $("#schliessen").addEventListener("click", closeSheet);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) closeSheet(); });
 $("#detail").addEventListener("submit", e => {
-  e.preventDefault(); const name = $("#name").value.trim().replace(/\s+/g, " ");
-  if (name.length < 2){ toast("Bitte deinen Namen eintragen."); $("#name").focus(); return; }
-  ls.set("bib.name", name); act({ action:"borrow", bookId:S.open, name }, "Ausgeliehen. Viel Freude beim Lesen.");
+  e.preventDefault();
+  const felder = [...document.querySelectorAll(".k-feld")], kuerzel = felder.map(f => f.value).join("");
+  const ok = /^[A-ZÄÖÜ]{2,3}$/.test(kuerzel) && felder[0].value && felder[1].value;
+  felder.forEach(f => f.setAttribute("aria-invalid", ok ? "false" : "true"));
+  if (!ok){ toast("Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben."); (felder.find(f => !f.value) || felder[0]).focus(); return; }
+  ls.set("bib.kuerzel", kuerzel); act({ action:"borrow", bookId:S.open, kuerzel }, "Ausgeliehen. Viel Freude beim Lesen.");
+});
+/* Kürzelfelder: nur Buchstaben, Großschreibung, automatisch weiter, Rücktaste zurück, Einfügen verteilt */
+const kNorm = s => s.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
+$("#detail").addEventListener("input", e => {
+  const f = e.target.closest(".k-feld"); if (!f) return;
+  f.value = kNorm(f.value).slice(-1); f.removeAttribute("aria-invalid");
+  if (f.value){ const n = document.getElementById("k" + (+f.dataset.i + 1)); if (n) n.focus(); }
+});
+$("#detail").addEventListener("keydown", e => {
+  const f = e.target.closest(".k-feld"); if (!f) return;
+  const p = document.getElementById("k" + (+f.dataset.i - 1));
+  if (e.key === "Backspace" && !f.value && p){ p.value = ""; p.focus(); e.preventDefault(); }
+  if (e.key === "ArrowLeft" && p){ p.focus(); e.preventDefault(); }
+  if (e.key === "ArrowRight"){ const n = document.getElementById("k" + (+f.dataset.i + 1)); if (n){ n.focus(); e.preventDefault(); } }
+});
+$("#detail").addEventListener("paste", e => {
+  const f = e.target.closest(".k-feld"); if (!f) return;
+  const t = kNorm((e.clipboardData || window.clipboardData).getData("text")).slice(0, 3); if (!t) return;
+  e.preventDefault(); const felder = [...document.querySelectorAll(".k-feld")];
+  felder.forEach((x, i) => x.value = t[i] || ""); (felder[Math.min(t.length, 2)]).focus();
 });
 $("#detail").addEventListener("click", e => {
   const a = e.target.closest("[data-act]"), t = e.target.closest(".tag"), sh = e.target.closest("#teilen"), l = openLoan(S.open);

@@ -12,7 +12,7 @@
  * Korrekturen sind direkt in der Tabelle möglich.
  */
 const BLATT = 'Ausleihen';
-const KOPF = ['id', 'buchId', 'name', 'ausgeliehenAm', 'faelligAm', 'verlaengert', 'zurueckAm'];
+const KOPF = ['id', 'buchId', 'kuerzel', 'ausgeliehenAm', 'faelligAm', 'verlaengert', 'zurueckAm'];
 const LEIHTAGE = 28;
 
 function blatt_() {
@@ -35,7 +35,7 @@ function liste_() {
   return werte.filter(r => r[0]).map(r => ({
     id: String(r[0]),
     bookId: String(r[1]),
-    name: String(r[2]),
+    kuerzel: String(r[2]),
     borrowedAt: iso_(r[3]),
     dueAt: iso_(r[4]),
     extended: r[5] === true || String(r[5]).toUpperCase() === 'TRUE',
@@ -64,11 +64,11 @@ function doPost(e) {
 
     if (p.action === 'borrow') {
       const buchId = String(p.bookId || '').slice(0, 120);
-      const name = String(p.name || '').trim().replace(/\s+/g, ' ').slice(0, 60);
-      if (!buchId || name.length < 2) return antwort_({ ok: false, error: 'Bitte Namen eintragen.' });
+      const kuerzel = String(p.kuerzel || '').toUpperCase();
+      if (!buchId || !/^[A-ZÄÖÜ]{2,3}$/.test(kuerzel)) return antwort_({ ok: false, error: 'Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben.' });
       const offen = werte.some((r, i) => i > 0 && r[1] === buchId && !r[6]);
       if (offen) return antwort_({ ok: false, error: 'Dieses Buch ist gerade verliehen.' });
-      s.appendRow([Utilities.getUuid(), buchId, name, jetzt, plusTage_(jetzt, LEIHTAGE), 'FALSE', '']);
+      s.appendRow([Utilities.getUuid(), buchId, kuerzel, jetzt, plusTage_(jetzt, LEIHTAGE), 'FALSE', '']);
     } else if (p.action === 'extend' || p.action === 'return') {
       const i = werte.findIndex((r, idx) => idx > 0 && r[0] === p.loanId);
       if (i < 1 || werte[i][6]) return antwort_({ ok: false, error: 'Diese Ausleihe ist schon abgeschlossen.' });
