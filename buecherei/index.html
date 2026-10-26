@@ -158,7 +158,7 @@ body{background:var(--background);color:var(--foreground);font-family:var(--font
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--rahmenflaeche)}
 ::selection{background:color-mix(in oklab,var(--marke-500) 28%,transparent)}
-button,input{font:inherit;color:inherit;letter-spacing:inherit}
+button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
 .wrap{max-width:680px;margin:0 auto;padding-block:16px 48px}
@@ -178,11 +178,30 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .seitenkopf{display:grid;gap:4px}
 
 /* Sticky Leiste: Rahmenfläche, Linie erst beim Scrollen */
-.leiste{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--rahmenflaeche);
+.leiste{position:relative;z-index:5;background:var(--rahmenflaeche);
   margin:16px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;
   padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
   display:grid;gap:10px;border-bottom:1px solid transparent;transition:border-color 120ms ease}
-.leiste.gescrollt{border-bottom-color:var(--linie)}
+.leiste.schwebend{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 57px);margin:0;z-index:8;
+  padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - 680px) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - 680px) / 2));
+  border-bottom-color:var(--linie);box-shadow:var(--schatten-hoch);animation:panel-ein 240ms cubic-bezier(.22,1,.36,1) both}
+.leiste.schwebend .filter{margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px),calc((100vw - 680px) / 2)));padding-inline:max(16px,env(safe-area-inset-left,0px),calc((100vw - 680px) / 2))}
+@keyframes panel-ein{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
+
+/* Mini-Kopf beim Scrollen: Zeichen links, Suche/Filter über runde Icon-Taste rechts */
+.minikopf{position:fixed;left:0;right:0;top:0;z-index:9;background:var(--rahmenflaeche);border-bottom:1px solid var(--linie);
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px),calc((100% - 680px) / 2)) 0 max(16px,env(safe-area-inset-left,0px),calc((100% - 680px) / 2));
+  transform:translateY(-100%);transition:transform 160ms ease-out;visibility:hidden}
+.minikopf.on{transform:none;visibility:visible}
+.minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.minikopf .zeichen{width:24px;height:24px}
+.minikopf .kopf-titel{font-size:16px;line-height:24px;font-weight:600;letter-spacing:-.018em;margin:0 auto 0 10px}
+.icon-taste.frei{position:relative;width:40px;height:40px}
+.icon-taste.frei::after{content:"";position:absolute;inset:-2px}
+.icon-taste.frei svg{transition:transform 160ms ease-out}
+.icon-taste.frei[aria-expanded="true"] svg{transform:rotate(180deg)}
+.icon-taste.frei[aria-expanded="true"]{background-color:var(--ort-aktiv)}
+.punkt{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--zaehler);box-shadow:0 0 0 2px var(--objekt)}
 .suche{position:relative}
 .suche svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
 .suche input{width:100%;height:44px;border:1px solid var(--linie);border-radius:var(--radius-aktion);background:var(--objekt);
@@ -318,12 +337,52 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .historie .keine{color:var(--tertiaer)}
 .linkfeld{margin-top:10px;width:100%;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:14px}
 
+.sterne{display:inline-flex;gap:2px;vertical-align:middle;color:var(--foreground)}
+.sterne svg{width:14px;height:14px}
+.sterne .leer-stern{color:var(--erhoeht)}
+.bewertung-kopf{display:flex;align-items:center;gap:12px;padding:16px}
+.bewertung-kopf .schnitt{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bewertung-kopf .sterne svg{width:16px;height:16px}
+.bewertungen{list-style:none;margin:0;padding:0}
+.bewertungen li{padding:12px 16px;display:grid;gap:4px;box-shadow:inset 0 1px 0 var(--linie)}
+.bewertungen .zeile-kopf{display:flex;align-items:center;gap:10px}
+.bewertungen .d{margin-left:auto;color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums}
+.bewertungen p{margin:0;font-size:15px;line-height:22px;color:var(--text-sekundaer);overflow-wrap:anywhere}
+.stern-wahl{display:flex;gap:4px;margin-top:4px}
+.stern{width:44px;height:44px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--deaktiviert);display:grid;place-items:center;padding:0}
+.stern:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.stern svg{width:28px;height:28px}
+.stern.an{color:var(--gewaehlt)}
+.stern-label{margin:0}
+.kommentar{width:100%;min-height:96px;resize:vertical;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:10px 12px;font-size:16px;line-height:22px}
+.kommentar:hover{border-color:var(--foreground)}
+.bewerten-form{display:grid;gap:16px}
+.bewerten-form .gruppe{display:grid;gap:6px}
+.bewerten-form label,.bewerten-form .gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
+.zeile .bewertet{display:inline-flex;align-items:center;gap:4px;color:var(--text-sekundaer);font-size:13px;line-height:20px;font-variant-numeric:tabular-nums}
+.zeile .bewertet svg{width:12px;height:12px;color:var(--foreground)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
   background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
   transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important}}
 </style>
+
+<header class="minikopf" id="minikopf" aria-hidden="true">
+  <div class="innen-kopf">
+    <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
+      <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
+      <path fill="var(--logo-marke)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="var(--logo-marke)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
+    </svg>
+    <p class="kopf-titel">Bücherei</p>
+    <button class="icon-taste frei" id="mini-filter" aria-expanded="false" aria-controls="leiste" aria-label="Suche und Filter" tabindex="-1">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 5 5 5 5-5"/></svg>
+      <span class="punkt" id="mini-punkt" hidden></span>
+    </button>
+  </div>
+</header>
 
 <div class="wrap">
   <div class="kopf">
@@ -339,7 +398,7 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
     <p class="meta zahl" id="summary" style="margin:0">Bücher werden geladen …</p>
   </header>
 
-  <div class="leiste" id="leiste">
+  <div id="leiste-platz"><div class="leiste" id="leiste">
     <div class="suche">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="6"/><path d="m13 13 4.5 4.5"/></svg>
       <input id="q" type="search" placeholder="Titel, Autor:in, Thema" autocomplete="off" enterkeyhint="search" aria-label="Bücher durchsuchen">
@@ -353,7 +412,7 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
       <button data-s="out" aria-pressed="false">Verliehen <span class="zahl" id="c-out">0</span></button>
     </div>
     <div class="filter" id="filter" role="group" aria-label="Nach Thema filtern"></div>
-  </div>
+  </div></div>
 
   <section class="bereich" aria-labelledby="liste-titel">
     <header><h2 class="titel-bereich" id="liste-titel">Bestand</h2><span class="meta zahl" id="treffer"></span></header>
@@ -423,9 +482,15 @@ const addDays = (iso, n) => { const d = new Date(iso); d.setDate(d.getDate() + n
 
 const LocalStore = {
   mode: "local",
-  async list(){ return ls.get("bib.loans", []); },
+  async list(){ return { loans: ls.get("bib.loans", []), ratings: ls.get("bib.ratings", []) }; },
   async act(p){
-    const loans = ls.get("bib.loans", []); const now = new Date().toISOString();
+    const loans = ls.get("bib.loans", []), ratings = ls.get("bib.ratings", []); const now = new Date().toISOString();
+    if (p.action === "rate"){
+      const r = ratings.find(x => x.bookId === p.bookId && x.kuerzel === p.kuerzel);
+      if (r) Object.assign(r, { sterne: p.sterne, kommentar: p.kommentar, am: now });
+      else ratings.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, sterne: p.sterne, kommentar: p.kommentar, am: now });
+      ls.set("bib.ratings", ratings); return { loans, ratings };
+    }
     if (p.action === "borrow"){
       if (loans.some(l => l.bookId === p.bookId && !l.returnedAt)) throw new Error("Dieses Buch ist gerade verliehen.");
       loans.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
@@ -435,24 +500,24 @@ const LocalStore = {
       if (p.action === "extend"){ if (l.extended) throw new Error("Schon einmal verlängert."); l.dueAt = addDays(l.dueAt, CONFIG.LOAN_DAYS); l.extended = true; }
       if (p.action === "return") l.returnedAt = now;
     }
-    ls.set("bib.loans", loans); return loans;
+    ls.set("bib.loans", loans); return { loans, ratings };
   }
 };
 const RemoteStore = {
   mode: "remote",
   async list(){
     const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j.loans;
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return { loans: j.loans || [], ratings: j.ratings || [] };
   },
   async act(p){
     const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j.loans;
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return { loans: j.loans || [], ratings: j.ratings || [] };
   }
 };
 const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
 
 /* ===== Zustand ===== */
-const S = { loans: [], q: "", status: "all", topic: null, open: null, busy: false };
+const S = { loans: [], ratings: [], q: "", status: "all", topic: null, open: null, busy: false, entwurf: null };
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -469,6 +534,24 @@ function status(id){
   if (d < 0) return { key:"out", label:"Überfällig", cls:"fehler", loan:l };
   if (d <= 3) return { key:"out", label:"Bald fällig", cls:"warnung", loan:l };
   return { key:"out", label:"Verliehen", cls:"info", loan:l };
+}
+
+/* ===== Bewertungen ===== */
+const STERN = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`;
+const bewertungen = id => S.ratings.filter(r => r.bookId === id).sort((a, b) => String(b.am).localeCompare(String(a.am)));
+function schnitt(id){ const r = bewertungen(id); return r.length ? { wert: r.reduce((s, x) => s + Number(x.sterne || 0), 0) / r.length, anzahl: r.length } : null; }
+const komma = n => n.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+function sterneHtml(n){ const v = Math.round(n); return `<span class="sterne" role="img" aria-label="${komma(n)} von 5 Sternen">${[1,2,3,4,5].map(i => i <= v ? STERN : STERN.replace('fill="currentColor"', 'fill="currentColor" class="leer-stern"')).join("")}</span>`; }
+const sternLabel = n => n === 0 ? "Keine Sterne" : `${n} von 5 Sternen`;
+function kuerzelFelder(g, wert){
+  return `<div class="kuerzel-felder">${[0,1,2].map(i => `<input id="${g}${i}" class="k-feld" data-g="${g}" data-i="${i}" maxlength="1" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Buchstabe ${i + 1}" value="${esc((wert || "")[i] || "")}">`).join("")}</div>`;
+}
+function leseKuerzel(g){
+  const felder = [0,1,2].map(i => document.getElementById(g + i)), k = felder.map(f => f.value).join("");
+  const ok = /^[A-ZÄÖÜ]{2,3}$/.test(k) && felder[0].value && felder[1].value;
+  felder.forEach(f => f.setAttribute("aria-invalid", ok ? "false" : "true"));
+  if (!ok){ toast("Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben."); (felder.find(f => !f.value) || felder[0]).focus(); return null; }
+  ls.set("bib.kuerzel", k); return k;
 }
 
 /* ===== Cover ===== */
@@ -506,15 +589,16 @@ function render(){
   const items = BOOKS.filter(matches).sort((a, b) => a.titel.localeCompare(b.titel, "de"));
   $("#treffer").textContent = items.length === BOOKS.length ? "" : `${items.length} von ${BOOKS.length}`;
   $("#liste").innerHTML = items.length ? items.map(b => {
-    const s = status(b.id);
+    const s = status(b.id), r = schnitt(b.id);
     return `<button class="zeile" data-id="${esc(b.id)}">
       ${cover(b)}
-      <span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span></span>
+      <span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span>${r ? `<span class="bewertet">${STERN} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span>
       <span class="rechts"><span class="badge ${s.cls}">${esc(s.label)}</span>
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
     </button>`;
   }).join("") : `<div class="leer"><p class="titel-karte">Nichts gefunden</p><p class="meta" style="margin:0">Andere Schreibweise probieren oder Filter zurücksetzen.</p></div>`;
   $("#leeren").hidden = !S.q;
+  $("#mini-punkt").hidden = !(S.q || S.status !== "all" || S.topic);
   if (S.open) renderDetail();
 }
 
@@ -527,8 +611,8 @@ function renderDetail(){
     st = `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
       <form id="ausleihen" class="feld" autocomplete="off" novalidate>
         <fieldset class="kuerzel"><legend>Dein Kürzel</legend>
-          <div class="kuerzel-felder">${[0,1,2].map(i => `<input id="k${i}" class="k-feld" data-i="${i}" maxlength="1" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Buchstabe ${i + 1}" value="${esc((ls.get("bib.kuerzel", "")[i]) || "")}">`).join("")}</div>
-          <p class="meta" id="kuerzel-hinweis">2 oder 3 Buchstaben, z. B. NNE</p>
+          ${kuerzelFelder("k", ls.get("bib.kuerzel", ""))}
+          <p class="meta">2 oder 3 Buchstaben, z. B. NNE</p>
         </fieldset>
         <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Ausleihen</button></div>
       </form>`;
@@ -543,6 +627,23 @@ function renderDetail(){
         ${l.extended ? "" : `<button class="taste sekundaer" data-act="extend" ${S.busy ? "disabled" : ""}>Verlängern</button>`}
       </div>`;
   }
+  const r = schnitt(b.id), rl = bewertungen(b.id), e = S.entwurf;
+  const bewertungHtml = `
+    <section class="abschnitt"><h3 class="titel-bereich">Bewertungen</h3><div class="karte">
+      ${r ? `<div class="bewertung-kopf"><span class="schnitt">${komma(r.wert)}</span><span style="display:grid;gap:2px">${sterneHtml(r.wert)}<span class="meta">${r.anzahl} ${r.anzahl === 1 ? "Bewertung" : "Bewertungen"}</span></span></div>
+        <ul class="bewertungen">${rl.map(x => `<li><div class="zeile-kopf"><span class="kuerzel-text">${esc(x.kuerzel)}</span>${sterneHtml(Number(x.sterne || 0))}<span class="d">${fmt(x.am)}</span></div>${x.kommentar ? `<p>${esc(x.kommentar)}</p>` : ""}</li>`).join("")}</ul>`
+        : `<div class="innen"><p class="meta" style="margin:0">Noch keine Bewertung. Wie fandest du das Buch?</p></div>`}
+    </div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Bewerten</h3><div class="karte innen">
+      <form id="bewerten" class="bewerten-form" autocomplete="off" novalidate>
+        <div class="gruppe"><p class="gruppe-titel" id="sterne-titel">Sterne</p>
+          <div class="stern-wahl" role="radiogroup" aria-labelledby="sterne-titel">${[1,2,3,4,5].map(n => `<button type="button" class="stern${n <= e.sterne ? " an" : ""}" role="radio" aria-checked="${n === e.sterne}" aria-label="${n} ${n === 1 ? "Stern" : "Sterne"}" data-n="${n}">${STERN}</button>`).join("")}</div>
+          <p class="meta stern-label" aria-live="polite">${sternLabel(e.sterne)}${e.sterne ? " · nochmal tippen setzt auf 0" : ""}</p></div>
+        <div class="gruppe"><label for="kommentar">Kommentar (optional)</label>
+          <textarea id="kommentar" class="kommentar" maxlength="500" placeholder="Was nimmst du mit?">${esc(e.kommentar)}</textarea></div>
+        <fieldset class="kuerzel"><legend>Dein Kürzel</legend>${kuerzelFelder("r", e.kuerzel)}</fieldset>
+        <div class="aktionen" style="margin-top:0"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Bewertung speichern</button></div>
+      </form></div></section>`;
   const angaben = [["Verlag", b.verlag], ["Jahr", b.jahr], ["Seiten", b.seiten], ["Sprache", b.sprache], ["Standort", b.standort], ["Eigentum", b.eigentum], ["ISBN", b.isbn]].filter(x => x[1]);
   $("#detail").innerHTML = `
     <div class="held gross">${cover(b)}<div><h2 id="d-titel">${esc(b.titel)}</h2><p class="meta" style="margin:4px 0 0">${esc(b.autor)}</p></div></div>
@@ -553,6 +654,7 @@ function renderDetail(){
     <section class="abschnitt"><h3 class="titel-bereich">Gelesen von</h3><div class="karte">
       <ul class="historie">${h.length ? h.map(x => `<li><span class="kuerzel-text">${esc(x.kuerzel || x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
         : `<li class="keine">Noch niemand. Du kannst die erste Person sein.</li>`}</ul></div></section>
+    ${bewertungHtml}
     <div><button class="taste sekundaer" id="teilen" style="width:100%">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M12 8a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
       Link kopieren</button><div id="linkplatz"></div></div>
@@ -571,6 +673,8 @@ function quellenHtml(b){
 
 function openSheet(id, push = true){
   if (!BOOKS.some(b => b.id === id)) return;
+  const k = ls.get("bib.kuerzel", ""), eigene = S.ratings.find(r => r.bookId === id && r.kuerzel === k);
+  S.entwurf = { sterne: eigene ? Number(eigene.sterne) : 0, kommentar: eigene ? eigene.kommentar || "" : "", kuerzel: k };
   S.open = id; renderDetail();
   const sh = $("#sheet"), bd = $("#backdrop");
   sh.hidden = bd.hidden = false; sh.scrollTop = 0;
@@ -592,8 +696,8 @@ let toastT;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
 async function act(p, ok){
   if (S.busy) return; S.busy = true; renderDetail();
-  try { S.loans = await Store.act(p); toast(ok); }
-  catch (e) { toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); try { S.loans = await Store.list(); } catch {} }
+  try { Object.assign(S, await Store.act(p)); toast(ok); }
+  catch (e) { toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); try { Object.assign(S, await Store.list()); } catch {} }
   finally { S.busy = false; render(); }
 }
 async function teilen(b){
@@ -617,30 +721,36 @@ $("#schliessen").addEventListener("click", closeSheet);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) closeSheet(); });
 $("#detail").addEventListener("submit", e => {
   e.preventDefault();
-  const felder = [...document.querySelectorAll(".k-feld")], kuerzel = felder.map(f => f.value).join("");
-  const ok = /^[A-ZÄÖÜ]{2,3}$/.test(kuerzel) && felder[0].value && felder[1].value;
-  felder.forEach(f => f.setAttribute("aria-invalid", ok ? "false" : "true"));
-  if (!ok){ toast("Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben."); (felder.find(f => !f.value) || felder[0]).focus(); return; }
-  ls.set("bib.kuerzel", kuerzel); act({ action:"borrow", bookId:S.open, kuerzel }, "Ausgeliehen. Viel Freude beim Lesen.");
+  if (e.target.id === "ausleihen"){
+    const kuerzel = leseKuerzel("k"); if (!kuerzel) return;
+    act({ action:"borrow", bookId:S.open, kuerzel }, "Ausgeliehen. Viel Freude beim Lesen.");
+  }
+  if (e.target.id === "bewerten"){
+    const kuerzel = leseKuerzel("r"); if (!kuerzel) return;
+    S.entwurf.kuerzel = kuerzel;
+    act({ action:"rate", bookId:S.open, kuerzel, sterne:S.entwurf.sterne, kommentar:S.entwurf.kommentar.trim().slice(0, 500) }, "Danke für deine Bewertung.");
+  }
 });
 /* Kürzelfelder: nur Buchstaben, Großschreibung, automatisch weiter, Rücktaste zurück, Einfügen verteilt */
 const kNorm = s => s.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
 $("#detail").addEventListener("input", e => {
   const f = e.target.closest(".k-feld"); if (!f) return;
   f.value = kNorm(f.value).slice(-1); f.removeAttribute("aria-invalid");
-  if (f.value){ const n = document.getElementById("k" + (+f.dataset.i + 1)); if (n) n.focus(); }
+  if (f.dataset.g === "r") S.entwurf.kuerzel = [0,1,2].map(i => document.getElementById("r" + i).value).join("");
+  if (f.value){ const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1)); if (n) n.focus(); }
 });
+$("#detail").addEventListener("input", e => { if (e.target.id === "kommentar") S.entwurf.kommentar = e.target.value; });
 $("#detail").addEventListener("keydown", e => {
   const f = e.target.closest(".k-feld"); if (!f) return;
-  const p = document.getElementById("k" + (+f.dataset.i - 1));
+  const p = document.getElementById(f.dataset.g + (+f.dataset.i - 1));
   if (e.key === "Backspace" && !f.value && p){ p.value = ""; p.focus(); e.preventDefault(); }
   if (e.key === "ArrowLeft" && p){ p.focus(); e.preventDefault(); }
-  if (e.key === "ArrowRight"){ const n = document.getElementById("k" + (+f.dataset.i + 1)); if (n){ n.focus(); e.preventDefault(); } }
+  if (e.key === "ArrowRight"){ const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1)); if (n){ n.focus(); e.preventDefault(); } }
 });
 $("#detail").addEventListener("paste", e => {
   const f = e.target.closest(".k-feld"); if (!f) return;
   const t = kNorm((e.clipboardData || window.clipboardData).getData("text")).slice(0, 3); if (!t) return;
-  e.preventDefault(); const felder = [...document.querySelectorAll(".k-feld")];
+  e.preventDefault(); const felder = [0,1,2].map(i => document.getElementById(f.dataset.g + i));
   felder.forEach((x, i) => x.value = t[i] || ""); (felder[Math.min(t.length, 2)]).focus();
 });
 $("#detail").addEventListener("click", e => {
@@ -648,12 +758,32 @@ $("#detail").addEventListener("click", e => {
   if (a && l) act({ action:a.dataset.act, loanId:l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert.");
   if (t){ S.topic = t.dataset.t; renderFilter(); closeSheet(); render(); }
   if (sh) teilen(BOOKS.find(b => b.id === S.open));
+  const st = e.target.closest(".stern");
+  if (st){ const n = +st.dataset.n; S.entwurf.sterne = S.entwurf.sterne === n ? 0 : n; renderDetail(); const fokus = document.querySelector(`.stern[data-n="${n}"]`); if (fokus) fokus.focus(); }
 });
-window.addEventListener("scroll", () => $("#leiste").classList.toggle("gescrollt", window.scrollY > 120), { passive:true });
+/* Mini-Kopf: erscheint, sobald die Suchleiste aus dem Bild ist; Suche/Filter klappen darunter auf */
+const platz = $("#leiste-platz"), leiste = $("#leiste"), mini = $("#minikopf"), miniTaste = $("#mini-filter");
+let miniAn = false;
+function setFilter(offen){
+  offen = offen && miniAn; miniTaste.setAttribute("aria-expanded", offen);
+  if (offen && !leiste.classList.contains("schwebend")){ platz.style.height = platz.offsetHeight + "px"; leiste.classList.add("schwebend"); }
+  if (!offen && leiste.classList.contains("schwebend")){ leiste.classList.remove("schwebend"); platz.style.height = ""; }
+}
+function pruefeMini(){
+  const an = platz.getBoundingClientRect().bottom < 0;
+  if (an === miniAn) return;
+  miniAn = an; mini.classList.toggle("on", an); mini.setAttribute("aria-hidden", String(!an)); miniTaste.tabIndex = an ? 0 : -1;
+  if (!an) setFilter(false);
+}
+miniTaste.addEventListener("click", () => setFilter(miniTaste.getAttribute("aria-expanded") !== "true"));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.open && leiste.classList.contains("schwebend")){ setFilter(false); miniTaste.focus(); } });
+$("#liste").addEventListener("click", () => setFilter(false));
+window.addEventListener("scroll", pruefeMini, { passive:true });
+window.addEventListener("resize", pruefeMini, { passive:true });
 window.addEventListener("hashchange", () => { const m = location.hash.match(/^#b-(.+)$/); if (m && m[1] !== S.open) openSheet(m[1], false); });
 
 /* ===== Start ===== */
-async function refresh(){ try { S.loans = await Store.list(); render(); } catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); } }
+async function refresh(){ try { Object.assign(S, await Store.list()); render(); } catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); } }
 (async function start(){
   if (Store.mode === "local"){ $("#vorschau").hidden = false;
     $("#vorschau-text").textContent = "Vorschau: Ausleihen bleiben nur auf diesem Gerät. Mit verbundener Tabelle sehen alle denselben Stand."; }
