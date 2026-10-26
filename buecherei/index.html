@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Bücher der GAUSS-Bücherei finden, ausleihen und zurückgeben.">
+<meta name="theme-color" content="#f9fafc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b111f" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bücherei">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>GAUSS Bücherei</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600&display=swap">
+<style>
+/*
+ * GAUSS Bücherei — Anwendung im GAUSS-Designsystem.
+ * Grundlage GAUSS: Neutralskala Hue 265 (Tinte nie Schwarz), nur Funnel Sans (400/500/600), Rollenradien, KERN-Status.
+ * Ausprägung Unternehmen (Arbeitgeber): Markenskala Magenta, --marke-hue 345 statt Orange 50.
+ * Zustandsregel: Hover = neutrales Overlay; Umschalter = Ort-Leiter; Marke nur bei gewählten Steuerelementen,
+ * Fokus, Zähler und Links im Fließtext. Primäraktion = Tinte. Warnung = Amber.
+ * Layout: eine Spalte, Seitentitel, sticky Suche/Umschalter, Widget Typ A (Titel außen, weiße Karte), Detail als Sheet.
+ * Werte 1:1 aus src/styles.css des Lovable-Prototyps (Stand 25.10.2026).
+ */
+:root{
+  --font-ui:"Funnel Sans",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+
+  --neutral-0:oklch(1 0 0);
+  --neutral-50:oklch(0.985 0.004 265);
+  --neutral-100:oklch(0.965 0.007 265);
+  --neutral-200:oklch(0.92 0.01 265);
+  --neutral-300:oklch(0.85 0.014 265);
+  --neutral-400:oklch(0.71 0.02 265);
+  --neutral-500:oklch(0.58 0.028 265);
+  --neutral-600:oklch(0.48 0.038 265);
+  --neutral-700:oklch(0.4 0.048 265);
+  --neutral-800:oklch(0.34 0.035 265);
+  --neutral-900:oklch(0.27 0.04 265);
+  --neutral-950:oklch(0.22 0.045 265);
+
+  /* Ausprägung Unternehmen: Magenta */
+  --marke-hue:345;
+  --marke-050:oklch(0.97 0.016 var(--marke-hue));
+  --marke-100:oklch(0.94 0.033 var(--marke-hue));
+  --marke-200:oklch(0.89 0.064 var(--marke-hue));
+  --marke-300:oklch(0.82 0.11 var(--marke-hue));
+  --marke-400:oklch(0.75 0.148 var(--marke-hue));
+  --marke-500:oklch(0.68 0.163 var(--marke-hue));
+  --marke-600:oklch(0.6 0.153 var(--marke-hue));
+  --marke-700:oklch(0.52 0.136 var(--marke-hue));
+
+  --status-fehler-text:oklch(0.5 0.18 25);   --status-fehler-flaeche:oklch(0.965 0.02 25);
+  --status-erfolg-text:oklch(0.47 0.11 150); --status-erfolg-flaeche:oklch(0.965 0.03 150);
+  --status-info-text:oklch(0.48 0.14 250);   --status-info-flaeche:oklch(0.965 0.02 250);
+  --status-warnung-text:oklch(0.5 0.105 85); --status-warnung-flaeche:oklch(0.97 0.055 92);
+
+  --background:var(--neutral-50);
+  --leiste:var(--neutral-100);
+  --rahmenflaeche:var(--neutral-50);
+  --objekt:var(--neutral-0);
+  --erhoeht:var(--neutral-200);
+  --tastenflaeche:var(--neutral-100);
+  --popover:var(--neutral-0);
+  --linie:var(--neutral-200);
+  --rahmen:var(--neutral-500);
+  --foreground:var(--neutral-950);
+  --text-sekundaer:var(--neutral-700);
+  --tertiaer:var(--neutral-600);
+  --deaktiviert:var(--neutral-400);
+  --primary:var(--neutral-950);
+  --primary-foreground:var(--neutral-0);
+  --hover:color-mix(in oklab,var(--neutral-950) 6%,transparent);
+  --pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
+  --ort-aktiv:var(--neutral-300);
+  --gewaehlt:var(--marke-600);
+  --gewaehlt-text:var(--neutral-0);
+  --zaehler:var(--marke-600);
+  --fokus:var(--marke-700);
+  --fokus-innen:var(--neutral-0);
+  --link:var(--marke-700);
+  --logo:var(--neutral-950);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 20%,transparent);
+  --schatten-farbe:var(--neutral-950);
+  --schatten-widget:0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
+  --schatten-hoch:0 20px 48px -16px color-mix(in oklab,var(--schatten-farbe) 16%,transparent),0 4px 14px -8px color-mix(in oklab,var(--schatten-farbe) 8%,transparent);
+
+  /* Cover: nur Neutralskala, Bauhaus-Form als Unterscheidung */
+  --cover-a:var(--neutral-950); --cover-a-t:var(--neutral-50);
+  --cover-b:var(--neutral-700); --cover-b-t:var(--neutral-0);
+  --cover-c:var(--neutral-200); --cover-c-t:var(--neutral-950);
+  --cover-d:var(--neutral-100); --cover-d-t:var(--neutral-950);
+
+  --radius-aktion:999px; --radius-zeile:8px; --radius-block:12px; --radius-karte:16px; --radius-flaeche:20px;
+  --hoehe-touchziel:44px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --dunkel-seite:oklch(0.16 0.028 265); --dunkel-karte:oklch(0.20 0.03 265); --dunkel-erhoeht:oklch(0.245 0.032 265); --dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);   --status-fehler-flaeche:oklch(0.29 0.06 25);
+  --status-erfolg-text:oklch(0.78 0.12 150);  --status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);    --status-info-flaeche:oklch(0.29 0.06 250);
+  --status-warnung-text:oklch(0.85 0.13 88);  --status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite); --leiste:var(--dunkel-seite); --rahmenflaeche:var(--dunkel-seite);
+  --objekt:var(--dunkel-karte); --erhoeht:var(--dunkel-erhoeht); --tastenflaeche:var(--dunkel-erhoeht); --popover:var(--dunkel-karte);
+  --linie:var(--dunkel-linie); --rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
+  --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500);
+  --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
+  --schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  --cover-a:var(--neutral-50); --cover-a-t:var(--neutral-950);
+  --cover-b:var(--neutral-400); --cover-b-t:var(--neutral-950);
+  --cover-c:var(--neutral-800); --cover-c-t:var(--neutral-50);
+  --cover-d:var(--dunkel-erhoeht); --cover-d-t:var(--neutral-50);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --dunkel-seite:oklch(0.16 0.028 265); --dunkel-karte:oklch(0.20 0.03 265); --dunkel-erhoeht:oklch(0.245 0.032 265); --dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);   --status-fehler-flaeche:oklch(0.29 0.06 25);
+  --status-erfolg-text:oklch(0.78 0.12 150);  --status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);    --status-info-flaeche:oklch(0.29 0.06 250);
+  --status-warnung-text:oklch(0.85 0.13 88);  --status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite); --leiste:var(--dunkel-seite); --rahmenflaeche:var(--dunkel-seite);
+  --objekt:var(--dunkel-karte); --erhoeht:var(--dunkel-erhoeht); --tastenflaeche:var(--dunkel-erhoeht); --popover:var(--dunkel-karte);
+  --linie:var(--dunkel-linie); --rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
+  --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500);
+  --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
+  --schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  --cover-a:var(--neutral-50); --cover-a-t:var(--neutral-950);
+  --cover-b:var(--neutral-400); --cover-b-t:var(--neutral-950);
+  --cover-c:var(--neutral-800); --cover-c-t:var(--neutral-50);
+  --cover-d:var(--dunkel-erhoeht); --cover-d-t:var(--neutral-50);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--background);color:var(--foreground);font-family:var(--font-ui);font-size:15px;line-height:22px;letter-spacing:-.0025em;
+  font-feature-settings:"cv01","cv09","ss03","calt","liga";-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--rahmenflaeche)}
+::selection{background:color-mix(in oklab,var(--marke-500) 28%,transparent)}
+button,input{font:inherit;color:inherit;letter-spacing:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
+.wrap{max-width:680px;margin:0 auto;padding-block:16px 48px}
+
+/* Rollen-Typografie */
+.etikett{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer)}
+.titel-seite{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.titel-bereich{font-size:17px;line-height:24px;font-weight:600;letter-spacing:-.016em;margin:0}
+.titel-karte{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;margin:0}
+.meta{font-size:13px;line-height:20px;color:var(--text-sekundaer)}
+.zahl{font-variant-numeric:tabular-nums}
+
+/* Kopf */
+.kopf{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.zeichen{width:28px;height:28px;color:var(--logo);flex:none}
+.kopf .etikett{margin:0}
+.seitenkopf{display:grid;gap:4px}
+
+/* Sticky Leiste: Rahmenfläche, Linie erst beim Scrollen */
+.leiste{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--rahmenflaeche);
+  margin:16px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
+  display:grid;gap:10px;border-bottom:1px solid transparent;transition:border-color 120ms ease}
+.leiste.gescrollt{border-bottom-color:var(--linie)}
+.suche{position:relative}
+.suche svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
+.suche input{width:100%;height:44px;border:1px solid var(--linie);border-radius:var(--radius-aktion);background:var(--objekt);
+  padding:0 44px 0 42px;font-size:16px;outline-offset:2px;transition:border-color 120ms ease}
+.suche input::placeholder{color:var(--tertiaer)}
+.suche input:hover{border-color:var(--rahmen)}
+.suche input::-webkit-search-cancel-button{display:none}
+.leeren{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--tertiaer);display:grid;place-items:center}
+.leeren:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+
+/* Umschalter = Ort-Leiter */
+.umschalter{display:grid;grid-template-columns:repeat(3,1fr);background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
+.umschalter button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);
+  display:flex;align-items:center;justify-content:center;gap:6px}
+.umschalter button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.umschalter button[aria-pressed="true"]{background-color:var(--ort-aktiv);color:var(--foreground);font-weight:600}
+.umschalter .zahl{color:var(--tertiaer);font-weight:500}
+.umschalter button[aria-pressed="true"] .zahl{color:var(--text-sekundaer)}
+
+/* Themen-Filter = Toggle: gewählt in Marke */
+.filter{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px))}
+.filter::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid var(--linie);
+  background:var(--objekt);color:var(--text-sekundaer);font-size:13px;font-weight:500;white-space:nowrap;position:relative}
+.chip::after{content:"";position:absolute;inset:-4px 0}
+.chip:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.chip[aria-pressed="true"]{background-color:var(--gewaehlt);border-color:var(--gewaehlt);color:var(--gewaehlt-text);font-weight:600}
+
+/* Widget Typ A: Titel außen, Karte weiß */
+.bereich{margin-top:20px;display:grid;gap:10px}
+.bereich>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px}
+.karte{background:var(--objekt);border:1px solid var(--linie);border-radius:var(--radius-karte);box-shadow:var(--schatten-widget);overflow:hidden}
+.zeile{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;border:0;background:transparent;
+  padding:12px 16px;min-height:88px;position:relative;transition:background-color 120ms ease}
+.zeile+.zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.zeile:active{background-image:linear-gradient(var(--pressed),var(--pressed))}
+.zeile .info{min-width:0;display:grid;gap:2px}
+.zeile .t{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em}
+.zeile .t,.zeile .meta{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.zeile .rechts{display:flex;align-items:center;gap:8px}
+.chev{width:7px;height:12px;color:var(--tertiaer)}
+
+/* Cover: typografische Tafel, nur Neutral */
+.cover{--c:var(--cover-a);--t:var(--cover-a-t);aspect-ratio:2/3;width:100%;max-width:100%;border-radius:3px 6px 6px 3px;background:var(--c);color:var(--t);
+  position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--foreground) 8%,transparent);
+  display:flex;flex-direction:column;justify-content:space-between;padding:9% 10% 10%}
+.cover .form{position:absolute;right:-12%;bottom:-8%;width:62%;aspect-ratio:1;background:currentColor;opacity:.14}
+.cover .form.kreis{border-radius:50%}
+.cover .form.halb{border-radius:999px 999px 0 0;aspect-ratio:2/1;width:78%;right:-6%;bottom:0}
+.cover .form.balken{width:20%;aspect-ratio:auto;top:0;bottom:0;right:14%}
+.cover .ct{font-weight:600;line-height:1.06;letter-spacing:-.02em;overflow:hidden;word-break:break-word;hyphens:auto;position:relative}
+.cover .ca{font-weight:500;opacity:.75;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;position:relative}
+.zeile .cover .ct{font-size:6.5px}.zeile .cover .ca{font-size:5px}
+.gross .cover .ct{font-size:14px}.gross .cover .ca{font-size:9px}
+
+/* Badge: Statuspille mit Punkt */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-aktion);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;
+  border:1px solid color-mix(in oklab,currentColor 30%,transparent)}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.erfolg{background:var(--status-erfolg-flaeche);color:var(--status-erfolg-text)}
+.badge.info{background:var(--status-info-flaeche);color:var(--status-info-text)}
+.badge.warnung{background:var(--status-warnung-flaeche);color:var(--status-warnung-text)}
+.badge.fehler{background:var(--status-fehler-flaeche);color:var(--status-fehler-text)}
+
+.leer{padding:40px 24px;text-align:center}
+.leer .titel-karte{margin-bottom:4px}
+.hinweis{margin:16px 4px 0;font-size:13px;line-height:20px;color:var(--tertiaer);text-wrap:balance}
+.vorschau{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:var(--radius-block);
+  background:var(--status-info-flaeche);border:1px solid color-mix(in oklab,var(--status-info-text) 40%,var(--status-info-flaeche));color:var(--foreground);font-size:13px;line-height:20px}
+.vorschau svg{flex:none;width:18px;height:18px;color:var(--status-info-text);margin-top:1px}
+
+/* Sheet von unten, 240 ms */
+.backdrop{position:fixed;inset:0;background:var(--popup-backdrop);z-index:20;opacity:0;transition:opacity 240ms cubic-bezier(.22,1,.36,1)}
+.backdrop.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--background);border-radius:var(--radius-flaeche) var(--radius-flaeche) 0 0;
+  box-shadow:var(--schatten-hoch);max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;overscroll-behavior:contain;
+  transform:translateY(100%);transition:transform 240ms cubic-bezier(.22,1,.36,1);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet.on{transform:none}
+@media (min-width:720px){.sheet{left:50%;width:640px;margin-left:-320px}}
+.griff{position:sticky;top:0;background:var(--background);padding:8px 0 6px;display:flex;justify-content:center;z-index:2}
+.griff i{width:36px;height:5px;border-radius:3px;background:var(--erhoeht)}
+.icon-taste{width:44px;height:44px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--objekt);color:var(--foreground);display:grid;place-items:center}
+.icon-taste:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.griff .icon-taste{position:absolute;right:0;top:6px;width:36px;height:36px}
+.griff .icon-taste::after{content:"";position:absolute;inset:-4px}
+.detail{display:grid;gap:20px;padding-top:6px}
+.held{display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;align-items:end}
+.held h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.held .meta{margin-top:4px;font-size:15px;line-height:22px}
+.abschnitt{display:grid;gap:10px}
+.abschnitt>.titel-bereich{padding-inline:4px}
+.innen{padding:16px}
+.status-zeile{display:grid;gap:6px}
+.feld{display:grid;gap:6px;margin-top:14px}
+.feld label{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer)}
+.feld input{height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:16px}
+.aktionen{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.taste{flex:1 1 150px;min-height:44px;padding:0 20px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:15px;font-weight:500;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color 120ms ease}
+.taste.primaer{background:var(--primary);color:var(--primary-foreground)}
+.taste.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 12%,transparent),color-mix(in oklab,var(--primary-foreground) 12%,transparent))}
+.taste.sekundaer{background:var(--objekt);border-color:var(--linie);color:var(--foreground)}
+.taste.sekundaer:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.taste:disabled{color:var(--deaktiviert);background:var(--tastenflaeche);cursor:default}
+.text{margin:0;font-size:15px;line-height:24px;color:var(--text-sekundaer);max-width:65ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{min-height:32px;padding:0 12px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--erhoeht);color:var(--text-sekundaer);font-size:13px;font-weight:500;position:relative}
+.tag::after{content:"";position:absolute;inset:-6px 0}
+.tag:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+dl{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0}
+dt,dd{padding:12px 16px;font-size:15px;line-height:22px}
+dt{color:var(--tertiaer);padding-right:8px}
+dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--linie)}
+.historie{list-style:none;margin:0;padding:0}
+.historie li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 16px;min-height:52px;font-size:15px}
+.historie li+li{box-shadow:inset 0 1px 0 var(--linie)}
+.historie .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.historie .keine{color:var(--tertiaer)}
+.linkfeld{margin-top:10px;width:100%;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
+  background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
+  transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important}}
+</style>
+
+<div class="wrap">
+  <div class="kopf">
+    <svg class="zeichen" viewBox="0 0 156.31 156.31" fill="currentColor" role="img" aria-label="GAUSS">
+      <polygon points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
+      <path d="M156.31,32.56H37.96V0h79.27c17.98,0,39.08,14.58,39.08,32.56h0Z"/>
+      <path d="M123.74,58.61v59.86s32.56,0,32.56,0v-20.78c0-17.98-14.58-39.08-32.56-39.08h0Z"/>
+      <polygon points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
+    </svg>
+    <p class="etikett">GAUSS LVS · Paderborn</p>
+  </div>
+  <header class="seitenkopf">
+    <h1 class="titel-seite">Bücherei</h1>
+    <p class="meta zahl" id="summary" style="margin:0">Bücher werden geladen …</p>
+  </header>
+
+  <div class="leiste" id="leiste">
+    <div class="suche">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="6"/><path d="m13 13 4.5 4.5"/></svg>
+      <input id="q" type="search" placeholder="Titel, Autor:in, Thema" autocomplete="off" enterkeyhint="search" aria-label="Bücher durchsuchen">
+      <button class="leeren" id="leeren" aria-label="Suche leeren" hidden>
+        <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg>
+      </button>
+    </div>
+    <div class="umschalter" role="group" aria-label="Nach Status filtern">
+      <button data-s="all" aria-pressed="true">Alle <span class="zahl" id="c-all">0</span></button>
+      <button data-s="free" aria-pressed="false">Verfügbar <span class="zahl" id="c-free">0</span></button>
+      <button data-s="out" aria-pressed="false">Verliehen <span class="zahl" id="c-out">0</span></button>
+    </div>
+    <div class="filter" id="filter" role="group" aria-label="Nach Thema filtern"></div>
+  </div>
+
+  <section class="bereich" aria-labelledby="liste-titel">
+    <header><h2 class="titel-bereich" id="liste-titel">Bestand</h2><span class="meta zahl" id="treffer"></span></header>
+    <div class="karte" id="liste" aria-live="polite"></div>
+  </section>
+  <div class="vorschau" id="vorschau" hidden>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg>
+    <span id="vorschau-text"></span>
+  </div>
+  <p class="hinweis">Ausleihen auf Vertrauensbasis. Leihfrist vier Wochen, einmal verlängerbar.</p>
+</div>
+
+<div class="backdrop" id="backdrop" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="d-titel" hidden>
+  <div class="griff"><i></i><button class="icon-taste" id="schliessen" aria-label="Schließen">
+    <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div>
+  <div class="detail" id="detail"></div>
+</section>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===== Konfiguration =====
+   API_URL: Web-App-URL des Google Apps Script (apps-script/Code.gs). Leer = Vorschau, nur dieses Gerät.
+   SHARE_BASE: öffentliche Adresse, z. B. https://<konto>.github.io/<repo>/buecherei/ */
+const CONFIG = { API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/buecherei/", LOAN_DAYS: 28 };
+
+/* ===== Bestand — wird per Buchfotos gepflegt. beispiel:true = Platzhalter bis zur Inventur. ===== */
+const BOOKS = [
+  { id:"rams-weniger-aber-besser", titel:"Weniger, aber besser", autor:"Dieter Rams", jahr:1995, sprache:"Deutsch",
+    themen:["Design","Produkt"], beispiel:true,
+    beschreibung:"Rams beschreibt seine Haltung als Industriedesigner bei Braun und leitet daraus die zehn Thesen für gutes Design ab. Ein schmaler Band über Verantwortung, Zurückhaltung und Langlebigkeit." },
+  { id:"mueller-brockmann-rastersysteme", titel:"Rastersysteme für die visuelle Gestaltung", autor:"Josef Müller-Brockmann", jahr:1981, sprache:"Deutsch / Englisch",
+    themen:["Typografie","Layout"], beispiel:true,
+    beschreibung:"Das Grundlagenwerk des Schweizer Stils. Zeigt Schritt für Schritt, wie Raster Satzspiegel, Bild und Schrift ordnen, mit vielen Beispielen aus Buch, Plakat und Ausstellung." },
+  { id:"norman-design-of-everyday-things", titel:"The Design of Everyday Things", autor:"Don Norman", jahr:2013, sprache:"Englisch",
+    themen:["UX","Psychologie"], beispiel:true,
+    beschreibung:"Warum Türen falsch bedient und Herdplatten verwechselt werden. Norman erklärt Begriffe wie Affordanz, Feedback und mentale Modelle und macht sie für die Gestaltung von Produkten nutzbar." },
+  { id:"krug-dont-make-me-think", titel:"Don’t Make Me Think", autor:"Steve Krug", jahr:2014, sprache:"Englisch",
+    themen:["UX","Web"], beispiel:true,
+    beschreibung:"Kurz und praktisch: wie Menschen Webseiten wirklich lesen und wie man mit einfachen Nutzertests früh Probleme findet. Gut als Einstieg für alle, die an Oberflächen mitarbeiten." },
+  { id:"forssman-de-jong-detailtypografie", titel:"Detailtypografie", autor:"Friedrich Forssman, Ralf de Jong", jahr:2002, sprache:"Deutsch",
+    themen:["Typografie"], beispiel:true,
+    beschreibung:"Das Nachschlagewerk für Satzregeln im Deutschen: Anführungszeichen, Striche, Ziffern, Abstände, Auszeichnungen. Hilfreich, wenn Texte in Oberflächen und Dokumenten sauber gesetzt sein sollen." },
+  { id:"cagan-inspired", titel:"Inspired", autor:"Marty Cagan", jahr:2017, sprache:"Englisch",
+    themen:["Produkt","Führung"], beispiel:true,
+    beschreibung:"Wie gute Produktteams arbeiten: Rollen, Discovery, Prototypen und der Unterschied zwischen ausgelieferten Funktionen und echtem Ergebnis. Ein Standardwerk für Produktmanagement." },
+  { id:"singer-shape-up", titel:"Shape Up", autor:"Ryan Singer", jahr:2019, sprache:"Englisch",
+    themen:["Produkt","Methoden"], beispiel:true,
+    beschreibung:"Basecamps Arbeitsweise in Sechs-Wochen-Zyklen: Vorhaben werden vorab grob geformt, dann bekommt ein kleines Team eine feste Zeit statt einer festen Liste. Eine Alternative zu klassischen Sprints." },
+  { id:"wathan-schoger-refactoring-ui", titel:"Refactoring UI", autor:"Adam Wathan, Steve Schoger", jahr:2018, sprache:"Englisch",
+    themen:["UI","Design"], beispiel:true,
+    beschreibung:"Konkrete Handgriffe, mit denen Oberflächen ruhiger und klarer wirken: Hierarchie, Abstände, Farbe, Schatten. Viele Vorher-nachher-Beispiele, besonders hilfreich für Entwickler:innen." }
+];
+
+/* ===== Speicher ===== */
+const ls = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const addDays = (iso, n) => { const d = new Date(iso); d.setDate(d.getDate() + n); return d.toISOString(); };
+
+const LocalStore = {
+  mode: "local",
+  async list(){ return ls.get("bib.loans", []); },
+  async act(p){
+    const loans = ls.get("bib.loans", []); const now = new Date().toISOString();
+    if (p.action === "borrow"){
+      if (loans.some(l => l.bookId === p.bookId && !l.returnedAt)) throw new Error("Dieses Buch ist gerade verliehen.");
+      loans.push({ id: uid(), bookId: p.bookId, name: p.name, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
+    } else {
+      const l = loans.find(x => x.id === p.loanId);
+      if (!l || l.returnedAt) throw new Error("Diese Ausleihe ist schon abgeschlossen.");
+      if (p.action === "extend"){ if (l.extended) throw new Error("Schon einmal verlängert."); l.dueAt = addDays(l.dueAt, CONFIG.LOAN_DAYS); l.extended = true; }
+      if (p.action === "return") l.returnedAt = now;
+    }
+    ls.set("bib.loans", loans); return loans;
+  }
+};
+const RemoteStore = {
+  mode: "remote",
+  async list(){
+    const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j.loans;
+  },
+  async act(p){
+    const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j.loans;
+  }
+};
+const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
+
+/* ===== Zustand ===== */
+const S = { loans: [], q: "", status: "all", topic: null, open: null, busy: false };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const fmt = iso => new Intl.DateTimeFormat("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" }).format(new Date(iso));
+const days = iso => Math.ceil((new Date(iso) - new Date()) / 864e5);
+const tage = n => `${n} ${n === 1 ? "Tag" : "Tage"}`;
+
+const openLoan = id => S.loans.find(l => l.bookId === id && !l.returnedAt);
+const historie = id => S.loans.filter(l => l.bookId === id && l.returnedAt).sort((a, b) => b.returnedAt.localeCompare(a.returnedAt));
+function status(id){
+  const l = openLoan(id);
+  if (!l) return { key:"free", label:"Verfügbar", cls:"erfolg" };
+  const d = days(l.dueAt);
+  if (d < 0) return { key:"out", label:"Überfällig", cls:"fehler", loan:l };
+  if (d <= 3) return { key:"out", label:"Bald fällig", cls:"warnung", loan:l };
+  return { key:"out", label:"Verliehen", cls:"info", loan:l };
+}
+
+/* ===== Cover ===== */
+const TONES = ["a","b","c","d"], FORMS = ["kreis","halb","balken","quadrat"];
+function hash(s){ let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function cover(b){
+  const h = hash(b.id), t = TONES[h % 4], f = FORMS[(h >> 3) % 4];
+  const last = (b.autor || "").split(",")[0].trim().split(" ").pop();
+  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel)}</div><div class="ca">${esc(last)}</div></div>`;
+}
+
+/* ===== Liste ===== */
+function matches(b){
+  if (S.topic && !(b.themen || []).includes(S.topic)) return false;
+  if (S.status !== "all" && status(b.id).key !== S.status) return false;
+  if (!S.q) return true;
+  const hay = norm([b.titel, b.autor, b.verlag, (b.themen || []).join(" "), b.beschreibung, b.isbn].join(" "));
+  return norm(S.q).split(/\s+/).every(w => hay.includes(w));
+}
+function renderFilter(){
+  const topics = [...new Set(BOOKS.flatMap(b => b.themen || []))].sort((a, b) => a.localeCompare(b, "de"));
+  $("#filter").innerHTML = [`<button class="chip" data-t="" aria-pressed="${!S.topic}">Alle Themen</button>`]
+    .concat(topics.map(t => `<button class="chip" data-t="${esc(t)}" aria-pressed="${S.topic === t}">${esc(t)}</button>`)).join("");
+}
+function render(){
+  const free = BOOKS.filter(b => status(b.id).key === "free").length;
+  $("#c-all").textContent = BOOKS.length; $("#c-free").textContent = free; $("#c-out").textContent = BOOKS.length - free;
+  $("#summary").textContent = `${BOOKS.length} Bücher · ${free} verfügbar`;
+  const items = BOOKS.filter(matches).sort((a, b) => a.titel.localeCompare(b.titel, "de"));
+  $("#treffer").textContent = items.length === BOOKS.length ? "" : `${items.length} von ${BOOKS.length}`;
+  $("#liste").innerHTML = items.length ? items.map(b => {
+    const s = status(b.id);
+    return `<button class="zeile" data-id="${esc(b.id)}">
+      ${cover(b)}
+      <span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span></span>
+      <span class="rechts"><span class="badge ${s.cls}">${esc(s.label)}</span>
+      <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
+    </button>`;
+  }).join("") : `<div class="leer"><p class="titel-karte">Nichts gefunden</p><p class="meta" style="margin:0">Andere Schreibweise probieren oder Filter zurücksetzen.</p></div>`;
+  $("#leeren").hidden = !S.q;
+  if (S.open) renderDetail();
+}
+
+/* ===== Detail ===== */
+function renderDetail(){
+  const b = BOOKS.find(x => x.id === S.open); if (!b) return;
+  const s = status(b.id), l = s.loan, h = historie(b.id);
+  let st;
+  if (!l){
+    st = `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
+      <form id="ausleihen" class="feld" autocomplete="on">
+        <label for="name">Dein Name</label>
+        <input id="name" name="name" autocomplete="name" maxlength="60" placeholder="Vor- und Nachname" value="${esc(ls.get("bib.name", ""))}" required>
+        <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Ausleihen</button></div>
+      </form>`;
+  } else {
+    const d = days(l.dueAt);
+    const frist = d < 0 ? `seit ${tage(-d)} überfällig` : d === 0 ? "heute fällig" : `noch ${tage(d)}`;
+    st = `<div class="status-zeile"><span><span class="badge ${s.cls}">${esc(s.label)}</span></span>
+        <p class="titel-karte" style="margin-top:6px">Bei ${esc(l.name)}</p>
+        <p class="meta zahl" style="margin:0">Seit ${fmt(l.borrowedAt)} · zurück bis ${fmt(l.dueAt)} (${frist})${l.extended ? " · verlängert" : ""}</p></div>
+      <div class="aktionen">
+        <button class="taste primaer" data-act="return" ${S.busy ? "disabled" : ""}>Zurückgeben</button>
+        ${l.extended ? "" : `<button class="taste sekundaer" data-act="extend" ${S.busy ? "disabled" : ""}>Verlängern</button>`}
+      </div>`;
+  }
+  const angaben = [["Verlag", b.verlag], ["Jahr", b.jahr], ["Seiten", b.seiten], ["Sprache", b.sprache], ["ISBN", b.isbn]].filter(x => x[1]);
+  $("#detail").innerHTML = `
+    <div class="held gross">${cover(b)}<div><h2 id="d-titel">${esc(b.titel)}</h2><p class="meta" style="margin:4px 0 0">${esc(b.autor)}</p></div></div>
+    <section class="abschnitt"><h3 class="titel-bereich">Ausleihe</h3><div class="karte innen">${st}</div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Worum es geht</h3><div class="karte innen"><p class="text">${esc(b.beschreibung)}</p>
+      <div class="tags">${(b.themen || []).map(t => `<button class="tag" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div></div></section>
+    ${angaben.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${angaben.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
+    <section class="abschnitt"><h3 class="titel-bereich">Gelesen von</h3><div class="karte">
+      <ul class="historie">${h.length ? h.map(x => `<li><span>${esc(x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
+        : `<li class="keine">Noch niemand. Du kannst die erste Person sein.</li>`}</ul></div></section>
+    <div><button class="taste sekundaer" id="teilen" style="width:100%">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M12 8a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+      Link kopieren</button><div id="linkplatz"></div></div>
+    ${b.beispiel ? `<p class="hinweis" style="margin:0 4px">Beispieleintrag bis zur Inventur.</p>` : ""}`;
+}
+
+function openSheet(id, push = true){
+  if (!BOOKS.some(b => b.id === id)) return;
+  S.open = id; renderDetail();
+  const sh = $("#sheet"), bd = $("#backdrop");
+  sh.hidden = bd.hidden = false; sh.scrollTop = 0;
+  requestAnimationFrame(() => requestAnimationFrame(() => { sh.classList.add("on"); bd.classList.add("on"); }));
+  document.body.style.overflow = "hidden";
+  if (push) try { history.replaceState(null, "", "#b-" + id); } catch {}
+  setTimeout(() => $("#schliessen").focus({ preventScroll: true }), 60);
+}
+function closeSheet(){
+  const sh = $("#sheet"), bd = $("#backdrop"), war = S.open; S.open = null;
+  sh.classList.remove("on"); bd.classList.remove("on"); document.body.style.overflow = "";
+  setTimeout(() => { if (!S.open) sh.hidden = bd.hidden = true; }, 240);
+  try { history.replaceState(null, "", location.pathname + location.search); } catch {}
+  const z = war && document.querySelector(`.zeile[data-id="${CSS.escape(war)}"]`); if (z) z.focus({ preventScroll: true });
+}
+
+/* ===== Aktionen ===== */
+let toastT;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+async function act(p, ok){
+  if (S.busy) return; S.busy = true; renderDetail();
+  try { S.loans = await Store.act(p); toast(ok); }
+  catch (e) { toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); try { S.loans = await Store.list(); } catch {} }
+  finally { S.busy = false; render(); }
+}
+async function teilen(b){
+  const url = (CONFIG.SHARE_BASE || location.href.split("#")[0]) + "#b-" + b.id;
+  try { await navigator.clipboard.writeText(url); toast("Link kopiert"); return; } catch {}
+  $("#linkplatz").innerHTML = `<input class="linkfeld" id="linkfeld" readonly value="${esc(url)}" aria-label="Link zum Buch">`;
+  const i = $("#linkfeld"); i.focus(); i.select(); toast("Link markiert, bitte kopieren");
+}
+
+/* ===== Ereignisse ===== */
+$("#q").addEventListener("input", e => { S.q = e.target.value.trim(); render(); });
+$("#leeren").addEventListener("click", () => { $("#q").value = ""; S.q = ""; render(); $("#q").focus(); });
+document.querySelector(".umschalter").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return; S.status = b.dataset.s;
+  document.querySelectorAll(".umschalter button").forEach(x => x.setAttribute("aria-pressed", x === b)); render();
+});
+$("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; S.topic = c.dataset.t || null; renderFilter(); render(); });
+$("#liste").addEventListener("click", e => { const z = e.target.closest(".zeile"); if (z) openSheet(z.dataset.id); });
+$("#backdrop").addEventListener("click", closeSheet);
+$("#schliessen").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) closeSheet(); });
+$("#detail").addEventListener("submit", e => {
+  e.preventDefault(); const name = $("#name").value.trim().replace(/\s+/g, " ");
+  if (name.length < 2){ toast("Bitte deinen Namen eintragen."); $("#name").focus(); return; }
+  ls.set("bib.name", name); act({ action:"borrow", bookId:S.open, name }, "Ausgeliehen. Viel Freude beim Lesen.");
+});
+$("#detail").addEventListener("click", e => {
+  const a = e.target.closest("[data-act]"), t = e.target.closest(".tag"), sh = e.target.closest("#teilen"), l = openLoan(S.open);
+  if (a && l) act({ action:a.dataset.act, loanId:l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert.");
+  if (t){ S.topic = t.dataset.t; renderFilter(); closeSheet(); render(); }
+  if (sh) teilen(BOOKS.find(b => b.id === S.open));
+});
+window.addEventListener("scroll", () => $("#leiste").classList.toggle("gescrollt", window.scrollY > 120), { passive:true });
+window.addEventListener("hashchange", () => { const m = location.hash.match(/^#b-(.+)$/); if (m && m[1] !== S.open) openSheet(m[1], false); });
+
+/* ===== Start ===== */
+async function refresh(){ try { S.loans = await Store.list(); render(); } catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); } }
+(async function start(){
+  if (Store.mode === "local"){ $("#vorschau").hidden = false;
+    $("#vorschau-text").textContent = "Vorschau: Ausleihen bleiben nur auf diesem Gerät. Mit verbundener Tabelle sehen alle denselben Stand."; }
+  renderFilter(); render(); await refresh();
+  const m = location.hash.match(/^#b-(.+)$/); if (m) openSheet(m[1], false);
+  if (Store.mode === "remote"){ setInterval(refresh, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); }); }
+})();
+</script>
+
+</body>
+</html>
