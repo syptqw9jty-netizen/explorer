@@ -8,6 +8,7 @@
   "display": "standalone",
   "background_color": "#f9fafc",
   "theme_color": "#f9fafc",
+  "id": "./",
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -17,7 +18,8 @@
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icons/maskable-512.png",
