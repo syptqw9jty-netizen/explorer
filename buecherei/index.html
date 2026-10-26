@@ -361,6 +361,96 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .bewerten-form label,.bewerten-form .gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
 .zeile .bewertet{display:inline-flex;align-items:center;gap:4px;color:var(--text-sekundaer);font-size:13px;line-height:20px;font-variant-numeric:tabular-nums}
 .zeile .bewertet svg{width:12px;height:12px;color:var(--foreground)}
+.karussell-bereich{margin-top:24px}
+.karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px)) 10px;
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;overscroll-behavior-x:contain}
+.karussell::-webkit-scrollbar{display:none}
+.karussell li{flex:none;width:148px;scroll-snap-align:start}
+.empfehlung{width:100%;display:grid;gap:10px;padding:10px;border-radius:var(--radius-karte);border:1px solid var(--linie);background:var(--objekt);box-shadow:var(--schatten-widget);text-align:left}
+.empfehlung:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.empfehlung .cover{border-radius:4px 8px 8px 4px}
+.empfehlung .cover .ct{font-size:13px}.empfehlung .cover .ca{font-size:9px}
+.e-info{display:grid;gap:4px;min-width:0;justify-items:start}
+.e-titel{font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.012em;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.e-info .meta{font-size:13px;line-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.merk-symbol{display:inline-grid;color:var(--foreground)}
+.merk-symbol svg{width:14px;height:14px}
+.merken{margin-top:12px}
+.merken svg{width:16px;height:16px}
+.merken[aria-pressed="true"] svg{color:var(--gewaehlt)}
+.taste.klein{flex:none;min-height:40px;padding:0 16px;font-size:14px}
+.taste.ganz{width:100%;flex:none}
+.taste svg{flex:none}
+.taste>svg:not([width]){width:20px;height:20px}
+.fuss{margin-top:28px;display:flex;justify-content:center;padding-bottom:12px}
+.menue-anker{position:relative}
+.menue{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);min-width:232px;z-index:15;padding:4px;
+  background:var(--popover);border:1px solid color-mix(in oklab,var(--linie) 50%,transparent);border-radius:var(--radius-block);box-shadow:var(--schatten-hoch);
+  animation:ebene-ein 160ms ease-out both;transform-origin:bottom center}
+@keyframes ebene-ein{from{opacity:0;scale:.98}to{opacity:1;scale:1}}
+.menue button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 12px;border:0;border-radius:var(--radius-zeile);background:transparent;font-size:15px;text-align:left}
+.menue button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.menue button[aria-checked="true"]{font-weight:600}
+.menue-etikett{margin:0;padding:8px 12px 4px}
+.menue-linie{height:1px;background:var(--linie);margin:4px 8px}
+.zurueck{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--text-sekundaer);font-size:15px;font-weight:500;min-height:44px;padding:0 8px 0 0;border-radius:var(--radius-aktion)}
+.zurueck:hover{color:var(--foreground)}
+.eingabe{width:100%;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:16px}
+.eingabe:hover{border-color:var(--foreground)}
+.formular{display:grid;gap:14px;min-width:0}
+.formular .gruppe{display:grid;gap:6px;min-width:0}
+.formular label,.formular .gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
+.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.foto-raster{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.foto-kachel{aspect-ratio:3/4;border-radius:var(--radius-block);border:1px dashed var(--rahmen);background:var(--leiste);display:grid;place-items:center;align-content:center;gap:8px;
+  text-align:center;color:var(--text-sekundaer);font-size:13px;font-weight:500;overflow:hidden;cursor:pointer;position:relative;padding:8px}
+.foto-kachel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.foto-kachel:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.foto-kachel svg{width:28px;height:28px}
+.info-zeile{margin:12px 0 0}
+.cover-zeile{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;align-items:start}
+.formular .taste.klein{justify-self:start}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;color:var(--foreground)!important}
+.check input{width:20px;height:20px;accent-color:var(--gewaehlt)}
+.themen-wahl{display:flex;flex-wrap:wrap;gap:6px}
+.schalter{position:relative;width:48px;height:28px;min-width:48px;border-radius:999px;border:0;background:var(--rahmen);padding:0;flex:none}
+.schalter span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--neutral-0);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform 160ms ease}
+.schalter[aria-checked="true"]{background:var(--gewaehlt)}
+.schalter[aria-checked="true"] span{transform:translateX(20px)}
+.schalter::after{content:"";position:absolute;inset:-8px -2px}
+.schalter-zeile{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.schalter-zeile+.schalter-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.schalter-paar{display:flex;gap:10px;flex:none}
+.bereich-kopf{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px}
+.admin-zeile{display:flex;align-items:center;gap:8px;padding-right:12px}
+.admin-zeile+.admin-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.admin-oeffnen{flex:1;min-width:0;display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center;border:0;background:transparent;text-align:left;padding:10px 0 10px 16px;min-height:76px}
+.admin-oeffnen:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.admin-oeffnen .info{display:grid;gap:2px;min-width:0}
+.admin-oeffnen .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-oeffnen .meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-oeffnen .cover .ct{font-size:5.5px}.admin-oeffnen .cover .ca{font-size:4px}
+.admin-zeile.inaktiv .admin-oeffnen{opacity:.55}
+.entfernen{border:0;background:transparent;color:var(--status-fehler-text);font-size:13px;font-weight:500;min-height:32px;padding:0 8px;margin-left:-8px;border-radius:var(--radius-aktion)}
+.entfernen:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.medien{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.thumb{width:64px;height:64px;border-radius:var(--radius-zeile);border:1px solid var(--linie);padding:0;overflow:hidden;background:var(--leiste);position:relative;display:block}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.4))}
+button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
+.medien-wahl{display:flex;gap:10px;flex-wrap:wrap;padding-top:6px}
+.medium-vorschau{position:relative}
+.medium-weg{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--linie);background:var(--objekt);display:grid;place-items:center;color:var(--foreground);padding:0}
+.medium-weg::after{content:"";position:absolute;inset:-9px}
+.medium-hinzu{width:64px;height:64px;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:2px;color:var(--text-sekundaer);font-size:11px;font-weight:500;cursor:pointer;background:var(--objekt)}
+.medium-hinzu svg{width:20px;height:20px}
+.medium-hinzu:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.lightbox{position:fixed;inset:0;z-index:50;background:color-mix(in oklab,var(--neutral-950) 90%,transparent);display:grid;place-items:center;
+  padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb-inhalt{width:100%;height:100%;display:grid;place-items:center;min-height:0}
+.lb-inhalt img,.lb-inhalt video{max-width:100%;max-height:100%;border-radius:var(--radius-block);object-fit:contain}
+.lb-inhalt iframe{width:min(100%,900px);aspect-ratio:16/9;border:0;border-radius:var(--radius-block);background:#000}
+.lightbox .icon-taste{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
   background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
   transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
@@ -414,6 +504,15 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
     <div class="filter" id="filter" role="group" aria-label="Nach Thema filtern"></div>
   </div></div>
 
+  <section class="bereich karussell-bereich" id="merkliste" aria-labelledby="merk-titel" hidden>
+    <header><h2 class="titel-bereich" id="merk-titel">Deine Merkliste</h2><span class="meta zahl" id="merkliste-zahl"></span></header>
+    <ul class="karussell" id="merkliste-liste"></ul>
+  </section>
+  <section class="bereich karussell-bereich" id="empfohlen" aria-labelledby="empf-titel" hidden>
+    <header><h2 class="titel-bereich" id="empf-titel">Empfohlen</h2></header>
+    <ul class="karussell" id="empfohlen-liste"></ul>
+  </section>
+
   <section class="bereich" aria-labelledby="liste-titel">
     <header><h2 class="titel-bereich" id="liste-titel">Bestand</h2><span class="meta zahl" id="treffer"></span></header>
     <div class="karte" id="liste" aria-live="polite"></div>
@@ -422,7 +521,17 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg>
     <span id="vorschau-text"></span>
   </div>
-  <p class="hinweis">Ausleihen auf Vertrauensbasis. Leihfrist vier Wochen, einmal verlängerbar.</p>
+  <p class="hinweis">Ausleihen auf Vertrauensbasis. Leihfrist vier Wochen, einmal verlängerbar. Deine Merkliste bleibt nur auf diesem Gerät.</p>
+  <div class="fuss">
+    <div class="menue-anker">
+      <button class="taste sekundaer klein" id="einstellungen" aria-haspopup="menu" aria-expanded="false" aria-controls="einstellungen-menue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Einstellungen
+        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 5-5 5 5"/></svg>
+      </button>
+      <div class="menue" id="einstellungen-menue" role="menu" aria-label="Einstellungen" hidden></div>
+    </div>
+  </div>
 </div>
 
 <div class="backdrop" id="backdrop" hidden></div>
@@ -431,24 +540,29 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
     <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div>
   <div class="detail" id="detail"></div>
 </section>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Anhang" hidden>
+  <button class="icon-taste" id="lb-zu" aria-label="Schließen"><svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+  <div class="lb-inhalt" id="lb-inhalt"></div>
+</div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
 /* ===== Konfiguration =====
    API_URL: Web-App-URL des Google Apps Script (apps-script/Code.gs). Leer = Vorschau, nur dieses Gerät.
-   SHARE_BASE: öffentliche Adresse, z. B. https://<konto>.github.io/<repo>/buecherei/ */
-const CONFIG = { API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/buecherei/", LOAN_DAYS: 28 };
+   SHARE_BASE: öffentliche Adresse der App. */
+const CONFIG = { API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/buecherei/", LOAN_DAYS: 28, MAX_MEDIEN: 4, MAX_VIDEO_MB: 25 };
+const THEMEN = ["Belletristik", "Design", "Führung", "Gesellschaft", "Layout", "Methoden", "Produkt", "Psychologie", "Technik", "Typografie", "UI", "UX", "Web"];
 
-/* ===== Bestand — wird per Buchfotos gepflegt. beispiel:true = Platzhalter bis zur Inventur. ===== */
-const BOOKS = [
+/* ===== Beispielbestand — Startwert, bis der erste Eintrag in der Verwaltung gespeichert wird ===== */
+const SEED = [
   { id:"rams-weniger-aber-besser", titel:"Weniger, aber besser", autor:"Dieter Rams", jahr:1995, sprache:"Deutsch",
-    themen:["Design","Produkt"], beispiel:true,
+    themen:["Design","Produkt"], beispiel:true, empfohlen:true,
     beschreibung:"Rams beschreibt seine Haltung als Industriedesigner bei Braun und leitet daraus die zehn Thesen für gutes Design ab. Ein schmaler Band über Verantwortung, Zurückhaltung und Langlebigkeit." },
   { id:"mueller-brockmann-rastersysteme", titel:"Rastersysteme für die visuelle Gestaltung", autor:"Josef Müller-Brockmann", jahr:1981, sprache:"Deutsch / Englisch",
-    themen:["Typografie","Layout"], beispiel:true,
+    themen:["Typografie","Layout"], beispiel:true, empfohlen:true,
     beschreibung:"Das Grundlagenwerk des Schweizer Stils. Zeigt Schritt für Schritt, wie Raster Satzspiegel, Bild und Schrift ordnen, mit vielen Beispielen aus Buch, Plakat und Ausstellung." },
   { id:"norman-design-of-everyday-things", titel:"The Design of Everyday Things", autor:"Don Norman", jahr:2013, sprache:"Englisch",
-    themen:["UX","Psychologie"], beispiel:true,
+    themen:["UX","Psychologie"], beispiel:true, empfohlen:true,
     beschreibung:"Warum Türen falsch bedient und Herdplatten verwechselt werden. Norman erklärt Begriffe wie Affordanz, Feedback und mentale Modelle und macht sie für die Gestaltung von Produkten nutzbar." },
   { id:"krug-dont-make-me-think", titel:"Don’t Make Me Think", autor:"Steve Krug", jahr:2014, sprache:"Englisch",
     themen:["UX","Web"], beispiel:true,
@@ -457,7 +571,7 @@ const BOOKS = [
     themen:["Typografie"], beispiel:true,
     beschreibung:"Das Nachschlagewerk für Satzregeln im Deutschen: Anführungszeichen, Striche, Ziffern, Abstände, Auszeichnungen. Hilfreich, wenn Texte in Oberflächen und Dokumenten sauber gesetzt sein sollen." },
   { id:"cagan-inspired", titel:"Inspired", autor:"Marty Cagan", jahr:2017, sprache:"Englisch",
-    themen:["Produkt","Führung"], beispiel:true,
+    themen:["Produkt","Führung"], beispiel:true, empfohlen:true,
     beschreibung:"Wie gute Produktteams arbeiten: Rollen, Discovery, Prototypen und der Unterschied zwischen ausgelieferten Funktionen und echtem Ergebnis. Ein Standardwerk für Produktmanagement." },
   { id:"singer-shape-up", titel:"Shape Up", autor:"Ryan Singer", jahr:2019, sprache:"Englisch",
     themen:["Produkt","Methoden"], beispiel:true,
@@ -466,65 +580,114 @@ const BOOKS = [
     themen:["UI","Design"], beispiel:true,
     beschreibung:"Konkrete Handgriffe, mit denen Oberflächen ruhiger und klarer wirken: Hierarchie, Abstände, Farbe, Schatten. Viele Vorher-nachher-Beispiele, besonders hilfreich für Entwickler:innen." }
 ];
-
 /* Standard für Standort und Eigentum; je Buch überschreibbar.
-   cover: URL des Original-Covers (sonst per ISBN), quellen: [{titel, url}] für Beschreibung und Cover. */
+   cover: URL des Original-Covers (sonst per ISBN), quellen: [{titel, url}]. */
 const STANDARD = { standort: "SoPart-6.0-Raum · 1. OG · Bücherregal", eigentum: "NNE" };
-BOOKS.forEach(b => { b.standort ??= STANDARD.standort; b.eigentum ??= STANDARD.eigentum; });
+const normBuch = b => ({ aktiv: true, empfohlen: false, themen: [], quellen: [], ...b, standort: b.standort || STANDARD.standort, eigentum: b.eigentum || STANDARD.eigentum });
 
-/* ===== Speicher ===== */
+/* ===== Helfer ===== */
 const ls = {
   get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
-  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+  del(k){ try { localStorage.removeItem(k); } catch {} }
+};
+const ss = {
+  get(k){ try { return sessionStorage.getItem(k); } catch { return null; } },
+  set(k, v){ try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} }
 };
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 const addDays = (iso, n) => { const d = new Date(iso); d.setDate(d.getDate() + n); return d.toISOString(); };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const fmt = iso => { const d = new Date(iso); return isNaN(d) ? "" : new Intl.DateTimeFormat("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" }).format(d); };
+const days = iso => Math.ceil((new Date(iso) - new Date()) / 864e5);
+const tage = n => `${n} ${n === 1 ? "Tag" : "Tage"}`;
+const sicherUrl = u => /^(https:\/\/|data:image\/|data:video\/|blob:)/.test(String(u || "")) ? String(u) : "";
+const ICON = {
+  kamera:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`,
+  zu:`<svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>`,
+  play:`<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>`,
+  zurueck:`<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 1 1 7l6 6"/></svg>`,
+  haken:`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.2 3L13 4.5"/></svg>`,
+  merken:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>`,
+  gemerkt:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>`,
+  stern:`<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`
+};
 
+/* ===== Speicher ===== */
+const PIN_AKTIONEN = ["checkPin", "setPin", "saveBook", "deleteRating", "analyze"];
+const lokal = () => ({ books: ls.get("bib.books", []), loans: ls.get("bib.loans", []), ratings: ls.get("bib.ratings", []) });
 const LocalStore = {
   mode: "local",
-  async list(){ return { loans: ls.get("bib.loans", []), ratings: ls.get("bib.ratings", []) }; },
+  async list(){ return lokal(); },
   async act(p){
-    const loans = ls.get("bib.loans", []), ratings = ls.get("bib.ratings", []); const now = new Date().toISOString();
-    if (p.action === "rate"){
-      const r = ratings.find(x => x.bookId === p.bookId && x.kuerzel === p.kuerzel);
-      if (r) Object.assign(r, { sterne: p.sterne, kommentar: p.kommentar, am: now });
-      else ratings.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, sterne: p.sterne, kommentar: p.kommentar, am: now });
-      ls.set("bib.ratings", ratings); return { loans, ratings };
+    const d = lokal(), now = new Date().toISOString();
+    if ((PIN_AKTIONEN.includes(p.action) || (p.action === "upload" && p.zweck === "cover")) && p.pin !== ls.get("bib.pin", "0000")) throw new Error("PIN ist nicht richtig.");
+    switch (p.action){
+      case "checkPin": return { ok: true };
+      case "setPin": ls.set("bib.pin", p.neu); return { ok: true };
+      case "upload": return { ok: true, medium: { typ: p.typ, url: p.dataUrl, thumb: p.thumbUrl || p.dataUrl } };
+      case "analyze": throw new Error("KI-Analyse geht nur mit verbundener Tabelle. Bitte Daten von Hand ergänzen.");
+      case "saveBook": {
+        if (!d.books.length && p.seed) d.books = p.seed;
+        const i = d.books.findIndex(b => b.id === p.book.id);
+        if (i >= 0) d.books[i] = p.book; else d.books.push(p.book);
+        if (!ls.set("bib.books", d.books)) throw new Error("Der Gerätespeicher ist voll. Bitte kleinere Bilder nutzen.");
+        break;
+      }
+      case "deleteRating": d.ratings = d.ratings.filter(r => r.id !== p.id); ls.set("bib.ratings", d.ratings); break;
+      case "rate": {
+        const r = d.ratings.find(x => x.bookId === p.bookId && x.kuerzel === p.kuerzel);
+        const daten = { sterne: p.sterne, kommentar: p.kommentar, medien: p.medien || [], am: now };
+        if (r) Object.assign(r, daten); else d.ratings.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, ...daten });
+        if (!ls.set("bib.ratings", d.ratings)) throw new Error("Der Gerätespeicher ist voll. Bitte weniger oder kleinere Medien anhängen.");
+        break;
+      }
+      case "borrow":
+        if (d.loans.some(l => l.bookId === p.bookId && !l.returnedAt)) throw new Error("Dieses Buch ist gerade verliehen.");
+        d.loans.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
+        ls.set("bib.loans", d.loans); break;
+      case "extend": case "return": {
+        const l = d.loans.find(x => x.id === p.loanId);
+        if (!l || l.returnedAt) throw new Error("Diese Ausleihe ist schon abgeschlossen.");
+        if (p.action === "extend"){ if (l.extended) throw new Error("Schon einmal verlängert."); l.dueAt = addDays(l.dueAt, CONFIG.LOAN_DAYS); l.extended = true; }
+        else l.returnedAt = now;
+        ls.set("bib.loans", d.loans); break;
+      }
+      default: throw new Error("Unbekannte Aktion.");
     }
-    if (p.action === "borrow"){
-      if (loans.some(l => l.bookId === p.bookId && !l.returnedAt)) throw new Error("Dieses Buch ist gerade verliehen.");
-      loans.push({ id: uid(), bookId: p.bookId, kuerzel: p.kuerzel, borrowedAt: now, dueAt: addDays(now, CONFIG.LOAN_DAYS), extended: false, returnedAt: null });
-    } else {
-      const l = loans.find(x => x.id === p.loanId);
-      if (!l || l.returnedAt) throw new Error("Diese Ausleihe ist schon abgeschlossen.");
-      if (p.action === "extend"){ if (l.extended) throw new Error("Schon einmal verlängert."); l.dueAt = addDays(l.dueAt, CONFIG.LOAN_DAYS); l.extended = true; }
-      if (p.action === "return") l.returnedAt = now;
-    }
-    ls.set("bib.loans", loans); return { loans, ratings };
+    return { ok: true, ...lokal() };
   }
 };
 const RemoteStore = {
   mode: "remote",
   async list(){
     const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return { loans: j.loans || [], ratings: j.ratings || [] };
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j;
   },
   async act(p){
     const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return { loans: j.loans || [], ratings: j.ratings || [] };
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j;
   }
 };
 const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
 
 /* ===== Zustand ===== */
-const S = { loans: [], ratings: [], q: "", status: "all", topic: null, open: null, busy: false, entwurf: null };
-const $ = s => document.querySelector(s);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-const fmt = iso => new Intl.DateTimeFormat("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" }).format(new Date(iso));
-const days = iso => Math.ceil((new Date(iso) - new Date()) / 864e5);
-const tage = n => `${n} ${n === 1 ? "Tag" : "Tage"}`;
-
+const S = {
+  books: SEED.map(normBuch), fromSeed: true, loans: [], ratings: [],
+  q: "", status: "all", topic: null,
+  view: null, open: null, busy: false, entwurf: null, edit: null, loeschFrage: null,
+  admin: ss.get("bib.admin")
+};
+function apply(j){
+  if (Array.isArray(j.books)){ S.fromSeed = !j.books.length; S.books = (j.books.length ? j.books : SEED).map(normBuch); }
+  if (Array.isArray(j.loans)) S.loans = j.loans;
+  if (Array.isArray(j.ratings)) S.ratings = j.ratings;
+}
+const sichtbar = () => S.books.filter(b => b.aktiv !== false);
+const buchVon = id => S.books.find(b => b.id === id);
 const openLoan = id => S.loans.find(l => l.bookId === id && !l.returnedAt);
 const historie = id => S.loans.filter(l => l.bookId === id && l.returnedAt).sort((a, b) => b.returnedAt.localeCompare(a.returnedAt));
 function status(id){
@@ -536,40 +699,113 @@ function status(id){
   return { key:"out", label:"Verliehen", cls:"info", loan:l };
 }
 
+/* ===== Merkliste: nur auf diesem Gerät, ohne Anmeldung ===== */
+const merkliste = () => ls.get("bib.merkliste", []);
+const gemerkt = id => merkliste().includes(id);
+function merken(id){
+  const m = merkliste(), an = !m.includes(id);
+  ls.set("bib.merkliste", an ? [id, ...m] : m.filter(x => x !== id));
+  toast(an ? "Auf deiner Merkliste." : "Von der Merkliste entfernt.");
+}
+
+/* ===== Darstellung: System, Hell, Dunkel ===== */
+function setzeModus(m){
+  if (m === "hell") document.documentElement.setAttribute("data-theme", "light");
+  else if (m === "dunkel") document.documentElement.setAttribute("data-theme", "dark");
+  else document.documentElement.removeAttribute("data-theme");
+  ls.set("bib.modus", m);
+}
+setzeModus(ls.get("bib.modus", "system"));
+
 /* ===== Bewertungen ===== */
-const STERN = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>`;
 const bewertungen = id => S.ratings.filter(r => r.bookId === id).sort((a, b) => String(b.am).localeCompare(String(a.am)));
 function schnitt(id){ const r = bewertungen(id); return r.length ? { wert: r.reduce((s, x) => s + Number(x.sterne || 0), 0) / r.length, anzahl: r.length } : null; }
 const komma = n => n.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-function sterneHtml(n){ const v = Math.round(n); return `<span class="sterne" role="img" aria-label="${komma(n)} von 5 Sternen">${[1,2,3,4,5].map(i => i <= v ? STERN : STERN.replace('fill="currentColor"', 'fill="currentColor" class="leer-stern"')).join("")}</span>`; }
+function sterneHtml(n){ const v = Math.round(n); return `<span class="sterne" role="img" aria-label="${komma(n)} von 5 Sternen">${[1,2,3,4,5].map(i => i <= v ? ICON.stern : ICON.stern.replace('fill="currentColor"', 'fill="currentColor" class="leer-stern"')).join("")}</span>`; }
 const sternLabel = n => n === 0 ? "Keine Sterne" : `${n} von 5 Sternen`;
-function kuerzelFelder(g, wert){
-  return `<div class="kuerzel-felder">${[0,1,2].map(i => `<input id="${g}${i}" class="k-feld" data-g="${g}" data-i="${i}" maxlength="1" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Buchstabe ${i + 1}" value="${esc((wert || "")[i] || "")}">`).join("")}</div>`;
+
+/* ===== Eingabefelder: Kürzel (3 Buchstaben) und PIN (4 Ziffern) ===== */
+function zeichenFelder(g, wert, art){
+  const n = art === "pin" ? 4 : 3;
+  return `<div class="kuerzel-felder${art === "pin" ? " pin-felder" : ""}">${Array.from({ length: n }, (_, i) =>
+    `<input id="${g}${i}" class="k-feld" data-g="${g}" data-i="${i}" data-art="${art}" maxlength="1" ${art === "pin"
+      ? `type="password" inputmode="numeric" autocomplete="off" aria-label="Ziffer ${i + 1}"`
+      : `inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="Buchstabe ${i + 1}" value="${esc((wert || "")[i] || "")}"`}>`).join("")}</div>`;
 }
+const felderVon = g => [...document.querySelectorAll(`.k-feld[data-g="${g}"]`)];
+const zeichenNorm = (s, art) => art === "pin" ? s.replace(/\D/g, "") : s.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
 function leseKuerzel(g){
-  const felder = [0,1,2].map(i => document.getElementById(g + i)), k = felder.map(f => f.value).join("");
-  const ok = /^[A-ZÄÖÜ]{2,3}$/.test(k) && felder[0].value && felder[1].value;
-  felder.forEach(f => f.setAttribute("aria-invalid", ok ? "false" : "true"));
-  if (!ok){ toast("Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben."); (felder.find(f => !f.value) || felder[0]).focus(); return null; }
+  const f = felderVon(g), k = f.map(x => x.value).join("");
+  const ok = /^[A-ZÄÖÜ]{2,3}$/.test(k) && f[0].value && f[1].value;
+  f.forEach(x => x.setAttribute("aria-invalid", ok ? "false" : "true"));
+  if (!ok){ toast("Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben."); (f.find(x => !x.value) || f[0]).focus(); return null; }
   ls.set("bib.kuerzel", k); return k;
+}
+function lesePin(g){
+  const f = felderVon(g), p = f.map(x => x.value).join("");
+  const ok = /^\d{4}$/.test(p);
+  f.forEach(x => x.setAttribute("aria-invalid", ok ? "false" : "true"));
+  if (!ok){ toast("Bitte vier Ziffern eingeben."); (f.find(x => !x.value) || f[0]).focus(); return null; }
+  return p;
 }
 
 /* ===== Cover ===== */
 const TONES = ["a","b","c","d"], FORMS = ["kreis","halb","balken","quadrat"];
-function hash(s){ let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
-function cover(b){
-  const h = hash(b.id), t = TONES[h % 4], f = FORMS[(h >> 3) % 4];
-  const last = (b.autor || "").split(",")[0].trim().split(" ").pop();
-  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel)}</div><div class="ca">${esc(last)}</div>${coverUrl(b) ? `<img class="cover-bild" src="${esc(coverUrl(b))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>`;
-}
-/* Original-Cover: eigene URL (b.cover) oder per ISBN über Open Library; fehlt es, bleibt die Tafel sichtbar. */
+function hash(s){ let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
 function coverUrl(b){
-  if (b.cover) return b.cover;
+  if (b.coverVorschau) return b.coverVorschau;
+  if (b.cover) return sicherUrl(b.cover);
   const isbn = String(b.isbn || "").replace(/[^0-9X]/gi, "");
   return isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg?default=false` : "";
 }
+function cover(b){
+  const h = hash(b.id || b.titel), t = TONES[h % 4], f = FORMS[(h >> 3) % 4];
+  const last = (b.autor || "").split(",")[0].trim().split(" ").pop(), u = coverUrl(b);
+  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel || "Ohne Titel")}</div><div class="ca">${esc(last)}</div>${u ? `<img class="cover-bild" src="${esc(u)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>`;
+}
 
-/* ===== Liste ===== */
+/* ===== Medien: verkleinern, hochladen, anzeigen ===== */
+const ladeBild = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("Bild konnte nicht gelesen werden.")); i.src = src; });
+const alsDataUrl = datei => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(datei); });
+async function verkleinern(quelle, max, q = .82){
+  const url = typeof quelle === "string" ? quelle : URL.createObjectURL(quelle);
+  try {
+    const img = await ladeBild(url), s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return c.toDataURL("image/jpeg", q);
+  } finally { if (typeof quelle !== "string") URL.revokeObjectURL(url); }
+}
+async function hochladen(quelle, zweck, typ = "bild", mime = "image/jpeg"){
+  let dataUrl, thumbUrl;
+  if (typ === "video"){
+    const max = Store.mode === "local" ? 4 : CONFIG.MAX_VIDEO_MB;
+    if (quelle.size > max * 1048576) throw new Error(`Das Video ist zu groß (höchstens ${max} MB).`);
+    dataUrl = await alsDataUrl(quelle); mime = quelle.type || "video/mp4";
+  } else {
+    dataUrl = await verkleinern(quelle, Store.mode === "local" ? 900 : 1600, Store.mode === "local" ? .72 : .84);
+    if (Store.mode === "local") thumbUrl = await verkleinern(dataUrl, 320, .75);
+  }
+  const p = { action: "upload", zweck, typ, mime, pin: S.admin || undefined, data: dataUrl.split(",")[1] };
+  if (Store.mode === "local") Object.assign(p, { dataUrl, thumbUrl });
+  return (await Store.act(p)).medium;
+}
+function thumbHtml(m){
+  const t = sicherUrl(m.vorschau || m.thumb);
+  if (m.typ === "video") return `${m.neu ? `<video src="${esc(t)}" muted playsinline preload="metadata"></video>` : t ? `<img src="${esc(t)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}<span class="play">${ICON.play}</span>`;
+  return t ? `<img src="${esc(t)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : "";
+}
+function oeffneLightbox(m){
+  const u = sicherUrl(m.url), lb = $("#lightbox"), inh = $("#lb-inhalt");
+  if (!u) return;
+  inh.innerHTML = m.typ === "video"
+    ? (u.startsWith("data:") || u.startsWith("blob:") ? `<video src="${esc(u)}" controls playsinline autoplay></video>` : `<iframe src="${esc(u)}" allow="autoplay; fullscreen" allowfullscreen title="Video"></iframe>`)
+    : `<img src="${esc(u)}" alt="Anhang in voller Größe" referrerpolicy="no-referrer">`;
+  lb.hidden = false; document.body.style.overflow = "hidden"; $("#lb-zu").focus();
+}
+function schliesseLightbox(){ $("#lightbox").hidden = true; $("#lb-inhalt").innerHTML = ""; if (!S.view) document.body.style.overflow = ""; }
+
+/* ===== Liste, Empfohlen, Filter ===== */
 function matches(b){
   if (S.topic && !(b.themen || []).includes(S.topic)) return false;
   if (S.status !== "all" && status(b.id).key !== S.status) return false;
@@ -578,127 +814,358 @@ function matches(b){
   return norm(S.q).split(/\s+/).every(w => hay.includes(w));
 }
 function renderFilter(){
-  const topics = [...new Set(BOOKS.flatMap(b => b.themen || []))].sort((a, b) => a.localeCompare(b, "de"));
+  const topics = [...new Set(sichtbar().flatMap(b => b.themen || []))].sort((a, b) => a.localeCompare(b, "de"));
+  if (S.topic && !topics.includes(S.topic)) S.topic = null;
   $("#filter").innerHTML = [`<button class="chip" data-t="" aria-pressed="${!S.topic}">Alle Themen</button>`]
     .concat(topics.map(t => `<button class="chip" data-t="${esc(t)}" aria-pressed="${S.topic === t}">${esc(t)}</button>`)).join("");
 }
+function karussell(sektion, liste){
+  const filterAktiv = S.q || S.status !== "all" || S.topic;
+  $("#" + sektion).hidden = !liste.length || !!filterAktiv;
+  $("#" + sektion + "-liste").innerHTML = liste.map(b => {
+    const s = status(b.id);
+    return `<li><button class="empfehlung" data-id="${esc(b.id)}">${cover(b)}
+      <span class="e-info"><span class="e-titel">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span><span class="badge ${s.cls}">${esc(s.label)}</span></span></button></li>`;
+  }).join("");
+}
+function renderEmpfohlen(){
+  karussell("merkliste", merkliste().map(buchVon).filter(b => b && b.aktiv !== false));
+  karussell("empfohlen", sichtbar().filter(b => b.empfohlen));
+  const n = merkliste().filter(id => { const b = buchVon(id); return b && b.aktiv !== false; }).length;
+  $("#merkliste-zahl").textContent = n ? String(n) : "";
+}
 function render(){
-  const free = BOOKS.filter(b => status(b.id).key === "free").length;
-  $("#c-all").textContent = BOOKS.length; $("#c-free").textContent = free; $("#c-out").textContent = BOOKS.length - free;
-  $("#summary").textContent = `${BOOKS.length} Bücher · ${free} verfügbar`;
-  const items = BOOKS.filter(matches).sort((a, b) => a.titel.localeCompare(b.titel, "de"));
-  $("#treffer").textContent = items.length === BOOKS.length ? "" : `${items.length} von ${BOOKS.length}`;
+  const alle = sichtbar(), free = alle.filter(b => status(b.id).key === "free").length;
+  $("#c-all").textContent = alle.length; $("#c-free").textContent = free; $("#c-out").textContent = alle.length - free;
+  $("#summary").textContent = `${alle.length} Bücher · ${free} verfügbar`;
+  const items = alle.filter(matches).sort((a, b) => a.titel.localeCompare(b.titel, "de"));
+  $("#treffer").textContent = items.length === alle.length ? "" : `${items.length} von ${alle.length}`;
   $("#liste").innerHTML = items.length ? items.map(b => {
     const s = status(b.id), r = schnitt(b.id);
     return `<button class="zeile" data-id="${esc(b.id)}">
       ${cover(b)}
-      <span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span>${r ? `<span class="bewertet">${STERN} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span>
-      <span class="rechts"><span class="badge ${s.cls}">${esc(s.label)}</span>
+      <span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span>${r ? `<span class="bewertet">${ICON.stern} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span>
+      <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" title="Gemerkt">${ICON.gemerkt}</span>` : ""}<span class="badge ${s.cls}">${esc(s.label)}</span>
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
     </button>`;
   }).join("") : `<div class="leer"><p class="titel-karte">Nichts gefunden</p><p class="meta" style="margin:0">Andere Schreibweise probieren oder Filter zurücksetzen.</p></div>`;
   $("#leeren").hidden = !S.q;
   $("#mini-punkt").hidden = !(S.q || S.status !== "all" || S.topic);
-  if (S.open) renderDetail();
+  renderEmpfohlen();
+  if (S.view === "buch" || S.view === "admin") renderSheet();
 }
 
-/* ===== Detail ===== */
-function renderDetail(){
-  const b = BOOKS.find(x => x.id === S.open); if (!b) return;
-  const s = status(b.id), l = s.loan, h = historie(b.id);
-  let st;
-  if (!l){
-    st = `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
-      <form id="ausleihen" class="feld" autocomplete="off" novalidate>
-        <fieldset class="kuerzel"><legend>Dein Kürzel</legend>
-          ${kuerzelFelder("k", ls.get("bib.kuerzel", ""))}
-          <p class="meta">2 oder 3 Buchstaben, z. B. NNE</p>
-        </fieldset>
-        <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Ausleihen</button></div>
-      </form>`;
-  } else {
-    const d = days(l.dueAt);
-    const frist = d < 0 ? `seit ${tage(-d)} überfällig` : d === 0 ? "heute fällig" : `noch ${tage(d)}`;
-    st = `<div class="status-zeile"><span><span class="badge ${s.cls}">${esc(s.label)}</span></span>
-        <p class="titel-karte" style="margin-top:6px">Bei <span class="kuerzel-text">${esc(l.kuerzel || l.name)}</span></p>
-        <p class="meta zahl" style="margin:0">Seit ${fmt(l.borrowedAt)} · zurück bis ${fmt(l.dueAt)} (${frist})${l.extended ? " · verlängert" : ""}</p></div>
-      <div class="aktionen">
-        <button class="taste primaer" data-act="return" ${S.busy ? "disabled" : ""}>Zurückgeben</button>
-        ${l.extended ? "" : `<button class="taste sekundaer" data-act="extend" ${S.busy ? "disabled" : ""}>Verlängern</button>`}
-      </div>`;
+/* ===== Sheet: Buch, Anmeldung, Verwaltung, Bearbeiten ===== */
+function renderSheet(){
+  if (S.view === "buch") renderBuch();
+  else if (S.view === "login") renderLogin();
+  else if (S.view === "admin") renderAdmin();
+  else if (S.view === "edit") renderEdit();
+}
+function openSheet(view, id, push = true){
+  if (view === "buch"){
+    if (!buchVon(id)) return;
+    const k = ls.get("bib.kuerzel", ""), eigene = S.ratings.find(r => r.bookId === id && r.kuerzel === k);
+    S.entwurf = { sterne: eigene ? Number(eigene.sterne) : 0, kommentar: eigene ? eigene.kommentar || "" : "", kuerzel: k, medien: eigene ? [...(eigene.medien || [])] : [] };
+    S.open = id; S.loeschFrage = null;
   }
-  const r = schnitt(b.id), rl = bewertungen(b.id), e = S.entwurf;
-  const bewertungHtml = `
+  S.view = view; renderSheet();
+  const sh = $("#sheet"), bd = $("#backdrop");
+  if (sh.hidden){
+    sh.hidden = bd.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => { sh.classList.add("on"); bd.classList.add("on"); }));
+    document.body.style.overflow = "hidden";
+  }
+  sh.scrollTop = 0;
+  try { history.replaceState(null, "", view === "buch" ? "#b-" + id : location.pathname + location.search); } catch {}
+  if (push) setTimeout(() => { const ziel = view === "login" ? $("#p0") : $("#schliessen"); if (ziel) ziel.focus({ preventScroll: true }); }, 60);
+}
+function wechsle(view){ S.view = view; renderSheet(); $("#sheet").scrollTop = 0; }
+function closeSheet(){
+  const sh = $("#sheet"), bd = $("#backdrop"), war = S.open;
+  S.view = null; S.open = null; S.edit = null;
+  sh.classList.remove("on"); bd.classList.remove("on"); document.body.style.overflow = "";
+  setTimeout(() => { if (!S.view) sh.hidden = bd.hidden = true; }, 240);
+  try { history.replaceState(null, "", location.pathname + location.search); } catch {}
+  const z = war && document.querySelector(`.zeile[data-id="${CSS.escape(war)}"]`); if (z) z.focus({ preventScroll: true });
+}
+
+function quellenHtml(b){
+  const q = (b.quellen || []).filter(x => sicherUrl(x.url));
+  const isbn = String(b.isbn || "").replace(/[^0-9X]/gi, "");
+  if (isbn && !b.cover && !q.some(x => /openlibrary/.test(x.url))) q.push({ titel: "Open Library (Cover)", url: `https://openlibrary.org/isbn/${isbn}` });
+  if (!q.length) return "";
+  return `<div class="quellen"><p class="etikett">Quellen</p>
+    <p>${q.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titel || x.url)}</a>`).join(" · ")}</p>
+    <p>Cover © jeweiliger Verlag bzw. Rechteinhaber, eingebunden zur Kennzeichnung des Buchs. Beschreibung als eigene Zusammenfassung.</p></div>`;
+}
+function ausleiheHtml(b, g){
+  const s = status(b.id), l = s.loan;
+  if (!l) return `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
+    <form id="${g === "k" ? "ausleihen" : "verleihen-admin"}" class="feld" autocomplete="off" novalidate>
+      <fieldset class="kuerzel"><legend>${g === "k" ? "Dein Kürzel" : "Kürzel der Person"}</legend>${zeichenFelder(g, g === "k" ? ls.get("bib.kuerzel", "") : "", "kuerzel")}
+        <p class="meta">2 oder 3 Buchstaben, z. B. NNE</p></fieldset>
+      <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>${g === "k" ? "Ausleihen" : "Als verliehen erfassen"}</button></div>
+    </form>`;
+  const d = days(l.dueAt), frist = d < 0 ? `seit ${tage(-d)} überfällig` : d === 0 ? "heute fällig" : `noch ${tage(d)}`;
+  return `<div class="status-zeile"><span><span class="badge ${s.cls}">${esc(s.label)}</span></span>
+      <p class="titel-karte" style="margin-top:6px">Aktuell geliehen von <span class="kuerzel-text">${esc(l.kuerzel || l.name)}</span></p>
+      <p class="meta zahl" style="margin:0">Seit ${fmt(l.borrowedAt)} · zurück bis ${fmt(l.dueAt)} (${frist})${l.extended ? " · verlängert" : ""}</p></div>
+    <div class="aktionen">
+      <button type="button" class="taste primaer" data-act="return" ${S.busy ? "disabled" : ""}>${g === "k" ? "Zurückgeben" : "Als zurückgegeben markieren"}</button>
+      ${l.extended ? "" : `<button type="button" class="taste sekundaer" data-act="extend" ${S.busy ? "disabled" : ""}>Verlängern</button>`}
+    </div>`;
+}
+
+function renderBuch(){
+  const b = buchVon(S.open); if (!b) return;
+  const h = historie(b.id), r = schnitt(b.id), rl = bewertungen(b.id), e = S.entwurf;
+  const angaben = [["Verlag", b.verlag], ["Jahr", b.jahr], ["Seiten", b.seiten], ["Sprache", b.sprache], ["Standort", b.standort], ["Eigentum", b.eigentum], ["ISBN", b.isbn]].filter(x => x[1]);
+  $("#detail").innerHTML = `
+    <div class="held gross">${cover(b)}<div><h2 id="d-titel">${esc(b.titel)}</h2><p class="meta" style="margin:4px 0 0">${esc(b.autor)}</p>
+      <button type="button" class="taste sekundaer klein merken" data-merken="${esc(b.id)}" aria-pressed="${gemerkt(b.id)}">${gemerkt(b.id) ? ICON.gemerkt + " Gemerkt" : ICON.merken + " Merken"}</button></div></div>
+    <section class="abschnitt"><h3 class="titel-bereich">Ausleihe</h3><div class="karte innen">${ausleiheHtml(b, "k")}</div></section>
+    ${b.beschreibung || (b.themen || []).length ? `<section class="abschnitt"><h3 class="titel-bereich">Worum es geht</h3><div class="karte innen">${b.beschreibung ? `<p class="text">${esc(b.beschreibung)}</p>` : ""}
+      <div class="tags">${(b.themen || []).map(t => `<button class="tag" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div></div></section>` : ""}
+    ${angaben.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${angaben.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
+    <section class="abschnitt"><h3 class="titel-bereich">Gelesen von</h3><div class="karte">
+      <ul class="historie">${h.length ? h.map(x => `<li><span class="kuerzel-text">${esc(x.kuerzel || x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
+        : `<li class="keine">Noch niemand. Du kannst die erste Person sein.</li>`}</ul></div></section>
     <section class="abschnitt"><h3 class="titel-bereich">Bewertungen</h3><div class="karte">
       ${r ? `<div class="bewertung-kopf"><span class="schnitt">${komma(r.wert)}</span><span style="display:grid;gap:2px">${sterneHtml(r.wert)}<span class="meta">${r.anzahl} ${r.anzahl === 1 ? "Bewertung" : "Bewertungen"}</span></span></div>
-        <ul class="bewertungen">${rl.map(x => `<li><div class="zeile-kopf"><span class="kuerzel-text">${esc(x.kuerzel)}</span>${sterneHtml(Number(x.sterne || 0))}<span class="d">${fmt(x.am)}</span></div>${x.kommentar ? `<p>${esc(x.kommentar)}</p>` : ""}</li>`).join("")}</ul>`
+        <ul class="bewertungen">${rl.map(x => `<li><div class="zeile-kopf"><span class="kuerzel-text">${esc(x.kuerzel)}</span>${sterneHtml(Number(x.sterne || 0))}<span class="d">${fmt(x.am)}</span></div>
+          ${x.kommentar ? `<p>${esc(x.kommentar)}</p>` : ""}
+          ${(x.medien || []).length ? `<div class="medien">${x.medien.map((m, i) => `<button class="thumb" data-lb="${esc(x.id)}" data-i="${i}" aria-label="${m.typ === "video" ? "Video" : "Bild"} ${i + 1} vergrößern">${thumbHtml(m)}</button>`).join("")}</div>` : ""}
+          ${S.admin ? `<div><button class="entfernen" data-loeschen="${esc(x.id)}">${S.loeschFrage === x.id ? "Wirklich entfernen?" : "Bewertung entfernen"}</button></div>` : ""}</li>`).join("")}</ul>`
         : `<div class="innen"><p class="meta" style="margin:0">Noch keine Bewertung. Wie fandest du das Buch?</p></div>`}
     </div></section>
     <section class="abschnitt"><h3 class="titel-bereich">Bewerten</h3><div class="karte innen">
       <form id="bewerten" class="bewerten-form" autocomplete="off" novalidate>
         <div class="gruppe"><p class="gruppe-titel" id="sterne-titel">Sterne</p>
-          <div class="stern-wahl" role="radiogroup" aria-labelledby="sterne-titel">${[1,2,3,4,5].map(n => `<button type="button" class="stern${n <= e.sterne ? " an" : ""}" role="radio" aria-checked="${n === e.sterne}" aria-label="${n} ${n === 1 ? "Stern" : "Sterne"}" data-n="${n}">${STERN}</button>`).join("")}</div>
+          <div class="stern-wahl" role="radiogroup" aria-labelledby="sterne-titel">${[1,2,3,4,5].map(n => `<button type="button" class="stern${n <= e.sterne ? " an" : ""}" role="radio" aria-checked="${n === e.sterne}" aria-label="${n} ${n === 1 ? "Stern" : "Sterne"}" data-n="${n}">${ICON.stern}</button>`).join("")}</div>
           <p class="meta stern-label" aria-live="polite">${sternLabel(e.sterne)}${e.sterne ? " · nochmal tippen setzt auf 0" : ""}</p></div>
         <div class="gruppe"><label for="kommentar">Kommentar (optional)</label>
           <textarea id="kommentar" class="kommentar" maxlength="500" placeholder="Was nimmst du mit?">${esc(e.kommentar)}</textarea></div>
-        <fieldset class="kuerzel"><legend>Dein Kürzel</legend>${kuerzelFelder("r", e.kuerzel)}</fieldset>
+        <div class="gruppe"><p class="gruppe-titel">Bilder oder Videos (optional)</p>
+          <div class="medien-wahl">${e.medien.map((m, i) => `<div class="medium-vorschau"><span class="thumb">${thumbHtml(m)}</span><button type="button" class="medium-weg" data-weg="${i}" aria-label="Anhang ${i + 1} entfernen">${ICON.zu}</button></div>`).join("")}
+            ${e.medien.length < CONFIG.MAX_MEDIEN ? `<label class="medium-hinzu">${ICON.plus}<span>Hinzufügen</span><input type="file" id="medien-datei" accept="image/*,video/*" multiple hidden></label>` : ""}</div>
+          <p class="meta" style="margin:0">Bis zu ${CONFIG.MAX_MEDIEN} Anhänge. Videos bis ${Store.mode === "local" ? 4 : CONFIG.MAX_VIDEO_MB} MB.</p></div>
+        <fieldset class="kuerzel"><legend>Dein Kürzel</legend>${zeichenFelder("r", e.kuerzel, "kuerzel")}</fieldset>
         <div class="aktionen" style="margin-top:0"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Bewertung speichern</button></div>
-      </form></div></section>`;
-  const angaben = [["Verlag", b.verlag], ["Jahr", b.jahr], ["Seiten", b.seiten], ["Sprache", b.sprache], ["Standort", b.standort], ["Eigentum", b.eigentum], ["ISBN", b.isbn]].filter(x => x[1]);
-  $("#detail").innerHTML = `
-    <div class="held gross">${cover(b)}<div><h2 id="d-titel">${esc(b.titel)}</h2><p class="meta" style="margin:4px 0 0">${esc(b.autor)}</p></div></div>
-    <section class="abschnitt"><h3 class="titel-bereich">Ausleihe</h3><div class="karte innen">${st}</div></section>
-    <section class="abschnitt"><h3 class="titel-bereich">Worum es geht</h3><div class="karte innen"><p class="text">${esc(b.beschreibung)}</p>
-      <div class="tags">${(b.themen || []).map(t => `<button class="tag" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div></div></section>
-    ${angaben.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${angaben.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
-    <section class="abschnitt"><h3 class="titel-bereich">Gelesen von</h3><div class="karte">
-      <ul class="historie">${h.length ? h.map(x => `<li><span class="kuerzel-text">${esc(x.kuerzel || x.name)}</span><span class="d">${fmt(x.borrowedAt)} – ${fmt(x.returnedAt)}</span></li>`).join("")
-        : `<li class="keine">Noch niemand. Du kannst die erste Person sein.</li>`}</ul></div></section>
-    ${bewertungHtml}
-    <div><button class="taste sekundaer" id="teilen" style="width:100%">
+      </form></div></section>
+    <div><button class="taste sekundaer ganz" id="teilen">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M12 8a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
       Link kopieren</button><div id="linkplatz"></div></div>
+    ${S.admin ? `<button class="taste sekundaer ganz" data-edit="${esc(b.id)}">Buch bearbeiten</button>` : ""}
     ${quellenHtml(b)}
     ${b.beispiel ? `<p class="hinweis" style="margin:0 4px">Beispieleintrag bis zur Inventur.</p>` : ""}`;
 }
-function quellenHtml(b){
-  const q = [...(b.quellen || [])];
-  const isbn = String(b.isbn || "").replace(/[^0-9X]/gi, "");
-  if (isbn && !b.cover) q.push({ titel: "Open Library (Cover)", url: `https://openlibrary.org/isbn/${isbn}` });
-  if (!q.length) return "";
-  return `<div class="quellen"><p class="etikett">Quellen</p>
-    <p>${q.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titel)}</a>`).join(" · ")}</p>
-    <p>Cover © jeweiliger Verlag bzw. Rechteinhaber, eingebunden zur Kennzeichnung des Buchs. Beschreibung als eigene Zusammenfassung.</p></div>`;
+
+function renderLogin(){
+  $("#detail").innerHTML = `
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2><p class="meta" style="margin:0">Bestand pflegen, Bücher erfassen, PIN ändern.</p></div>
+    <section class="abschnitt"><div class="karte innen">
+      <form id="login" class="feld" style="margin-top:0" autocomplete="off" novalidate>
+        <fieldset class="kuerzel"><legend>PIN</legend>${zeichenFelder("p", "", "pin")}
+          <p class="meta">Vier Ziffern. Bei der Einrichtung lautet sie 0000.</p></fieldset>
+        <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Entsperren</button></div>
+      </form></div></section>`;
 }
 
-function openSheet(id, push = true){
-  if (!BOOKS.some(b => b.id === id)) return;
-  const k = ls.get("bib.kuerzel", ""), eigene = S.ratings.find(r => r.bookId === id && r.kuerzel === k);
-  S.entwurf = { sterne: eigene ? Number(eigene.sterne) : 0, kommentar: eigene ? eigene.kommentar || "" : "", kuerzel: k };
-  S.open = id; renderDetail();
-  const sh = $("#sheet"), bd = $("#backdrop");
-  sh.hidden = bd.hidden = false; sh.scrollTop = 0;
-  requestAnimationFrame(() => requestAnimationFrame(() => { sh.classList.add("on"); bd.classList.add("on"); }));
-  document.body.style.overflow = "hidden";
-  if (push) try { history.replaceState(null, "", "#b-" + id); } catch {}
-  setTimeout(() => $("#schliessen").focus({ preventScroll: true }), 60);
+function schalter(an, attr, label){ return `<button type="button" class="schalter" role="switch" aria-checked="${!!an}" ${attr} aria-label="${esc(label)}"><span></span></button>`; }
+function renderAdmin(){
+  const liste = [...S.books].sort((a, b) => a.titel.localeCompare(b.titel, "de"));
+  $("#detail").innerHTML = `
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2><p class="meta zahl" style="margin:0">${S.books.length} Bücher · ${sichtbar().length} aktiv · ${S.books.filter(b => b.empfohlen && b.aktiv !== false).length} empfohlen</p></div>
+    <button class="taste primaer ganz" id="neu-buch">${ICON.kamera} Buch hinzufügen</button>
+    ${S.fromSeed ? `<div class="vorschau" style="margin:0"><span>Noch der Beispielbestand. Mit dem ersten Speichern wird er übernommen; Beispiele kannst du danach bearbeiten oder inaktiv setzen.</span></div>` : ""}
+    <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Bestand</h3><span class="meta">Aktiv · Empfohlen</span></header><div class="karte">
+      ${liste.map(b => `<div class="admin-zeile${b.aktiv === false ? " inaktiv" : ""}">
+        <button class="admin-oeffnen" data-edit="${esc(b.id)}">${cover(b)}<span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)} · ${b.aktiv === false ? "Inaktiv" : esc(status(b.id).label)}</span></span></button>
+        <span class="schalter-paar">${schalter(b.aktiv !== false, `data-aktiv="${esc(b.id)}"`, `${b.titel}: aktiv`)}${schalter(b.empfohlen, `data-empfohlen="${esc(b.id)}"`, `${b.titel}: empfohlen`)}</span>
+      </div>`).join("")}
+    </div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">PIN ändern</h3><div class="karte innen">
+      <form id="pin-form" class="bewerten-form" autocomplete="off" novalidate>
+        <fieldset class="kuerzel"><legend>Neue PIN</legend>${zeichenFelder("n", "", "pin")}</fieldset>
+        <fieldset class="kuerzel"><legend>Neue PIN wiederholen</legend>${zeichenFelder("m", "", "pin")}</fieldset>
+        <div class="aktionen" style="margin-top:0"><button class="taste sekundaer" type="submit" ${S.busy ? "disabled" : ""}>PIN speichern</button></div>
+      </form></div></section>
+    <button class="taste sekundaer ganz" id="abmelden">Abmelden</button>`;
 }
-function closeSheet(){
-  const sh = $("#sheet"), bd = $("#backdrop"), war = S.open; S.open = null;
-  sh.classList.remove("on"); bd.classList.remove("on"); document.body.style.overflow = "";
-  setTimeout(() => { if (!S.open) sh.hidden = bd.hidden = true; }, 240);
-  try { history.replaceState(null, "", location.pathname + location.search); } catch {}
-  const z = war && document.querySelector(`.zeile[data-id="${CSS.escape(war)}"]`); if (z) z.focus({ preventScroll: true });
+
+/* ----- Bearbeiten / Hinzufügen ----- */
+function neuerEntwurf(b){
+  return { neu: !b, buch: b ? JSON.parse(JSON.stringify(b)) : normBuch({ id: "", titel: "", autor: "", themen: [], quellen: [] }), fotos: { cover: null, rueck: null }, fotoAlsCover: false, coverDatei: null, info: "", laeuft: false };
+}
+function feld(name, label, wert, attr = ""){ return `<div class="gruppe"><label for="f-${name}">${label}</label><input id="f-${name}" name="${name}" class="eingabe" value="${esc(wert ?? "")}" ${attr}></div>`; }
+function fotoKachel(key, label, src){
+  return `<label class="foto-kachel">${src ? `<img src="${esc(src)}" alt="">` : `${ICON.kamera}<span>${label}</span>`}<input type="file" accept="image/*" capture="environment" data-foto="${key}" hidden></label>`;
+}
+function renderEdit(){
+  const e = S.edit, b = e.buch;
+  const vorschau = { ...b, coverVorschau: e.coverDatei || (e.fotoAlsCover && e.fotos.cover) || null };
+  const themen = [...new Set([...THEMEN, ...(b.themen || [])])].sort((x, y) => x.localeCompare(y, "de"));
+  const loan = !e.neu && openLoan(b.id) !== undefined;
+  $("#detail").innerHTML = `
+    <div><button type="button" class="zurueck" data-nav="admin">${ICON.zurueck} Verwaltung</button></div>
+    <h2 class="titel-seite" id="d-titel" style="margin:0">${e.neu ? "Buch hinzufügen" : "Buch bearbeiten"}</h2>
+    <form id="edit-form" class="formular" autocomplete="off" novalidate>
+      <section class="abschnitt"><h3 class="titel-bereich">Fotos erfassen</h3><div class="karte innen">
+        <p class="meta" style="margin:0">Cover und Rückseite fotografieren. Die App liest die ISBN, holt Angaben und das Original-Cover. Mit KI werden auch Thema und Beschreibung vorgeschlagen.</p>
+        <div class="foto-raster">${fotoKachel("cover", "Cover", e.fotos.cover)}${fotoKachel("rueck", "Rückseite mit ISBN", e.fotos.rueck)}</div>
+        <div class="aktionen"><button type="button" class="taste sekundaer" id="ki-analyse" ${!(e.fotos.cover || e.fotos.rueck) || e.laeuft ? "disabled" : ""}>Mit KI ausfüllen</button></div>
+        ${e.info ? `<p class="meta info-zeile" role="status">${esc(e.info)}</p>` : ""}
+      </div></section>
+
+      <section class="abschnitt"><h3 class="titel-bereich">Cover</h3><div class="karte innen"><div class="cover-zeile">
+        <div class="gross">${cover(vorschau)}</div>
+        <div class="formular">
+          ${feld("cover", "Cover-URL", b.cover, `placeholder="leer = per ISBN" inputmode="url"`)}
+          <label class="taste sekundaer klein">Eigenes Bild wählen<input type="file" id="cover-datei" accept="image/*" hidden></label>
+          ${e.fotos.cover ? `<label class="check"><input type="checkbox" id="foto-als-cover" ${e.fotoAlsCover ? "checked" : ""}> Foto als Cover verwenden</label>` : ""}
+          ${e.coverDatei ? `<p class="meta" style="margin:0">Eigenes Bild wird beim Speichern hochgeladen.</p>` : ""}
+        </div></div></div></section>
+
+      <section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte innen formular">
+        ${feld("titel", "Titel *", b.titel, "required")}
+        ${feld("autor", "Autor:in *", b.autor, "required")}
+        ${feld("verlag", "Verlag", b.verlag)}
+        <div class="zwei">${feld("jahr", "Jahr", b.jahr, `inputmode="numeric"`)}${feld("seiten", "Seiten", b.seiten, `inputmode="numeric"`)}</div>
+        <div class="zwei">${feld("sprache", "Sprache", b.sprache)}${feld("isbn", "ISBN", b.isbn, `inputmode="numeric"`)}</div>
+        ${feld("standort", "Standort", b.standort)}
+        ${feld("eigentum", "Eigentum", b.eigentum)}
+      </div></section>
+
+      <section class="abschnitt"><h3 class="titel-bereich">Themen und Beschreibung</h3><div class="karte innen formular">
+        <div class="gruppe"><p class="gruppe-titel">Themen</p><div class="themen-wahl">${themen.map(t => `<button type="button" class="chip" data-thema="${esc(t)}" aria-pressed="${(b.themen || []).includes(t)}">${esc(t)}</button>`).join("")}</div>
+          <input class="eingabe" id="f-thema-neu" placeholder="Weiteres Thema, mit Enter hinzufügen" enterkeyhint="done"></div>
+        <div class="gruppe"><label for="f-beschreibung">Beschreibung</label><textarea id="f-beschreibung" name="beschreibung" class="kommentar" maxlength="1200" placeholder="Zwei bis drei Sätze in eigenen Worten">${esc(b.beschreibung || "")}</textarea></div>
+        <div class="gruppe"><label for="f-quellen">Quellen</label><textarea id="f-quellen" name="quellen" class="kommentar" placeholder="Titel | https://…  (eine pro Zeile)">${esc((b.quellen || []).map(q => `${q.titel} | ${q.url}`).join("\n"))}</textarea></div>
+      </div></section>
+
+      <section class="abschnitt"><h3 class="titel-bereich">Sichtbarkeit</h3><div class="karte innen">
+        <div class="schalter-zeile"><span>Im Katalog sichtbar</span>${schalter(b.aktiv !== false, `id="f-aktiv"`, "Im Katalog sichtbar")}</div>
+        <div class="schalter-zeile"><span>Unter „Empfohlen“ zeigen</span>${schalter(b.empfohlen, `id="f-empfohlen"`, "Empfohlen")}</div>
+      </div></section>
+      <div class="aktionen" style="margin-top:0">
+        <button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>${S.busy ? "Speichert …" : "Speichern"}</button>
+        <button type="button" class="taste sekundaer" data-nav="admin">Abbrechen</button>
+      </div>
+    </form>
+    ${!e.neu ? `<section class="abschnitt"><h3 class="titel-bereich">Status</h3><div class="karte innen">${ausleiheHtml(b, "a")}</div>
+      <p class="hinweis" style="margin:0 4px">${loan ? "Status-Änderungen gelten sofort, unabhängig vom Speichern." : "Erfasst eine Ausleihe im Namen einer Person."}</p></section>` : ""}`;
+}
+function syncEdit(){
+  const e = S.edit; if (!e || !$("#edit-form")) return;
+  const v = n => ($(`#f-${n}`) || {}).value ?? "";
+  Object.assign(e.buch, {
+    titel: v("titel").trim(), autor: v("autor").trim(), verlag: v("verlag").trim(), sprache: v("sprache").trim(),
+    jahr: parseInt(v("jahr"), 10) || "", seiten: parseInt(v("seiten"), 10) || "", isbn: v("isbn").replace(/[^0-9Xx-]/g, ""),
+    standort: v("standort").trim(), eigentum: v("eigentum").trim(), cover: v("cover").trim(), beschreibung: v("beschreibung").trim(),
+    quellen: v("quellen").split("\n").map(z => { const [t, ...u] = z.split("|"); const url = (u.join("|") || t).trim(); return { titel: (u.length ? t : url).trim(), url }; }).filter(q => sicherUrl(q.url))
+  });
+}
+function mergeBuch(z, r, auchBefuellte = false){
+  for (const k of ["titel", "autor", "verlag", "jahr", "seiten", "sprache", "isbn", "beschreibung"])
+    if (r[k] && (auchBefuellte || !z[k])) z[k] = r[k];
+  if (Array.isArray(r.themen)) z.themen = [...new Set([...(z.themen || []), ...r.themen.filter(Boolean)])];
+  if (Array.isArray(r.quellen)) r.quellen.forEach(q => { if (sicherUrl(q.url) && !(z.quellen || []).some(x => x.url === q.url)) (z.quellen ||= []).push(q); });
+  if (!z.cover && r.coverUrl) z.cover = r.coverUrl;
+}
+const ladeSkript = src => new Promise((res, rej) => { if (document.querySelector(`script[src="${src}"]`)) return res(); const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = () => rej(new Error("Skript nicht geladen")); document.head.appendChild(s); });
+const istIsbn = t => /^97[89]\d{10}$/.test(t || "");
+async function isbnAusBild(dataUrl){
+  const img = await ladeBild(dataUrl);
+  if ("BarcodeDetector" in window){
+    try { const r = await new BarcodeDetector({ formats: ["ean_13"] }).detect(img); const t = r.map(x => x.rawValue).find(istIsbn); if (t) return t; } catch {}
+  }
+  try {
+    await ladeSkript("https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js");
+    const hints = new Map(); hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+    const t = (await new ZXing.BrowserMultiFormatReader(hints).decodeFromImageElement(img)).getText();
+    if (istIsbn(t)) return t;
+  } catch {}
+  return null;
+}
+async function nachschlagen(isbn){
+  const r = { isbn, quellen: [] };
+  try {
+    const j = await (await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)).json(), d = j[`ISBN:${isbn}`];
+    if (d){
+      r.titel = d.title + (d.subtitle ? `: ${d.subtitle}` : ""); r.autor = (d.authors || []).map(a => a.name).join(", ");
+      r.verlag = (d.publishers || [])[0]?.name; const y = String(d.publish_date || "").match(/\d{4}/); if (y) r.jahr = +y[0];
+      r.seiten = d.number_of_pages; if (d.cover) r.coverUrl = d.cover.large || d.cover.medium;
+      if (d.url) r.quellen.push({ titel: "Open Library", url: d.url });
+    }
+  } catch {}
+  try {
+    const j = await (await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)).json(), v = j.items?.[0]?.volumeInfo;
+    if (v){
+      r.titel ||= v.title + (v.subtitle ? `: ${v.subtitle}` : ""); r.autor ||= (v.authors || []).join(", "); r.verlag ||= v.publisher;
+      if (!r.jahr && v.publishedDate) r.jahr = parseInt(String(v.publishedDate).slice(0, 4), 10) || undefined;
+      r.seiten ||= v.pageCount; r.sprache = { de: "Deutsch", en: "Englisch", fr: "Französisch", es: "Spanisch", it: "Italienisch" }[v.language] || v.language;
+      if (!r.coverUrl && v.imageLinks?.thumbnail) r.coverUrl = v.imageLinks.thumbnail.replace(/^http:/, "https:");
+      if (v.infoLink) r.quellen.push({ titel: "Google Books", url: v.infoLink.replace(/^http:/, "https:") });
+    }
+  } catch {}
+  return r;
+}
+async function fotoVerarbeiten(key, datei){
+  const e = S.edit; syncEdit();
+  e.fotos[key] = await verkleinern(datei, 1600, .85);
+  if (key === "cover" && !e.buch.cover && !e.fotoAlsCover) e.fotoAlsCover = true;
+  e.info = "Suche ISBN im Foto …"; renderEdit();
+  const isbn = await isbnAusBild(e.fotos[key]);
+  if (!S.edit) return;
+  if (isbn){
+    e.info = `ISBN ${isbn} erkannt. Suche Angaben …`; renderEdit();
+    const r = await nachschlagen(isbn); syncEdit(); mergeBuch(e.buch, r, e.neu);
+    if (r.coverUrl && e.fotoAlsCover && !e.coverDatei) e.fotoAlsCover = false;
+    e.info = r.titel ? `ISBN ${isbn}: Angaben${r.coverUrl ? " und Original-Cover" : ""} übernommen. Bitte prüfen.` : `ISBN ${isbn} erkannt, aber keine Angaben gefunden. „Mit KI ausfüllen“ probieren.`;
+  } else e.info = key === "rueck" ? "Keine ISBN erkannt. „Mit KI ausfüllen“ nutzen oder Angaben von Hand eintragen." : "Foto übernommen. Für die ISBN noch die Rückseite fotografieren.";
+  renderEdit();
+}
+async function kiAnalyse(){
+  const e = S.edit; syncEdit(); e.laeuft = true; e.info = "KI analysiert die Fotos …"; renderEdit();
+  try {
+    const bilder = [];
+    for (const f of [e.fotos.cover, e.fotos.rueck]) if (f) bilder.push((await verkleinern(f, 1200, .8)).split(",")[1]);
+    const j = await Store.act({ action: "analyze", pin: S.admin, bilder });
+    const d = j.daten || {}; syncEdit(); mergeBuch(e.buch, d, false);
+    if (istIsbn(String(d.isbn || "").replace(/\D/g, ""))){ const r = await nachschlagen(String(d.isbn).replace(/\D/g, "")); mergeBuch(e.buch, r, false); if (r.coverUrl && !e.coverDatei) e.fotoAlsCover = false; }
+    e.info = "KI-Vorschlag übernommen. Bitte prüfen und speichern.";
+  } catch (err){ e.info = err.message || "KI-Analyse fehlgeschlagen."; }
+  e.laeuft = false; if (S.view === "edit") renderEdit();
+}
+const slug = s => norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+async function speichereBuch(){
+  const e = S.edit; syncEdit(); const b = e.buch;
+  if (!b.titel || !b.autor){ toast("Bitte Titel und Autor:in eintragen."); ($("#f-titel").value ? $("#f-autor") : $("#f-titel")).focus(); return; }
+  if (e.neu && !b.id) b.id = `${slug(b.autor.split(",")[0] + "-" + b.titel)}-${Math.random().toString(36).slice(2, 6)}`;
+  S.busy = true; renderEdit();
+  try {
+    const bild = e.coverDatei || (e.fotoAlsCover && e.fotos.cover);
+    if (bild){ toast("Lade Cover hoch …"); b.cover = (await hochladen(bild, "cover")).url; }
+    const sauber = { ...b }; delete sauber.coverVorschau; sauber.beispiel = false;
+    apply(await Store.act({ action: "saveBook", pin: S.admin, book: sauber, seed: S.fromSeed ? SEED : undefined }));
+    toast("Gespeichert."); S.edit = null; S.busy = false; renderFilter(); render(); wechsle("admin");
+  } catch (err){ S.busy = false; toast(err.message || "Speichern fehlgeschlagen."); renderEdit(); }
+}
+async function adminSpeichern(b, aenderung, ok){
+  const neu = { ...b, ...aenderung }; delete neu.coverVorschau;
+  try { apply(await Store.act({ action: "saveBook", pin: S.admin, book: neu, seed: S.fromSeed ? SEED : undefined })); toast(ok); renderFilter(); render(); }
+  catch (err){ toast(err.message); }
 }
 
 /* ===== Aktionen ===== */
 let toastT;
-function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
 async function act(p, ok){
-  if (S.busy) return; S.busy = true; renderDetail();
-  try { Object.assign(S, await Store.act(p)); toast(ok); }
-  catch (e) { toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); try { Object.assign(S, await Store.list()); } catch {} }
-  finally { S.busy = false; render(); }
+  if (S.busy) return; S.busy = true; if (S.view === "edit") syncEdit(); renderSheet();
+  try { apply(await Store.act(p)); toast(ok); }
+  catch (e){ toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); if (/PIN/.test(e.message || "") && p.pin){ S.admin = null; ss.set("bib.admin", null); } try { apply(await Store.list()); } catch {} }
+  finally { S.busy = false; render(); if (S.view === "edit") renderEdit(); if (S.view === "login" && !S.admin) renderLogin(); }
 }
 async function teilen(b){
   const url = (CONFIG.SHARE_BASE || location.href.split("#")[0]) + "#b-" + b.id;
@@ -706,8 +1173,22 @@ async function teilen(b){
   $("#linkplatz").innerHTML = `<input class="linkfeld" id="linkfeld" readonly value="${esc(url)}" aria-label="Link zum Buch">`;
   const i = $("#linkfeld"); i.focus(); i.select(); toast("Link markiert, bitte kopieren");
 }
+async function speichereBewertung(){
+  const kuerzel = leseKuerzel("r"); if (!kuerzel) return;
+  const e = S.entwurf; e.kuerzel = kuerzel; S.busy = true; renderBuch();
+  try {
+    const medien = [];
+    for (const m of e.medien){
+      if (m.neu){ toast(`Lade ${m.typ === "video" ? "Video" : "Bild"} hoch …`); medien.push(await hochladen(m.datei, "kommentar", m.typ)); }
+      else medien.push({ typ: m.typ, url: m.url, thumb: m.thumb });
+    }
+    apply(await Store.act({ action: "rate", bookId: S.open, kuerzel, sterne: e.sterne, kommentar: e.kommentar.trim().slice(0, 500), medien }));
+    e.medien = medien; toast("Danke für deine Bewertung.");
+  } catch (err){ toast(err.message || "Speichern fehlgeschlagen."); }
+  S.busy = false; render();
+}
 
-/* ===== Ereignisse ===== */
+/* ===== Ereignisse: Liste und Filter ===== */
 $("#q").addEventListener("input", e => { S.q = e.target.value.trim(); render(); });
 $("#leeren").addEventListener("click", () => { $("#q").value = ""; S.q = ""; render(); $("#q").focus(); });
 document.querySelector(".umschalter").addEventListener("click", e => {
@@ -715,53 +1196,146 @@ document.querySelector(".umschalter").addEventListener("click", e => {
   document.querySelectorAll(".umschalter button").forEach(x => x.setAttribute("aria-pressed", x === b)); render();
 });
 $("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; S.topic = c.dataset.t || null; renderFilter(); render(); });
-$("#liste").addEventListener("click", e => { const z = e.target.closest(".zeile"); if (z) openSheet(z.dataset.id); });
+$("#liste").addEventListener("click", e => { const z = e.target.closest(".zeile"); if (z) openSheet("buch", z.dataset.id); });
+["#empfohlen-liste", "#merkliste-liste"].forEach(sel => $(sel).addEventListener("click", e => { const z = e.target.closest(".empfehlung"); if (z) openSheet("buch", z.dataset.id); }));
 $("#backdrop").addEventListener("click", closeSheet);
 $("#schliessen").addEventListener("click", closeSheet);
-document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) closeSheet(); });
-$("#detail").addEventListener("submit", e => {
+$("#lb-zu").addEventListener("click", schliesseLightbox);
+$("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") schliesseLightbox(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (!$("#lightbox").hidden) return schliesseLightbox();
+  if (!$("#einstellungen-menue").hidden) return menue(false);
+  if (S.view) closeSheet();
+});
+
+/* ===== Ereignisse: Sheet ===== */
+const D = $("#detail");
+D.addEventListener("submit", e => {
   e.preventDefault();
-  if (e.target.id === "ausleihen"){
-    const kuerzel = leseKuerzel("k"); if (!kuerzel) return;
-    act({ action:"borrow", bookId:S.open, kuerzel }, "Ausgeliehen. Viel Freude beim Lesen.");
+  const id = e.target.id;
+  if (id === "ausleihen"){ const k = leseKuerzel("k"); if (k) act({ action: "borrow", bookId: S.open, kuerzel: k }, "Ausgeliehen. Viel Freude beim Lesen."); }
+  if (id === "verleihen-admin"){ const k = leseKuerzel("a"); if (k) act({ action: "borrow", bookId: S.edit.buch.id, kuerzel: k }, `Als verliehen an ${k} erfasst.`); }
+  if (id === "bewerten") speichereBewertung();
+  if (id === "edit-form") speichereBuch();
+  if (id === "login"){
+    const pin = lesePin("p"); if (!pin) return;
+    S.busy = true;
+    Store.act({ action: "checkPin", pin }).then(() => { S.admin = pin; ss.set("bib.admin", pin); S.busy = false; wechsle("admin"); render(); })
+      .catch(err => { S.busy = false; toast(err.message || "PIN ist nicht richtig."); renderLogin(); $("#p0").focus(); });
   }
-  if (e.target.id === "bewerten"){
-    const kuerzel = leseKuerzel("r"); if (!kuerzel) return;
-    S.entwurf.kuerzel = kuerzel;
-    act({ action:"rate", bookId:S.open, kuerzel, sterne:S.entwurf.sterne, kommentar:S.entwurf.kommentar.trim().slice(0, 500) }, "Danke für deine Bewertung.");
+  if (id === "pin-form"){
+    const a = lesePin("n"); if (!a) return; const b = lesePin("m"); if (!b) return;
+    if (a !== b){ toast("Die beiden PINs stimmen nicht überein."); felderVon("m").forEach(f => f.value = ""); $("#m0").focus(); return; }
+    Store.act({ action: "setPin", pin: S.admin, neu: a }).then(() => { S.admin = a; ss.set("bib.admin", a); toast("PIN geändert."); renderAdmin(); })
+      .catch(err => toast(err.message));
   }
 });
-/* Kürzelfelder: nur Buchstaben, Großschreibung, automatisch weiter, Rücktaste zurück, Einfügen verteilt */
-const kNorm = s => s.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
-$("#detail").addEventListener("input", e => {
-  const f = e.target.closest(".k-feld"); if (!f) return;
-  f.value = kNorm(f.value).slice(-1); f.removeAttribute("aria-invalid");
-  if (f.dataset.g === "r") S.entwurf.kuerzel = [0,1,2].map(i => document.getElementById("r" + i).value).join("");
-  if (f.value){ const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1)); if (n) n.focus(); }
+D.addEventListener("input", e => {
+  const f = e.target.closest(".k-feld");
+  if (f){
+    f.value = zeichenNorm(f.value, f.dataset.art).slice(-1); f.removeAttribute("aria-invalid");
+    if (f.dataset.g === "r") S.entwurf.kuerzel = felderVon("r").map(x => x.value).join("");
+    if (f.value){
+      const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1));
+      if (n) n.focus();
+      else if (f.dataset.g === "p" && felderVon("p").every(x => x.value)) $("#login").requestSubmit();
+    }
+    return;
+  }
+  if (e.target.id === "kommentar") S.entwurf.kommentar = e.target.value;
 });
-$("#detail").addEventListener("input", e => { if (e.target.id === "kommentar") S.entwurf.kommentar = e.target.value; });
-$("#detail").addEventListener("keydown", e => {
+D.addEventListener("keydown", e => {
+  if (e.target.id === "f-thema-neu" && e.key === "Enter"){
+    e.preventDefault(); const t = e.target.value.trim(); if (!t) return;
+    syncEdit(); S.edit.buch.themen = [...new Set([...(S.edit.buch.themen || []), t])]; renderEdit(); $("#f-thema-neu").focus(); return;
+  }
   const f = e.target.closest(".k-feld"); if (!f) return;
-  const p = document.getElementById(f.dataset.g + (+f.dataset.i - 1));
+  const p = document.getElementById(f.dataset.g + (+f.dataset.i - 1)), n = document.getElementById(f.dataset.g + (+f.dataset.i + 1));
   if (e.key === "Backspace" && !f.value && p){ p.value = ""; p.focus(); e.preventDefault(); }
   if (e.key === "ArrowLeft" && p){ p.focus(); e.preventDefault(); }
-  if (e.key === "ArrowRight"){ const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1)); if (n){ n.focus(); e.preventDefault(); } }
+  if (e.key === "ArrowRight" && n){ n.focus(); e.preventDefault(); }
 });
-$("#detail").addEventListener("paste", e => {
+D.addEventListener("paste", e => {
   const f = e.target.closest(".k-feld"); if (!f) return;
-  const t = kNorm((e.clipboardData || window.clipboardData).getData("text")).slice(0, 3); if (!t) return;
-  e.preventDefault(); const felder = [0,1,2].map(i => document.getElementById(f.dataset.g + i));
-  felder.forEach((x, i) => x.value = t[i] || ""); (felder[Math.min(t.length, 2)]).focus();
+  const felder = felderVon(f.dataset.g), t = zeichenNorm((e.clipboardData || window.clipboardData).getData("text"), f.dataset.art).slice(0, felder.length);
+  if (!t) return; e.preventDefault();
+  felder.forEach((x, i) => x.value = t[i] || ""); felder[Math.min(t.length, felder.length - 1)].focus();
 });
-$("#detail").addEventListener("click", e => {
-  const a = e.target.closest("[data-act]"), t = e.target.closest(".tag"), sh = e.target.closest("#teilen"), l = openLoan(S.open);
-  if (a && l) act({ action:a.dataset.act, loanId:l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert.");
-  if (t){ S.topic = t.dataset.t; renderFilter(); closeSheet(); render(); }
-  if (sh) teilen(BOOKS.find(b => b.id === S.open));
-  const st = e.target.closest(".stern");
-  if (st){ const n = +st.dataset.n; S.entwurf.sterne = S.entwurf.sterne === n ? 0 : n; renderDetail(); const fokus = document.querySelector(`.stern[data-n="${n}"]`); if (fokus) fokus.focus(); }
+D.addEventListener("change", async e => {
+  const t = e.target;
+  try {
+    if (t.id === "medien-datei"){
+      const e2 = S.entwurf;
+      for (const d of [...t.files].slice(0, CONFIG.MAX_MEDIEN - e2.medien.length)){
+        const typ = d.type.startsWith("video/") ? "video" : d.type.startsWith("image/") ? "bild" : null;
+        if (!typ){ toast("Nur Bilder und Videos sind möglich."); continue; }
+        e2.medien.push({ neu: true, typ, datei: d, vorschau: URL.createObjectURL(d) });
+      }
+      renderBuch();
+    }
+    if (t.dataset.foto && t.files[0]) await fotoVerarbeiten(t.dataset.foto, t.files[0]);
+    if (t.id === "cover-datei" && t.files[0]){ syncEdit(); S.edit.coverDatei = await verkleinern(t.files[0], 1600, .85); S.edit.fotoAlsCover = false; renderEdit(); }
+    if (t.id === "foto-als-cover"){ syncEdit(); S.edit.fotoAlsCover = t.checked; if (t.checked) S.edit.coverDatei = null; renderEdit(); }
+  } catch (err){ toast(err.message || "Datei konnte nicht gelesen werden."); }
 });
-/* Mini-Kopf: erscheint, sobald die Suchleiste aus dem Bild ist; Suche/Filter klappen darunter auf */
+D.addEventListener("click", e => {
+  const el = sel => e.target.closest(sel);
+  const a = el("[data-act]");
+  if (a){ const id = S.view === "edit" ? S.edit.buch.id : S.open, l = openLoan(id);
+    if (l) act({ action: a.dataset.act, loanId: l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert."); return; }
+  const mk = el("[data-merken]"); if (mk){ merken(mk.dataset.merken); renderBuch(); render(); return; }
+  const nav = el("[data-nav]"); if (nav){ S.edit = null; wechsle(nav.dataset.nav); return; }
+  const ed = el("[data-edit]"); if (ed){ S.edit = neuerEntwurf(buchVon(ed.dataset.edit)); wechsle("edit"); return; }
+  if (el("#neu-buch")){ S.edit = neuerEntwurf(null); wechsle("edit"); return; }
+  if (el("#abmelden")){ S.admin = null; ss.set("bib.admin", null); toast("Abgemeldet."); closeSheet(); return; }
+  const sw = el("[data-aktiv]"); if (sw){ const b = buchVon(sw.dataset.aktiv); adminSpeichern(b, { aktiv: b.aktiv === false }, b.aktiv === false ? "Wieder im Katalog." : "Aus dem Katalog genommen."); return; }
+  const em = el("[data-empfohlen]"); if (em){ const b = buchVon(em.dataset.empfohlen); adminSpeichern(b, { empfohlen: !b.empfohlen }, b.empfohlen ? "Nicht mehr empfohlen." : "Als empfohlen markiert."); return; }
+  if (el("#f-aktiv")){ syncEdit(); S.edit.buch.aktiv = S.edit.buch.aktiv === false; renderEdit(); return; }
+  if (el("#f-empfohlen")){ syncEdit(); S.edit.buch.empfohlen = !S.edit.buch.empfohlen; renderEdit(); return; }
+  const th = el("[data-thema]"); if (th){ syncEdit(); const b = S.edit.buch, t = th.dataset.thema; b.themen = (b.themen || []).includes(t) ? b.themen.filter(x => x !== t) : [...(b.themen || []), t]; renderEdit(); return; }
+  if (el("#ki-analyse")){ kiAnalyse(); return; }
+  const tag = el(".tag"); if (tag){ S.topic = tag.dataset.t; renderFilter(); closeSheet(); render(); return; }
+  if (el("#teilen")){ teilen(buchVon(S.open)); return; }
+  const st = el(".stern"); if (st){ const n = +st.dataset.n; S.entwurf.sterne = S.entwurf.sterne === n ? 0 : n; renderBuch(); const f = document.querySelector(`.stern[data-n="${n}"]`); if (f) f.focus(); return; }
+  const weg = el("[data-weg]"); if (weg){ S.entwurf.medien.splice(+weg.dataset.weg, 1); renderBuch(); return; }
+  const lb = el("[data-lb]"); if (lb){ const r = S.ratings.find(x => x.id === lb.dataset.lb); if (r) oeffneLightbox(r.medien[+lb.dataset.i]); return; }
+  const lo = el("[data-loeschen]"); if (lo){
+    if (S.loeschFrage !== lo.dataset.loeschen){ S.loeschFrage = lo.dataset.loeschen; renderBuch(); return; }
+    S.loeschFrage = null; act({ action: "deleteRating", pin: S.admin, id: lo.dataset.loeschen }, "Bewertung entfernt.");
+  }
+});
+
+/* ===== Einstellungen: Menü nach oben ===== */
+const menueTaste = $("#einstellungen"), menueEl = $("#einstellungen-menue");
+function renderMenue(){
+  const m = ls.get("bib.modus", "system");
+  menueEl.innerHTML = `<p class="etikett menue-etikett">Darstellung</p>
+    ${[["system", "Wie System"], ["hell", "Hell"], ["dunkel", "Dunkel"]].map(([k, l]) => `<button role="menuitemradio" aria-checked="${m === k}" data-modus="${k}"><span>${l}</span>${m === k ? ICON.haken : ""}</button>`).join("")}
+    <div class="menue-linie" role="separator"></div>
+    <button role="menuitem" data-menue="verwaltung"><span>Verwaltung</span>${S.admin ? `<span class="meta">angemeldet</span>` : ""}</button>`;
+}
+function menue(offen){
+  if (offen) renderMenue();
+  menueEl.hidden = !offen; menueTaste.setAttribute("aria-expanded", offen);
+  if (offen) (menueEl.querySelector('[aria-checked="true"]') || menueEl.querySelector("button")).focus();
+}
+menueTaste.addEventListener("click", () => menue(menueEl.hidden));
+menueEl.addEventListener("click", e => {
+  e.stopPropagation();
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.modus){ setzeModus(b.dataset.modus); renderMenue(); menueEl.querySelector(`[data-modus="${b.dataset.modus}"]`).focus(); return; }
+  if (b.dataset.menue === "verwaltung"){ menue(false); openSheet(S.admin ? "admin" : "login"); }
+});
+menueEl.addEventListener("keydown", e => {
+  const items = [...menueEl.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+  if (e.key === "ArrowDown"){ items[(i + 1) % items.length].focus(); e.preventDefault(); }
+  if (e.key === "ArrowUp"){ items[(i - 1 + items.length) % items.length].focus(); e.preventDefault(); }
+  if (e.key === "Tab") menue(false);
+});
+document.addEventListener("click", e => { if (!menueEl.hidden && !e.target.closest("#einstellungen-menue, #einstellungen")) menue(false); });
+
+/* ===== Mini-Kopf: erscheint, sobald die Suchleiste aus dem Bild ist ===== */
 const platz = $("#leiste-platz"), leiste = $("#leiste"), mini = $("#minikopf"), miniTaste = $("#mini-filter");
 let miniAn = false;
 function setFilter(offen){
@@ -776,20 +1350,23 @@ function pruefeMini(){
   if (!an) setFilter(false);
 }
 miniTaste.addEventListener("click", () => setFilter(miniTaste.getAttribute("aria-expanded") !== "true"));
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.open && leiste.classList.contains("schwebend")){ setFilter(false); miniTaste.focus(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.view && leiste.classList.contains("schwebend")){ setFilter(false); miniTaste.focus(); } });
 $("#liste").addEventListener("click", () => setFilter(false));
-window.addEventListener("scroll", pruefeMini, { passive:true });
-window.addEventListener("resize", pruefeMini, { passive:true });
-window.addEventListener("hashchange", () => { const m = location.hash.match(/^#b-(.+)$/); if (m && m[1] !== S.open) openSheet(m[1], false); });
+window.addEventListener("scroll", pruefeMini, { passive: true });
+window.addEventListener("resize", pruefeMini, { passive: true });
+window.addEventListener("hashchange", () => { const m = location.hash.match(/^#b-(.+)$/); if (m && m[1] !== S.open) openSheet("buch", m[1], false); });
 
 /* ===== Start ===== */
-async function refresh(){ try { Object.assign(S, await Store.list()); render(); } catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); } }
+async function refresh(){
+  try { apply(await Store.list()); renderFilter(); render(); }
+  catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); }
+}
 (async function start(){
   if (Store.mode === "local"){ $("#vorschau").hidden = false;
-    $("#vorschau-text").textContent = "Vorschau: Ausleihen bleiben nur auf diesem Gerät. Mit verbundener Tabelle sehen alle denselben Stand."; }
+    $("#vorschau-text").textContent = "Vorschau: Änderungen bleiben nur auf diesem Gerät. Mit verbundener Tabelle sehen alle denselben Stand."; }
   renderFilter(); render(); await refresh();
-  const m = location.hash.match(/^#b-(.+)$/); if (m) openSheet(m[1], false);
-  if (Store.mode === "remote"){ setInterval(refresh, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); }); }
+  const m = location.hash.match(/^#b-(.+)$/); if (m) openSheet("buch", m[1], false);
+  if (Store.mode === "remote"){ setInterval(() => { if (S.view !== "edit") refresh(); }, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden && S.view !== "edit") refresh(); }); }
 })();
 </script>
 
