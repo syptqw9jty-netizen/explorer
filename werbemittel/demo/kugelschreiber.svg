@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"><defs><linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E27FAA"/><stop offset="0.35" stop-color="#C2427A"/><stop offset="1" stop-color="#9E2E62"/></linearGradient><linearGradient id="chr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F5F8"/><stop offset="0.45" stop-color="#BFC4CF"/><stop offset="0.55" stop-color="#8E95A5"/><stop offset="1" stop-color="#D9DCE3"/></linearGradient></defs><g transform="rotate(-32 400 400)">
+<path d="M150 381 L105 400 L150 419 Z" fill="url(#chr)"/><circle cx="104" cy="400" r="3.5" fill="#19223F"/>
+<rect x="150" y="377" width="40" height="46" rx="4" fill="url(#chr)"/>
+<rect x="190" y="377" width="440" height="46" rx="6" fill="url(#bar)"/>
+<rect x="190" y="381" width="440" height="7" rx="3" fill="#fff" opacity=".28"/>
+<rect x="430" y="377" width="14" height="46" fill="url(#chr)"/>
+<rect x="444" y="377" width="196" height="46" rx="6" fill="url(#bar)"/>
+<rect x="640" y="380" width="40" height="40" rx="10" fill="url(#chr)"/>
+<path d="M470 368 H660 a8 8 0 0 1 8 8 v4 H470 Z" fill="url(#chr)"/><rect x="470" y="352" width="200" height="16" rx="5" fill="url(#chr)"/>
+<text x="300" y="406" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="#fff" opacity=".92">GAUSS</text>
+</g></svg>
