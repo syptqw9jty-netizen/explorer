@@ -1,8 +1,8 @@
 /**
- * GAUSS Bücherei – gemeinsamer Speicher in Google Sheets und Google Drive.
+ * GAUSS Bibliothek – gemeinsamer Speicher in Google Sheets und Google Drive.
  *
  * Einrichtung (einmalig, ca. 5 Minuten):
- * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Bücherei“.
+ * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Bibliothek“.
  * 2. Erweiterungen → Apps Script. Diesen Code einfügen, speichern.
  * 3. Optional für „Mit KI ausfüllen“: Projekteinstellungen → Skripteigenschaften →
  *    ANTHROPIC_API_KEY = dein API-Schlüssel (console.anthropic.com).
@@ -12,7 +12,7 @@
  * 5. Die Web-App-URL in index.html bei CONFIG.API_URL eintragen.
  *
  * Blätter „Buecher“, „Ausleihen“ und „Bewertungen“ entstehen beim ersten Aufruf.
- * Bilder und Videos landen im Drive-Ordner „GAUSS Bücherei Medien“ (Lesen per Link).
+ * Bilder und Videos landen im Drive-Ordner „GAUSS Bibliothek Medien“ (Lesen per Link).
  * Verwaltungs-PIN: Standard 0000, gespeichert nur als Hash. Nach 5 Fehlversuchen 10 Minuten Sperre.
  */
 const LEIHTAGE = 28;
@@ -77,7 +77,7 @@ function pinPruefen_(pin) {
 function ordner_() {
   const id = PROPS.getProperty('MEDIEN_ORDNER');
   if (id) { try { return DriveApp.getFolderById(id); } catch (e) {} }
-  const f = DriveApp.createFolder('GAUSS Bücherei Medien');
+  const f = DriveApp.createFolder('GAUSS Bibliothek Medien');
   PROPS.setProperty('MEDIEN_ORDNER', f.getId());
   return f;
 }

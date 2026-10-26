@@ -1,8 +1,8 @@
 {
-  "name": "GAUSS Bücherei",
-  "short_name": "Bücherei",
+  "name": "GAUSS Bibliothek",
+  "short_name": "Bibliothek",
   "lang": "de",
-  "description": "Bücher der GAUSS-Bücherei finden, ausleihen und zurückgeben.",
+  "description": "Bücher der GAUSS-Bibliothek finden, ausleihen und zurückgeben.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
