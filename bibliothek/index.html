@@ -103,6 +103,7 @@
   --cover-c:var(--neutral-200); --cover-c-t:var(--neutral-950);
   --cover-d:var(--neutral-100); --cover-d-t:var(--neutral-950);
 
+  --inhalt:680px;
   --radius-aktion:999px; --radius-zeile:8px; --radius-block:12px; --radius-karte:16px; --radius-flaeche:20px;
   --hoehe-touchziel:44px;
 }
@@ -162,7 +163,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
-.wrap{max-width:680px;margin:0 auto;padding-block:16px 48px}
+.wrap{max-width:var(--inhalt);margin:0 auto;padding-block:16px 48px}
 
 /* Rollen-Typografie */
 .etikett{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer)}
@@ -184,14 +185,14 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
   display:grid;gap:10px;border-bottom:1px solid transparent;transition:border-color 120ms ease}
 .leiste.schwebend{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 57px);margin:0;z-index:8;
-  padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - 680px) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - 680px) / 2));
+  padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2));
   border-bottom-color:var(--linie);box-shadow:var(--schatten-hoch);animation:panel-ein 240ms cubic-bezier(.22,1,.36,1) both}
-.leiste.schwebend .filter{margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px),calc((100vw - 680px) / 2)));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100vw - 680px) / 2))}
+.leiste.schwebend .filter{margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2)));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2))}
 @keyframes panel-ein{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
 
 /* Mini-Kopf beim Scrollen: Zeichen links, Suche/Filter über runde Icon-Taste rechts */
 .minikopf{position:fixed;left:0;right:0;top:0;z-index:9;background:var(--rahmenflaeche);border-bottom:1px solid var(--linie);
-  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px),calc((100% - 680px) / 2)) 0 max(16px,env(safe-area-inset-left,0px),calc((100% - 680px) / 2));
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2)) 0 max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));
   transform:translateY(-100%);transition:transform 160ms ease-out;visibility:hidden}
 .minikopf.on{transform:none;visibility:visible}
 .minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -223,7 +224,8 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .umschalter button[aria-pressed="true"] .zahl{color:var(--text-sekundaer)}
 
 /* Themen-Filter = Toggle: gewählt in Marke */
-.filterzeile{display:flex;align-items:center;gap:8px}
+.leiste{grid-template-columns:minmax(0,1fr)}
+.filterzeile{display:flex;align-items:center;gap:8px;min-width:0}
 .filter-taste{width:44px!important;height:44px!important;flex:none}
 .filter-taste[data-aktiv]{background-color:var(--ort-aktiv)}
 .filter{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding:4px max(16px,env(safe-area-inset-right,0px)) 4px 0;
@@ -246,8 +248,10 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .zeile:active{background-image:linear-gradient(var(--pressed),var(--pressed))}
 .zeile .info{min-width:0;display:grid;gap:2px}
 .zeile .t{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em}
-.zeile .t,.zeile .meta{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
-.zeile .rechts{display:flex;align-items:center;gap:8px}
+.zeile .t,.zeile .info>.meta{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.zeile .rechts{display:flex;align-items:center;gap:10px}
+.zeile .unten{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:6px}
+.zeile .unten .badge{height:22px;padding:0 8px}
 .chev{width:7px;height:12px;color:var(--tertiaer)}
 
 /* Cover: typografische Tafel, nur Neutral */
@@ -298,6 +302,35 @@ mark{background:var(--marke-200);color:inherit;border-radius:3px;padding:0 1px}
   padding:0 max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .sheet.on{transform:none}
 @media (min-width:720px){.sheet{left:50%;width:640px;margin-left:-320px}}
+/* Desktop: breitere Fläche, Bestand zweispaltig, Karussells als Raster, Chips umbrechen */
+@media (min-width:1024px){
+  :root{--inhalt:1040px}
+  .wrap{padding-block:32px 64px}
+  .titel-seite{font-size:32px;line-height:40px}
+  .leiste{grid-template-columns:minmax(0,1fr);max-width:none}
+  .filter{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;margin-right:0;padding-right:0}
+  .karussell{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0 4px;scroll-snap-type:none}
+  .karussell li{width:calc((100% - 5 * 12px) / 6)}
+  #liste{display:grid;grid-template-columns:1fr 1fr}
+  #liste .zeile+.zeile{box-shadow:none}
+  #liste .zeile{box-shadow:inset 0 -1px 0 var(--linie)}
+  #liste .zeile:nth-child(odd){box-shadow:inset -1px -1px 0 var(--linie)}
+  #liste .leer{grid-column:1/-1}
+  .sheet{width:720px;margin-left:-360px}
+}
+/* Kleine Phones */
+@media (max-width:359px){
+  .titel-seite{font-size:24px;line-height:32px}
+  .zeile{grid-template-columns:40px minmax(0,1fr) auto;gap:12px;padding:12px}
+  .held{grid-template-columns:84px minmax(0,1fr)}
+  .held h2{font-size:19px;line-height:25px}
+  .k-feld{width:46px;height:52px}
+  .pin-felder .k-feld{width:48px}
+  .stern{width:40px;height:40px}
+  .karussell li{width:132px}
+  .schalter-paar{gap:6px}
+  .admin-oeffnen{grid-template-columns:32px minmax(0,1fr);padding-left:12px}
+}
 .griff{position:sticky;top:0;background:var(--background);padding:8px 0 6px;display:flex;justify-content:center;z-index:2}
 .griff i{width:36px;height:5px;border-radius:3px;background:var(--erhoeht)}
 .icon-taste{width:44px;height:44px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--objekt);color:var(--foreground);display:grid;place-items:center}
@@ -464,8 +497,11 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
 .lightbox .icon-taste{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
 .filter-gruppe{display:flex;flex-wrap:wrap;gap:6px}
 .filter-gruppe .chip .zahl{margin-left:6px;opacity:.75;font-weight:500}
-.sheet-fuss{position:sticky;bottom:0;z-index:2;background:var(--background);display:flex;gap:8px;padding-block:12px;margin-top:4px;box-shadow:0 -1px 0 var(--linie)}
-.sheet-fuss .taste{flex:1 1 0}
+.sheet-fuss{position:sticky;bottom:calc(-28px - env(safe-area-inset-bottom,0px));z-index:2;display:flex;gap:8px;
+  margin:4px calc(-1 * max(16px,env(safe-area-inset-right,0px))) calc(-28px - env(safe-area-inset-bottom,0px));
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + 28px + env(safe-area-inset-bottom,0px));
+  background:var(--background);border-top:1px solid var(--linie)}
+.sheet-fuss .taste{flex:1 1 0;padding:0 12px;white-space:nowrap;min-width:0}
 .rating-zeile{width:100%;display:grid;gap:2px;text-align:left;border:0;background:transparent;padding:12px 16px;min-height:64px}
 .rating-zeile+.rating-zeile{box-shadow:inset 0 1px 0 var(--linie)}
 .rating-zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
@@ -970,8 +1006,9 @@ function render(){
     const s = status(b.id), r = schnitt(b.id);
     return `<button class="zeile" data-id="${esc(b.id)}">
       ${cover(b)}
-      <span class="info"><span class="t">${markiere(b.titel, woerter)}</span><span class="meta">${markiere(b.autor, woerter)}</span>${r ? `<span class="bewertet">${ICON.stern} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span>
-      <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" title="Gemerkt">${ICON.gemerkt}</span>` : ""}<span class="badge ${s.cls}">${esc(s.label)}</span>
+      <span class="info"><span class="t">${markiere(b.titel, woerter)}</span><span class="meta">${markiere(b.autor, woerter)}</span>
+        <span class="unten"><span class="badge ${s.cls}">${esc(s.label)}</span>${r ? `<span class="bewertet">${ICON.stern} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span></span>
+      <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" title="Gemerkt" aria-label="Gemerkt">${ICON.gemerkt}</span>` : ""}
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
     </button>`;
   }).join("") : (() => {
@@ -1150,8 +1187,7 @@ function renderLogin(){
     <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2><p class="meta" style="margin:0">Bestand pflegen, Bücher erfassen, PIN ändern.</p></div>
     <section class="abschnitt"><div class="karte innen">
       <form id="login" class="feld" style="margin-top:0" autocomplete="off" novalidate>
-        <fieldset class="kuerzel"><legend>PIN</legend>${zeichenFelder("p", "", "pin")}
-          <p class="meta">Vier Ziffern. Bei der Einrichtung lautet sie 0000.</p></fieldset>
+        <fieldset class="kuerzel"><legend>PIN</legend>${zeichenFelder("p", "", "pin")}</fieldset>
         <div class="aktionen"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Entsperren</button></div>
       </form></div></section>`;
 }
