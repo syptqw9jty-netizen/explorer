@@ -84,6 +84,9 @@
   --pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
   --ort-aktiv:var(--neutral-300);
   --gewaehlt:var(--marke-600);
+  /* Gewählt mit Text (Chips): Magenta 600 + Weiß < 4,5:1 → Stufe 700 hell, im Dunkeln helle Fläche mit Tinte */
+  --gewaehlt-text-flaeche:var(--marke-700);
+  --gewaehlt-text-farbe:var(--neutral-0);
   --gewaehlt-text:var(--neutral-0);
   --zaehler:var(--marke-600);
   --fokus:var(--marke-700);
@@ -119,7 +122,7 @@
   --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
   --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
   --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
-  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500); --gewaehlt-text-flaeche:var(--marke-300); --gewaehlt-text-farbe:var(--neutral-950);
   --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50); --logo-marke:var(--marke-400); --logo-marke-schatten:var(--marke-600);
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
   --schatten-farbe:oklch(0.1 0.03 270);
@@ -142,7 +145,7 @@
   --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
   --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
   --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
-  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500); --gewaehlt-text-flaeche:var(--marke-300); --gewaehlt-text-farbe:var(--neutral-950);
   --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50); --logo-marke:var(--marke-400); --logo-marke-schatten:var(--marke-600);
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
   --schatten-farbe:oklch(0.1 0.03 270);
@@ -175,6 +178,12 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 /* Kopf */
 .kopf{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.kopf .merk-taste{margin-left:auto}
+.merk-taste{position:relative;width:44px;height:44px;flex:none}
+.merk-taste.klein{width:40px;height:40px}
+.minikopf .innen-kopf .merk-taste{margin-right:-4px}
+.zaehler-zahl{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);
+  font-size:11px;line-height:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--rahmenflaeche)}
 .zeichen{width:28px;height:28px;color:var(--logo);flex:none}
 .kopf .etikett{margin:0}
 .seitenkopf{display:grid;gap:4px}
@@ -198,13 +207,15 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .minikopf .zeichen{width:24px;height:24px}
 .titel-app{font-size:34px;line-height:40px;letter-spacing:-.025em}
-.minikopf .kopf-titel{display:flex;align-items:center;gap:12px;font-size:17px;line-height:24px;font-weight:500;letter-spacing:-.016em;margin:0 auto 0 12px}
-.minikopf .kopf-titel::before{content:"";width:1px;height:20px;background:var(--linie)}
+.minikopf .kopf-titel{display:flex;align-items:center;gap:10px;font-size:17px;line-height:24px;font-weight:500;letter-spacing:-.016em;margin:0 auto 0 8px}
+.minikopf .kopf-titel::before{content:"";width:2px;height:20px;border-radius:1px;background:color-mix(in oklab,var(--foreground) 22%,transparent)}
 .icon-taste.frei{position:relative;width:40px;height:40px}
 .icon-taste.frei::after{content:"";position:absolute;inset:-2px}
 .icon-taste.frei svg{transition:transform 160ms ease-out}
 .icon-taste.frei[aria-expanded="true"] svg{transform:rotate(180deg)}
 .icon-taste.frei[aria-expanded="true"]{background-color:var(--ort-aktiv)}
+.mini-filter{width:auto!important;display:inline-flex!important;align-items:center;gap:6px;padding:0 12px 0 16px;font-size:14px;font-weight:500}
+.mini-filter .punkt{top:4px;right:4px}
 .punkt{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--zaehler);box-shadow:0 0 0 2px var(--objekt)}
 .suche{position:relative}
 .suche svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
@@ -237,7 +248,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   background:var(--objekt);color:var(--text-sekundaer);font-size:13px;font-weight:500;white-space:nowrap;position:relative}
 .chip::after{content:"";position:absolute;inset:-4px 0}
 .chip:hover{background-image:linear-gradient(var(--hover),var(--hover))}
-.chip[aria-pressed="true"]{background-color:var(--gewaehlt);border-color:var(--gewaehlt);color:var(--gewaehlt-text);font-weight:600}
+.chip[aria-pressed="true"]{background-color:var(--gewaehlt-text-flaeche);border-color:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-weight:600}
 
 /* Widget Typ A: Titel außen, Karte weiß */
 .bereich{margin-top:20px;display:grid;gap:10px}
@@ -265,7 +276,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cover .form.halb{border-radius:999px 999px 0 0;aspect-ratio:2/1;width:78%;right:-6%;bottom:0}
 .cover .form.balken{width:20%;aspect-ratio:auto;top:0;bottom:0;right:14%}
 .cover .ct{font-weight:600;line-height:1.06;letter-spacing:-.02em;overflow:hidden;word-break:break-word;hyphens:auto;position:relative}
-.cover .ca{font-weight:500;opacity:.75;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;position:relative}
+.cover .ca{font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;position:relative}
 .zeile .cover .ct{font-size:6.5px}.zeile .cover .ca{font-size:5px}
 .gross .cover{border-radius:var(--radius-block)}
 .gross .cover .ct{font-size:14px}.gross .cover .ca{font-size:9px}
@@ -278,10 +289,10 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-aktion);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;
   border:1px solid color-mix(in oklab,currentColor 30%,transparent)}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.badge.erfolg{background:var(--status-erfolg-flaeche);color:var(--status-erfolg-text)}
-.badge.info{background:var(--status-info-flaeche);color:var(--status-info-text)}
-.badge.warnung{background:var(--status-warnung-flaeche);color:var(--status-warnung-text)}
-.badge.fehler{background:var(--status-fehler-flaeche);color:var(--status-fehler-text)}
+.badge.st-erfolg{background:var(--status-erfolg-flaeche);color:var(--status-erfolg-text)}
+.badge.st-info{background:var(--status-info-flaeche);color:var(--status-info-text)}
+.badge.st-warnung{background:var(--status-warnung-flaeche);color:var(--status-warnung-text)}
+.badge.st-fehler{background:var(--status-fehler-flaeche);color:var(--status-fehler-text)}
 
 .leer{padding:40px 24px;text-align:center}
 .leer .titel-karte{margin-bottom:4px}
@@ -486,11 +497,12 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
 .thumb .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.4))}
 button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
-.medien-wahl{display:flex;gap:10px;flex-wrap:wrap;padding-top:6px}
+.medien-wahl{display:flex;gap:12px;flex-wrap:wrap;padding-top:8px}
+.medien-wahl .thumb{width:80px;height:80px}
 .medium-vorschau{position:relative}
 .medium-weg{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--linie);background:var(--objekt);display:grid;place-items:center;color:var(--foreground);padding:0}
 .medium-weg::after{content:"";position:absolute;inset:-9px}
-.medium-hinzu{width:64px;height:64px;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:2px;color:var(--text-sekundaer);font-size:11px;font-weight:500;cursor:pointer;background:var(--objekt)}
+.medium-hinzu{width:80px;height:80px;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:4px;padding:4px;text-align:center;color:var(--text-sekundaer);font-size:12px;line-height:16px;font-weight:500;cursor:pointer;background:var(--objekt)}
 .medium-hinzu svg{width:20px;height:20px}
 .medium-hinzu:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 .lightbox{position:fixed;inset:0;z-index:50;background:color-mix(in oklab,var(--neutral-950) 90%,transparent);display:grid;place-items:center;
@@ -522,7 +534,7 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
 @media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important}}
 </style>
 
-<header class="minikopf" id="minikopf" aria-hidden="true">
+<div class="minikopf" id="minikopf" aria-hidden="true">
   <div class="innen-kopf">
     <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
       <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
@@ -535,14 +547,19 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
       <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
     </svg>
     <p class="kopf-titel">Bibliothek</p>
-    <button class="icon-taste frei" id="mini-filter" aria-expanded="false" aria-controls="leiste" aria-label="Suche und Filter" tabindex="-1">
+    <button class="icon-taste frei merk-taste klein" id="merk-mini" aria-label="Merkliste" aria-haspopup="dialog">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>
+      <span class="zaehler-zahl" hidden></span>
+    </button>
+    <button class="icon-taste frei mini-filter" id="mini-filter" aria-expanded="false" aria-controls="leiste" aria-label="Suche und Filter" tabindex="-1">
+      <span class="mini-filter-text">Filtern</span>
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 5 5 5 5-5"/></svg>
       <span class="punkt" id="mini-punkt" hidden></span>
     </button>
   </div>
-</header>
+</div>
 
-<div class="wrap">
+<main class="wrap">
   <div class="kopf">
     <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
       <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
@@ -554,6 +571,10 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
       <path fill="url(#lm-rechts-2)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
       <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
     </svg>
+    <button class="icon-taste frei merk-taste" id="merk-oben" aria-label="Merkliste" aria-haspopup="dialog">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>
+      <span class="zaehler-zahl" hidden></span>
+    </button>
   </div>
   <header class="seitenkopf">
     <h1 class="titel-seite titel-app">Bibliothek</h1>
@@ -605,7 +626,7 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
       <div class="menue" id="einstellungen-menue" role="menu" aria-label="Einstellungen" hidden></div>
     </div>
   </div>
-</div>
+</main>
 
 <div class="backdrop" id="backdrop" hidden></div>
 <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="d-titel" hidden>
@@ -739,15 +760,21 @@ const LocalStore = {
     return { ok: true, ...lokal() };
   }
 };
+async function netz(url, opt){
+  let r;
+  try { r = await fetch(url, opt); } catch { throw new Error("Keine Verbindung. Bitte Netz prüfen und noch einmal versuchen."); }
+  if (!r.ok) throw new Error(`Der Server antwortet nicht (${r.status}). Bitte später noch einmal versuchen.`);
+  try { return await r.json(); } catch { throw new Error("Unerwartete Antwort vom Server. Ist die Web-App mit Zugriff „Jeder“ bereitgestellt?"); }
+}
 const RemoteStore = {
   mode: "remote",
   async list(){
-    const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j;
+    const j = await netz(CONFIG.API_URL + "?action=list", { cache: "no-store" });
+    if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j;
   },
   async act(p){
-    const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
-    const j = await r.json(); if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j;
+    const j = await netz(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
+    if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j;
   }
 };
 const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
@@ -770,11 +797,11 @@ const openLoan = id => S.loans.find(l => l.bookId === id && !l.returnedAt);
 const historie = id => S.loans.filter(l => l.bookId === id && l.returnedAt).sort((a, b) => b.returnedAt.localeCompare(a.returnedAt));
 function status(id){
   const l = openLoan(id);
-  if (!l) return { key:"free", label:"Verfügbar", cls:"erfolg" };
+  if (!l) return { key:"free", label:"Verfügbar", cls:"st-erfolg" };
   const d = days(l.dueAt);
-  if (d < 0) return { key:"out", label:"Überfällig", cls:"fehler", loan:l };
-  if (d <= 3) return { key:"out", label:"Bald fällig", cls:"warnung", loan:l };
-  return { key:"out", label:"Verliehen", cls:"info", loan:l };
+  if (d < 0) return { key:"out", label:"Überfällig", cls:"st-fehler", loan:l };
+  if (d <= 3) return { key:"out", label:"Bald fällig", cls:"st-warnung", loan:l };
+  return { key:"out", label:"Verliehen", cls:"st-info", loan:l };
 }
 
 /* ===== Merkliste: nur auf diesem Gerät, ohne Anmeldung ===== */
@@ -923,7 +950,7 @@ const STERNE_WAHL = [[0, "Alle"], [3, "ab 3 ★"], [4, "ab 4 ★"], [5, "5 ★"]
 const SORT_WAHL = [["relevanz", "Relevanz"], ["titel", "Titel A–Z"], ["autor", "Autor:in A–Z"], ["jahr", "Neueste zuerst"], ["bewertung", "Beste Bewertung"], ["verfuegbar", "Verfügbare zuerst"]];
 function passtStatus(b, st){
   const s = status(b.id);
-  return st === "alle" || (st === "frei" && s.key === "free") || (st === "verliehen" && s.key === "out") || (st === "ueberfaellig" && s.cls === "fehler") || (st === "gemerkt" && gemerkt(b.id));
+  return st === "alle" || (st === "frei" && s.key === "free") || (st === "verliehen" && s.key === "out") || (st === "ueberfaellig" && s.cls === "st-fehler") || (st === "gemerkt" && gemerkt(b.id));
 }
 function passtFilter(b, ohne){
   const f = S.f;
@@ -993,7 +1020,15 @@ function karussell(sektion, liste){
       <span class="e-info"><span class="e-titel">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span><span class="badge ${s.cls}">${esc(s.label)}</span></span></button></li>`;
   }).join("");
 }
+function renderMerkTasten(){
+  const n = merkliste().filter(id => { const b = buchVon(id); return b && b.aktiv !== false; }).length;
+  document.querySelectorAll(".merk-taste").forEach(t => {
+    const z = t.querySelector(".zaehler-zahl"); z.hidden = !n; z.textContent = n > 99 ? "99+" : String(n);
+    t.setAttribute("aria-label", n ? `Merkliste, ${n} ${n === 1 ? "Buch" : "Bücher"}` : "Merkliste, leer");
+  });
+}
 function renderEmpfohlen(){
+  renderMerkTasten();
   karussell("merkliste", merkliste().map(buchVon).filter(b => b && b.aktiv !== false));
   karussell("empfohlen", sichtbar().filter(b => b.empfohlen));
   const n = merkliste().filter(id => { const b = buchVon(id); return b && b.aktiv !== false; }).length;
@@ -1025,7 +1060,7 @@ function render(){
   $("#leeren").hidden = !S.q;
   $("#mini-punkt").hidden = !filterAktiv();
   renderEmpfohlen();
-  if (S.view === "buch" || S.view === "admin" || S.view === "filter") renderSheet();
+  if (["buch", "admin", "filter", "merkliste"].includes(S.view)) renderSheet();
 }
 
 /* ===== Sheet: Buch, Anmeldung, Verwaltung, Bearbeiten ===== */
@@ -1036,6 +1071,16 @@ function renderSheet(){
   else if (S.view === "edit") renderEdit();
   else if (S.view === "filter") renderFilterSheet();
   else if (S.view === "bewertung") renderBewertungEdit();
+  else if (S.view === "merkliste") renderMerkSheet();
+}
+function renderMerkSheet(){
+  const liste = merkliste().map(buchVon).filter(b => b && b.aktiv !== false);
+  $("#detail").innerHTML = `
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Merkliste</h2><p class="meta" style="margin:0">Nur auf diesem Gerät gespeichert, ohne Anmeldung.</p></div>
+    ${liste.length ? `<div class="karte">${liste.map(b => { const s = status(b.id); return `<div class="admin-zeile">
+        <button class="admin-oeffnen" data-oeffne="${esc(b.id)}">${cover(b)}<span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span><span><span class="badge ${s.cls}">${esc(s.label)}</span></span></span></button>
+        <button class="icon-taste frei" data-merkweg="${esc(b.id)}" aria-label="${esc(b.titel)} von der Merkliste entfernen">${ICON.zu}</button></div>`; }).join("")}</div>`
+      : `<div class="karte innen"><p class="titel-karte" style="margin:0 0 4px">Noch nichts gemerkt</p><p class="meta" style="margin:0">Tippe in einem Buch auf „Merken“, dann erscheint es hier.</p></div>`}`;
 }
 function chipGruppe(name, wahl, istAn, zahl){
   return `<div class="filter-gruppe" role="group" aria-label="${esc(name)}">${wahl.map(([w, l]) => {
@@ -1126,7 +1171,7 @@ function quellenHtml(b){
 }
 function ausleiheHtml(b, g){
   const s = status(b.id), l = s.loan;
-  if (!l) return `<div class="status-zeile"><span><span class="badge erfolg">Verfügbar</span></span></div>
+  if (!l) return `<div class="status-zeile"><span><span class="badge st-erfolg">Verfügbar</span></span></div>
     <form id="${g === "k" ? "ausleihen" : "verleihen-admin"}" class="feld" autocomplete="off" novalidate>
       <fieldset class="kuerzel"><legend>${g === "k" ? "Dein Kürzel" : "Kürzel der Person"}</legend>${zeichenFelder(g, g === "k" ? ls.get("bib.kuerzel", "") : "", "kuerzel")}
         <p class="meta">2 oder 3 Buchstaben, z. B. NNE</p></fieldset>
@@ -1424,6 +1469,7 @@ $("#q").addEventListener("input", e => { S.q = e.target.value.trim(); render(); 
 $("#leeren").addEventListener("click", () => { $("#q").value = ""; S.q = ""; render(); $("#q").focus(); });
 $("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; themaUmschalten(c.dataset.t); renderFilter(); render(); });
 $("#filter-oeffnen").addEventListener("click", () => { setFilter(false); openSheet("filter"); });
+document.querySelectorAll(".merk-taste").forEach(t => t.addEventListener("click", () => { setFilter(false); openSheet("merkliste"); }));
 $("#liste").addEventListener("click", e => {
   const v = e.target.closest("[data-vorschlag]"); if (v){ $("#q").value = v.dataset.vorschlag; S.q = v.dataset.vorschlag; render(); return; }
   if (e.target.closest("[data-zuruecksetzen]")){ zuruecksetzen(); return; }
@@ -1517,6 +1563,8 @@ D.addEventListener("click", e => {
   const a = el("[data-act]");
   if (a){ const id = S.view === "edit" ? S.edit.buch.id : S.open, l = openLoan(id);
     if (l) act({ action: a.dataset.act, loanId: l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert."); return; }
+  const ob = el("[data-oeffne]"); if (ob){ openSheet("buch", ob.dataset.oeffne); return; }
+  const mw = el("[data-merkweg]"); if (mw){ merken(mw.dataset.merkweg); render(); return; }
   const mk = el("[data-merken]"); if (mk){ merken(mk.dataset.merken); renderBuch(); render(); return; }
   const nav = el("[data-nav]"); if (nav){ S.edit = null; wechsle(nav.dataset.nav); return; }
   const ed = el("[data-edit]"); if (ed){ S.edit = neuerEntwurf(buchVon(ed.dataset.edit)); wechsle("edit"); return; }
