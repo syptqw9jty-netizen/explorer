@@ -72,11 +72,13 @@
   --popover:var(--neutral-0);
   --linie:var(--neutral-200);
   --rahmen:var(--neutral-500);
-  --foreground:var(--neutral-950);
-  --text-sekundaer:var(--neutral-700);
-  --tertiaer:var(--neutral-600);
+  /* Hell: Texttinte leichter und blauer als neutral-950 (Hue 262, mehr Chroma); Kontraste auf Weiß ≈ 11:1 / 7:1 / 5,3:1 */
+  --tinte-text:oklch(0.31 0.072 262);
+  --foreground:var(--tinte-text);
+  --text-sekundaer:oklch(0.45 0.062 262);
+  --tertiaer:oklch(0.52 0.05 262);
   --deaktiviert:var(--neutral-400);
-  --primary:var(--neutral-950);
+  --primary:var(--tinte-text);
   --primary-foreground:var(--neutral-0);
   --hover:color-mix(in oklab,var(--neutral-950) 6%,transparent);
   --pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
@@ -87,7 +89,7 @@
   --fokus:var(--marke-700);
   --fokus-innen:var(--neutral-0);
   --link:var(--marke-700);
-  --logo:var(--neutral-950);
+  --logo:var(--tinte-text);
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 20%,transparent);
   --schatten-farbe:var(--neutral-950);
   --schatten-widget:0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
