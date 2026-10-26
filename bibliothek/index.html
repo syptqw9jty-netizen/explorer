@@ -185,7 +185,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .leiste.schwebend{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 57px);margin:0;z-index:8;
   padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - 680px) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - 680px) / 2));
   border-bottom-color:var(--linie);box-shadow:var(--schatten-hoch);animation:panel-ein 240ms cubic-bezier(.22,1,.36,1) both}
-.leiste.schwebend .filter{margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px),calc((100vw - 680px) / 2)));padding-inline:max(16px,env(safe-area-inset-left,0px),calc((100vw - 680px) / 2))}
+.leiste.schwebend .filter{margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px),calc((100vw - 680px) / 2)));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100vw - 680px) / 2))}
 @keyframes panel-ein{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
 
 /* Mini-Kopf beim Scrollen: Zeichen links, Suche/Filter über runde Icon-Taste rechts */
@@ -213,7 +213,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .leeren:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 
 /* Umschalter = Ort-Leiter */
-.umschalter{display:grid;grid-template-columns:repeat(3,1fr);background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
+.umschalter-alt{display:grid;grid-template-columns:repeat(3,1fr);background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
 .umschalter button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);
   display:flex;align-items:center;justify-content:center;gap:6px}
 .umschalter button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
@@ -222,7 +222,11 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .umschalter button[aria-pressed="true"] .zahl{color:var(--text-sekundaer)}
 
 /* Themen-Filter = Toggle: gewählt in Marke */
-.filter{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px))}
+.filterzeile{display:flex;align-items:center;gap:8px}
+.filter-taste{width:44px!important;height:44px!important;flex:none}
+.filter-taste[data-aktiv]{background-color:var(--ort-aktiv)}
+.filter{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding:4px max(16px,env(safe-area-inset-right,0px)) 4px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10px);mask-image:linear-gradient(90deg,transparent 0,#000 10px);padding-left:10px;margin-left:-10px}
 .filter::-webkit-scrollbar{display:none}
 .chip{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid var(--linie);
   background:var(--objekt);color:var(--text-sekundaer);font-size:13px;font-weight:500;white-space:nowrap;position:relative}
@@ -371,13 +375,13 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px)) 10px;
   display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;overscroll-behavior-x:contain}
 .karussell::-webkit-scrollbar{display:none}
-.karussell li{flex:none;width:148px;scroll-snap-align:start}
-.empfehlung{width:100%;display:grid;gap:10px;padding:8px 8px 12px;border-radius:var(--radius-karte);border:1px solid var(--linie);background:var(--objekt);box-shadow:var(--schatten-widget);text-align:left}
+.karussell li{flex:none;width:148px;scroll-snap-align:start;display:flex}
+.empfehlung{width:100%;height:100%;display:grid;grid-template-rows:auto 1fr;align-content:start;gap:10px;padding:8px 8px 12px;border-radius:var(--radius-karte);border:1px solid var(--linie);background:var(--objekt);box-shadow:var(--schatten-widget);text-align:left}
 .empfehlung:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 .empfehlung .cover{border-radius:calc(var(--radius-karte) - 8px)}
 .empfehlung .cover .ct{font-size:13px}.empfehlung .cover .ca{font-size:9px}
-.e-info{display:grid;gap:4px;min-width:0;justify-items:start;padding-inline:4px}
-.e-titel{font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.012em;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.e-info{display:grid;grid-template-rows:40px 18px auto;gap:4px;min-width:0;justify-items:start;padding-inline:4px}
+.e-titel{height:40px;max-width:100%;font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.012em;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
 .e-info .meta{font-size:13px;line-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .merk-symbol{display:inline-grid;color:var(--foreground)}
 .merk-symbol svg{width:14px;height:14px}
@@ -457,10 +461,23 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
 .lb-inhalt img,.lb-inhalt video{max-width:100%;max-height:100%;border-radius:var(--radius-block);object-fit:contain}
 .lb-inhalt iframe{width:min(100%,900px);aspect-ratio:16/9;border:0;border-radius:var(--radius-block);background:#000}
 .lightbox .icon-taste{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
+.filter-gruppe{display:flex;flex-wrap:wrap;gap:6px}
+.filter-gruppe .chip .zahl{margin-left:6px;opacity:.75;font-weight:500}
+.sheet-fuss{position:sticky;bottom:0;z-index:2;background:var(--background);display:flex;gap:8px;padding-block:12px;margin-top:4px;box-shadow:0 -1px 0 var(--linie)}
+.sheet-fuss .taste{flex:1 1 0}
+.rating-zeile{width:100%;display:grid;gap:2px;text-align:left;border:0;background:transparent;padding:12px 16px;min-height:64px}
+.rating-zeile+.rating-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.rating-zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.rating-zeile .kopf{display:flex;align-items:center;gap:8px;min-width:0}
+.rating-zeile .buch{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.rating-zeile .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rating-zeile .auszug{font-size:13px;line-height:20px;color:var(--text-sekundaer);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rating-zeile .meta{display:flex;align-items:center;gap:8px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
   background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
   transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+.sheet.on~.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important}}
 </style>
 
@@ -502,12 +519,13 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
         <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg>
       </button>
     </div>
-    <div class="umschalter" role="group" aria-label="Nach Status filtern">
-      <button data-s="all" aria-pressed="true">Alle <span class="zahl" id="c-all">0</span></button>
-      <button data-s="free" aria-pressed="false">Verfügbar <span class="zahl" id="c-free">0</span></button>
-      <button data-s="out" aria-pressed="false">Verliehen <span class="zahl" id="c-out">0</span></button>
+    <div class="filterzeile">
+      <button class="icon-taste frei filter-taste" id="filter-oeffnen" aria-haspopup="dialog" aria-label="Alle Filter und Sortierung">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+        <span class="punkt" id="filter-punkt" hidden></span>
+      </button>
+      <div class="filter" id="filter" role="group" aria-label="Nach Thema filtern"></div>
     </div>
-    <div class="filter" id="filter" role="group" aria-label="Nach Thema filtern"></div>
   </div></div>
 
   <section class="bereich karussell-bereich" id="merkliste" aria-labelledby="merk-titel" hidden>
@@ -623,7 +641,7 @@ const ICON = {
 };
 
 /* ===== Speicher ===== */
-const PIN_AKTIONEN = ["checkPin", "setPin", "saveBook", "deleteRating", "analyze"];
+const PIN_AKTIONEN = ["checkPin", "setPin", "saveBook", "deleteRating", "updateRating", "analyze"];
 const lokal = () => ({ books: ls.get("bib.books", []), loans: ls.get("bib.loans", []), ratings: ls.get("bib.ratings", []) });
 const LocalStore = {
   mode: "local",
@@ -644,6 +662,11 @@ const LocalStore = {
         break;
       }
       case "deleteRating": d.ratings = d.ratings.filter(r => r.id !== p.id); ls.set("bib.ratings", d.ratings); break;
+      case "updateRating": {
+        const r = d.ratings.find(x => x.id === p.id); if (!r) throw new Error("Diese Bewertung gibt es nicht mehr.");
+        Object.assign(r, { sterne: p.sterne, kommentar: p.kommentar, medien: p.medien || [] });
+        ls.set("bib.ratings", d.ratings); break;
+      }
       case "rate": {
         const r = d.ratings.find(x => x.bookId === p.bookId && x.kuerzel === p.kuerzel);
         const daten = { sterne: p.sterne, kommentar: p.kommentar, medien: p.medien || [], am: now };
@@ -683,7 +706,7 @@ const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
 /* ===== Zustand ===== */
 const S = {
   books: SEED.map(normBuch), fromSeed: true, loans: [], ratings: [],
-  q: "", status: "all", topic: null,
+  q: "", f: { status: "alle", themen: [], sprachen: [], minSterne: 0, sort: "relevanz" }, redit: null,
   view: null, open: null, busy: false, entwurf: null, edit: null, loeschFrage: null,
   admin: ss.get("bib.admin")
 };
@@ -845,10 +868,36 @@ function suchWert(b, woerter){
   }
   return summe;
 }
-function passtFilter(b){
-  if (S.topic && !(b.themen || []).includes(S.topic)) return false;
-  return S.status === "all" || status(b.id).key === S.status;
+/* Filter: Themen und Sprachen = eines davon; Status, Mindestbewertung; Sortierung separat */
+const STATUS_WAHL = [["alle", "Alle"], ["frei", "Verfügbar"], ["verliehen", "Verliehen"], ["ueberfaellig", "Überfällig"], ["gemerkt", "Gemerkt"]];
+const STERNE_WAHL = [[0, "Alle"], [3, "ab 3 ★"], [4, "ab 4 ★"], [5, "5 ★"]];
+const SORT_WAHL = [["relevanz", "Relevanz"], ["titel", "Titel A–Z"], ["autor", "Autor:in A–Z"], ["jahr", "Neueste zuerst"], ["bewertung", "Beste Bewertung"], ["verfuegbar", "Verfügbare zuerst"]];
+function passtStatus(b, st){
+  const s = status(b.id);
+  return st === "alle" || (st === "frei" && s.key === "free") || (st === "verliehen" && s.key === "out") || (st === "ueberfaellig" && s.cls === "fehler") || (st === "gemerkt" && gemerkt(b.id));
 }
+function passtFilter(b, ohne){
+  const f = S.f;
+  if (ohne !== "themen" && f.themen.length && !f.themen.some(t => (b.themen || []).includes(t))) return false;
+  if (ohne !== "sprachen" && f.sprachen.length && !f.sprachen.includes(b.sprache || "Ohne Angabe")) return false;
+  if (ohne !== "sterne" && f.minSterne){ const r = schnitt(b.id); if (!r || r.wert < f.minSterne - 1e-9) return false; }
+  return ohne === "status" || passtStatus(b, f.status);
+}
+const panelFilter = () => (S.f.status !== "alle") + S.f.sprachen.length + (S.f.minSterne > 0) + (S.f.sort !== "relevanz");
+const filterAktiv = () => !!(S.q || S.f.status !== "alle" || S.f.themen.length || S.f.sprachen.length || S.f.minSterne);
+function sortiere(liste, woerter){
+  const t = (a, b) => a.titel.localeCompare(b.titel, "de"), sort = S.f.sort;
+  const cmp = {
+    relevanz: (a, b) => (woerter.length ? b.w - a.w : 0) || t(a.b, b.b),
+    titel: (a, b) => t(a.b, b.b),
+    autor: (a, b) => (a.b.autor || "").localeCompare(b.b.autor || "", "de") || t(a.b, b.b),
+    jahr: (a, b) => (Number(b.b.jahr) || 0) - (Number(a.b.jahr) || 0) || t(a.b, b.b),
+    bewertung: (a, b) => ((schnitt(b.b.id) || {}).wert || 0) - ((schnitt(a.b.id) || {}).wert || 0) || t(a.b, b.b),
+    verfuegbar: (a, b) => (status(a.b.id).key === "free" ? 0 : 1) - (status(b.b.id).key === "free" ? 0 : 1) || t(a.b, b.b)
+  }[sort] || ((a, b) => t(a.b, b.b));
+  return liste.sort(cmp);
+}
+function zuruecksetzen(){ S.f = { status: "alle", themen: [], sprachen: [], minSterne: 0, sort: "relevanz" }; renderFilter(); render(); }
 /* Hervorhebung: markiert exakte Fundstellen, akzentunabhängig, ohne den Text zu verändern */
 function markiere(text, woerter){
   const t = String(text || ""); if (!woerter.length || !t) return esc(t);
@@ -875,15 +924,20 @@ function levFrei(a, b){
   }
   return m[a.length][b.length];
 }
+const alleThemen = () => [...new Set(sichtbar().flatMap(b => b.themen || []))].sort((a, b) => a.localeCompare(b, "de"));
+const alleSprachen = () => [...new Set(sichtbar().map(b => b.sprache || "Ohne Angabe"))].sort((a, b) => a.localeCompare(b, "de"));
 function renderFilter(){
-  const topics = [...new Set(sichtbar().flatMap(b => b.themen || []))].sort((a, b) => a.localeCompare(b, "de"));
-  if (S.topic && !topics.includes(S.topic)) S.topic = null;
-  $("#filter").innerHTML = [`<button class="chip" data-t="" aria-pressed="${!S.topic}">Alle Themen</button>`]
-    .concat(topics.map(t => `<button class="chip" data-t="${esc(t)}" aria-pressed="${S.topic === t}">${esc(t)}</button>`)).join("");
+  const topics = alleThemen();
+  S.f.themen = S.f.themen.filter(t => topics.includes(t));
+  $("#filter").innerHTML = [`<button class="chip" data-t="" aria-pressed="${!S.f.themen.length}">Alle Themen</button>`]
+    .concat(topics.map(t => `<button class="chip" data-t="${esc(t)}" aria-pressed="${S.f.themen.includes(t)}">${esc(t)}</button>`)).join("");
+  const n = panelFilter(), taste = $("#filter-oeffnen");
+  $("#filter-punkt").hidden = !n; taste.toggleAttribute("data-aktiv", !!n);
+  taste.setAttribute("aria-label", n ? `Alle Filter und Sortierung (${n} aktiv)` : "Alle Filter und Sortierung");
 }
+const themaUmschalten = t => { S.f.themen = !t ? [] : S.f.themen.includes(t) ? S.f.themen.filter(x => x !== t) : [...S.f.themen, t]; };
 function karussell(sektion, liste){
-  const filterAktiv = S.q || S.status !== "all" || S.topic;
-  $("#" + sektion).hidden = !liste.length || !!filterAktiv;
+  $("#" + sektion).hidden = !liste.length || filterAktiv();
   $("#" + sektion + "-liste").innerHTML = liste.map(b => {
     const s = status(b.id);
     return `<li><button class="empfehlung" data-id="${esc(b.id)}">${cover(b)}
@@ -898,13 +952,11 @@ function renderEmpfohlen(){
 }
 function render(){
   const alle = sichtbar(), free = alle.filter(b => status(b.id).key === "free").length;
-  $("#c-all").textContent = alle.length; $("#c-free").textContent = free; $("#c-out").textContent = alle.length - free;
   $("#summary").textContent = `${alle.length} Bücher · ${free} verfügbar`;
   const woerter = suchWoerter(S.q);
-  const items = alle.filter(passtFilter).map(b => ({ b, w: woerter.length ? suchWert(b, woerter) : 1 })).filter(x => x.w > 0)
-    .sort((x, y) => y.w - x.w || x.b.titel.localeCompare(y.b.titel, "de")).map(x => x.b);
-  $("#liste-titel").textContent = woerter.length ? "Treffer" : "Bestand";
-  $("#treffer").textContent = woerter.length ? `${items.length} ${items.length === 1 ? "Buch" : "Bücher"}` : items.length === alle.length ? "" : `${items.length} von ${alle.length}`;
+  const items = sortiere(alle.filter(b => passtFilter(b)).map(b => ({ b, w: woerter.length ? suchWert(b, woerter) : 1 })).filter(x => x.w > 0), woerter).map(x => x.b);
+  $("#liste-titel").textContent = woerter.length || filterAktiv() ? "Treffer" : "Bestand";
+  $("#treffer").textContent = woerter.length || filterAktiv() ? `${items.length} ${items.length === 1 ? "Buch" : "Bücher"}` : items.length === alle.length ? "" : `${items.length} von ${alle.length}`;
   $("#liste").innerHTML = items.length ? items.map(b => {
     const s = status(b.id), r = schnitt(b.id);
     return `<button class="zeile" data-id="${esc(b.id)}">
@@ -914,16 +966,16 @@ function render(){
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
     </button>`;
   }).join("") : (() => {
-    const v = woerter.length ? vorschlag(woerter) : null, filter = S.status !== "all" || S.topic;
+    const v = woerter.length ? vorschlag(woerter) : null, filter = S.f.status !== "alle" || S.f.themen.length || S.f.sprachen.length || S.f.minSterne;
     return `<div class="leer"><p class="titel-karte">Nichts gefunden</p>
       <p class="meta" style="margin:0">${filter ? "Die Filter grenzen die Suche ein." : "Andere Schreibweise oder ein kürzeres Wort probieren."}</p>
       <div class="leer-aktionen">${v ? `<button class="taste sekundaer klein" data-vorschlag="${esc(v)}">Meintest du „${esc(v)}“?</button>` : ""}
       ${filter ? `<button class="taste sekundaer klein" data-zuruecksetzen>Filter zurücksetzen</button>` : ""}</div></div>`;
   })();
   $("#leeren").hidden = !S.q;
-  $("#mini-punkt").hidden = !(S.q || S.status !== "all" || S.topic);
+  $("#mini-punkt").hidden = !filterAktiv();
   renderEmpfohlen();
-  if (S.view === "buch" || S.view === "admin") renderSheet();
+  if (S.view === "buch" || S.view === "admin" || S.view === "filter") renderSheet();
 }
 
 /* ===== Sheet: Buch, Anmeldung, Verwaltung, Bearbeiten ===== */
@@ -932,6 +984,58 @@ function renderSheet(){
   else if (S.view === "login") renderLogin();
   else if (S.view === "admin") renderAdmin();
   else if (S.view === "edit") renderEdit();
+  else if (S.view === "filter") renderFilterSheet();
+  else if (S.view === "bewertung") renderBewertungEdit();
+}
+function chipGruppe(name, wahl, istAn, zahl){
+  return `<div class="filter-gruppe" role="group" aria-label="${esc(name)}">${wahl.map(([w, l]) => {
+    const n = zahl ? zahl(w) : null;
+    return `<button type="button" class="chip" data-fgruppe="${esc(name)}" data-fwert="${esc(w)}" aria-pressed="${istAn(w)}">${esc(l)}${n != null ? `<span class="zahl">${n}</span>` : ""}</button>`;
+  }).join("")}</div>`;
+}
+function renderFilterSheet(){
+  const f = S.f, alle = sichtbar();
+  const zaehle = ohne => pruef => alle.filter(b => passtFilter(b, ohne) && pruef(b)).length;
+  const treffer = alle.filter(b => passtFilter(b) && (!S.q || suchWert(b, suchWoerter(S.q)) > 0)).length;
+  $("#detail").innerHTML = `
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Filter</h2><p class="meta" style="margin:0">Änderungen gelten sofort.</p></div>
+    <section class="abschnitt"><h3 class="titel-bereich">Verfügbarkeit</h3><div class="karte innen">
+      ${chipGruppe("status", STATUS_WAHL, w => f.status === w, w => zaehle("status")(b => passtStatus(b, w)))}</div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Themen</h3><div class="karte innen">
+      ${chipGruppe("themen", alleThemen().map(t => [t, t]), w => f.themen.includes(w), w => zaehle("themen")(b => (b.themen || []).includes(w)))}</div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Sprache</h3><div class="karte innen">
+      ${chipGruppe("sprachen", alleSprachen().map(t => [t, t]), w => f.sprachen.includes(w), w => zaehle("sprachen")(b => (b.sprache || "Ohne Angabe") === w))}</div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Bewertung</h3><div class="karte innen">
+      ${chipGruppe("sterne", STERNE_WAHL, w => f.minSterne === Number(w), w => zaehle("sterne")(b => !Number(w) || ((schnitt(b.id) || {}).wert || 0) >= Number(w) - 1e-9))}</div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Sortierung</h3><div class="karte innen">
+      ${chipGruppe("sort", SORT_WAHL, w => f.sort === w)}
+      <p class="meta" style="margin:10px 0 0">„Relevanz“ sortiert bei einer Suche nach Trefferqualität, sonst nach Titel.</p></div></section>
+    <div class="sheet-fuss">
+      <button type="button" class="taste sekundaer" data-fzurueck ${panelFilter() || f.themen.length ? "" : "disabled"}>Zurücksetzen</button>
+      <button type="button" class="taste primaer" data-fschliessen>${treffer} ${treffer === 1 ? "Buch" : "Bücher"} anzeigen</button>
+    </div>`;
+}
+function renderBewertungEdit(){
+  const e = S.redit, r = S.ratings.find(x => x.id === e.id), b = r && buchVon(r.bookId);
+  if (!r){ wechsle("admin"); return; }
+  $("#detail").innerHTML = `
+    <div><button type="button" class="zurueck" data-nav="admin">${ICON.zurueck} Verwaltung</button></div>
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Bewertung bearbeiten</h2>
+      <p class="meta" style="margin:0">${esc(b ? b.titel : "Unbekanntes Buch")} · <span class="kuerzel-text">${esc(r.kuerzel)}</span> · ${fmt(r.am)}</p></div>
+    <section class="abschnitt"><div class="karte innen"><div class="bewerten-form">
+      <div class="gruppe"><p class="gruppe-titel" id="rsterne-titel">Sterne</p>
+        <div class="stern-wahl" role="radiogroup" aria-labelledby="rsterne-titel">${[1,2,3,4,5].map(n => `<button type="button" class="stern${n <= e.sterne ? " an" : ""}" role="radio" aria-checked="${n === e.sterne}" aria-label="${n} ${n === 1 ? "Stern" : "Sterne"}" data-rn="${n}">${ICON.stern}</button>`).join("")}</div>
+        <p class="meta stern-label">${sternLabel(e.sterne)}</p></div>
+      <div class="gruppe"><label for="r-kommentar">Kommentar</label><textarea id="r-kommentar" class="kommentar" maxlength="500">${esc(e.kommentar)}</textarea></div>
+      <div class="gruppe"><p class="gruppe-titel">Anhänge</p>
+        ${e.medien.length ? `<div class="medien-wahl">${e.medien.map((m, i) => `<div class="medium-vorschau"><button type="button" class="thumb" data-rlb="${i}" aria-label="Anhang ${i + 1} vergrößern">${thumbHtml(m)}</button><button type="button" class="medium-weg" data-rweg="${i}" aria-label="Anhang ${i + 1} entfernen">${ICON.zu}</button></div>`).join("")}</div>` : `<p class="meta" style="margin:0">Keine Anhänge.</p>`}</div>
+    </div></div></section>
+    <div class="aktionen" style="margin-top:0">
+      <button type="button" class="taste primaer" data-rspeichern ${S.busy ? "disabled" : ""}>Speichern</button>
+      <button type="button" class="taste sekundaer" data-nav="admin">Abbrechen</button>
+    </div>
+    <button type="button" class="entfernen" data-rloeschen>${S.loeschFrage === e.id ? "Wirklich löschen? Nochmal tippen." : "Bewertung löschen"}</button>
+    ${b ? `<p class="hinweis" style="margin:0 4px">Änderungen sind für alle sichtbar. Das Kürzel bleibt erhalten.</p>` : ""}`;
 }
 function openSheet(view, id, push = true){
   if (view === "buch"){
@@ -1055,6 +1159,13 @@ function renderAdmin(){
         <button class="admin-oeffnen" data-edit="${esc(b.id)}">${cover(b)}<span class="info"><span class="t">${esc(b.titel)}</span><span class="meta">${esc(b.autor)} · ${b.aktiv === false ? "Inaktiv" : esc(status(b.id).label)}</span></span></button>
         <span class="schalter-paar">${schalter(b.aktiv !== false, `data-aktiv="${esc(b.id)}"`, `${b.titel}: aktiv`)}${schalter(b.empfohlen, `data-empfohlen="${esc(b.id)}"`, `${b.titel}: empfohlen`)}</span>
       </div>`).join("")}
+    </div></section>
+    <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Bewertungen und Kommentare</h3><span class="meta zahl">${S.ratings.length}</span></header><div class="karte">
+      ${S.ratings.length ? [...S.ratings].sort((a, b) => String(b.am).localeCompare(String(a.am))).map(r => { const b = buchVon(r.bookId);
+        return `<button class="rating-zeile" data-bewertung="${esc(r.id)}"><span class="kopf"><span class="buch">${esc(b ? b.titel : "Unbekanntes Buch")}</span><span class="d">${fmt(r.am)}</span></span>
+          <span class="meta"><span class="kuerzel-text">${esc(r.kuerzel)}</span>${sterneHtml(Number(r.sterne || 0))}${(r.medien || []).length ? `<span>${r.medien.length} ${r.medien.length === 1 ? "Anhang" : "Anhänge"}</span>` : ""}</span>
+          ${r.kommentar ? `<span class="auszug">${esc(r.kommentar)}</span>` : ""}</button>`; }).join("")
+        : `<div class="innen"><p class="meta" style="margin:0">Noch keine Bewertungen.</p></div>`}
     </div></section>
     <section class="abschnitt"><h3 class="titel-bereich">PIN ändern</h3><div class="karte innen">
       <form id="pin-form" class="bewerten-form" autocomplete="off" novalidate>
@@ -1262,14 +1373,11 @@ async function speichereBewertung(){
 /* ===== Ereignisse: Liste und Filter ===== */
 $("#q").addEventListener("input", e => { S.q = e.target.value.trim(); render(); });
 $("#leeren").addEventListener("click", () => { $("#q").value = ""; S.q = ""; render(); $("#q").focus(); });
-document.querySelector(".umschalter").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return; S.status = b.dataset.s;
-  document.querySelectorAll(".umschalter button").forEach(x => x.setAttribute("aria-pressed", x === b)); render();
-});
-$("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; S.topic = c.dataset.t || null; renderFilter(); render(); });
+$("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; themaUmschalten(c.dataset.t); renderFilter(); render(); });
+$("#filter-oeffnen").addEventListener("click", () => { setFilter(false); openSheet("filter"); });
 $("#liste").addEventListener("click", e => {
   const v = e.target.closest("[data-vorschlag]"); if (v){ $("#q").value = v.dataset.vorschlag; S.q = v.dataset.vorschlag; render(); return; }
-  if (e.target.closest("[data-zuruecksetzen]")){ S.status = "all"; S.topic = null; document.querySelectorAll(".umschalter button").forEach(x => x.setAttribute("aria-pressed", x.dataset.s === "all")); renderFilter(); render(); return; }
+  if (e.target.closest("[data-zuruecksetzen]")){ zuruecksetzen(); return; }
   const z = e.target.closest(".zeile"); if (z) openSheet("buch", z.dataset.id);
 });
 $("#q").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); e.target.blur(); } if (e.key === "Escape" && S.q){ e.stopPropagation(); $("#leeren").click(); } });
@@ -1371,7 +1479,34 @@ D.addEventListener("click", e => {
   if (el("#f-empfohlen")){ syncEdit(); S.edit.buch.empfohlen = !S.edit.buch.empfohlen; renderEdit(); return; }
   const th = el("[data-thema]"); if (th){ syncEdit(); const b = S.edit.buch, t = th.dataset.thema; b.themen = (b.themen || []).includes(t) ? b.themen.filter(x => x !== t) : [...(b.themen || []), t]; renderEdit(); return; }
   if (el("#ki-analyse")){ kiAnalyse(); return; }
-  const tag = el(".tag"); if (tag){ S.topic = tag.dataset.t; renderFilter(); closeSheet(); render(); return; }
+  const tag = el(".tag"); if (tag){ S.f.themen = [tag.dataset.t]; renderFilter(); closeSheet(); render(); return; }
+  const fg = el("[data-fgruppe]"); if (fg){
+    const g = fg.dataset.fgruppe, w = fg.dataset.fwert, f = S.f;
+    if (g === "status") f.status = w;
+    if (g === "sort") f.sort = w;
+    if (g === "sterne") f.minSterne = Number(w);
+    if (g === "themen") themaUmschalten(w);
+    if (g === "sprachen") f.sprachen = f.sprachen.includes(w) ? f.sprachen.filter(x => x !== w) : [...f.sprachen, w];
+    renderFilter(); render(); const neu = document.querySelector(`[data-fgruppe="${CSS.escape(g)}"][data-fwert="${CSS.escape(w)}"]`); if (neu) neu.focus(); return;
+  }
+  if (el("[data-fzurueck]")){ zuruecksetzen(); return; }
+  if (el("[data-fschliessen]")){ closeSheet(); $("#liste-titel").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); return; }
+  const bw = el("[data-bewertung]"); if (bw){ const r = S.ratings.find(x => x.id === bw.dataset.bewertung); if (r){ S.redit = { id: r.id, sterne: Number(r.sterne || 0), kommentar: r.kommentar || "", medien: [...(r.medien || [])] }; S.loeschFrage = null; wechsle("bewertung"); } return; }
+  const rn = el("[data-rn]"); if (rn){ const n = +rn.dataset.rn; S.redit.kommentar = $("#r-kommentar").value; S.redit.sterne = S.redit.sterne === n ? 0 : n; renderBewertungEdit(); const f = document.querySelector(`[data-rn="${n}"]`); if (f) f.focus(); return; }
+  const rw = el("[data-rweg]"); if (rw){ S.redit.kommentar = $("#r-kommentar").value; S.redit.medien.splice(+rw.dataset.rweg, 1); renderBewertungEdit(); return; }
+  const rl = el("[data-rlb]"); if (rl){ oeffneLightbox(S.redit.medien[+rl.dataset.rlb]); return; }
+  if (el("[data-rspeichern]")){
+    const e2 = S.redit; e2.kommentar = $("#r-kommentar").value.trim().slice(0, 500);
+    Store.act({ action: "updateRating", pin: S.admin, id: e2.id, sterne: e2.sterne, kommentar: e2.kommentar, medien: e2.medien.map(m => ({ typ: m.typ, url: m.url, thumb: m.thumb })) })
+      .then(j => { apply(j); toast("Bewertung gespeichert."); S.redit = null; render(); wechsle("admin"); }).catch(err => toast(err.message));
+    return;
+  }
+  if (el("[data-rloeschen]")){
+    const id = S.redit.id; S.redit.kommentar = $("#r-kommentar").value;
+    if (S.loeschFrage !== id){ S.loeschFrage = id; renderBewertungEdit(); return; }
+    Store.act({ action: "deleteRating", pin: S.admin, id }).then(j => { apply(j); toast("Bewertung gelöscht."); S.redit = null; S.loeschFrage = null; render(); wechsle("admin"); }).catch(err => toast(err.message));
+    return;
+  }
   if (el("#teilen")){ teilen(buchVon(S.open)); return; }
   const st = el(".stern"); if (st){ const n = +st.dataset.n; S.entwurf.sterne = S.entwurf.sterne === n ? 0 : n; renderBuch(); const f = document.querySelector(`.stern[data-n="${n}"]`); if (f) f.focus(); return; }
   const weg = el("[data-weg]"); if (weg){ S.entwurf.medien.splice(+weg.dataset.weg, 1); renderBuch(); return; }

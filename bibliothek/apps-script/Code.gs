@@ -115,7 +115,7 @@ function doGet() { return antwort_(zustand_()); }
 
 function doPost(e) {
   const p = json_((e.postData && e.postData.contents) || '{}', {});
-  const brauchtPin = ['checkPin', 'setPin', 'saveBook', 'deleteRating', 'analyze'].indexOf(p.action) >= 0 || (p.action === 'upload' && p.zweck === 'cover');
+  const brauchtPin = ['checkPin', 'setPin', 'saveBook', 'deleteRating', 'updateRating', 'analyze'].indexOf(p.action) >= 0 || (p.action === 'upload' && p.zweck === 'cover');
   if (brauchtPin) { const f = pinPruefen_(p.pin); if (f) return fehler_(f); }
 
   // Ohne Sperre: Prüfen, Analyse, Upload
@@ -163,6 +163,14 @@ function doPost(e) {
       const s = blatt_('Bewertungen'), w = s.getDataRange().getValues();
       const i = w.findIndex((r, idx) => idx > 0 && r[0] === p.id);
       if (i > 0) s.deleteRow(i + 1);
+    } else if (p.action === 'updateRating') {
+      const s = blatt_('Bewertungen'), w = s.getDataRange().getValues();
+      const i = w.findIndex((r, idx) => idx > 0 && r[0] === p.id);
+      if (i < 1) return fehler_('Diese Bewertung gibt es nicht mehr.');
+      const sterne = parseInt(p.sterne, 10);
+      if (!(sterne >= 0 && sterne <= 5)) return fehler_('Bitte 0 bis 5 Sterne wählen.');
+      s.getRange(i + 1, 4, 1, 2).setValues([[String(sterne), String(p.kommentar || '').trim().slice(0, 500)]]);
+      s.getRange(i + 1, 7).setValue(JSON.stringify(medienSauber_(p.medien)));
     } else if (p.action === 'rate') {
       const buchId = String(p.bookId || '').slice(0, 120), kuerzel = String(p.kuerzel || '').toUpperCase(), sterne = parseInt(p.sterne, 10);
       if (!buchId || !KUERZEL.test(kuerzel)) return fehler_('Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben.');
