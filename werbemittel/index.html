@@ -687,6 +687,31 @@ input.datum::-webkit-date-and-time-value{text-align:left}
 .lb-inhalt .lb-buehne img.foto-voll{border-radius:var(--radius-block);filter:none}
 .zwei-teile{grid-template-columns:1fr 1fr!important}
 .stapel-rechner{display:grid;gap:10px}
+
+/* Verwaltung */
+.aktionsleiste.einzeln{grid-template-columns:1fr}
+.kachel.warn{color:var(--status-warnung-text);background:var(--status-warnung-flaeche);border-color:color-mix(in oklab,var(--status-warnung-text) 25%,var(--status-warnung-flaeche))}
+.links-liste{list-style:none;margin:0;padding:0}
+.links-liste li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;min-height:48px;padding:6px 16px}
+.links-liste li+li{box-shadow:inset 0 1px 0 var(--linie)}
+.links-edit .links-liste{border:1px solid var(--linie);border-radius:var(--radius-block);background:var(--objekt);margin-bottom:10px}
+.links-edit .links-liste li{padding:6px 8px 6px 12px}
+.links-liste a{color:var(--link);text-underline-offset:2px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.links-liste.anzeige svg{color:var(--tertiaer)}
+.link-art{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer);min-width:0}
+.link-weg{position:static!important;width:32px!important;height:32px!important}
+.link-neu{display:grid;gap:8px}
+.link-felder{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+@media (max-width:480px){.link-felder{grid-template-columns:1fr}}
+.ordner-link{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;color:var(--link);font-size:15px;font-weight:500;text-underline-offset:2px;box-shadow:inset 0 1px 0 var(--linie)}
+.karte>.ordner-link:first-child{box-shadow:none}
+.bestellweg{display:grid;gap:10px}
+.bestelltext{min-height:200px;font-size:13px;line-height:20px;font-variant-numeric:tabular-nums;white-space:pre-wrap;background:var(--leiste)}
+.kopierbar{user-select:all;font-weight:600;color:var(--foreground)}
+a.taste{text-decoration:none}
+.bestellbezug{margin:0;padding:10px 14px;border-radius:var(--radius-block);background:var(--status-info-flaeche);color:var(--foreground)}
+.pin-eingabe{letter-spacing:.3em;max-width:220px}
+.held .badge{vertical-align:middle}
 </style>
 
 <div class="minikopf" id="minikopf" aria-hidden="true">
@@ -723,7 +748,7 @@ input.datum::-webkit-date-and-time-value{text-align:left}
       <path fill="url(#lm-rechts-2)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
       <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
     </svg>
-    <button class="icon-taste frei kopf-aktion" id="neu-artikel-oben" aria-label="Artikel anlegen">
+    <button class="icon-taste frei kopf-aktion" id="neu-artikel-oben" aria-label="Artikel anlegen" hidden>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
     </button>
   </div>
@@ -735,15 +760,15 @@ input.datum::-webkit-date-and-time-value{text-align:left}
   <div class="aktionsleiste">
     <button class="taste primaer" id="ausgabe-buchen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ausgabe buchen</button>
-    <button class="taste sekundaer" id="eingang-buchen">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Eingang buchen</button>
+    <button class="taste sekundaer" id="verwaltung-oeffnen" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16l-1.6 10.4a2 2 0 0 1-2 1.6H7.6a2 2 0 0 1-2-1.6z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>Verwaltung</button>
   </div>
 
   <div id="leiste-platz"><div class="leiste" id="leiste">
     <div class="umschalter umschalter-alt" role="group" aria-label="Ansicht">
       <button data-tab="bestand" aria-pressed="true">Bestand</button>
       <button data-tab="ausgabe" aria-pressed="false">Ausgaben</button>
-      <button data-tab="eingang" aria-pressed="false">Eingänge</button>
+      <button data-tab="eingang" aria-pressed="false" hidden>Eingänge</button>
     </div>
     <div class="suche">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="6"/><path d="m13 13 4.5 4.5"/></svg>
@@ -860,7 +885,7 @@ const ART = {
 
 /* ===== Zustand ===== */
 const S = {
-  artikel: [], vorgaenge: [], buchungen: [], kommentare: [], geladen: false, modus: "warte",
+  artikel: [], vorgaenge: [], buchungen: [], kommentare: [], lieferanten: [], bestellungen: [], einstellungen: [], admin: false, geladen: false, modus: "warte",
   tab: "bestand", q: "", kat: [], sort: "name", status: "alle",
   view: null, stack: [], open: null, b: null, edit: null, inv: null, pickQ: "", frage: null, busy: false
 };
@@ -873,6 +898,7 @@ function rechne(){
     BM.set(k, (BM.get(k) || 0) + n); SUM.set(b.artikelId, (SUM.get(b.artikelId) || 0) + n);
     if (b.art === "inventur") GES.set(b.artikelId, !!b.geschaetzt); else if (b.geschaetzt) GES.set(b.artikelId, true);
   }
+  if (typeof rechneBestellungen === "function") rechneBestellungen();
 }
 const geschaetzt = id => !!GES.get(id);
 const ca = id => geschaetzt(id) ? "≈ " : "";
@@ -895,7 +921,7 @@ function variantenMeta(a){
 const einheit = a => a.einheit || "Stück";
 
 /* ===== Speicher: geteilt (db) oder Vorschau (nur dieses Gerät) ===== */
-const COLS = ["artikel", "vorgaenge", "buchungen", "kommentare"];
+const COLS = ["artikel", "vorgaenge", "buchungen", "kommentare", "lieferanten", "bestellungen", "einstellungen"];
 const CAP = { assets: null, downloads: null };
 let DB = null;
 /* Eigenständige App: Google-Tabelle über Apps Script (gleiches Muster wie die Design Bibliothek) */
@@ -937,7 +963,7 @@ const Store = {
   }
 };
 const tippt = () => { const a = document.activeElement; return !!(S.view && a && $("#sheet").contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
-function nachLaden(){ rechne(); renderFilter(); render(); if (["artikel", "vorgang", "buchen"].includes(S.view) && !tippt() && !S.busy && !S.frage) renderSheet(); }
+function nachLaden(){ rechne(); adminLaden(); renderAdminUi(); renderFilter(); render(); if (["artikel", "vorgang", "buchen", "verwaltung", "nachbestellen", "bestellungen", "bestellung", "lieferanten"].includes(S.view) && !tippt() && !S.busy && !S.frage) renderSheet(); }
 async function capsLaden(){
   const use = n => window.claude?.use ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
   const [sample, assets] = await Promise.all([use("sample"), use("assets")]);
@@ -1032,7 +1058,7 @@ function artikelZeile(a, w = []){
     ${kachel(a)}
     <span class="info"><span class="t">${markiere(a.name, w)}</span><span class="meta">${markiere(meta, w)}</span>
       ${vm ? `<span class="meta varianten-meta">${esc(vm)}</span>` : ""}
-      <span class="unten"><span class="badge ${s.cls}">${s.label}</span>${a.mindest ? `<span class="meta zahl">Mindestens ${zahl(a.mindest)}</span>` : ""}</span></span>
+      <span class="unten"><span class="badge ${s.cls}">${s.label}</span>${unterwegs(a.id) ? `<span class="badge st-info">${zahl(unterwegs(a.id))} bestellt</span>` : a.mindest ? `<span class="meta zahl">Mindestens ${zahl(a.mindest)}</span>` : ""}</span></span>
     <span class="rechts"><span class="menge"><b class="${n < 0 ? "neg" : ""}">${ca(a.id)}${zahl(n)}</b><span class="meta">${geschaetzt(a.id) ? "geschätzt" : esc(einheit(a))}</span></span>${ICON.chev}</span>
   </button>`;
 }
@@ -1066,7 +1092,7 @@ function render(){
   const offen = S.vorgaenge.filter(v => v.art === "eingang" && v.rechnung === "offen").length;
   const wert = alle.reduce((s, a) => s + Math.max(0, bestand(a.id)) * ekVon(a), 0);
   $("#summary").textContent = !S.geladen ? "Bestand wird geladen …"
-    : [plural(alle.length, "Artikel", "Artikel"), knapp.length ? `${zahl(knapp.length)} nachbestellen` : "alles vorrätig", wert ? `Bestandswert ${euro(Math.round(wert))}` : "", offen ? plural(offen, "Rechnung offen", "Rechnungen offen") : ""].filter(Boolean).join(" · ");
+    : [plural(alle.length, "Artikel", "Artikel"), knapp.length ? `${zahl(knapp.length)} nachbestellen` : "alles vorrätig", wert && S.admin ? `Bestandswert ${euro(Math.round(wert))}` : "", offen && S.admin ? plural(offen, "Rechnung offen", "Rechnungen offen") : ""].filter(Boolean).join(" · ");
   $("#leeren").hidden = !S.q; $("#mini-punkt").hidden = !filterAktiv();
   const el = $("#inhalt");
   if (!S.geladen){ el.innerHTML = `<section class="bereich"><div class="karte"><div class="leer"><p class="meta" style="margin:0">Bestand wird geladen …</p></div></div></section>`; return; }
@@ -1079,7 +1105,7 @@ function render(){
         <div class="karte liste-zwei">${knappItems.map(a => artikelZeile(a)).join("")}</div></section>` : "")
       + `<section class="bereich" aria-labelledby="liste-titel">
         <header><h2 class="titel-bereich" id="liste-titel">${gefiltert ? "Treffer" : "Bestand"}</h2>
-          ${gefiltert ? `<span class="meta zahl" aria-live="polite">${plural(items.length, "Artikel", "Artikel")}</span>` : `<button class="taste sekundaer klein" data-neu-artikel>${ICON.plusK} Artikel</button>`}</header>
+          ${gefiltert ? `<span class="meta zahl" aria-live="polite">${plural(items.length, "Artikel", "Artikel")}</span>` : S.admin ? `<button class="taste sekundaer klein" data-neu-artikel>${ICON.plusK} Artikel</button>` : ""}</header>
         <div class="karte liste-zwei">${!alle.length ? leerKatalog() : items.length ? items.map(a => artikelZeile(a, w)).join("") : nichtsGefunden()}</div></section>`;
   } else {
     const art = S.tab, items = filterVorgaenge(art);
@@ -1105,7 +1131,9 @@ function renderSheet(){
   const v = S.view;
   D.innerHTML = v === "artikel" ? htmlArtikel() : v === "artikel-edit" ? htmlArtikelEdit() : v === "buchen" ? htmlBuchen()
     : v === "waehlen" ? htmlWaehlen() : v === "vorgang" ? htmlVorgang() : v === "inventur" ? htmlInventur() : v === "filter" ? htmlFilter()
-    : v === "kuerzel" ? htmlKuerzel() : v === "demo" ? htmlDemo() : "";
+    : v === "kuerzel" ? htmlKuerzel() : v === "demo" ? htmlDemo() : v === "login" ? htmlLogin() : v === "verwaltung" ? htmlVerwaltung()
+    : v === "nachbestellen" ? htmlNachbestellen() : v === "bestellungen" ? htmlBestellungen() : v === "bestellung" ? htmlBestellung()
+    : v === "lieferanten" ? htmlLieferanten() : v === "lieferant-edit" ? htmlLieferantEdit() : v === "pin" ? htmlPin() : "";
 }
 function openSheet(view, data = {}){
   Object.assign(S, data); S.frage = null; S.kEdit = null; S.kWert = null;
@@ -1160,7 +1188,7 @@ function htmlArtikel(){
   const a = artikelVon(S.open); if (!a) return `<p class="meta" id="d-titel" tabindex="-1">Dieser Artikel ist nicht mehr da.</p>`;
   const s = status(a), n = bestand(a.id);
   const verlauf = S.buchungen.filter(b => b.artikelId === a.id).sort((x, y) => (y.datum || "").localeCompare(x.datum || "") || (y.am || "").localeCompare(x.am || ""));
-  const zeilen = [["Kategorie", a.kategorie], ["Marke", a.marke], ["Lagerort", a.lagerort], ["Mindestbestand", a.mindest ? `${zahl(a.mindest)} ${einheit(a)}` : ""], ["Lieferant", a.lieferant], ["Artikelnummer", a.artikelnr]].filter(x => x[1]);
+  const zeilen = [["Kategorie", a.kategorie], ["Marke", a.marke], ["Lagerort", a.lagerort], ["Mindestbestand", a.mindest ? `${zahl(a.mindest)} ${einheit(a)}` : ""], ["Lieferant", lieferantName(a)], ["Bestellt, unterwegs", unterwegs(a.id) ? `${zahl(unterwegs(a.id))} ${einheit(a)}` : ""], ["Artikelnummer", a.artikelnr]].filter(x => x[1]);
   const ek = ekVon(a);
   const buchhaltung = [["Einkaufspreis netto", ek ? euro(ek) + " je " + einheit(a) : ""], ["Bestandswert netto", ek && n > 0 ? euro(ek * n) : ""], ["MwSt-Satz", a.mwst != null && a.mwst !== "" ? a.mwst + " %" : ""], ["Sachkonto", a.sachkonto], ["Kostenstelle", a.kostenstelle],
     ["Mitarbeiter-Shop", a.shop?.aktiv ? [a.shop.preis ? euro(a.shop.preis) : "zum Einkaufspreis", a.shop.max ? `max. ${a.shop.max} je Person` : ""].filter(Boolean).join(" · ") : ""]].filter(x => x[1]);
@@ -1171,12 +1199,13 @@ function htmlArtikel(){
     ${a.beschreibung ? `<p class="text">${esc(a.beschreibung)}</p>` : ""}
     <div class="aktionsleiste" style="margin-top:0">
       <button class="taste primaer" data-buchen="ausgabe" data-mit="${esc(a.id)}">${ICON.raus} Ausgabe</button>
-      <button class="taste sekundaer" data-buchen="eingang" data-mit="${esc(a.id)}">${ICON.rein} Eingang</button></div>
+      ${S.admin ? `<button class="taste sekundaer" data-buchen="eingang" data-mit="${esc(a.id)}">${ICON.rein} Eingang</button>` : `<button class="taste sekundaer" data-inventur="${esc(a.id)}">${ICON.zaehlen} Zählen</button>`}</div>
+    ${linksAnzeige(a.links) || (S.admin && a.ordnerUrl) ? `<section class="abschnitt"><h3 class="titel-bereich">Dateien und Links</h3><div class="karte">${linksAnzeige(a.links)}${sicherLink(a.ordnerUrl) ? `<a class="ordner-link" href="${esc(a.ordnerUrl)}" target="_blank" rel="noopener">${VICON.link} Ordner mit allen Dateien öffnen</a>` : ""}</div></section>` : ""}
     ${(a.varianten || []).length ? `<section class="abschnitt"><h3 class="titel-bereich">Bestand je ${a.kategorie === "Textilien" ? "Größe" : "Variante"}</h3>
       <div class="karte"><dl class="bestand-tabelle">${a.varianten.map(v => `<dt>${esc(v)}</dt><dd><b>${zahl(bestand(a.id, v))}</b></dd>`).join("")}<dt>Gesamt</dt><dd><b>${zahl(n)}</b></dd></dl></div></section>` : ""}
     ${zeilen.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${zeilen.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
-    ${buchhaltung.length ? `<section class="abschnitt"><h3 class="titel-bereich">Buchhaltung und Shop</h3><div class="karte"><dl>${buchhaltung.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
-    ${a.notiz ? `<section class="abschnitt"><h3 class="titel-bereich">Interne Notiz</h3><div class="karte innen"><p class="text">${esc(a.notiz)}</p></div></section>` : ""}
+    ${buchhaltung.length && S.admin ? `<section class="abschnitt"><h3 class="titel-bereich">Buchhaltung und Shop</h3><div class="karte"><dl>${buchhaltung.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
+    ${a.notiz && S.admin ? `<section class="abschnitt"><h3 class="titel-bereich">Interne Notiz</h3><div class="karte innen"><p class="text">${esc(a.notiz)}</p></div></section>` : ""}
     ${kommentareHtml(a)}
     <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Verlauf</h3><span class="meta zahl">${verlauf.length ? plural(verlauf.length, "Buchung", "Buchungen") : ""}</span></header>
       <div class="karte">${verlauf.length ? `<ul class="verlauf">${verlauf.slice(0, 40).map(b => {
@@ -1188,7 +1217,7 @@ function htmlArtikel(){
         : `<div class="leer" style="padding:24px"><p class="meta" style="margin:0">Noch keine Bewegung. Startbestand am besten über Inventur zählen.</p></div>`}</div></section>
     <div class="aktionen" style="margin-top:0">
       <button class="taste sekundaer" data-inventur="${esc(a.id)}">${ICON.zaehlen} Zählen oder schätzen</button>
-      <button class="taste sekundaer" data-artikel-edit="${esc(a.id)}">Bearbeiten</button></div>`;
+      ${S.admin ? `<button class="taste sekundaer" data-artikel-edit="${esc(a.id)}">Bearbeiten</button>` : ""}</div>`;
 }
 
 /* --- Kürzel: einmal merken, dann nur noch anzeigen --- */
@@ -1246,10 +1275,16 @@ function htmlArtikelEdit(){
         <div class="gruppe"><label for="f-mindest">Mindestbestand</label><input id="f-mindest" class="eingabe zahl" data-feld="mindest" inputmode="numeric" value="${esc(e.mindest)}" placeholder="0"></div>
       </div>
       <div class="gruppe"><label for="f-lagerort">Lagerort</label><input id="f-lagerort" class="eingabe" data-feld="lagerort" value="${esc(e.lagerort)}" list="lagerorte" placeholder="z. B. Marketing-Schrank, Fach 2"></div>
+      <h3 class="titel-bereich abschnitt-titel">Nachbestellung</h3>
+      <div class="gruppe"><p class="gruppe-titel">Lieferant</p>${S.lieferanten.length ? `<div class="themen-wahl">${[...S.lieferanten].sort((x, y) => x.name.localeCompare(y.name, "de")).map(l => `<button type="button" class="chip" data-wahl="lieferantId" data-wert="${esc(l.id)}" aria-pressed="${e.lieferantId === l.id}">${esc(l.name)}</button>`).join("")}</div>` : ""}
+        ${!e.lieferantId ? `<input id="f-lieferant" class="eingabe" data-feld="lieferant" value="${esc(e.lieferant)}" list="lieferanten" placeholder="${S.lieferanten.length ? "oder Name eintragen" : "Name des Lieferanten"}" aria-label="Lieferant">` : ""}</div>
       <div class="zwei umbruch">
-        <div class="gruppe"><label for="f-lieferant">Lieferant</label><input id="f-lieferant" class="eingabe" data-feld="lieferant" value="${esc(e.lieferant)}" list="lieferanten"></div>
         <div class="gruppe"><label for="f-artikelnr">Artikelnummer</label><input id="f-artikelnr" class="eingabe" data-feld="artikelnr" value="${esc(e.artikelnr)}"></div>
+        <div class="gruppe"><label for="f-bestellmenge">Übliche Bestellmenge</label><input id="f-bestellmenge" class="eingabe zahl" data-feld="bestellmenge" inputmode="numeric" value="${esc(e.bestellmenge)}" placeholder="z. B. 500"></div>
       </div>
+      <div class="gruppe"><label for="f-nachbestellurl">Direkt nachbestellen (Link zum Produkt im Shop)</label><input id="f-nachbestellurl" class="eingabe" data-feld="nachbestellUrl" inputmode="url" value="${esc(e.nachbestellUrl)}" placeholder="https://…"></div>
+      <div class="gruppe"><label for="f-ordner">Ordner mit allen Dateien</label><input id="f-ordner" class="eingabe" data-feld="ordnerUrl" inputmode="url" value="${esc(e.ordnerUrl)}" placeholder="https://drive.google.com/…"></div>
+      <div class="gruppe"><p class="gruppe-titel">Druckdateien und Belege</p>${linksEdit("edit", e.links || [], ["druckdatei", "angebot", "rechnung", "sonstiges"])}</div>
       <div class="gruppe"><label for="f-notiz">Interne Notiz</label><textarea id="f-notiz" class="kommentar" data-feld="notiz" maxlength="800" style="min-height:72px" placeholder="Druckdaten, Ansprechpartner, Besonderheiten …">${esc(e.notiz)}</textarea></div>
 
       <h3 class="titel-bereich abschnitt-titel">Buchhaltung</h3>
@@ -1281,13 +1316,14 @@ function htmlArtikelEdit(){
       <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer" ${S.busy || S.fotoLaedt ? "disabled" : ""}>${neu ? "Anlegen" : "Speichern"}</button></div>
     </form>`;
 }
-const euroText = n => n ? String(n).replace(".", ",") : "";
+const euroText = n => Number(n) ? Number(n).toFixed(2).replace(".", ",") : "";
 const parseEuro = s => { const t = String(s ?? "").replace(/[^\d,.-]/g, ""); const n = parseFloat(t.includes(",") ? t.replace(/\./g, "").replace(",", ".") : t); return isFinite(n) ? Math.round(n * 100) / 100 : 0; };
 const ekVon = a => Number(a.ek ?? a.preis ?? 0) || 0;
 function neuerEntwurf(a){
   if (!a) return { name: "", beschreibung: "", fotos: [], kategorie: S.kat.length === 1 ? S.kat[0] : "Werbeartikel", marke: "GAUSS LVS", mitVarianten: false, variantenText: "", einheit: "Stück", mindest: "", lagerort: "", lieferant: "", artikelnr: "", notiz: "",
     ek: "", mwst: 19, sachkonto: "", kostenstelle: "Marketing", shopAktiv: false, shopPreis: "", shopMax: "", beruehrt: {} };
   return { ...a, fotos: [...(a.fotos || [])], mitVarianten: (a.varianten || []).length > 0, variantenText: (a.varianten || []).join(", "), mindest: a.mindest ? String(a.mindest) : "",
+    links: [...(a.links || [])], bestellmenge: a.bestellmenge ? String(a.bestellmenge) : "", nachbestellUrl: a.nachbestellUrl || "", ordnerUrl: a.ordnerUrl || "", lieferantId: a.lieferantId || "",
     ek: euroText(ekVon(a)), mwst: a.mwst ?? 19, shopAktiv: !!a.shop?.aktiv, shopPreis: euroText(a.shop?.preis), shopMax: a.shop?.max ? String(a.shop.max) : "", beruehrt: { kategorie: true, marke: true } };
 }
 async function speichereArtikel(){
@@ -1295,11 +1331,14 @@ async function speichereArtikel(){
   if (!String(e.name || "").trim()){ f.textContent = "Bitte eine Bezeichnung eingeben."; f.hidden = false; $("#f-name").focus(); return; }
   const varianten = e.mitVarianten ? [...new Set(String(e.variantenText || "").split(/[,;]/).map(x => x.trim()).filter(Boolean))] : [];
   if (e.mitVarianten && !varianten.length){ f.textContent = "Bitte mindestens eine Größe oder Variante eintragen oder den Schalter ausschalten."; f.hidden = false; return; }
+  if ((e.nachbestellUrl && !sicherLink(e.nachbestellUrl)) || (e.ordnerUrl && !sicherLink(e.ordnerUrl))){ f.textContent = "Links müssen mit https:// beginnen."; f.hidden = false; return; }
+  if (e.lieferantId) e.lieferant = lieferantVon(e.lieferantId)?.name || e.lieferant;
   const daten = { name: e.name.trim(), beschreibung: (e.beschreibung || "").trim(), fotos: (e.fotos || []).map(x => ({ id: x.id || "", url: x.url || "", frei: x.frei !== false })),
     kategorie: e.kategorie || "Sonstiges", marke: e.marke || "", varianten, einheit: (e.einheit || "Stück").trim(),
     mindest: Math.max(0, parseInt(e.mindest, 10) || 0), lagerort: (e.lagerort || "").trim(), lieferant: (e.lieferant || "").trim(), artikelnr: (e.artikelnr || "").trim(), notiz: (e.notiz || "").trim(),
     ek: parseEuro(e.ek), mwst: Number(e.mwst ?? 19), sachkonto: (e.sachkonto || "").trim(), kostenstelle: (e.kostenstelle || "").trim(),
     shop: { aktiv: !!e.shopAktiv, preis: parseEuro(e.shopPreis), max: Math.max(0, parseInt(e.shopMax, 10) || 0) },
+    lieferantId: e.lieferantId || "", bestellmenge: Math.max(0, parseInt(e.bestellmenge, 10) || 0), nachbestellUrl: sicherLink(e.nachbestellUrl), ordnerUrl: sicherLink(e.ordnerUrl), links: e.links || [],
     aktiv: e.aktiv !== false, geaendert: new Date().toISOString() };
   const id = e.id || uid();
   if (!e.id) daten.angelegt = daten.geaendert;
@@ -1484,7 +1523,7 @@ function htmlBuchen(){
         <div class="gruppe"><label for="f-anlass">Wofür</label><input id="f-anlass" class="eingabe" data-b="anlass" value="${esc(b.anlass)}" list="l-anlass" placeholder="z. B. Messe, Kundentermin, Onboarding"></div>
         <div class="gruppe"><p class="gruppe-titel">Kostenstelle</p><div class="themen-wahl">${KOSTENSTELLEN.map(k => `<button type="button" class="chip" data-kst="${esc(k)}" aria-pressed="${b.kostenstelle === k}">${esc(k)}</button>`).join("")}</div>
           <p class="meta" style="margin:0">Leer lassen: Kostenstelle des Artikels.</p></div>`
-      : `<div class="gruppe"><label for="f-lieferant">Lieferant <span class="pflicht" aria-hidden="true">*</span></label><input id="f-lieferant" class="eingabe" data-b="lieferant" value="${esc(b.lieferant)}" list="l-lieferant"></div>
+      : `${b.bestellungId ? `<p class="meta bestellbezug">Zu Bestellung <b class="zahl">${esc(b.bestellnr)}</b>. Abweichende Mengen bleiben als Rest offen.</p>` : ""}<div class="gruppe"><label for="f-lieferant">Lieferant <span class="pflicht" aria-hidden="true">*</span></label><input id="f-lieferant" class="eingabe" data-b="lieferant" value="${esc(b.lieferant)}" list="l-lieferant"></div>
         <div class="zwei umbruch"><div class="gruppe"><label for="f-bestellnr">Bestellnummer</label><input id="f-bestellnr" class="eingabe" data-b="bestellnr" value="${esc(b.bestellnr)}"></div>
           <div class="gruppe"><label for="f-rechnungsnr">Rechnungsnummer</label><input id="f-rechnungsnr" class="eingabe" data-b="rechnungsnr" value="${esc(b.rechnungsnr)}"></div></div>
         <div class="gruppe"><label for="f-betrag">Rechnungsbetrag brutto</label><input id="f-betrag" class="eingabe zahl" data-b="betrag" inputmode="decimal" value="${esc(b.betrag)}" placeholder="0,00 €"></div>
@@ -1531,7 +1570,7 @@ async function speichereBuchung(){
   if (k.length < 2) return fehler("Bitte dein Kürzel mit 2 bis 3 Buchstaben eintragen.", "#kz-bu");
   const vid = uid(), am = new Date().toISOString(), datum = b.datum || heute();
   const vorgang = aus ? { art: "ausgabe", an: b.an.trim(), anlass: b.anlass.trim(), kostenstelle: b.kostenstelle || "", datum, am, kuerzel: k, notiz: b.notiz.trim(), geschaetzt: !!b.geschaetzt }
-    : { art: "eingang", geschaetzt: !!b.geschaetzt, lieferant: b.lieferant.trim(), bestellnr: b.bestellnr.trim(), rechnungsnr: b.rechnungsnr.trim(), betrag: parseEuro(b.betrag), rechnung: b.rechnung, datum, am, kuerzel: k, notiz: b.notiz.trim() };
+    : { art: "eingang", geschaetzt: !!b.geschaetzt, bestellungId: b.bestellungId || "", lieferant: b.lieferant.trim(), bestellnr: b.bestellnr.trim(), rechnungsnr: b.rechnungsnr.trim(), betrag: parseEuro(b.betrag), rechnung: b.rechnung, datum, am, kuerzel: k, notiz: b.notiz.trim() };
   const ekNeu = {}; if (!aus) for (const id of b.reihe){ const n = parseEuro(b.ek[id]); if (n > 0) ekNeu[id] = n; }
   S.busy = true; renderSheet();
   try {
@@ -1540,6 +1579,7 @@ async function speichereBuchung(){
       return Store.set("buchungen", uid(), { vorgangId: vid, artikelId: p.id, variante: p.v, menge: (aus ? -1 : 1) * p.n, art: vorgang.art, datum, am,
         ek: ekNeu[p.id] ?? ekVon(a), geschaetzt: !!b.geschaetzt, kostenstelle: aus ? (vorgang.kostenstelle || a.kostenstelle || "") : (a.kostenstelle || "") }); }));
     for (const [id, n] of Object.entries(ekNeu)){ const a = artikelVon(id); if (a && ekVon(a) !== n) await Store.update("artikel", id, { ek: n }); }
+    if (b.bestellungId){ const g = {}; for (const p of pos) g[p.id + "|" + p.v] = (g[p.id + "|" + p.v] || 0) + p.n; await bestellungNachEingang(b.bestellungId, g); }
     S.busy = false; const n = pos.reduce((s, p) => s + p.n, 0);
     toast(aus ? `${zahl(n)} ausgegeben an ${vorgang.an}` : `${zahl(n)} eingebucht`);
     S.b = null; S.stack.length ? zurueck() : closeSheet();
@@ -1661,6 +1701,12 @@ function exportDaten(art){
       z.push([a.name, a.artikelnr, a.kategorie, a.marke, v, n, einheit(a), komma2(ek), komma2(Math.max(0, n) * ek), a.mwst ?? "", a.sachkonto, a.kostenstelle, a.mindest || "", a.lagerort, a.lieferant, a.shop?.aktiv ? "ja" : "nein", a.shop?.aktiv ? komma2(a.shop.preis || ek) : ""]); }
     return { name: `Marketing-Lager-Bestand-${heute()}.csv`, data: csv(z) };
   }
+  if (art === "bestellungen"){
+    const z = [["Bestellnummer", "Lieferant", "Status", "Angelegt", "Bestellt am", "Erwartet am", "Artikel", "Artikelnummer", "Variante", "Menge", "Geliefert", "EK netto", "Wert netto", "Rechnungsnummer", "Rechnungsbetrag brutto", "Rechnung", "Belege"]];
+    for (const be of [...S.bestellungen].sort((x, y) => String(x.nr).localeCompare(String(y.nr)))) for (const p of offenePos(be)){ const a = artikelVon(p.artikelId) || {};
+      z.push([be.nr, be.lieferant, BESTELL_STATUS[be.status]?.[0] || be.status, fmt(be.angelegt), fmt(be.bestelltAm), fmt(be.erwartetAm), a.name, a.artikelnr, p.variante, p.menge, Number(p.menge) - p.offen, komma2(p.ek), komma2(p.ek * p.menge), be.rechnungsnr || "", be.betrag ? komma2(be.betrag) : "", be.rechnung || "", (be.links || []).map(l => l.url).join(" ")]); }
+    return { name: `Werbemittel-Bestellungen-${heute()}.csv`, data: csv(z) };
+  }
   if (art === "buchhaltung"){
     const z = [["Belegdatum", "Art", "Empfänger / Lieferant", "Anlass", "Bestellnummer", "Rechnungsnummer", "Rechnung", "Artikel", "Artikelnummer", "Variante", "Menge", "Einheit", "EK netto", "Wert netto", "MwSt %", "Sachkonto", "Kostenstelle", "Kürzel", "Vorgang"]];
     const vs = [...S.vorgaenge].sort((x, y) => (x.datum || "").localeCompare(y.datum || ""));
@@ -1695,11 +1741,346 @@ function fehlerToast(e){
 }
 function buchenStarten(art, mit){ S.b = neueBuchung(art, mit); openSheet("buchen"); if (!mit && aktive().length) setTimeout(() => { S.pickQ = ""; openSheet("waehlen"); setTimeout(() => $("#pick-q")?.focus(), 80); }, 0); }
 
+/* ===== Verwaltung: Stammdaten, Lieferanten, Nachbestellung, Bestellungen, Dateien ===== */
+const LINK_ARTEN = { druckdatei: "Druckdatei", angebot: "Angebot", ab: "Auftragsbestätigung", rechnung: "Rechnung", lieferschein: "Lieferschein", vertrag: "Vertrag", sonstiges: "Link" };
+const LINK_OEFFENTLICH = ["druckdatei", "sonstiges"];
+const BESTELL_STATUS = { entwurf: ["Entwurf", "st-info"], bestellt: ["Bestellt", "st-warnung"], teilweise: ["Teilweise geliefert", "st-warnung"], geliefert: ["Geliefert", "st-erfolg"], storniert: ["Storniert", "st-fehler"] };
+const OFFEN = ["bestellt", "teilweise"];
+const VICON = {
+  korb:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16l-1.6 10.4a2 2 0 0 1-2 1.6H7.6a2 2 0 0 1-2-1.6z"/><path d="M9 7V5a3 3 0 0 1 6 0v2M9 12v3M15 12v3"/></svg>`,
+  lkw:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>`,
+  haus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg>`,
+  beleg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>`,
+  link:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>`,
+  schloss:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
+  kopie:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>`
+};
+const vKachel = (icon, cls = "") => `<span class="kachel ${cls}" aria-hidden="true">${VICON[icon]}</span>`;
+const EINST = () => S.einstellungen.find(x => x.id === "verwaltung") || {};
+const lieferantVon = id => S.lieferanten.find(l => l.id === id);
+const lieferantName = a => lieferantVon(a.lieferantId)?.name || a.lieferant || "";
+const sicherLink = u => /^https:\/\/[^\s]+$/i.test(String(u || "").trim()) ? String(u).trim() : "";
+
+/* --- Anmeldung: PIN, nur als Hash gespeichert. Schützt vor versehentlichen Änderungen, ersetzt keine Rechteverwaltung. --- */
+const ADMIN_MS = 12 * 3600e3;
+async function pinHash(pin){
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("gauss-werbemittel:" + pin));
+  return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function adminLaden(){ const a = ls.get("admin", 0); S.admin = !!a && Date.now() - a < ADMIN_MS && !!EINST().pinHash; }
+function adminSetzen(an){ S.admin = an; ls.set("admin", an ? Date.now() : 0); renderAdminUi(); renderFilter(); render(); }
+function renderAdminUi(){
+  $("#neu-artikel-oben").hidden = !S.admin;
+  $("#verwaltung-oeffnen").hidden = !S.admin;
+  $(".aktionsleiste").classList.toggle("einzeln", !S.admin);
+  const tabE = document.querySelector('#leiste [data-tab="eingang"]'); tabE.hidden = !S.admin;
+  document.querySelector("#leiste .umschalter").classList.toggle("zwei-teile", !S.admin);
+  if (!S.admin && S.tab === "eingang") S.tab = "bestand";
+}
+function htmlLogin(){
+  const neu = !EINST().pinHash, sperre = ls.get("sperre", 0) > Date.now();
+  return `<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2>
+      <p class="meta" style="margin:0">${neu ? "Noch keine PIN festgelegt. Wer die PIN kennt, kann Artikel, Preise, Lieferanten und Bestellungen ändern." : "Mit der Verwaltungs-PIN anmelden."}</p></div>
+    <form id="login-form" class="formular" autocomplete="off" novalidate>
+      <div class="gruppe"><label for="pin">${neu ? "Neue PIN, 4 bis 8 Ziffern" : "PIN"}</label><input id="pin" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8" autocomplete="off" ${sperre ? "disabled" : ""}></div>
+      ${neu ? `<div class="gruppe"><label for="pin2">PIN wiederholen</label><input id="pin2" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>` : ""}
+      <p class="fehler-text" id="login-fehler" ${sperre ? "" : "hidden"}>${sperre ? "Zu viele Fehlversuche. Bitte in ein paar Minuten noch einmal." : ""}</p>
+      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer" ${sperre ? "disabled" : ""}>${neu ? "PIN festlegen" : "Anmelden"}</button></div>
+    </form>`;
+}
+async function anmelden(){
+  const f = $("#login-fehler"), pin = $("#pin").value.trim(), e = EINST();
+  const fehler = t => { f.textContent = t; f.hidden = false; $("#pin").select(); };
+  if (!/^\d{4,8}$/.test(pin)) return fehler("Die PIN besteht aus 4 bis 8 Ziffern.");
+  const h = await pinHash(pin);
+  if (!e.pinHash){
+    if (pin !== $("#pin2").value.trim()) return fehler("Die beiden PINs stimmen nicht überein.");
+    try { await Store.set("einstellungen", "verwaltung", { ...stripId(e), pinHash: h }); } catch (err){ return fehlerToast(err); }
+  } else if (h !== e.pinHash){
+    const n = ls.get("fehlversuche", 0) + 1; ls.set("fehlversuche", n);
+    if (n >= 5){ ls.set("sperre", Date.now() + 5 * 60e3); ls.set("fehlversuche", 0); renderSheet(); return; }
+    return fehler("PIN ist nicht richtig.");
+  }
+  ls.set("fehlversuche", 0); adminSetzen(true); toast("Verwaltung entsperrt"); const ziel = S.nachLogin || "verwaltung"; S.nachLogin = null; S.stack = []; S.view = null; openSheet(ziel, ziel === "artikel-edit" ? { edit: neuerEntwurf() } : {});
+}
+function htmlPin(){
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">PIN ändern</h2><p class="meta" style="margin:0">Gilt für alle, die die Verwaltung nutzen.</p></div>
+    <form id="pin-form" class="formular" autocomplete="off" novalidate>
+      <div class="gruppe"><label for="p-alt">Bisherige PIN</label><input id="p-alt" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div>
+      <div class="zwei"><div class="gruppe"><label for="p-neu">Neue PIN</label><input id="p-neu" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div>
+        <div class="gruppe"><label for="p-neu2">Wiederholen</label><input id="p-neu2" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div></div>
+      <p class="fehler-text" id="pin-fehler" hidden></p>
+      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-zurueck>Abbrechen</button><button type="submit" class="taste primaer">PIN ändern</button></div></form>`;
+}
+async function pinAendern(){
+  const f = $("#pin-fehler"), fehler = t => { f.textContent = t; f.hidden = false; };
+  if (await pinHash($("#p-alt").value.trim()) !== EINST().pinHash) return fehler("Die bisherige PIN ist nicht richtig.");
+  const n = $("#p-neu").value.trim(); if (!/^\d{4,8}$/.test(n)) return fehler("Die neue PIN besteht aus 4 bis 8 Ziffern.");
+  if (n !== $("#p-neu2").value.trim()) return fehler("Die beiden neuen PINs stimmen nicht überein.");
+  try { await Store.set("einstellungen", "verwaltung", { ...stripId(EINST()), pinHash: await pinHash(n) }); toast("PIN geändert"); zurueck(); } catch (err){ fehlerToast(err); }
+}
+function neuerArtikel(){ if (S.admin) openSheet("artikel-edit", { edit: neuerEntwurf() }); else { S.nachLogin = "artikel-edit"; openSheet("login"); } }
+function verwaltungOeffnen(ziel){ if (S.admin) openSheet(ziel || "verwaltung"); else { S.nachLogin = ziel || "verwaltung"; openSheet("login"); } }
+
+/* --- Bestellungen: geliefert, unterwegs, Vorschlag --- */
+let GEL = new Map();
+function rechneBestellungen(){
+  GEL = new Map(); const vb = new Map(S.vorgaenge.filter(v => v.bestellungId).map(v => [v.id, v.bestellungId]));
+  for (const b of S.buchungen){ const bid = vb.get(b.vorgangId); if (!bid) continue; const k = bid + "|" + b.artikelId + "|" + (b.variante || ""); GEL.set(k, (GEL.get(k) || 0) + Math.max(0, Number(b.menge || 0))); }
+}
+const geliefert = (bid, p) => GEL.get(bid + "|" + p.artikelId + "|" + (p.variante || "")) || 0;
+const offenePos = be => (be.positionen || []).map(p => ({ ...p, offen: Math.max(0, Number(p.menge || 0) - geliefert(be.id, p)) }));
+function unterwegs(artikelId){
+  let n = 0; for (const be of S.bestellungen) if (OFFEN.includes(be.status)) for (const p of offenePos(be)) if (p.artikelId === artikelId) n += p.offen; return n;
+}
+const offeneBestellungen = () => S.bestellungen.filter(b => b.status === "entwurf" || OFFEN.includes(b.status));
+function vorschlagMenge(a, v){
+  const vs = varianten(a), ziel = Number(a.bestellmenge || 0) || Math.max(Number(a.mindest || 0) * 2, 1);
+  if (vs.length === 1) return Math.max(0, Math.max(ziel, Number(a.mindest || 0) * 2 - bestand(a.id)));
+  const jeVar = Math.ceil(ziel / vs.length); return Math.max(0, jeVar - bestand(a.id, v));
+}
+function nachbestellVorschlaege(){
+  return aktive().filter(a => a.mindest && bestand(a.id) + unterwegs(a.id) <= a.mindest);
+}
+function naechsteNr(){
+  const j = new Date().getFullYear(), re = new RegExp("^B-" + j + "-(\\d+)$");
+  const max = S.bestellungen.reduce((m, b) => { const x = String(b.nr || "").match(re); return x ? Math.max(m, +x[1]) : m; }, 0);
+  return `B-${j}-${String(max + 1).padStart(3, "0")}`;
+}
+
+/* --- Verwaltung: Übersicht --- */
+function vZeile(icon, titel, meta, attr, cls = ""){
+  return `<button class="zeile artikel" ${attr}>${vKachel(icon, cls)}<span class="info"><span class="t">${titel}</span><span class="meta">${meta}</span></span><span class="rechts">${ICON.chev}</span></button>`;
+}
+function htmlVerwaltung(){
+  const vor = nachbestellVorschlaege(), off = offeneBestellungen(), e = EINST();
+  const rechnOffen = S.bestellungen.filter(b => b.rechnung === "offen" && b.status !== "storniert").length + S.vorgaenge.filter(v => v.art === "eingang" && v.rechnung === "offen" && !v.bestellungId).length;
+  return `<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2><p class="meta" style="margin:0">Stammdaten, Nachbestellung, Lieferanten und Belege. Angemeldet auf diesem Gerät.</p></div>
+    <div class="karte">
+      ${vZeile("korb", "Nachbestellen", vor.length ? `${plural(vor.length, "Artikel", "Artikel")} am oder unter dem Mindestbestand` : "Alles ausreichend vorrätig oder bestellt", `data-v-ziel="nachbestellen"`, vor.length ? "warn" : "")}
+      ${vZeile("lkw", "Bestellungen", [off.length ? `${zahl(off.length)} offen` : "keine offen", rechnOffen ? plural(rechnOffen, "Rechnung offen", "Rechnungen offen") : ""].filter(Boolean).join(" · "), `data-v-ziel="bestellungen"`)}
+      ${vZeile("haus", "Lieferanten", S.lieferanten.length ? plural(S.lieferanten.length, "Lieferant", "Lieferanten") : "Noch keine angelegt", `data-v-ziel="lieferanten"`)}
+      ${vZeile("beleg", "Wareneingang ohne Bestellung", "Lieferung direkt einbuchen", `data-buchen="eingang"`)}
+    </div>
+    <div class="aktionen" style="margin-top:0"><button class="taste sekundaer" data-neu-artikel>${ICON.plusK} Artikel anlegen</button><button class="taste sekundaer" data-tab-wechsel="eingang">Eingänge ansehen</button></div>
+    <section class="abschnitt"><h3 class="titel-bereich">Bestelldaten</h3>
+      <form id="einst-form" class="karte innen formular" autocomplete="off" novalidate>
+        <div class="gruppe"><label for="e-firma">Besteller</label><input id="e-firma" class="eingabe" data-einst="firma" value="${esc(e.firma ?? "GAUSS LVS GmbH")}"></div>
+        <div class="gruppe"><label for="e-adresse">Lieferadresse</label><textarea id="e-adresse" class="kommentar" data-einst="lieferadresse" style="min-height:72px" placeholder="Straße, PLZ Ort">${esc(e.lieferadresse || "")}</textarea></div>
+        <div class="zwei umbruch"><div class="gruppe"><label for="e-rechnung">Rechnungen an</label><input id="e-rechnung" class="eingabe" data-einst="rechnungsmail" inputmode="email" value="${esc(e.rechnungsmail || "")}" placeholder="rechnung@…"></div>
+          <div class="gruppe"><label for="e-hinweis">Hinweis an Lieferanten</label><input id="e-hinweis" class="eingabe" data-einst="hinweis" value="${esc(e.hinweis || "")}" placeholder="z. B. Lieferung Mo–Fr 8–16 Uhr"></div></div>
+        <button type="submit" class="taste sekundaer klein">Speichern</button>
+      </form></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Exporte</h3><div class="aktionen" style="margin-top:0">
+      ${[["bestand", "Bestand"], ["ausgabe", "Ausgaben"], ["eingang", "Eingänge"], ["buchhaltung", "Buchhaltung"], ["bestellungen", "Bestellungen"]].map(([k, l]) => `<button class="taste sekundaer klein" data-export-v="${k}">${l}</button>`).join("")}</div></section>
+    <div class="aktionen" style="margin-top:0">
+      <button class="taste sekundaer" data-pin-aendern>${VICON.schloss} PIN ändern</button>
+      <button class="taste sekundaer" data-abmelden>Abmelden</button></div>
+    ${hatDemo() ? `<button class="entfernen" data-menue-demo style="justify-self:start">Demo-Daten entfernen</button>` : ""}`;
+}
+
+/* --- Nachbestellen: Vorschläge je Lieferant --- */
+function htmlNachbestellen(){
+  const vor = nachbestellVorschlaege(), nb = S.nb || (S.nb = { menge: {} });
+  for (const a of vor) if (!nb.menge[a.id]) nb.menge[a.id] = Object.fromEntries(varianten(a).map(v => [v, vorschlagMenge(a, v)]));
+  const gruppen = new Map();
+  for (const a of vor){ const k = a.lieferantId || ("txt:" + (a.lieferant || "")); if (!gruppen.has(k)) gruppen.set(k, []); gruppen.get(k).push(a); }
+  const unterw = aktive().filter(a => unterwegs(a.id) > 0);
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Nachbestellen</h2>
+      <p class="meta" style="margin:0">Vorschlag aus Mindestbestand, Bestand und bereits Bestelltem. Mengen anpassen, dann je Lieferant eine Bestellung anlegen.</p></div>
+    ${!vor.length ? `<div class="karte"><div class="leer"><p class="titel-karte">Nichts nachzubestellen</p><p class="meta" style="margin:0">Alle Artikel mit Mindestbestand sind ausreichend vorrätig oder schon bestellt.</p></div></div>` : ""}
+    ${[...gruppen].map(([k, l]) => { const lf = lieferantVon(k), name = lf?.name || (k.slice(4) || "Ohne Lieferant");
+      return `<section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">${esc(name)}</h3>${lf?.lieferzeitTage ? `<span class="meta">Lieferzeit etwa ${plural(lf.lieferzeitTage, "Tag", "Tage")}</span>` : ""}</header>
+        <div class="karte positionen">${l.map(a => `<div class="position"><div class="position-kopf">${kachel(a)}<span class="t">${esc(a.name)}</span><span class="meta zahl">${ca(a.id)}${zahl(bestand(a.id))} / min. ${zahl(a.mindest)}</span></div>
+          <div class="varianten-raster">${varianten(a).map(v => `<div class="variante-zeile"><span><span class="v">${v ? esc(v) : "Bestellmenge"}</span>${v ? `<span class="meta zahl">Bestand ${zahl(bestand(a.id, v))}</span>` : `<span class="meta">${a.bestellmenge ? `Standard ${zahl(a.bestellmenge)}` : "Vorschlag"}</span>`}</span>
+            <span class="stepper"><button type="button" data-nb-step="-1" data-id="${esc(a.id)}" data-v="${esc(v)}" aria-label="Weniger">${ICON.minus}</button>
+            <input type="number" inputmode="numeric" min="0" data-nb-menge data-id="${esc(a.id)}" data-v="${esc(v)}" id="nb-${esc(a.id)}-${esc(v)}" value="${nb.menge[a.id]?.[v] || ""}" placeholder="0" aria-label="Bestellmenge ${esc(a.name)} ${esc(v)}">
+            <button type="button" data-nb-step="${a.bestellmenge && !v ? a.bestellmenge : 1}" data-id="${esc(a.id)}" data-v="${esc(v)}" aria-label="Mehr">${ICON.plusK}</button></span></div>`).join("")}</div></div>`).join("")}</div>
+        <button class="taste primaer ganz" data-bestellung-anlegen="${esc(k)}">Bestellung anlegen</button></section>`; }).join("")}
+    ${unterw.length ? `<section class="abschnitt"><h3 class="titel-bereich">Schon unterwegs</h3><div class="karte">${unterw.map(a => `<button class="zeile artikel" data-artikel="${esc(a.id)}">${kachel(a)}<span class="info"><span class="t">${esc(a.name)}</span><span class="meta">${esc(lieferantName(a))}</span></span><span class="rechts"><span class="menge"><b>${zahl(unterwegs(a.id))}</b><span class="meta">unterwegs</span></span></span></button>`).join("")}</div></section>` : ""}`;
+}
+async function bestellungAnlegen(k){
+  const vor = nachbestellVorschlaege().filter(a => (a.lieferantId || ("txt:" + (a.lieferant || ""))) === k);
+  const positionen = []; for (const a of vor) for (const [v, n] of Object.entries(S.nb?.menge?.[a.id] || {})) if (n > 0) positionen.push({ artikelId: a.id, variante: v, menge: n, ek: ekVon(a) });
+  if (!positionen.length) return toast("Bitte mindestens eine Menge eintragen.");
+  const lf = lieferantVon(k), id = uid(), nr = naechsteNr();
+  const daten = { nr, lieferantId: lf ? lf.id : "", lieferant: lf ? lf.name : k.slice(4), status: "entwurf", positionen, angelegt: new Date().toISOString(), kuerzel: ls.get("kuerzel", ""), links: [], notiz: "", rechnung: "" };
+  try { await Store.set("bestellungen", id, daten); for (const p of positionen) delete S.nb.menge[p.artikelId]; toast(`Bestellung ${nr} angelegt`); openSheet("bestellung", { open: id }); }
+  catch (err){ fehlerToast(err); }
+}
+
+/* --- Bestellungen: Liste und Detail --- */
+function bestellungZeile(be){
+  const [l, cls] = BESTELL_STATUS[be.status] || BESTELL_STATUS.entwurf, summe = (be.positionen || []).reduce((s, p) => s + Number(p.menge || 0), 0);
+  const wert = (be.positionen || []).reduce((s, p) => s + Number(p.menge || 0) * Number(p.ek || 0), 0);
+  return `<button class="zeile artikel" data-bestellung="${esc(be.id)}">${vKachel("lkw")}
+    <span class="info"><span class="t">${esc(be.lieferant || "Ohne Lieferant")}</span><span class="meta zahl">${esc(be.nr)} · ${fmt(be.bestelltAm || be.angelegt)}${wert ? " · " + euro(wert) + " netto" : ""}</span>
+      <span class="unten"><span class="badge ${cls}">${l}</span>${be.rechnung === "offen" ? `<span class="badge st-warnung">Rechnung offen</span>` : be.rechnung === "bezahlt" ? `<span class="badge st-erfolg">Bezahlt</span>` : ""}</span></span>
+    <span class="rechts"><span class="menge"><b>${zahl(summe)}</b><span class="meta">${plural((be.positionen || []).length, "Position", "Positionen")}</span></span>${ICON.chev}</span></button>`;
+}
+function htmlBestellungen(){
+  const sort = (a, b) => String(b.bestelltAm || b.angelegt || "").localeCompare(String(a.bestelltAm || a.angelegt || ""));
+  const offen = offeneBestellungen().sort(sort), fertig = S.bestellungen.filter(b => !offeneBestellungen().includes(b)).sort(sort);
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Bestellungen</h2><p class="meta" style="margin:0">Vom Entwurf bis zum Wareneingang, mit Belegen.</p></div>
+    <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Offen</h3><button class="taste sekundaer klein" data-v-ziel="nachbestellen">${ICON.plusK} Nachbestellen</button></header>
+      <div class="karte">${offen.length ? offen.map(bestellungZeile).join("") : `<div class="leer" style="padding:24px"><p class="meta" style="margin:0">Keine offenen Bestellungen.</p></div>`}</div></section>
+    ${fertig.length ? `<section class="abschnitt"><h3 class="titel-bereich">Abgeschlossen</h3><div class="karte">${fertig.slice(0, 50).map(bestellungZeile).join("")}</div></section>` : ""}`;
+}
+function bestelltext(be){
+  const lf = lieferantVon(be.lieferantId) || {}, e = EINST(), k = ls.get("kuerzel", "");
+  const zeilen = (be.positionen || []).filter(p => p.menge > 0).map(p => { const a = artikelVon(p.artikelId) || {};
+    const druck = (a.links || []).filter(l => l.art === "druckdatei").map(l => l.url);
+    return `- ${zahl(p.menge)} × ${a.name || "Artikel"}${p.variante ? `, ${p.variante}` : ""}${a.artikelnr ? ` (Art.-Nr. ${a.artikelnr})` : ""}${druck.length ? `\n  Druckdaten: ${druck.join(" ")}` : ""}`; }).join("\n");
+  return `Betreff: Bestellung ${be.nr}${e.firma ? " – " + e.firma : ""}
+
+Guten Tag${lf.ansprechpartner ? " " + lf.ansprechpartner : ""},
+
+bitte liefern Sie folgende Artikel${lf.kundennr ? ` (Kundennummer ${lf.kundennr})` : ""}:
+
+${zeilen}
+
+${e.lieferadresse ? `Lieferadresse:\n${e.firma ? e.firma + "\n" : ""}${e.lieferadresse}\n\n` : ""}${e.rechnungsmail ? `Rechnung bitte an ${e.rechnungsmail}, mit Bestellnummer ${be.nr}.\n` : `Bitte geben Sie auf der Rechnung die Bestellnummer ${be.nr} an.\n`}${e.hinweis ? e.hinweis + "\n" : ""}
+Bitte bestätigen Sie den Auftrag mit Liefertermin.
+
+Viele Grüße
+${k}${e.firma ? "\n" + e.firma : ""}`;
+}
+function htmlBestellung(){
+  const be = S.bestellungen.find(b => b.id === S.open); if (!be) return `${zurueckTaste()}<p class="meta" id="d-titel" tabindex="-1">Diese Bestellung gibt es nicht mehr.</p>`;
+  const lf = lieferantVon(be.lieferantId) || {}, [sl, scls] = BESTELL_STATUS[be.status] || BESTELL_STATUS.entwurf, entwurf = be.status === "entwurf";
+  const pos = offenePos(be), wert = pos.reduce((s, p) => s + Number(p.menge || 0) * Number(p.ek || 0), 0);
+  const shopLinks = [lf.shopUrl && sicherLink(lf.shopUrl) ? [lf.name + " Shop", lf.shopUrl] : null, ...pos.map(p => { const a = artikelVon(p.artikelId); return a?.nachbestellUrl && sicherLink(a.nachbestellUrl) ? [a.name, a.nachbestellUrl] : null; })].filter(Boolean);
+  const weg = lf.bestellweg || (lf.email ? "email" : shopLinks.length ? "shop" : "email");
+  return `${zurueckTaste()}
+    <div class="held flach">${vKachel("lkw")}<div><p class="etikett" style="margin:0">Bestellung ${esc(be.nr)}</p><h2 id="d-titel">${esc(be.lieferant || "Ohne Lieferant")}</h2>
+      <p class="meta" style="margin:4px 0 0"><span class="badge ${scls}">${sl}</span>${wert ? ` <span class="zahl">${euro(wert)} netto</span>` : ""}</p></div></div>
+    <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Positionen</h3><span class="meta">${entwurf ? "im Entwurf änderbar" : "geliefert / bestellt"}</span></header>
+      <div class="karte positionen">${pos.map((p, i) => { const a = artikelVon(p.artikelId) || { name: "Gelöschter Artikel" };
+        return `<div class="position"><div class="position-kopf">${kachel(a)}<span class="t">${esc(a.name)}${p.variante ? ` · ${esc(p.variante)}` : ""}</span>
+          ${entwurf ? `<span class="stepper"><button type="button" data-bp-step="-1" data-i="${i}" aria-label="Weniger">${ICON.minus}</button><input type="number" inputmode="numeric" min="0" data-bp-menge data-i="${i}" id="bp-${i}" value="${p.menge || ""}" aria-label="Menge"><button type="button" data-bp-step="1" data-i="${i}" aria-label="Mehr">${ICON.plusK}</button></span>`
+            : `<span class="meta zahl">${zahl(Number(p.menge) - p.offen)} / ${zahl(p.menge)}</span>`}</div>
+          ${p.ek ? `<p class="meta zahl" style="margin:0 0 0 52px">EK ${euro(p.ek)} je ${esc(einheit(a))} · ${euro(p.ek * p.menge)}</p>` : ""}</div>`; }).join("")}</div></section>
+    ${entwurf || be.status === "bestellt" ? `<section class="abschnitt"><h3 class="titel-bereich">Bestellen bei ${esc(lf.name || be.lieferant || "Lieferant")}</h3>
+      <div class="karte innen bestellweg">
+        ${weg === "telefon" && lf.telefon ? `<p class="text" style="margin:0">Telefonisch: <span class="kopierbar zahl">${esc(lf.telefon)}</span></p>` : ""}
+        ${lf.email ? `<p class="text" style="margin:0">Per E-Mail an <span class="kopierbar">${esc(lf.email)}</span></p>` : (weg === "email" ? `<p class="meta" style="margin:0">Beim Lieferanten ist keine E-Mail hinterlegt.</p>` : "")}
+        <textarea id="bestelltext" class="kommentar bestelltext" readonly aria-label="Bestelltext">${esc(bestelltext(be))}</textarea>
+        <div class="aktionen" style="margin-top:0"><button class="taste sekundaer klein" data-kopieren="bestelltext">${VICON.kopie} Bestelltext kopieren</button>
+          ${lf.email && !IM_ARTIFACT ? `<a class="taste sekundaer klein" href="mailto:${encodeURIComponent(lf.email)}?subject=${encodeURIComponent("Bestellung " + be.nr)}&body=${encodeURIComponent(bestelltext(be).replace(/^Betreff:.*\n\n/, ""))}">E-Mail öffnen</a>` : ""}
+          ${shopLinks.map(([t, u]) => `<a class="taste sekundaer klein" href="${esc(u)}" target="_blank" rel="noopener">${VICON.link} ${esc(t)}</a>`).join("")}</div>
+      </div></section>` : ""}
+    <section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte innen formular">
+      <div class="zwei"><div class="gruppe"><label for="bf-bestellt">Bestellt am</label><input id="bf-bestellt" type="date" class="eingabe zahl datum" data-bf="bestelltAm" value="${esc(String(be.bestelltAm || "").slice(0, 10))}"></div>
+        <div class="gruppe"><label for="bf-erwartet">Erwartet am</label><input id="bf-erwartet" type="date" class="eingabe zahl datum" data-bf="erwartetAm" value="${esc(be.erwartetAm || "")}"></div></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="bf-rnr">Rechnungsnummer</label><input id="bf-rnr" class="eingabe" data-bf="rechnungsnr" value="${esc(be.rechnungsnr || "")}"></div>
+        <div class="gruppe"><label for="bf-betrag">Rechnungsbetrag brutto</label><input id="bf-betrag" class="eingabe zahl" data-bf="betrag" inputmode="decimal" value="${esc(euroText(be.betrag))}" placeholder="0,00 €"></div></div>
+      <div class="gruppe"><p class="gruppe-titel">Rechnung</p><div class="themen-wahl">${[["offen", "Offen"], ["bezahlt", "Bezahlt"], ["", "Noch keine"]].map(([k2, l]) => `<button type="button" class="chip" data-be-rechnung="${k2}" aria-pressed="${(be.rechnung || "") === k2}">${l}</button>`).join("")}</div></div>
+      <div class="gruppe"><label for="bf-notiz">Notiz</label><textarea id="bf-notiz" class="kommentar" data-bf="notiz" style="min-height:64px">${esc(be.notiz || "")}</textarea></div>
+    </div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Belege und Links</h3>${linksEdit("best", be.links || [], ["angebot", "ab", "rechnung", "lieferschein", "sonstiges"])}</section>
+    <div class="aktionen" style="margin-top:0">
+      ${entwurf ? `<button class="taste primaer" data-be-status="bestellt">Als bestellt markieren</button>` : ""}
+      ${OFFEN.includes(be.status) ? `<button class="taste primaer" data-wareneingang="${esc(be.id)}">${ICON.rein} Wareneingang buchen</button>` : ""}
+      ${be.status === "teilweise" ? `<button class="taste sekundaer" data-be-status="geliefert">Als vollständig abschließen</button>` : ""}</div>
+    ${S.frage === "be-storno" ? `<div class="bestaetigen"><p>${entwurf ? "Entwurf löschen?" : "Bestellung stornieren? Bereits gebuchte Eingänge bleiben."}</p><div class="aktionen"><button class="taste gefahr" data-be-storno-ja>${entwurf ? "Löschen" : "Stornieren"}</button><button class="taste sekundaer" data-frage-nein>Behalten</button></div></div>`
+      : be.status !== "storniert" && be.status !== "geliefert" ? `<button class="entfernen" data-be-storno style="justify-self:start">${entwurf ? "Entwurf löschen" : "Bestellung stornieren"}</button>` : ""}`;
+}
+async function bestellungAendern(daten, msg){
+  const be = S.bestellungen.find(b => b.id === S.open); if (!be) return;
+  try { await Store.update("bestellungen", be.id, daten); if (msg) toast(msg); } catch (err){ fehlerToast(err); }
+}
+function wareneingangStarten(bid){
+  const be = S.bestellungen.find(b => b.id === bid); if (!be) return;
+  const b = neueBuchung("eingang"); b.bestellungId = be.id; b.bestellnr = be.nr; b.lieferant = be.lieferant || ""; b.rechnungsnr = be.rechnungsnr || ""; b.betrag = euroText(be.betrag); b.rechnung = be.rechnung || "offen";
+  for (const p of offenePos(be)){ if (!p.offen) continue; const a = artikelVon(p.artikelId); if (!a) continue;
+    if (!b.reihe.includes(a.id)){ b.reihe.push(a.id); b.pos[a.id] = Object.fromEntries(varianten(a).map(v => [v, 0])); b.ek[a.id] = euroText(p.ek || ekVon(a)); }
+    b.pos[a.id][p.variante || ""] = p.offen; }
+  S.b = b; openSheet("buchen");
+}
+async function bestellungNachEingang(bid, gebucht){
+  const be = S.bestellungen.find(b => b.id === bid); if (!be) return;
+  const rest = offenePos(be).reduce((s, p) => s + Math.max(0, p.offen - (gebucht[p.artikelId + "|" + (p.variante || "")] || 0)), 0);
+  await Store.update("bestellungen", bid, { status: rest > 0 ? "teilweise" : "geliefert", geliefertAm: heute() });
+}
+
+/* --- Lieferanten --- */
+function htmlLieferanten(){
+  const l = [...S.lieferanten].sort((a, b) => a.name.localeCompare(b.name, "de"));
+  const zaehl = id => S.artikel.filter(a => a.lieferantId === id).length;
+  const ohne = [...new Set(S.artikel.filter(a => !a.lieferantId && a.lieferant).map(a => a.lieferant))].filter(n => !S.lieferanten.some(x => x.name === n));
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Lieferanten</h2><p class="meta" style="margin:0">Bestellweg, Kontakt und Verträge je Hersteller.</p></div>
+    <button class="taste primaer ganz" data-lieferant-neu>${ICON.plusK} Lieferant anlegen</button>
+    <div class="karte">${l.length ? l.map(x => `<button class="zeile artikel" data-lieferant="${esc(x.id)}">${vKachel("haus")}<span class="info"><span class="t">${esc(x.name)}</span>
+      <span class="meta">${esc([{ email: "E-Mail", shop: "Online-Shop", telefon: "Telefon", portal: "Kundenportal" }[x.bestellweg] || "", x.lieferzeitTage ? `etwa ${plural(x.lieferzeitTage, "Tag", "Tage")}` : "", plural(zaehl(x.id), "Artikel", "Artikel")].filter(Boolean).join(" · "))}</span></span><span class="rechts">${ICON.chev}</span></button>`).join("")
+      : `<div class="leer" style="padding:24px"><p class="meta" style="margin:0">Noch keine Lieferanten angelegt.</p></div>`}</div>
+    ${ohne.length ? `<section class="abschnitt"><h3 class="titel-bereich">Aus Artikeln übernehmen</h3><p class="meta" style="margin:0 4px">In Artikeln steht ein Lieferant nur als Text. Übernehmen verknüpft alle passenden Artikel.</p>
+      <div class="aktionen" style="margin-top:0">${ohne.map(n => `<button class="taste sekundaer klein" data-lieferant-uebernehmen="${esc(n)}">${esc(n)}</button>`).join("")}</div></section>` : ""}`;
+}
+function neuerLieferant(l){ return l ? { ...l, links: [...(l.links || [])], lieferzeitTage: l.lieferzeitTage ? String(l.lieferzeitTage) : "" } : { name: "", ansprechpartner: "", email: "", telefon: "", shopUrl: "", kundennr: "", bestellweg: "email", lieferzeitTage: "", notiz: "", links: [] }; }
+function htmlLieferantEdit(){
+  const l = S.lief, neu = !l.id, artikel = l.id ? S.artikel.filter(a => a.lieferantId === l.id) : [];
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">${neu ? "Lieferant anlegen" : esc(l.name)}</h2></div>
+    <form id="lief-form" class="formular" autocomplete="off" novalidate>
+      <div class="gruppe"><label for="l-name">Firma <span class="pflicht" aria-hidden="true">*</span></label><input id="l-name" class="eingabe" data-lf="name" value="${esc(l.name)}"></div>
+      <div class="gruppe"><p class="gruppe-titel">Bestellweg</p><div class="themen-wahl">${[["email", "E-Mail"], ["shop", "Online-Shop"], ["portal", "Kundenportal"], ["telefon", "Telefon"]].map(([k, t]) => `<button type="button" class="chip" data-lf-weg="${k}" aria-pressed="${l.bestellweg === k}">${t}</button>`).join("")}</div></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="l-ap">Ansprechpartner</label><input id="l-ap" class="eingabe" data-lf="ansprechpartner" value="${esc(l.ansprechpartner)}"></div>
+        <div class="gruppe"><label for="l-knr">Kundennummer</label><input id="l-knr" class="eingabe" data-lf="kundennr" value="${esc(l.kundennr)}"></div></div>
+      <div class="zwei umbruch"><div class="gruppe"><label for="l-mail">E-Mail für Bestellungen</label><input id="l-mail" class="eingabe" data-lf="email" inputmode="email" value="${esc(l.email)}"></div>
+        <div class="gruppe"><label for="l-tel">Telefon</label><input id="l-tel" class="eingabe" data-lf="telefon" inputmode="tel" value="${esc(l.telefon)}"></div></div>
+      <div class="gruppe"><label for="l-shop">Shop oder Kundenportal</label><input id="l-shop" class="eingabe" data-lf="shopUrl" inputmode="url" value="${esc(l.shopUrl)}" placeholder="https://…"></div>
+      <div class="gruppe"><label for="l-zeit">Lieferzeit in Tagen</label><input id="l-zeit" class="eingabe zahl" data-lf="lieferzeitTage" inputmode="numeric" value="${esc(l.lieferzeitTage)}" style="max-width:140px"></div>
+      <div class="gruppe"><label for="l-notiz">Notiz</label><textarea id="l-notiz" class="kommentar" data-lf="notiz" style="min-height:64px" placeholder="Konditionen, Mindestmengen, Besonderheiten">${esc(l.notiz)}</textarea></div>
+      <div class="gruppe"><p class="gruppe-titel">Verträge, Preislisten, Links</p>${linksEdit("lief", l.links, ["vertrag", "angebot", "sonstiges"])}</div>
+      ${artikel.length ? `<div class="gruppe"><p class="gruppe-titel">Artikel dieses Lieferanten</p><p class="meta" style="margin:0">${esc(artikel.map(a => a.name).join(", "))}</p></div>` : ""}
+      <p class="fehler-text" id="lief-fehler" hidden></p>
+      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer">${neu ? "Anlegen" : "Speichern"}</button></div>
+    </form>`;
+}
+async function speichereLieferant(){
+  const l = S.lief, f = $("#lief-fehler");
+  if (!String(l.name || "").trim()){ f.textContent = "Bitte den Firmennamen eintragen."; f.hidden = false; $("#l-name").focus(); return; }
+  if (l.shopUrl && !sicherLink(l.shopUrl)){ f.textContent = "Die Shop-Adresse muss mit https:// beginnen."; f.hidden = false; $("#l-shop").focus(); return; }
+  const id = l.id || uid(), daten = { name: l.name.trim(), ansprechpartner: (l.ansprechpartner || "").trim(), email: (l.email || "").trim(), telefon: (l.telefon || "").trim(), shopUrl: (l.shopUrl || "").trim(), kundennr: (l.kundennr || "").trim(),
+    bestellweg: l.bestellweg || "email", lieferzeitTage: Math.max(0, parseInt(l.lieferzeitTage, 10) || 0), notiz: (l.notiz || "").trim(), links: l.links || [], geaendert: new Date().toISOString() };
+  try {
+    await Store.set("lieferanten", id, daten);
+    if (!l.id) for (const a of S.artikel.filter(x => !x.lieferantId && x.lieferant === daten.name)) await Store.update("artikel", a.id, { lieferantId: id });
+    toast(l.id ? "Gespeichert" : "Lieferant angelegt"); zurueck();
+  } catch (err){ fehlerToast(err); }
+}
+
+/* --- Links: Druckdateien, Angebote, Rechnungen (z. B. Google Drive) --- */
+function linksEdit(scope, links, arten){
+  const wahl = (S.linkArt || {})[scope] || arten[0];
+  return `<div class="links-edit">${links.length ? `<ul class="links-liste">${links.map((l, i) => `<li><span class="link-art">${esc(LINK_ARTEN[l.art] || "Link")}</span><a href="${esc(sicherLink(l.url))}" target="_blank" rel="noopener">${esc(l.titel || linkTitel(l.url))}</a><button type="button" class="medium-weg link-weg" data-link-weg="${scope}:${i}" aria-label="Link entfernen">${ICON.weg}</button></li>`).join("")}</ul>` : ""}
+    <div class="link-neu"><div class="themen-wahl">${arten.map(a => `<button type="button" class="chip" data-link-art="${scope}:${a}" aria-pressed="${wahl === a}">${LINK_ARTEN[a]}</button>`).join("")}</div>
+      <div class="link-felder"><input id="ln-url-${scope}" class="eingabe" inputmode="url" placeholder="https:// Link, z. B. aus Google Drive" aria-label="Link-Adresse">
+        <input id="ln-titel-${scope}" class="eingabe" placeholder="Titel (optional)" aria-label="Link-Titel"></div>
+      <button type="button" class="taste sekundaer klein" data-link-hinzu="${scope}">${VICON.link} Link hinzufügen</button></div></div>`;
+}
+function linkTitel(u){ try { const x = new URL(u); if (/drive\.google|docs\.google/.test(x.hostname)) return "Google Drive"; const t = decodeURIComponent(x.pathname.split("/").filter(Boolean).pop() || ""); return t || x.hostname; } catch { return "Link"; } }
+function linksVon(scope){ return scope === "edit" ? (S.edit.links ||= []) : scope === "lief" ? (S.lief.links ||= []) : [...(S.bestellungen.find(b => b.id === S.open)?.links || [])]; }
+async function linkHinzu(scope){
+  const url = $("#ln-url-" + scope).value.trim(), titel = $("#ln-titel-" + scope).value.trim(), art = (S.linkArt || {})[scope] || D.querySelector(`[data-link-art^="${scope}:"]`)?.dataset.linkArt.split(":")[1];
+  if (!sicherLink(url)){ toast("Der Link muss mit https:// beginnen."); $("#ln-url-" + scope).focus(); return; }
+  const l = linksVon(scope); l.push({ art, url, titel: titel || linkTitel(url), am: heute() });
+  if (scope === "best") await bestellungAendern({ links: l }, "Link gespeichert"); else renderSheet();
+}
+async function linkWeg(scope, i){
+  const l = linksVon(scope); l.splice(i, 1);
+  if (scope === "best") await bestellungAendern({ links: l }); else renderSheet();
+}
+function linksAnzeige(links){
+  const l = (links || []).filter(x => sicherLink(x.url) && (S.admin || LINK_OEFFENTLICH.includes(x.art)));
+  if (!l.length) return "";
+  return `<ul class="links-liste anzeige">${l.map(x => `<li><span class="link-art">${esc(LINK_ARTEN[x.art] || "Link")}</span><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titel || linkTitel(x.url))}</a>${VICON.link}</li>`).join("")}</ul>`;
+}
+
 /* ===== Ereignisse: Seite ===== */
 $("#ausgabe-buchen").addEventListener("click", () => buchenStarten("ausgabe"));
 $("#mini-ausgabe").addEventListener("click", () => buchenStarten("ausgabe"));
-$("#eingang-buchen").addEventListener("click", () => buchenStarten("eingang"));
-$("#neu-artikel-oben").addEventListener("click", () => openSheet("artikel-edit", { edit: neuerEntwurf() }));
+$("#verwaltung-oeffnen").addEventListener("click", () => verwaltungOeffnen());
+$("#neu-artikel-oben").addEventListener("click", () => neuerArtikel());
 $("#filter-oeffnen").addEventListener("click", () => openSheet("filter"));
 document.querySelector(".umschalter").addEventListener("click", e => {
   const b = e.target.closest("[data-tab]"); if (!b) return; S.tab = b.dataset.tab; renderFilter(); render();
@@ -1714,7 +2095,7 @@ $("#inhalt").addEventListener("click", e => {
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.artikel) openSheet("artikel", { open: t.dataset.artikel });
   else if (t.dataset.vorgang) openSheet("vorgang", { open: t.dataset.vorgang });
-  else if (t.hasAttribute("data-neu-artikel")) openSheet("artikel-edit", { edit: neuerEntwurf() });
+  else if (t.hasAttribute("data-neu-artikel")) neuerArtikel();
   else if (t.dataset.buchen) buchenStarten(t.dataset.buchen);
   else if (t.hasAttribute("data-demo-laden")) demoLaden();
   else if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.status = "alle"; renderFilter(); render(); }
@@ -1741,6 +2122,32 @@ D.addEventListener("click", e => {
   if (d.kommentarWeg){ S.frage = "k-" + d.kommentarWeg; return renderSheet(); }
   if (d.kommentarWegJa){ Store.del("kommentare", d.kommentarWegJa).then(() => { S.frage = null; toast("Kommentar gelöscht"); renderSheet(); }).catch(fehlerToast); return; }
   if (t.hasAttribute("data-demo-weg")) return demoEntfernen();
+  // Verwaltung
+  if (d.vZiel){ if (d.vZiel === "nachbestellen") S.nb = { menge: {} }; return openSheet(d.vZiel); }
+  if (d.tabWechsel){ S.tab = d.tabWechsel; closeSheet(); renderFilter(); render(); return; }
+  if (d.exportV) return exportieren(d.exportV);
+  if (t.hasAttribute("data-abmelden")){ adminSetzen(false); toast("Abgemeldet"); return closeSheet(); }
+  if (t.hasAttribute("data-pin-aendern")){ S.pinNeu = true; return openSheet("pin"); }
+  if (t.hasAttribute("data-menue-demo")) return openSheet("demo");
+  if (d.nbStep){ const m = S.nb.menge[d.id] ||= {}; m[d.v] = Math.max(0, (Number(m[d.v]) || 0) + Number(d.nbStep)); const i = D.querySelector(`input[data-nb-menge][data-id="${CSS.escape(d.id)}"][data-v="${CSS.escape(d.v)}"]`); if (i) i.value = m[d.v] || ""; return; }
+  if (d.bestellungAnlegen !== undefined) return bestellungAnlegen(d.bestellungAnlegen);
+  if (d.bestellung) return openSheet("bestellung", { open: d.bestellung });
+  if (d.bpStep){ const be = S.bestellungen.find(b => b.id === S.open), ps = be.positionen.map(p => ({ ...p })); ps[+d.i].menge = Math.max(0, Number(ps[+d.i].menge || 0) + Number(d.bpStep)); const i = $("#bp-" + d.i); if (i) i.value = ps[+d.i].menge; return bestellungAendern({ positionen: ps }); }
+  if (d.beRechnung !== undefined){ D.querySelectorAll("[data-be-rechnung]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); return bestellungAendern({ rechnung: d.beRechnung }, "Gespeichert"); }
+  if (d.beStatus){ const daten = { status: d.beStatus }; if (d.beStatus === "bestellt"){ const be = S.bestellungen.find(b => b.id === S.open); if (!be.bestelltAm) daten.bestelltAm = heute(); if (!be.erwartetAm){ const lf = lieferantVon(be.lieferantId); if (lf?.lieferzeitTage){ const x = new Date(); x.setDate(x.getDate() + lf.lieferzeitTage); daten.erwartetAm = x.toISOString().slice(0, 10); } } }
+    return bestellungAendern(daten, d.beStatus === "bestellt" ? "Als bestellt markiert" : "Abgeschlossen").then(renderSheet); }
+  if (d.wareneingang) return wareneingangStarten(d.wareneingang);
+  if (t.hasAttribute("data-be-storno")){ S.frage = "be-storno"; return renderSheet(); }
+  if (t.hasAttribute("data-be-storno-ja")){ const be = S.bestellungen.find(b => b.id === S.open); S.frage = null;
+    (be.status === "entwurf" ? Store.del("bestellungen", be.id).then(() => { toast("Entwurf gelöscht"); zurueck(); }) : bestellungAendern({ status: "storniert" }, "Storniert").then(renderSheet)).catch(fehlerToast); return; }
+  if (d.kopieren){ const el = $("#" + d.kopieren); navigator.clipboard.writeText(el.value).then(() => toast("Kopiert")).catch(() => { el.focus(); el.select(); toast("Text markiert. Jetzt kopieren."); }); return; }
+  if (t.hasAttribute("data-lieferant-neu")) return openSheet("lieferant-edit", { lief: neuerLieferant() });
+  if (d.lieferant) return openSheet("lieferant-edit", { lief: neuerLieferant(lieferantVon(d.lieferant)) });
+  if (d.lieferantUebernehmen){ const n = d.lieferantUebernehmen, quelle = S.artikel.find(a => a.lieferant === n && !a.lieferantId); return openSheet("lieferant-edit", { lief: { ...neuerLieferant(), name: n } }); }
+  if (d.lfWeg){ S.lief.bestellweg = d.lfWeg; D.querySelectorAll("[data-lf-weg]").forEach(x => x.setAttribute("aria-pressed", String(x === t))); return; }
+  if (d.linkArt){ const [sc, art] = d.linkArt.split(":"); (S.linkArt ||= {})[sc] = art; D.querySelectorAll(`[data-link-art^="${sc}:"]`).forEach(x => x.setAttribute("aria-pressed", String(x === t))); return; }
+  if (d.linkHinzu) return linkHinzu(d.linkHinzu);
+  if (d.linkWeg){ const [sc, i] = d.linkWeg.split(":"); return linkWeg(sc, Number(i)); }
   if (d.abbrechen !== undefined) return S.stack.length ? zurueck() : closeSheet();
   if (d.frageNein !== undefined){ S.frage = null; return renderSheet(); }
   // Artikel und Vorgänge
@@ -1749,8 +2156,9 @@ D.addEventListener("click", e => {
   if (d.artikelEdit) return openSheet("artikel-edit", { edit: neuerEntwurf(artikelVon(d.artikelEdit)) });
   if (d.inventur){ const a = artikelVon(d.inventur); return openSheet("inventur", { inv: { id: a.id, geschaetzt: a.kategorie === "Drucksachen", faktor: 90, cm: "", zahl: Object.fromEntries(varianten(a).map(v => [v, Math.max(0, bestand(a.id, v))])) } }); }
   if (d.buchen){ const art = d.buchen, mit = d.mit; S.b = neueBuchung(art, mit); return openSheet("buchen"); }
-  if (t.hasAttribute("data-neu-artikel")) return openSheet("artikel-edit", { edit: neuerEntwurf() });
+  if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
   // Artikel bearbeiten
+  if (d.wahl === "lieferantId"){ S.edit.lieferantId = S.edit.lieferantId === d.wert ? "" : d.wert; return renderSheet(); }
   if (d.wahl){ S.edit[d.wahl] = d.wahl === "mwst" ? Number(d.wert) : d.wert; (S.edit.beruehrt ||= {})[d.wahl] = true; D.querySelectorAll(`[data-wahl="${d.wahl}"]`).forEach(x => x.setAttribute("aria-pressed", String(x === t))); return; }
   if (d.schalter){ const k = d.schalter; S.edit[k] = k === "aktiv" ? S.edit.aktiv === false : !S.edit[k];
     if (k === "mitVarianten" && S.edit.mitVarianten && !S.edit.variantenText && S.edit.kategorie === "Textilien") S.edit.variantenText = GROESSEN.slice(1, 6).join(", ");
@@ -1782,6 +2190,8 @@ D.addEventListener("click", e => {
 D.addEventListener("input", e => {
   const t = e.target;
   if (t.hasAttribute("data-kuerzel-feld")) S.kWert = t.value;
+  else if (t.dataset.lf && S.lief) S.lief[t.dataset.lf] = t.value;
+  else if (t.hasAttribute("data-nb-menge")){ const m = S.nb.menge[t.dataset.id] ||= {}; m[t.dataset.v] = Math.max(0, parseInt(t.value, 10) || 0); }
   else if (t.id === "k-text") S.kText = t.value;
   else if (t.dataset.ek && S.b) S.b.ek[t.dataset.ek] = t.value;
   else if (t.dataset.feld && S.edit) S.edit[t.dataset.feld] = t.value;
@@ -1796,6 +2206,9 @@ D.addEventListener("input", e => {
     $("#pick-liste").innerHTML = pickListe(aktive().filter(a => !S.b.reihe.includes(a.id) && (!w.length || passt(artikelText(a), w))).sort((a, b) => a.name.localeCompare(b.name, "de")), w); }
 });
 D.addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset.bf){ const v = t.dataset.bf === "betrag" ? parseEuro(t.value) : t.value; bestellungAendern({ [t.dataset.bf]: v }, "Gespeichert"); return; }
+  if (t.hasAttribute("data-bp-menge")){ const be = S.bestellungen.find(b => b.id === S.open), ps = be.positionen.map(p => ({ ...p })); ps[+t.dataset.i].menge = Math.max(0, parseInt(t.value, 10) || 0); bestellungAendern({ positionen: ps }); return; }
   if (e.target.id === "foto-datei" && e.target.files?.length){ const fs = [...e.target.files]; e.target.value = ""; fotosHinzu(fs); }
 });
 D.addEventListener("keydown", e => {
@@ -1807,6 +2220,10 @@ D.addEventListener("submit", e => {
   else if (e.target.id === "buchen-form") speichereBuchung();
   else if (e.target.id === "inventur-form") speichereInventur();
   else if (e.target.id === "kommentar-form") speichereKommentar();
+  else if (e.target.id === "login-form") anmelden();
+  else if (e.target.id === "lief-form") speichereLieferant();
+  else if (e.target.id === "pin-form") pinAendern();
+  else if (e.target.id === "einst-form"){ const daten = { ...stripId(EINST()) }; D.querySelectorAll("[data-einst]").forEach(x => daten[x.dataset.einst] = x.value.trim()); Store.set("einstellungen", "verwaltung", daten).then(() => toast("Bestelldaten gespeichert")).catch(fehlerToast); }
   else if (e.target.id === "kuerzel-form"){ const k = $("#k-wert").value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "").slice(0, 3); ls.set("kuerzel", k); toast(k ? `Kürzel ${k} gespeichert` : "Kürzel entfernt"); closeSheet(); }
 });
 
@@ -1820,11 +2237,11 @@ function renderMenue(){
     <p class="etikett menue-etikett">Als Tabelle sichern</p>
     <button role="menuitem" data-export="bestand"><span>Bestand</span></button>
     <button role="menuitem" data-export="ausgabe"><span>Ausgabeliste</span></button>
-    <button role="menuitem" data-export="eingang"><span>Eingänge und Rechnungen</span></button>
-    <button role="menuitem" data-export="buchhaltung"><span>Buchhaltung: alle Bewegungen mit Wert</span></button>
+    <div class="menue-linie" role="separator"></div>
+    <button role="menuitem" data-menue="verwaltung"><span>Verwaltung</span>${S.admin ? `<span class="meta">angemeldet</span>` : VICON.schloss}</button>
     <div class="menue-linie" role="separator"></div>
     <button role="menuitem" data-menue="kuerzel"><span>Mein Kürzel</span>${k ? `<span class="meta kuerzel-text">${esc(k)}</span>` : ""}</button>
-    ${hatDemo() ? `<div class="menue-linie" role="separator"></div><button role="menuitem" data-menue="demo"><span>Demo-Daten entfernen</span></button>` : ""}`;
+`;
 }
 function menue(offen){
   if (offen) renderMenue();
@@ -1839,6 +2256,7 @@ menueEl.addEventListener("click", e => {
   if (b.dataset.export){ menue(false); exportieren(b.dataset.export); }
   if (b.dataset.menue === "kuerzel"){ menue(false); openSheet("kuerzel"); }
   if (b.dataset.menue === "demo"){ menue(false); openSheet("demo"); }
+  if (b.dataset.menue === "verwaltung"){ menue(false); verwaltungOeffnen(); }
 });
 menueEl.addEventListener("keydown", e => {
   const items = [...menueEl.querySelectorAll("button")], i = items.indexOf(document.activeElement);

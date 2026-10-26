@@ -1,5 +1,5 @@
 /* GAUSS Werbemittel – App-Hülle offline verfügbar. Seite zuerst aus dem Netz, Daten nie aus dem Cache. */
-const VERSION = 'w1';
+const VERSION = 'w2';
 const CACHE = 'werbemittel-' + VERSION;
 const APP = ['./', 'index.html', 'manifest.webmanifest', 'icons/favicon.svg', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(APP.map(u => fetch(u, { cache: 'reload' }).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {})))).then(() => self.skipWaiting())); });

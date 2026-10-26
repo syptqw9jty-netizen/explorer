@@ -12,11 +12,15 @@
  *    Zugriff: empfohlen „Jeder in <Firma>“ (nur angemeldete Mitarbeitende).
  * 5. Die Web-App-URL in werbemittel/index.html bei CONFIG.API_URL eintragen.
  *
- * Blätter „Artikel“, „Vorgaenge“, „Buchungen“ und „Kommentare“ entstehen beim ersten Aufruf.
+ * 6. Optional, tägliche Nachbestell-Erinnerung: Funktion „einrichtenErinnerung“ einmal ausführen.
+ *    Die Mail geht an die Adresse unter Verwaltung → Bestelldaten → „Rechnungen an“, sonst an das Skript-Konto.
+ *
+ * Blätter für Artikel, Vorgänge, Buchungen, Kommentare, Lieferanten, Bestellungen und Einstellungen
+ * entstehen beim ersten Aufruf. Die Verwaltungs-PIN liegt nur als Hash in „Einstellungen“.
  * Jede Zeile: id | json | aktualisiert. Fotos landen im Drive-Ordner „GAUSS Werbemittel Fotos“.
  * Für Auswertungen in Sheets: =MAP oder Apps-Script-Export; die App bietet CSV-Exporte.
  */
-const SAMMLUNGEN = { artikel: 'Artikel', vorgaenge: 'Vorgaenge', buchungen: 'Buchungen', kommentare: 'Kommentare' };
+const SAMMLUNGEN = { artikel: 'Artikel', vorgaenge: 'Vorgaenge', buchungen: 'Buchungen', kommentare: 'Kommentare', lieferanten: 'Lieferanten', bestellungen: 'Bestellungen', einstellungen: 'Einstellungen' };
 const ORDNER = 'GAUSS Werbemittel Fotos';
 const ID = /^[A-Za-z0-9_\-.:@+~]{1,120}$/;
 const MAX_ZELLE = 48000;
@@ -137,4 +141,22 @@ function doPost(e) {
   } catch (err) {
     console.error('doPost', err); return fehler_(err.message || 'Speichern fehlgeschlagen.');
   } finally { try { lock.releaseLock(); } catch (e2) {} }
+}
+
+/* ---------- Tägliche Nachbestell-Erinnerung (optional) ---------- */
+function einrichtenErinnerung() {
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'nachbestellErinnerung').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('nachbestellErinnerung').timeBased().everyDays(1).atHour(7).inTimezone('Europe/Berlin').create();
+}
+function nachbestellErinnerung() {
+  const artikel = liste_('artikel').filter(a => a.aktiv !== false && Number(a.mindest) > 0);
+  const bestand = {}; liste_('buchungen').forEach(b => { bestand[b.artikelId] = (bestand[b.artikelId] || 0) + Number(b.menge || 0); });
+  const unterwegs = {};
+  liste_('bestellungen').filter(b => b.status === 'bestellt' || b.status === 'teilweise').forEach(b => (b.positionen || []).forEach(p => { unterwegs[p.artikelId] = (unterwegs[p.artikelId] || 0) + Number(p.menge || 0); }));
+  const knapp = artikel.filter(a => (bestand[a.id] || 0) + (unterwegs[a.id] || 0) <= Number(a.mindest));
+  if (!knapp.length) return;
+  const einst = liste_('einstellungen').find(x => x.id === 'verwaltung') || {};
+  const an = einst.rechnungsmail || Session.getEffectiveUser().getEmail();
+  const text = knapp.map(a => '- ' + a.name + ': Bestand ' + (bestand[a.id] || 0) + ', Mindestbestand ' + a.mindest + (a.lieferant ? ' (' + a.lieferant + ')' : '')).join('\n');
+  MailApp.sendEmail(an, 'Werbemittel: ' + knapp.length + ' Artikel nachbestellen', 'Diese Artikel liegen am oder unter dem Mindestbestand und sind noch nicht bestellt:\n\n' + text + '\n\nIn der App unter Verwaltung → Nachbestellen.');
 }
