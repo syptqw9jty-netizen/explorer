@@ -1,0 +1,233 @@
+[
+ {
+  "id": "richards-facebook-marketing",
+  "isbn": "9781717864536",
+  "cover": null,
+  "titel": "Facebook Marketing",
+  "autor": "Anthony Richards"
+ },
+ {
+  "id": "dark-horse-digital-innovation-playbook",
+  "isbn": "9783867745567",
+  "cover": "https://www.murmann-verlag.de/cdn/shop/products/200416_Digital_Innovation_Playbook_7Aufl_Gender_3D_1_800x.png?v=1656317064",
+  "titel": "Digital Innovation Playbook",
+  "autor": "Dark Horse Innovation"
+ },
+ {
+  "id": "budelmann-brand-identity-essentials-revise",
+  "isbn": "9781631597084",
+  "cover": "https://cloud.firebrandtech.com/api/v2/image/111/9781631597084/CoverArtHigh/XL",
+  "titel": "Brand Identity Essentials, Revised and Expanded",
+  "autor": "Kevin Budelmann, Yang Kim"
+ },
+ {
+  "id": "bloem-branded-protest",
+  "isbn": "9789063695415",
+  "cover": null,
+  "titel": "Branded Protest",
+  "autor": "Ingeborg Bloem, Klaus Kempenaars"
+ },
+ {
+  "id": "franken-ideenraeume-gestalten",
+  "isbn": "9783844020946",
+  "cover": "https://www.shaker.de/Cover/978-3-8440-2094-6_Cover_b.gif",
+  "titel": "Ideenräume gestalten",
+  "autor": "Swetlana Franken (Hrsg.)"
+ },
+ {
+  "id": "rustler-denkwerkzeuge-der-kreativitaet-u",
+  "isbn": "9783907100813",
+  "cover": null,
+  "titel": "Denkwerkzeuge der Kreativität und Innovation",
+  "autor": "Florian Rustler"
+ },
+ {
+  "id": "sinek-frag-immer-erst",
+  "isbn": "9783868815382",
+  "cover": null,
+  "titel": "Frag immer erst",
+  "autor": "Simon Sinek"
+ },
+ {
+  "id": "murphy-cultures-of-growth",
+  "isbn": "9781982172749",
+  "cover": "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982172756/cultures-of-growth-9781982172756_lg.jpg",
+  "titel": "Cultures of Growth",
+  "autor": "Mary C. Murphy"
+ },
+ {
+  "id": "inglis-handbuch-grafikdesign",
+  "isbn": "9783791389899",
+  "cover": "https://www.penguin.de/resource/responsive-image/398158/220/48/handbuch-grafikdesign-235347-jpg.webp",
+  "titel": "Handbuch Grafikdesign",
+  "autor": "Theo Inglis"
+ },
+ {
+  "id": "thaler-nudge",
+  "isbn": "9780141040011",
+  "cover": null,
+  "titel": "Nudge",
+  "autor": "Richard H. Thaler, Cass R. Sunstein"
+ },
+ {
+  "id": "kahneman-thinking-fast-and-slow",
+  "isbn": "9780141033570",
+  "cover": "https://cdn.penguin.co.uk/dam-assets/books/9780141033570/9780141033570-jacket-large.jpg",
+  "titel": "Thinking, Fast and Slow",
+  "autor": "Daniel Kahneman"
+ },
+ {
+  "id": "pereira-digital-nudge",
+  "isbn": "9788594377159",
+  "cover": null,
+  "titel": "Digital Nudge",
+  "autor": "Fabio Pereira"
+ },
+ {
+  "id": "hofmann-neuro-design",
+  "isbn": "9783770564200",
+  "cover": null,
+  "titel": "Neuro-Design",
+  "autor": "Martin Ludwig Hofmann"
+ },
+ {
+  "id": "harff-corporate-nudging",
+  "isbn": "9783648137383",
+  "cover": null,
+  "titel": "Corporate Nudging",
+  "autor": "Christoph Harff, Christopher McLachlan"
+ },
+ {
+  "id": "eyal-hooked",
+  "isbn": "9783868815368",
+  "cover": null,
+  "titel": "Hooked",
+  "autor": "Nir Eyal"
+ },
+ {
+  "id": "heeren-das-google-analytics-praxisbuch",
+  "isbn": "9781981846382",
+  "cover": null,
+  "titel": "Das Google Analytics Praxisbuch 2018",
+  "autor": "Robert von Heeren"
+ },
+ {
+  "id": "cohn-agile-estimating-and-planning",
+  "isbn": "9780131479418",
+  "cover": "https://www.pearson.com/store/pmccommercewebservices/v2/medias/size-W370-A1000-60-79-40-A100060794079-A100060794079-Lrg.jpg?context=bWFzdGVyfGltYWdlc3wxMTM2Nzl8aW1hZ2UvanBlZ3xzeXMtbWFzdGVyL2ltYWdlcy9oNTUvaGEwLzE1NTI0NzEyMTIwMzUwL3NpemVfVzM3MF8vQTEwMDAvNjAvNzkvNDAvQTEwMDA2MDc5NDA3OS9BMTAwMDYwNzk0MDc5X0xyZy5qcGd8NGY4MjQ2MGU2YmQ3YTUxN2Y0MjZiYTQzMGI3N2IxZWMzNWY5ODA5ZmQ4YTc0NTE3N2M0YzQ5YjdlNGFmOWM1Ng&imwidth=3840",
+  "titel": "Agile Estimating and Planning",
+  "autor": "Mike Cohn"
+ },
+ {
+  "id": "cohn-succeeding-with-agile",
+  "isbn": "9780321579362",
+  "cover": null,
+  "titel": "Succeeding with Agile",
+  "autor": "Mike Cohn"
+ },
+ {
+  "id": "pichler-agiles-produktmanagement-mit-scr",
+  "isbn": "9783864901423",
+  "cover": null,
+  "titel": "Agiles Produktmanagement mit Scrum",
+  "autor": "Roman Pichler"
+ },
+ {
+  "id": "pichler-scrum",
+  "isbn": "9783898644785",
+  "cover": null,
+  "titel": "Scrum",
+  "autor": "Roman Pichler"
+ },
+ {
+  "id": "pichler-agile-product-management-with-sc",
+  "isbn": "9780321605788",
+  "cover": "https://www.informit.com/ShowCover.aspx?isbn=9780321605788&type=f",
+  "titel": "Agile Product Management with Scrum",
+  "autor": "Roman Pichler"
+ },
+ {
+  "id": "laloux-reinventing-organizations",
+  "isbn": "9783800649136",
+  "cover": null,
+  "titel": "Reinventing Organizations",
+  "autor": "Frederic Laloux"
+ },
+ {
+  "id": "laloux-reinventing-organizations-2",
+  "isbn": "9783800649136",
+  "cover": null,
+  "titel": "Reinventing Organizations",
+  "autor": "Frederic Laloux"
+ },
+ {
+  "id": "oestereich-agile-organisationsentwicklung",
+  "isbn": "9783800660766",
+  "cover": null,
+  "titel": "Agile Organisationsentwicklung",
+  "autor": "Bernd Oestereich, Claudia Schröder"
+ },
+ {
+  "id": "keeley-ten-types-of-innovation",
+  "isbn": "9781118504246",
+  "cover": null,
+  "titel": "Ten Types of Innovation",
+  "autor": "Larry Keeley, Ryan Pikkel, Brian Quinn, Helen Walters"
+ },
+ {
+  "id": "strange-do-fly",
+  "isbn": "9781452171470",
+  "cover": null,
+  "titel": "Do Fly",
+  "autor": "Gavin Strange"
+ },
+ {
+  "id": "shayler-do-disrupt",
+  "isbn": "9781452171456",
+  "cover": null,
+  "titel": "Do Disrupt",
+  "autor": "Mark Shayler"
+ },
+ {
+  "id": "kleon-steal-like-an-artist",
+  "isbn": "9780761169253",
+  "cover": null,
+  "titel": "Steal Like an Artist",
+  "autor": "Austin Kleon"
+ },
+ {
+  "id": "klassen-grundkurs-digitales-video",
+  "isbn": null,
+  "cover": null,
+  "titel": "Grundkurs Digitales Video",
+  "autor": "Robert Klaßen"
+ },
+ {
+  "id": "baumann-foerdermittel-akquirieren",
+  "isbn": "9783791035970",
+  "cover": null,
+  "titel": "Fördermittel akquirieren",
+  "autor": "Mechthild Baumann"
+ },
+ {
+  "id": "baumann-der-exzellente-eu-projektantrag",
+  "isbn": "9783791051475",
+  "cover": null,
+  "titel": "Der exzellente EU-Projektantrag",
+  "autor": "Mechthild Baumann"
+ },
+ {
+  "id": "abdullah-corporate-design",
+  "isbn": "9783874395977",
+  "cover": null,
+  "titel": "Corporate Design",
+  "autor": "Rayan Abdullah, Roger Hübner"
+ },
+ {
+  "id": "blau",
+  "isbn": null,
+  "cover": null,
+  "titel": "Blau",
+  "autor": ""
+ }
+]
