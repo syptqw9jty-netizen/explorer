@@ -1,29 +1,37 @@
 /**
  * GAUSS Bibliothek – gemeinsamer Speicher in Google Sheets und Google Drive.
  *
- * Einrichtung (einmalig, ca. 5 Minuten):
- * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Bibliothek“.
+ * Einrichtung (einmalig, ca. 10 Minuten):
+ * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Bibliothek“ (im Firmen-Workspace).
  * 2. Erweiterungen → Apps Script. Diesen Code einfügen, speichern.
  * 3. Optional für „Mit KI ausfüllen“: Projekteinstellungen → Skripteigenschaften →
- *    ANTHROPIC_API_KEY = dein API-Schlüssel (console.anthropic.com).
+ *    ANTHROPIC_API_KEY = API-Schlüssel (console.anthropic.com).
  *    Optional ANTHROPIC_MODEL (Standard: claude-sonnet-5-5).
- * 4. Bereitstellen → Neue Bereitstellung → Typ „Web-App“.
- *    Ausführen als: Ich · Zugriff: Jeder. Zugriffe auf Tabelle und Drive erlauben.
+ * 4. Bereitstellen → Neue Bereitstellung → Typ „Web-App“, Ausführen als: Ich.
+ *    Zugriff: empfohlen „Jeder in <Firma>“ (nur angemeldete Mitarbeitende).
+ *    „Jeder“ nur, wenn Kolleg:innen ohne Google-Konto zugreifen sollen – dann ist die
+ *    Datenschnittstelle öffentlich erreichbar (siehe Beratungsunterlage).
  * 5. Die Web-App-URL in index.html bei CONFIG.API_URL eintragen.
+ * 6. Beim ersten Öffnen der Verwaltung mit 0000 anmelden und sofort eine eigene PIN setzen.
+ *    Solange keine eigene PIN gesetzt ist, sind alle anderen Verwaltungsaktionen gesperrt.
  *
- * Blätter „Buecher“, „Ausleihen“ und „Bewertungen“ entstehen beim ersten Aufruf.
- * Bilder und Videos landen im Drive-Ordner „GAUSS Bibliothek Medien“ (Lesen per Link).
- * Verwaltungs-PIN: Standard 0000, gespeichert nur als Hash. Nach 5 Fehlversuchen 10 Minuten Sperre.
+ * Blätter „Buecher“, „Ausleihen“, „Bewertungen“ und „Feedback“ entstehen beim ersten Aufruf.
+ * Feedback ist nur über die Verwaltung (PIN) lesbar, nicht über die öffentliche Abfrage.
+ * Bilder und Videos landen im Drive-Ordner „GAUSS Bibliothek Medien“.
+ * PIN nur als Hash gespeichert; nach 5 Fehlversuchen 10 Minuten Sperre.
  */
 const LEIHTAGE = 28;
 const BLAETTER = {
   Buecher: ['id', 'json', 'aktualisiert'],
   Ausleihen: ['id', 'buchId', 'kuerzel', 'ausgeliehenAm', 'faelligAm', 'verlaengert', 'zurueckAm'],
-  Bewertungen: ['id', 'buchId', 'kuerzel', 'sterne', 'kommentar', 'am', 'medien']
+  Bewertungen: ['id', 'buchId', 'kuerzel', 'sterne', 'kommentar', 'am', 'medien'],
+  Feedback: ['id', 'sterne', 'text', 'kuerzel', 'am']
 };
 const KUERZEL = /^[A-ZÄÖÜ]{2,3}$/;
-const MAX_MB = { bild: 8, video: 25 };
+const MAX_MB = { bild: 8, video: 15 };          // Base64 im POST-Body: 15 MB Video ≈ 20 MB Anfrage
+const UPLOADS_PRO_TAG = 150;
 const PROPS = PropertiesService.getScriptProperties();
+const PIN_AKTIONEN = ['checkPin', 'setPin', 'saveBook', 'deleteRating', 'updateRating', 'analyze', 'listFeedback', 'deleteFeedback'];
 
 /* ---------- Grundlagen ---------- */
 function blatt_(name) {
@@ -31,7 +39,7 @@ function blatt_(name) {
   let s = ss.getSheetByName(name);
   if (!s) {
     s = ss.insertSheet(name);
-    s.getRange(1, 1, 1000, BLAETTER[name].length).setNumberFormat('@');
+    s.getRange(1, 1, s.getMaxRows(), BLAETTER[name].length).setNumberFormat('@');
     s.appendRow(BLAETTER[name]);
     s.setFrozenRows(1);
   }
@@ -57,18 +65,26 @@ function bewertungen_() {
     sterne: Math.max(0, Math.min(5, parseInt(r[3], 10) || 0)), kommentar: String(r[4] || ''), am: iso_(r[5]), medien: json_(r[6], [])
   }));
 }
+function feedback_() {
+  return zeilen_('Feedback').filter(r => r[0]).map(r => ({ id: String(r[0]), sterne: parseInt(r[1], 10) || 0, text: String(r[2] || ''), kuerzel: String(r[3] || ''), am: iso_(r[4]) }));
+}
 function zustand_() { return { ok: true, books: buecher_(), loans: ausleihen_(), ratings: bewertungen_() }; }
 
-/* ---------- PIN ---------- */
+/* ---------- PIN (läuft unter Lock, damit der Fehlversuchszähler nicht umgangen wird) ---------- */
 function hash_(pin) {
   return Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, 'gauss-buecherei:' + pin, Utilities.Charset.UTF_8));
 }
-function pinPruefen_(pin) {
+function pinPruefen_(pin, aktion) {
+  if (!/^\d{4}$/.test(String(pin || ''))) return 'PIN ist nicht richtig.';        // fehlende/ungültige PIN zählt nicht als Versuch
   const cache = CacheService.getScriptCache();
   const fehl = parseInt(cache.get('pin_fehl') || '0', 10);
   if (fehl >= 5) return 'Zu viele Versuche. Bitte in 10 Minuten erneut probieren.';
-  const soll = PROPS.getProperty('ADMIN_PIN_HASH') || hash_('0000');
-  if (/^\d{4}$/.test(String(pin || '')) && hash_(String(pin)) === soll) { cache.remove('pin_fehl'); return null; }
+  const gesetzt = PROPS.getProperty('ADMIN_PIN_HASH');
+  if (hash_(String(pin)) === (gesetzt || hash_('0000'))) {
+    cache.remove('pin_fehl');
+    if (!gesetzt && aktion !== 'checkPin' && aktion !== 'setPin') return 'Bitte zuerst eine eigene PIN festlegen.';
+    return null;
+  }
   cache.put('pin_fehl', String(fehl + 1), 600);
   return 'PIN ist nicht richtig.';
 }
@@ -81,9 +97,36 @@ function ordner_() {
   PROPS.setProperty('MEDIEN_ORDNER', f.getId());
   return f;
 }
+function dateiId_(url) { const m = String(url || '').match(/(?:id=|\/d\/)([\w-]{20,})/); return m ? m[1] : null; }
+function papierkorb_(medien) {
+  (medien || []).forEach(m => { const id = dateiId_(m && m.url); if (id) { try { DriveApp.getFileById(id).setTrashed(true); } catch (e) { console.warn('Papierkorb', id, e); } } });
+}
 function medienSauber_(liste) {
   return (Array.isArray(liste) ? liste : []).slice(0, 4).filter(m => m && /^https:\/\/drive\.google\.com\//.test(m.url || ''))
     .map(m => ({ typ: m.typ === 'video' ? 'video' : 'bild', url: String(m.url), thumb: String(m.thumb || '') }));
+}
+function hochladen_(p) {
+  const typ = p.typ === 'video' ? 'video' : 'bild';
+  const mime = String(p.mime || '');
+  if (!(typ === 'bild' ? /^image\/(jpeg|png|webp)$/ : /^video\/(mp4|quicktime|webm)$/).test(mime)) return fehler_('Dateiformat wird nicht unterstützt (Videos: MP4, MOV, WebM).');
+  const cache = CacheService.getScriptCache(), heute = 'uploads_' + new Date().toISOString().slice(0, 10);
+  const anzahl = parseInt(cache.get(heute) || '0', 10);
+  if (anzahl >= UPLOADS_PRO_TAG) return fehler_('Tageslimit für Uploads erreicht. Bitte morgen erneut versuchen.');
+  const bytes = Utilities.base64Decode(String(p.data || ''));
+  if (!bytes.length || bytes.length > MAX_MB[typ] * 1048576) return fehler_(`Die Datei ist zu groß (höchstens ${MAX_MB[typ]} MB).`);
+  const datei = ordner_().createFile(Utilities.newBlob(bytes, mime, (p.zweck === 'cover' ? 'cover' : 'kommentar') + '-' + Date.now()));
+  try { datei.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); }
+  catch (e) {
+    try { datei.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW); }
+    catch (e2) { datei.setTrashed(true); console.error('Freigabe', e2); return fehler_('Die Datei konnte nicht freigegeben werden. Bitte die Drive-Freigaberegeln des Workspace prüfen.'); }
+  }
+  cache.put(heute, String(anzahl + 1), 86400);
+  const id = datei.getId();
+  return antwort_({ ok: true, medium: {
+    typ: typ,
+    url: typ === 'video' ? 'https://drive.google.com/file/d/' + id + '/preview' : 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1600',
+    thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w320'
+  } });
 }
 
 /* ---------- KI-Analyse (optional) ---------- */
@@ -111,41 +154,32 @@ function analysieren_(bilder) {
 }
 
 /* ---------- Web-App ---------- */
-function doGet() { return antwort_(zustand_()); }
+function doGet() {
+  try { return antwort_(zustand_()); }
+  catch (err) { console.error('doGet', err); return fehler_('Laden fehlgeschlagen. Bitte gleich noch einmal versuchen.'); }
+}
 
 function doPost(e) {
-  const p = json_((e.postData && e.postData.contents) || '{}', {});
-  const brauchtPin = ['checkPin', 'setPin', 'saveBook', 'deleteRating', 'updateRating', 'analyze'].indexOf(p.action) >= 0 || (p.action === 'upload' && p.zweck === 'cover');
-  if (brauchtPin) { const f = pinPruefen_(p.pin); if (f) return fehler_(f); }
-
-  // Ohne Sperre: Prüfen, Analyse, Upload
-  try {
-    if (p.action === 'checkPin') return antwort_({ ok: true });
-    if (p.action === 'analyze') return antwort_({ ok: true, daten: analysieren_(Array.isArray(p.bilder) ? p.bilder : []) });
-    if (p.action === 'upload') {
-      const typ = p.typ === 'video' ? 'video' : 'bild';
-      const mime = String(p.mime || '');
-      if (!(typ === 'bild' ? /^image\/(jpeg|png|webp)$/ : /^video\/(mp4|quicktime|webm)$/).test(mime)) return fehler_('Dateiformat wird nicht unterstützt.');
-      const bytes = Utilities.base64Decode(String(p.data || ''));
-      if (!bytes.length || bytes.length > MAX_MB[typ] * 1048576) return fehler_('Die Datei ist zu groß.');
-      const datei = ordner_().createFile(Utilities.newBlob(bytes, mime, (p.zweck || 'medium') + '-' + Date.now()));
-      datei.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      const id = datei.getId();
-      return antwort_({ ok: true, medium: {
-        typ: typ,
-        url: typ === 'video' ? 'https://drive.google.com/file/d/' + id + '/preview' : 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1600',
-        thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w320'
-      } });
-    }
-  } catch (err) { return fehler_(err.message || 'Aktion fehlgeschlagen.'); }
-
-  // Schreibende Aktionen nacheinander
+  const p = json_((e && e.postData && e.postData.contents) || '{}', {});
   const lock = LockService.getScriptLock();
-  lock.waitLock(15000);
+  if (!lock.tryLock(20000)) return fehler_('Gerade viel los. Bitte gleich noch einmal versuchen.');
+  let gesperrt = true;
   try {
+    if (PIN_AKTIONEN.indexOf(p.action) >= 0 || (p.action === 'upload' && p.zweck === 'cover')) {
+      const f = pinPruefen_(p.pin, p.action); if (f) return fehler_(f);
+    }
+    // Lange Aktionen ohne Datenänderung: Lock vorher freigeben
+    if (p.action === 'checkPin') return antwort_({ ok: true, eigenePin: !!PROPS.getProperty('ADMIN_PIN_HASH') });
+    if (p.action === 'analyze' || p.action === 'upload') {
+      lock.releaseLock(); gesperrt = false;
+      if (p.action === 'analyze') return antwort_({ ok: true, daten: analysieren_(Array.isArray(p.bilder) ? p.bilder : []) });
+      return hochladen_(p);
+    }
+
     const jetzt = new Date().toISOString();
     if (p.action === 'setPin') {
       if (!/^\d{4}$/.test(String(p.neu || ''))) return fehler_('Die neue PIN braucht vier Ziffern.');
+      if (String(p.neu) === '0000') return fehler_('Bitte eine andere PIN als 0000 wählen.');
       PROPS.setProperty('ADMIN_PIN_HASH', hash_(String(p.neu)));
       return antwort_({ ok: true });
     }
@@ -159,29 +193,49 @@ function doPost(e) {
       const w = s.getDataRange().getValues();
       const i = w.findIndex((r, idx) => idx > 0 && r[0] === b.id);
       if (i > 0) s.getRange(i + 1, 2, 1, 2).setValues([[text, jetzt]]); else s.appendRow([b.id, text, jetzt]);
+    } else if (p.action === 'feedback') {
+      const sterne = parseInt(p.sterne, 10) || 0, text = String(p.text || '').trim().slice(0, 1000), kuerzel = String(p.kuerzel || '').toUpperCase();
+      if (sterne < 0 || sterne > 5) return fehler_('Bitte 0 bis 5 Sterne wählen.');
+      if (kuerzel && !KUERZEL.test(kuerzel)) return fehler_('Kürzel bitte mit 2 oder 3 Buchstaben oder leer lassen.');
+      if (!sterne && !text) return fehler_('Bitte Sterne vergeben oder ein paar Worte schreiben.');
+      blatt_('Feedback').appendRow([Utilities.getUuid(), String(sterne), text, kuerzel, jetzt]);
+      return antwort_({ ok: true });
+    } else if (p.action === 'listFeedback') {
+      return antwort_({ ok: true, feedback: feedback_() });
+    } else if (p.action === 'deleteFeedback') {
+      const s = blatt_('Feedback'), w = s.getDataRange().getValues();
+      const i = w.findIndex((r, idx) => idx > 0 && r[0] === p.id);
+      if (i > 0) s.deleteRow(i + 1);
+      return antwort_({ ok: true, feedback: feedback_() });
     } else if (p.action === 'deleteRating') {
       const s = blatt_('Bewertungen'), w = s.getDataRange().getValues();
       const i = w.findIndex((r, idx) => idx > 0 && r[0] === p.id);
-      if (i > 0) s.deleteRow(i + 1);
+      if (i > 0) { papierkorb_(json_(w[i][6], [])); s.deleteRow(i + 1); }
     } else if (p.action === 'updateRating') {
       const s = blatt_('Bewertungen'), w = s.getDataRange().getValues();
       const i = w.findIndex((r, idx) => idx > 0 && r[0] === p.id);
       if (i < 1) return fehler_('Diese Bewertung gibt es nicht mehr.');
       const sterne = parseInt(p.sterne, 10);
       if (!(sterne >= 0 && sterne <= 5)) return fehler_('Bitte 0 bis 5 Sterne wählen.');
+      const neu = medienSauber_(p.medien), alt = json_(w[i][6], []);
+      papierkorb_(alt.filter(a => !neu.some(n => n.url === a.url)));
       s.getRange(i + 1, 4, 1, 2).setValues([[String(sterne), String(p.kommentar || '').trim().slice(0, 500)]]);
-      s.getRange(i + 1, 7).setValue(JSON.stringify(medienSauber_(p.medien)));
+      s.getRange(i + 1, 7).setValue(JSON.stringify(neu));
     } else if (p.action === 'rate') {
       const buchId = String(p.bookId || '').slice(0, 120), kuerzel = String(p.kuerzel || '').toUpperCase(), sterne = parseInt(p.sterne, 10);
       if (!buchId || !KUERZEL.test(kuerzel)) return fehler_('Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben.');
       if (!(sterne >= 0 && sterne <= 5)) return fehler_('Bitte 0 bis 5 Sterne wählen.');
-      const zeile = [String(sterne), String(p.kommentar || '').trim().slice(0, 500), jetzt, JSON.stringify(medienSauber_(p.medien))];
+      const medien = medienSauber_(p.medien);
+      const zeile = [String(sterne), String(p.kommentar || '').trim().slice(0, 500), jetzt, JSON.stringify(medien)];
       const s = blatt_('Bewertungen'), w = s.getDataRange().getValues();
       const i = w.findIndex((r, idx) => idx > 0 && r[1] === buchId && r[2] === kuerzel);
-      if (i > 0) s.getRange(i + 1, 4, 1, 4).setValues([zeile]); else s.appendRow([Utilities.getUuid(), buchId, kuerzel].concat(zeile));
+      if (i > 0) { papierkorb_(json_(w[i][6], []).filter(a => !medien.some(n => n.url === a.url))); s.getRange(i + 1, 4, 1, 4).setValues([zeile]); }
+      else s.appendRow([Utilities.getUuid(), buchId, kuerzel].concat(zeile));
     } else if (p.action === 'borrow') {
       const buchId = String(p.bookId || '').slice(0, 120), kuerzel = String(p.kuerzel || '').toUpperCase();
       if (!buchId || !KUERZEL.test(kuerzel)) return fehler_('Bitte dein Kürzel eintragen: 2 oder 3 Buchstaben.');
+      const bestand = buecher_();
+      if (bestand.length && !bestand.some(b => b.id === buchId && b.aktiv !== false)) return fehler_('Dieses Buch ist nicht (mehr) im Bestand.');
       const s = blatt_('Ausleihen');
       if (s.getDataRange().getValues().some((r, i) => i > 0 && r[1] === buchId && !r[6])) return fehler_('Dieses Buch ist gerade verliehen.');
       s.appendRow([Utilities.getUuid(), buchId, kuerzel, jetzt, plusTage_(jetzt, LEIHTAGE), 'FALSE', '']);
@@ -196,8 +250,9 @@ function doPost(e) {
     } else return fehler_('Unbekannte Aktion.');
     return antwort_(zustand_());
   } catch (err) {
-    return fehler_('Speichern fehlgeschlagen.');
+    console.error(p.action, err);
+    return fehler_('Aktion fehlgeschlagen: ' + (err && err.message ? err.message : 'unbekannter Fehler'));
   } finally {
-    lock.releaseLock();
+    if (gesperrt) lock.releaseLock();
   }
 }

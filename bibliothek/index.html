@@ -224,7 +224,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .suche input::placeholder{color:var(--tertiaer)}
 .suche input:hover{border-color:var(--rahmen)}
 .suche input::-webkit-search-cancel-button{display:none}
-.leeren{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--tertiaer);display:grid;place-items:center}
+.leeren{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--tertiaer);display:grid;place-items:center}
 .leeren:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 
 /* Umschalter = Ort-Leiter */
@@ -421,7 +421,7 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .zeile .bewertet{display:inline-flex;align-items:center;gap:4px;color:var(--text-sekundaer);font-size:13px;line-height:20px;font-variant-numeric:tabular-nums}
 .zeile .bewertet svg{width:12px;height:12px;color:var(--foreground)}
 .karussell-bereich{margin-top:24px}
-.karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px)) 10px;
+.karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
   display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;overscroll-behavior-x:contain}
 .karussell::-webkit-scrollbar{display:none}
 .karussell li{flex:none;width:148px;scroll-snap-align:start;display:flex}
@@ -437,7 +437,7 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .merken{margin-top:12px}
 .merken svg{width:16px;height:16px}
 .merken[aria-pressed="true"] svg{color:var(--gewaehlt)}
-.taste.klein{flex:none;min-height:40px;padding:0 16px;font-size:14px}
+.taste.klein{flex:none;min-height:44px;padding:0 16px;font-size:14px}
 .taste.ganz{width:100%;flex:none}
 .taste svg{flex:none}
 .taste>svg:not([width]){width:20px;height:20px}
@@ -490,7 +490,7 @@ dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--
 .admin-oeffnen .meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-oeffnen .cover .ct{font-size:5.5px}.admin-oeffnen .cover .ca{font-size:4px}
 .admin-zeile.inaktiv .admin-oeffnen{opacity:.55}
-.entfernen{border:0;background:transparent;color:var(--status-fehler-text);font-size:13px;font-weight:500;min-height:32px;padding:0 8px;margin-left:-8px;border-radius:var(--radius-aktion)}
+.entfernen{border:0;background:transparent;color:var(--status-fehler-text);font-size:13px;font-weight:500;min-height:44px;padding:0 8px;margin-left:-8px;border-radius:var(--radius-aktion)}
 .entfernen:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 .medien{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
 .thumb{width:64px;height:64px;border-radius:var(--radius-zeile);border:1px solid var(--linie);padding:0;overflow:hidden;background:var(--leiste);position:relative;display:block}
@@ -521,17 +521,30 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
 .rating-zeile{width:100%;display:grid;gap:2px;text-align:left;border:0;background:transparent;padding:12px 16px;min-height:64px}
 .rating-zeile+.rating-zeile{box-shadow:inset 0 1px 0 var(--linie)}
 .rating-zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
-.rating-zeile .kopf{display:flex;align-items:center;gap:8px;min-width:0}
+.rating-zeile .rz-kopf{display:flex;align-items:center;gap:8px;min-width:0}
 .rating-zeile .buch{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
 .rating-zeile .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .rating-zeile .auszug{font-size:13px;line-height:20px;color:var(--text-sekundaer);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rating-zeile .meta{display:flex;align-items:center;gap:8px}
+.sr-only{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+label:has(>.sr-only:focus-visible){outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
+.intro{margin-top:20px;padding:20px;border-radius:var(--radius-karte);background:var(--objekt);border:1px solid var(--linie);box-shadow:var(--schatten-widget);display:grid;gap:14px}
+.intro h2{margin:0}
+.schritte{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.schritte li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start;font-size:15px;line-height:22px;counter-increment:s}
+.schritte li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--leiste);border:1px solid var(--linie);display:grid;place-items:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.schritte b{font-weight:600}
+.intro .aktionen{margin-top:0}
+.info-link{border:0;background:transparent;color:var(--link);font-size:13px;font-weight:500;text-decoration:underline;text-underline-offset:2px;padding:0;min-height:44px}
+.regeln{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:22px;color:var(--text-sekundaer)}
+.feedback-danke{display:grid;gap:4px}
+.pin-pflicht{border-color:color-mix(in oklab,var(--status-warnung-text) 40%,var(--status-warnung-flaeche));background:var(--status-warnung-flaeche)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
   background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
   transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .sheet.on~.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-@media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important;animation-duration:0ms!important}}
 </style>
 
 <div class="minikopf" id="minikopf" aria-hidden="true">
@@ -598,6 +611,8 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
     </div>
   </div></div>
 
+  <section class="intro" id="intro" aria-labelledby="intro-titel" hidden></section>
+
   <section class="bereich karussell-bereich" id="merkliste" aria-labelledby="merk-titel" hidden>
     <header><h2 class="titel-bereich" id="merk-titel">Deine Merkliste</h2><span class="meta zahl" id="merkliste-zahl"></span></header>
     <ul class="karussell" id="merkliste-liste"></ul>
@@ -608,14 +623,14 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
   </section>
 
   <section class="bereich" aria-labelledby="liste-titel">
-    <header><h2 class="titel-bereich" id="liste-titel">Bestand</h2><span class="meta zahl" id="treffer"></span></header>
-    <div class="karte" id="liste" aria-live="polite"></div>
+    <header><h2 class="titel-bereich" id="liste-titel">Bestand</h2><span class="meta zahl" id="treffer" aria-live="polite"></span></header>
+    <div class="karte" id="liste"></div>
   </section>
   <div class="vorschau" id="vorschau" hidden>
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg>
     <span id="vorschau-text"></span>
   </div>
-  <p class="hinweis">Ausleihen auf Vertrauensbasis. Leihfrist vier Wochen, einmal verlängerbar. Deine Merkliste bleibt nur auf diesem Gerät.</p>
+  <p class="hinweis">Ausleihen auf Vertrauensbasis. Leihfrist vier Wochen, einmal verlängerbar. <button class="info-link" id="info-oeffnen">So funktioniert’s · Feedback</button></p>
   <div class="fuss">
     <div class="menue-anker">
       <button class="taste sekundaer klein" id="einstellungen" aria-haspopup="menu" aria-expanded="false" aria-controls="einstellungen-menue">
@@ -644,7 +659,7 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
 /* ===== Konfiguration =====
    API_URL: Web-App-URL des Google Apps Script (apps-script/Code.gs). Leer = Vorschau, nur dieses Gerät.
    SHARE_BASE: öffentliche Adresse der App. */
-const CONFIG = { API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/bibliothek/", LOAN_DAYS: 28, MAX_MEDIEN: 4, MAX_VIDEO_MB: 25 };
+const CONFIG = { KONTAKT: "NNE", API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/bibliothek/", LOAN_DAYS: 28, MAX_MEDIEN: 4, MAX_VIDEO_MB: 25 };
 const THEMEN = ["Belletristik", "Design", "Führung", "Gesellschaft", "Layout", "Methoden", "Produkt", "Psychologie", "Technik", "Typografie", "UI", "UX", "Web"];
 
 /* ===== Beispielbestand — Startwert, bis der erste Eintrag in der Verwaltung gespeichert wird ===== */
@@ -711,18 +726,24 @@ const ICON = {
 };
 
 /* ===== Speicher ===== */
-const PIN_AKTIONEN = ["checkPin", "setPin", "saveBook", "deleteRating", "updateRating", "analyze"];
+const PIN_AKTIONEN = ["checkPin", "setPin", "saveBook", "deleteRating", "updateRating", "analyze", "listFeedback", "deleteFeedback"];
 const lokal = () => ({ books: ls.get("bib.books", []), loans: ls.get("bib.loans", []), ratings: ls.get("bib.ratings", []) });
 const LocalStore = {
   mode: "local",
   async list(){ return lokal(); },
   async act(p){
     const d = lokal(), now = new Date().toISOString();
-    if ((PIN_AKTIONEN.includes(p.action) || (p.action === "upload" && p.zweck === "cover")) && p.pin !== ls.get("bib.pin", "0000")) throw new Error("PIN ist nicht richtig.");
+    if (PIN_AKTIONEN.includes(p.action) || (p.action === "upload" && p.zweck === "cover")){
+      if (p.pin !== ls.get("bib.pin", "0000")) throw new Error("PIN ist nicht richtig.");
+      if (!ls.get("bib.pin", null) && !["checkPin", "setPin"].includes(p.action)) throw new Error("Bitte zuerst eine eigene PIN festlegen.");
+    }
     switch (p.action){
-      case "checkPin": return { ok: true };
-      case "setPin": ls.set("bib.pin", p.neu); return { ok: true };
-      case "upload": return { ok: true, medium: { typ: p.typ, url: p.dataUrl, thumb: p.thumbUrl || p.dataUrl } };
+      case "checkPin": return { ok: true, eigenePin: !!ls.get("bib.pin", null) };
+      case "setPin": if (p.neu === "0000") throw new Error("Bitte eine andere PIN als 0000 wählen."); ls.set("bib.pin", p.neu); return { ok: true };
+      case "upload": return { ok: true, medium: { typ: p.typ, url: p.dataUrl, thumb: p.typ === "video" ? "" : (p.thumbUrl || p.dataUrl) } };
+      case "feedback": { const f = ls.get("bib.feedback", []); f.push({ id: uid(), sterne: p.sterne, text: p.text, kuerzel: p.kuerzel || "", am: now }); if (!ls.set("bib.feedback", f)) throw new Error("Speichern fehlgeschlagen."); return { ok: true }; }
+      case "listFeedback": return { ok: true, feedback: ls.get("bib.feedback", []) };
+      case "deleteFeedback": { ls.set("bib.feedback", ls.get("bib.feedback", []).filter(x => x.id !== p.id)); return { ok: true, feedback: ls.get("bib.feedback", []) }; }
       case "analyze": throw new Error("KI-Analyse geht nur mit verbundener Tabelle. Bitte Daten von Hand ergänzen.");
       case "saveBook": {
         if (!d.books.length && p.seed) d.books = p.seed;
@@ -760,9 +781,11 @@ const LocalStore = {
     return { ok: true, ...lokal() };
   }
 };
-async function netz(url, opt){
-  let r;
-  try { r = await fetch(url, opt); } catch { throw new Error("Keine Verbindung. Bitte Netz prüfen und noch einmal versuchen."); }
+async function netz(url, opt = {}, ms = 30000){
+  let r; const ab = new AbortController(), uhr = setTimeout(() => ab.abort(), ms);
+  try { r = await fetch(url, { ...opt, signal: ab.signal }); }
+  catch (e){ throw new Error(e.name === "AbortError" ? "Der Server antwortet nicht rechtzeitig. Bitte noch einmal versuchen." : "Keine Verbindung. Bitte Netz prüfen und noch einmal versuchen."); }
+  finally { clearTimeout(uhr); }
   if (!r.ok) throw new Error(`Der Server antwortet nicht (${r.status}). Bitte später noch einmal versuchen.`);
   try { return await r.json(); } catch { throw new Error("Unerwartete Antwort vom Server. Ist die Web-App mit Zugriff „Jeder“ bereitgestellt?"); }
 }
@@ -773,23 +796,40 @@ const RemoteStore = {
     if (!j.ok) throw new Error(j.error || "Laden fehlgeschlagen."); return j;
   },
   async act(p){
-    const j = await netz(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) });
+    const j = await netz(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) }, p.action === "upload" || p.action === "analyze" ? 120000 : 30000);
     if (!j.ok) throw new Error(j.error || "Speichern fehlgeschlagen."); return j;
   }
 };
 const Store = CONFIG.API_URL ? RemoteStore : LocalStore;
+const ADMIN_ANSICHTEN = ["admin", "edit", "bewertung"];
+async function call(p){
+  try { return await Store.act(p); }
+  catch (e){
+    const m = e.message || "";
+    if (p.pin !== undefined && /PIN ist nicht richtig|Zu viele Versuche/.test(m)){
+      S.admin = null; ss.set("bib.admin", null);
+      if (ADMIN_ANSICHTEN.includes(S.view)){ S.edit = null; S.redit = null; setTimeout(() => wechsle("login"), 0); }
+    }
+    if (/eigene PIN festlegen/.test(m)){ S.pinPflicht = true; if (S.view === "admin") setTimeout(renderAdmin, 0); }
+    throw e;
+  }
+}
 
 /* ===== Zustand ===== */
+const CACHE = Store.mode === "remote" ? ls.get("bib.cache", null) : null;
 const S = {
-  books: SEED.map(normBuch), fromSeed: true, loans: [], ratings: [],
+  books: (Store.mode === "remote" ? (CACHE ? (CACHE.books?.length ? CACHE.books : SEED) : []) : SEED).map(normBuch),
+  fromSeed: Store.mode !== "remote" || !!(CACHE && !CACHE.books?.length), geladen: Store.mode !== "remote" || !!CACHE,
+  loans: CACHE?.loans || [], ratings: CACHE?.ratings || [], feedback: null, pinPflicht: false, speichert: new Set(), opener: null,
   q: "", f: { status: "alle", themen: [], sprachen: [], minSterne: 0, sort: "relevanz" }, redit: null,
   view: null, open: null, busy: false, entwurf: null, edit: null, loeschFrage: null,
   admin: ss.get("bib.admin")
 };
 function apply(j){
-  if (Array.isArray(j.books)){ S.fromSeed = !j.books.length; S.books = (j.books.length ? j.books : SEED).map(normBuch); }
+  if (Array.isArray(j.books)){ S.fromSeed = !j.books.length; S.books = (j.books.length ? j.books : SEED).map(normBuch); S.geladen = true; }
   if (Array.isArray(j.loans)) S.loans = j.loans;
   if (Array.isArray(j.ratings)) S.ratings = j.ratings;
+  if (Store.mode === "remote" && Array.isArray(j.books)) ls.set("bib.cache", { books: j.books, loans: S.loans, ratings: S.ratings });
 }
 const sichtbar = () => S.books.filter(b => b.aktiv !== false);
 const buchVon = id => S.books.find(b => b.id === id);
@@ -893,7 +933,7 @@ async function hochladen(quelle, zweck, typ = "bild", mime = "image/jpeg"){
   }
   const p = { action: "upload", zweck, typ, mime, pin: S.admin || undefined, data: dataUrl.split(",")[1] };
   if (Store.mode === "local") Object.assign(p, { dataUrl, thumbUrl });
-  return (await Store.act(p)).medium;
+  return (await call(p)).medium;
 }
 function thumbHtml(m){
   const t = sicherUrl(m.vorschau || m.thumb);
@@ -906,9 +946,10 @@ function oeffneLightbox(m){
   inh.innerHTML = m.typ === "video"
     ? (u.startsWith("data:") || u.startsWith("blob:") ? `<video src="${esc(u)}" controls playsinline autoplay></video>` : `<iframe src="${esc(u)}" allow="autoplay; fullscreen" allowfullscreen title="Video"></iframe>`)
     : `<img src="${esc(u)}" alt="Anhang in voller Größe" referrerpolicy="no-referrer">`;
-  lb.hidden = false; document.body.style.overflow = "hidden"; $("#lb-zu").focus();
+  lbOpener = document.activeElement; lb.hidden = false; document.body.style.overflow = "hidden"; $("#lb-zu").focus();
 }
-function schliesseLightbox(){ $("#lightbox").hidden = true; $("#lb-inhalt").innerHTML = ""; if (!S.view) document.body.style.overflow = ""; }
+let lbOpener = null;
+function schliesseLightbox(){ $("#lightbox").hidden = true; $("#lb-inhalt").innerHTML = ""; if (!S.view) document.body.style.overflow = ""; if (lbOpener && lbOpener.isConnected) lbOpener.focus(); lbOpener = null; }
 
 /* ===== Liste, Empfohlen, Filter ===== */
 /* Suche: Umlaute egal (ä = ae = a), Tippfehler bis 1 Zeichen, Wortanfänge zählen mehr,
@@ -977,12 +1018,12 @@ function zuruecksetzen(){ S.f = { status: "alle", themen: [], sprachen: [], minS
 /* Hervorhebung: markiert exakte Fundstellen, akzentunabhängig, ohne den Text zu verändern */
 function markiere(text, woerter){
   const t = String(text || ""); if (!woerter.length || !t) return esc(t);
-  const flach = [...t].map(c => norm(c) || c).join("");
-  if (flach.length !== t.length) return esc(t);
-  const marken = new Array(t.length).fill(false);
+  const zeichen = [...t], flach = zeichen.map(c => norm(c) || c).join("");
+  if (flach.length !== zeichen.length) return esc(t);
+  const marken = new Array(zeichen.length).fill(false);
   for (const w of woerter){ if (w.length < 2) continue; let i = flach.indexOf(w); while (i >= 0){ marken.fill(true, i, i + w.length); i = flach.indexOf(w, i + 1); } }
   let out = "", offen = false;
-  [...t].forEach((c, i) => { if (marken[i] !== offen){ out += marken[i] ? "<mark>" : "</mark>"; offen = marken[i]; } out += esc(c); });
+  zeichen.forEach((c, i) => { if (marken[i] !== offen){ out += marken[i] ? "<mark>" : "</mark>"; offen = marken[i]; } out += esc(c); });
   return out + (offen ? "</mark>" : "");
 }
 function vorschlag(woerter){
@@ -1020,6 +1061,63 @@ function karussell(sektion, liste){
       <span class="e-info"><span class="e-titel">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span><span class="badge ${s.cls}">${esc(s.label)}</span></span></button></li>`;
   }).join("");
 }
+/* ===== Einführung beim ersten Besuch, danach dezent ===== */
+function renderIntro(){
+  const el = $("#intro"), zeigen = !ls.get("bib.intro", false) && !filterAktiv();
+  el.hidden = !zeigen; if (!zeigen){ el.innerHTML = ""; return; }
+  el.innerHTML = `<h2 class="titel-bereich" id="intro-titel">So funktioniert die Bibliothek</h2>
+    <ol class="schritte">
+      <li><span><b>Buch aussuchen</b> und im Regal (${esc(STANDARD.standort)}) mitnehmen.</span></li>
+      <li><span><b>In der App ausleihen:</b> Buch öffnen, Kürzel eingeben, fertig. Kein Login.</span></li>
+      <li><span><b>Nach spätestens vier Wochen</b> zurückstellen und hier „Zurückgeben“ tippen.</span></li>
+    </ol>
+    <p class="meta" style="margin:0">Alles beruht auf Vertrauen. Bitte pfleglich behandeln und pünktlich zurückbringen.</p>
+    <div class="aktionen"><button class="taste primaer" id="intro-ok">Verstanden</button><button class="taste sekundaer" id="intro-mehr">Mehr erfahren</button></div>`;
+}
+const FB0 = () => ({ sterne: 0, text: "", kuerzel: ls.get("bib.kuerzel", ""), gesendet: false });
+function renderInfo(){
+  const f = S.fb || (S.fb = FB0());
+  $("#detail").innerHTML = `
+    <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">So funktioniert’s</h2><p class="meta" style="margin:0">Eine kleine Bibliothek von Kolleg:innen für Kolleg:innen.</p></div>
+    <section class="abschnitt"><h3 class="titel-bereich">Ausleihen</h3><div class="karte innen">
+      <ol class="schritte">
+        <li><span><b>Buch finden:</b> über Suche, Themen oder „Empfohlen“. Der Status zeigt, ob es gerade da ist.</span></li>
+        <li><span><b>Ausleihen:</b> Buch öffnen, dein Mitarbeiterkürzel eingeben (2–3 Buchstaben), „Ausleihen“ tippen.</span></li>
+        <li><span><b>Lesen:</b> vier Wochen Zeit. Einmal um vier Wochen verlängern geht in der App.</span></li>
+        <li><span><b>Zurückgeben:</b> ins Regal stellen (${esc(STANDARD.standort)}) und in der App „Zurückgeben“ tippen.</span></li>
+      </ol></div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Gut zu wissen</h3><div class="karte innen">
+      <ul class="regeln">
+        <li>Alles läuft auf Vertrauen: keine Anmeldung, keine Mahnungen. Bitte trotzdem pünktlich zurückgeben, andere warten vielleicht.</li>
+        <li>Dein Kürzel ist für Kolleg:innen sichtbar: beim ausgeliehenen Buch, unter „Gelesen von“ und bei deinen Bewertungen.</li>
+        <li>Bewertungen gibt es eine pro Buch und Kürzel. Wer erneut bewertet, ersetzt die eigene Bewertung.</li>
+        <li>Die Merkliste bleibt nur auf deinem Gerät. Darstellung (hell/dunkel) stellst du unten unter „Einstellungen“ ein.</li>
+        <li>Buch beschädigt oder verloren? Kein Drama, sag einfach ${esc(CONFIG.KONTAKT)} Bescheid.</li>
+      </ul></div></section>
+    <section class="abschnitt"><h3 class="titel-bereich">Wie findest du die Bibliothek?</h3><div class="karte innen">
+      ${f.gesendet ? `<div class="feedback-danke"><p class="titel-karte" style="margin:0">Danke für dein Feedback!</p><p class="meta" style="margin:0">Es landet direkt bei der Verwaltung.</p>
+        <div class="aktionen"><button type="button" class="taste sekundaer klein" id="fb-neu">Noch etwas sagen</button></div></div>`
+      : `<form id="feedback" class="bewerten-form" autocomplete="off" novalidate>
+        <div class="gruppe"><p class="gruppe-titel" id="fb-sterne-titel">Wie hilfreich ist sie für dich?</p>
+          <div class="stern-wahl" role="radiogroup" aria-labelledby="fb-sterne-titel">${[1,2,3,4,5].map(n => `<button type="button" class="stern${n <= f.sterne ? " an" : ""}" role="radio" aria-checked="${n === f.sterne}" aria-label="${n} ${n === 1 ? "Stern" : "Sterne"}" data-fbn="${n}">${ICON.stern}</button>`).join("")}</div>
+          <p class="meta stern-label">${f.sterne ? sternLabel(f.sterne) : "Optional"}</p></div>
+        <div class="gruppe"><label for="fb-text">Was gefällt dir, was fehlt?</label><textarea id="fb-text" class="kommentar" maxlength="1000" placeholder="Wünsche, Buchvorschläge, Kritik …">${esc(f.text)}</textarea></div>
+        <fieldset class="kuerzel"><legend>Dein Kürzel (optional)</legend>${zeichenFelder("f", f.kuerzel, "kuerzel")}<p class="meta">Leer lassen für anonymes Feedback.</p></fieldset>
+        <div class="aktionen" style="margin-top:0"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Feedback senden</button></div>
+      </form>`}
+    </div></section>`;
+}
+async function sendeFeedback(){
+  if (S.busy) return;
+  const f = S.fb; f.text = $("#fb-text").value.trim();
+  const fz = felderVon("f"), k = fz.map(x => x.value).join("");
+  if (k && !(/^[A-ZÄÖÜ]{2,3}$/.test(k) && fz[0].value && fz[1].value)){ toast("Kürzel bitte mit 2 oder 3 Buchstaben oder leer lassen."); fz[0].focus(); return; }
+  if (!f.sterne && !f.text){ toast("Bitte Sterne vergeben oder ein paar Worte schreiben."); $("#fb-text").focus(); return; }
+  S.busy = true; renderInfo();
+  try { await call({ action: "feedback", sterne: f.sterne, text: f.text.slice(0, 1000), kuerzel: k }); S.fb = { ...FB0(), gesendet: true }; toast("Danke für dein Feedback!"); }
+  catch (err){ toast(err.message || "Senden fehlgeschlagen."); }
+  S.busy = false; if (S.view === "info") renderInfo();
+}
 function renderMerkTasten(){
   const n = merkliste().filter(id => { const b = buchVon(id); return b && b.aktiv !== false; }).length;
   document.querySelectorAll(".merk-taste").forEach(t => {
@@ -1036,7 +1134,9 @@ function renderEmpfohlen(){
 }
 function render(){
   const alle = sichtbar(), free = alle.filter(b => status(b.id).key === "free").length;
-  $("#summary").textContent = `${alle.length} Bücher · ${free} verfügbar`;
+  $("#summary").textContent = S.geladen ? `${alle.length} Bücher · ${free} verfügbar` : "Bestand wird geladen …";
+  renderIntro();
+  if (!S.geladen){ $("#liste").innerHTML = `<div class="leer"><p class="meta" style="margin:0">Bestand wird geladen …</p></div>`; renderEmpfohlen(); return; }
   const woerter = suchWoerter(S.q);
   const items = sortiere(alle.filter(b => passtFilter(b)).map(b => ({ b, w: woerter.length ? suchWert(b, woerter) : 1 })).filter(x => x.w > 0), woerter).map(x => x.b);
   $("#liste-titel").textContent = woerter.length || filterAktiv() ? "Treffer" : "Bestand";
@@ -1047,7 +1147,7 @@ function render(){
       ${cover(b)}
       <span class="info"><span class="t">${markiere(b.titel, woerter)}</span><span class="meta">${markiere(b.autor, woerter)}</span>
         <span class="unten"><span class="badge ${s.cls}">${esc(s.label)}</span>${r ? `<span class="bewertet">${ICON.stern} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span></span>
-      <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" title="Gemerkt" aria-label="Gemerkt">${ICON.gemerkt}</span>` : ""}
+      <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" role="img" title="Gemerkt" aria-label="Gemerkt">${ICON.gemerkt}</span>` : ""}
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
     </button>`;
   }).join("") : (() => {
@@ -1072,6 +1172,7 @@ function renderSheet(){
   else if (S.view === "filter") renderFilterSheet();
   else if (S.view === "bewertung") renderBewertungEdit();
   else if (S.view === "merkliste") renderMerkSheet();
+  else if (S.view === "info") renderInfo();
 }
 function renderMerkSheet(){
   const liste = merkliste().map(buchVon).filter(b => b && b.aktiv !== false);
@@ -1142,6 +1243,8 @@ function openSheet(view, id, push = true){
   S.view = view; renderSheet();
   const sh = $("#sheet"), bd = $("#backdrop");
   if (sh.hidden){
+    S.opener = document.activeElement;
+    document.querySelectorAll("main, #minikopf").forEach(x => x.inert = true);
     sh.hidden = bd.hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => { sh.classList.add("on"); bd.classList.add("on"); }));
     document.body.style.overflow = "hidden";
@@ -1150,14 +1253,20 @@ function openSheet(view, id, push = true){
   try { history.replaceState(null, "", view === "buch" ? "#b-" + id : location.pathname + location.search); } catch {}
   if (push) setTimeout(() => { const ziel = view === "login" ? $("#p0") : $("#schliessen"); if (ziel) ziel.focus({ preventScroll: true }); }, 60);
 }
-function wechsle(view){ S.view = view; renderSheet(); $("#sheet").scrollTop = 0; }
+function wechsle(view){
+  S.view = view; renderSheet(); $("#sheet").scrollTop = 0;
+  const t = $("#d-titel"); if (t){ t.tabIndex = -1; t.focus({ preventScroll: true }); }
+}
 function closeSheet(){
   const sh = $("#sheet"), bd = $("#backdrop"), war = S.open;
   S.view = null; S.open = null; S.edit = null;
   sh.classList.remove("on"); bd.classList.remove("on"); document.body.style.overflow = "";
+  document.querySelectorAll("main, #minikopf").forEach(x => x.inert = false);
   setTimeout(() => { if (!S.view) sh.hidden = bd.hidden = true; }, 240);
   try { history.replaceState(null, "", location.pathname + location.search); } catch {}
-  const z = war && document.querySelector(`.zeile[data-id="${CSS.escape(war)}"]`); if (z) z.focus({ preventScroll: true });
+  const z = war && document.querySelector(`.zeile[data-id="${CSS.escape(war)}"]`);
+  const ziel = S.opener && S.opener.isConnected && S.opener !== document.body ? S.opener : z;
+  if (ziel) ziel.focus({ preventScroll: true }); S.opener = null;
 }
 
 function quellenHtml(b){
@@ -1218,7 +1327,7 @@ function renderBuch(){
           <textarea id="kommentar" class="kommentar" maxlength="500" placeholder="Was nimmst du mit?">${esc(e.kommentar)}</textarea></div>
         <div class="gruppe"><p class="gruppe-titel">Bilder oder Videos (optional)</p>
           <div class="medien-wahl">${e.medien.map((m, i) => `<div class="medium-vorschau"><span class="thumb">${thumbHtml(m)}</span><button type="button" class="medium-weg" data-weg="${i}" aria-label="Anhang ${i + 1} entfernen">${ICON.zu}</button></div>`).join("")}
-            ${e.medien.length < CONFIG.MAX_MEDIEN ? `<label class="medium-hinzu">${ICON.plus}<span>Hinzufügen</span><input type="file" id="medien-datei" accept="image/*,video/*" multiple hidden></label>` : ""}</div>
+            ${e.medien.length < CONFIG.MAX_MEDIEN ? `<label class="medium-hinzu">${ICON.plus}<span>Hinzufügen</span><input type="file" id="medien-datei" class="sr-only" accept="image/*,video/*" multiple></label>` : ""}</div>
           <p class="meta" style="margin:0">Bis zu ${CONFIG.MAX_MEDIEN} Anhänge. Videos bis ${Store.mode === "local" ? 4 : CONFIG.MAX_VIDEO_MB} MB.</p></div>
         <fieldset class="kuerzel"><legend>Dein Kürzel</legend>${zeichenFelder("r", e.kuerzel, "kuerzel")}</fieldset>
         <div class="aktionen" style="margin-top:0"><button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>Bewertung speichern</button></div>
@@ -1243,6 +1352,22 @@ function renderLogin(){
 
 function schalter(an, attr, label){ return `<button type="button" class="schalter" role="switch" aria-checked="${!!an}" ${attr} aria-label="${esc(label)}"><span></span></button>`; }
 function renderAdmin(){
+  if (S.pinPflicht){
+    $("#detail").innerHTML = `
+      <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2></div>
+      <div class="vorschau pin-pflicht" style="margin:0"><span>Du bist mit der Standard-PIN angemeldet. Bitte zuerst eine eigene PIN festlegen, danach ist die Verwaltung frei.</span></div>
+      <section class="abschnitt"><h3 class="titel-bereich">Eigene PIN festlegen</h3><div class="karte innen">
+        <form id="pin-form" class="bewerten-form" autocomplete="off" novalidate>
+          <fieldset class="kuerzel"><legend>Neue PIN</legend>${zeichenFelder("n", "", "pin")}</fieldset>
+          <fieldset class="kuerzel"><legend>Neue PIN wiederholen</legend>${zeichenFelder("m", "", "pin")}</fieldset>
+          <div class="aktionen" style="margin-top:0"><button class="taste primaer" type="submit">PIN speichern</button></div>
+        </form></div></section>
+      <button class="taste sekundaer ganz" id="abmelden">Abmelden</button>`;
+    return;
+  }
+  if (S.feedback === null){ S.feedback = []; call({ action: "listFeedback", pin: S.admin }).then(j => { S.feedback = j.feedback || []; if (S.view === "admin" && !tippt()) renderAdmin(); }).catch(() => {}); }
+  const fb = [...(S.feedback || [])].sort((a, b) => String(b.am).localeCompare(String(a.am)));
+  const fbSterne = fb.filter(x => Number(x.sterne) > 0), fbSchnitt = fbSterne.length ? fbSterne.reduce((a, x) => a + Number(x.sterne), 0) / fbSterne.length : 0;
   const liste = [...S.books].sort((a, b) => a.titel.localeCompare(b.titel, "de"));
   $("#detail").innerHTML = `
     <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2><p class="meta zahl" style="margin:0">${S.books.length} Bücher · ${sichtbar().length} aktiv · ${S.books.filter(b => b.empfohlen && b.aktiv !== false).length} empfohlen</p></div>
@@ -1256,10 +1381,16 @@ function renderAdmin(){
     </div></section>
     <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Bewertungen und Kommentare</h3><span class="meta zahl">${S.ratings.length}</span></header><div class="karte">
       ${S.ratings.length ? [...S.ratings].sort((a, b) => String(b.am).localeCompare(String(a.am))).map(r => { const b = buchVon(r.bookId);
-        return `<button class="rating-zeile" data-bewertung="${esc(r.id)}"><span class="kopf"><span class="buch">${esc(b ? b.titel : "Unbekanntes Buch")}</span><span class="d">${fmt(r.am)}</span></span>
+        return `<button class="rating-zeile" data-bewertung="${esc(r.id)}"><span class="rz-kopf"><span class="buch">${esc(b ? b.titel : "Unbekanntes Buch")}</span><span class="d">${fmt(r.am)}</span></span>
           <span class="meta"><span class="kuerzel-text">${esc(r.kuerzel)}</span>${sterneHtml(Number(r.sterne || 0))}${(r.medien || []).length ? `<span>${r.medien.length} ${r.medien.length === 1 ? "Anhang" : "Anhänge"}</span>` : ""}</span>
           ${r.kommentar ? `<span class="auszug">${esc(r.kommentar)}</span>` : ""}</button>`; }).join("")
         : `<div class="innen"><p class="meta" style="margin:0">Noch keine Bewertungen.</p></div>`}
+    </div></section>
+    <section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">Feedback zur Bibliothek</h3><span class="meta zahl">${fb.length ? `${fb.length}${fbSterne.length ? ` · Ø ${komma(fbSchnitt)} ★` : ""}` : ""}</span></header><div class="karte">
+      ${fb.length ? fb.map(x => `<div class="rating-zeile" style="cursor:default"><span class="rz-kopf"><span class="buch">${x.kuerzel ? `<span class="kuerzel-text">${esc(x.kuerzel)}</span>` : "Anonym"}</span><span class="d">${fmt(x.am)}</span></span>
+        ${Number(x.sterne) ? `<span class="meta">${sterneHtml(Number(x.sterne))}</span>` : ""}${x.text ? `<span class="auszug" style="white-space:normal">${esc(x.text)}</span>` : ""}
+        <span><button class="entfernen" data-fbweg="${esc(x.id)}">${S.loeschFrage === x.id ? "Wirklich entfernen?" : "Entfernen"}</button></span></div>`).join("")
+        : `<div class="innen"><p class="meta" style="margin:0">Noch kein Feedback.</p></div>`}
     </div></section>
     <section class="abschnitt"><h3 class="titel-bereich">PIN ändern</h3><div class="karte innen">
       <form id="pin-form" class="bewerten-form" autocomplete="off" novalidate>
@@ -1276,7 +1407,7 @@ function neuerEntwurf(b){
 }
 function feld(name, label, wert, attr = ""){ return `<div class="gruppe"><label for="f-${name}">${label}</label><input id="f-${name}" name="${name}" class="eingabe" value="${esc(wert ?? "")}" ${attr}></div>`; }
 function fotoKachel(key, label, src){
-  return `<label class="foto-kachel">${src ? `<img src="${esc(src)}" alt="">` : `${ICON.kamera}<span>${label}</span>`}<input type="file" accept="image/*" capture="environment" data-foto="${key}" hidden></label>`;
+  return `<label class="foto-kachel">${src ? `<img src="${esc(src)}" alt="">` : `${ICON.kamera}<span>${label}</span>`}<input type="file" class="sr-only" accept="image/*" capture="environment" data-foto="${key}" aria-label="${label}"></label>`;
 }
 function renderEdit(){
   const e = S.edit, b = e.buch;
@@ -1298,7 +1429,7 @@ function renderEdit(){
         <div class="gross">${cover(vorschau)}</div>
         <div class="formular">
           ${feld("cover", "Cover-URL", b.cover, `placeholder="leer = per ISBN" inputmode="url"`)}
-          <label class="taste sekundaer klein">Eigenes Bild wählen<input type="file" id="cover-datei" accept="image/*" hidden></label>
+          <label class="taste sekundaer klein">Eigenes Bild wählen<input type="file" id="cover-datei" class="sr-only" accept="image/*"></label>
           ${e.fotos.cover ? `<label class="check"><input type="checkbox" id="foto-als-cover" ${e.fotoAlsCover ? "checked" : ""}> Foto als Cover verwenden</label>` : ""}
           ${e.coverDatei ? `<p class="meta" style="margin:0">Eigenes Bild wird beim Speichern hochgeladen.</p>` : ""}
         </div></div></div></section>
@@ -1315,7 +1446,7 @@ function renderEdit(){
 
       <section class="abschnitt"><h3 class="titel-bereich">Themen und Beschreibung</h3><div class="karte innen formular">
         <div class="gruppe"><p class="gruppe-titel">Themen</p><div class="themen-wahl">${themen.map(t => `<button type="button" class="chip" data-thema="${esc(t)}" aria-pressed="${(b.themen || []).includes(t)}">${esc(t)}</button>`).join("")}</div>
-          <input class="eingabe" id="f-thema-neu" placeholder="Weiteres Thema, mit Enter hinzufügen" enterkeyhint="done"></div>
+          <input class="eingabe" id="f-thema-neu" aria-label="Weiteres Thema" placeholder="Weiteres Thema, mit Enter hinzufügen" enterkeyhint="done"></div>
         <div class="gruppe"><label for="f-beschreibung">Beschreibung</label><textarea id="f-beschreibung" name="beschreibung" class="kommentar" maxlength="1200" placeholder="Zwei bis drei Sätze in eigenen Worten">${esc(b.beschreibung || "")}</textarea></div>
         <div class="gruppe"><label for="f-quellen">Quellen</label><textarea id="f-quellen" name="quellen" class="kommentar" placeholder="Titel | https://…  (eine pro Zeile)">${esc((b.quellen || []).map(q => `${q.titel} | ${q.url}`).join("\n"))}</textarea></div>
       </div></section>
@@ -1326,7 +1457,7 @@ function renderEdit(){
       </div></section>
       <div class="aktionen" style="margin-top:0">
         <button class="taste primaer" type="submit" ${S.busy ? "disabled" : ""}>${S.busy ? "Speichert …" : "Speichern"}</button>
-        <button type="button" class="taste sekundaer" data-nav="admin">Abbrechen</button>
+        <button type="button" class="taste sekundaer" data-nav="admin" ${S.busy ? "disabled" : ""}>Abbrechen</button>
       </div>
     </form>
     ${!e.neu ? `<section class="abschnitt"><h3 class="titel-bereich">Status</h3><div class="karte innen">${ausleiheHtml(b, "a")}</div>
@@ -1389,14 +1520,16 @@ async function nachschlagen(isbn){
 }
 async function fotoVerarbeiten(key, datei){
   const e = S.edit; syncEdit();
-  e.fotos[key] = await verkleinern(datei, 1600, .85);
+  const foto = await verkleinern(datei, 1600, .85);
+  if (S.edit !== e || S.view !== "edit") return;
+  e.fotos[key] = foto;
   if (key === "cover" && !e.buch.cover && !e.fotoAlsCover) e.fotoAlsCover = true;
   e.info = "Suche ISBN im Foto …"; renderEdit();
   const isbn = await isbnAusBild(e.fotos[key]);
-  if (!S.edit) return;
+  if (S.edit !== e || S.view !== "edit") return;
   if (isbn){
     e.info = `ISBN ${isbn} erkannt. Suche Angaben …`; renderEdit();
-    const r = await nachschlagen(isbn); syncEdit(); mergeBuch(e.buch, r, e.neu);
+    const r = await nachschlagen(isbn); if (S.edit !== e || S.view !== "edit") return; syncEdit(); mergeBuch(e.buch, r, e.neu);
     if (r.coverUrl && e.fotoAlsCover && !e.coverDatei) e.fotoAlsCover = false;
     e.info = r.titel ? `ISBN ${isbn}: Angaben${r.coverUrl ? " und Original-Cover" : ""} übernommen. Bitte prüfen.` : `ISBN ${isbn} erkannt, aber keine Angaben gefunden. „Mit KI ausfüllen“ probieren.`;
   } else e.info = key === "rueck" ? "Keine ISBN erkannt. „Mit KI ausfüllen“ nutzen oder Angaben von Hand eintragen." : "Foto übernommen. Für die ISBN noch die Rückseite fotografieren.";
@@ -1407,31 +1540,37 @@ async function kiAnalyse(){
   try {
     const bilder = [];
     for (const f of [e.fotos.cover, e.fotos.rueck]) if (f) bilder.push((await verkleinern(f, 1200, .8)).split(",")[1]);
-    const j = await Store.act({ action: "analyze", pin: S.admin, bilder });
+    const j = await call({ action: "analyze", pin: S.admin, bilder });
+    if (S.edit !== e || S.view !== "edit") return;
     const d = j.daten || {}; syncEdit(); mergeBuch(e.buch, d, false);
-    if (istIsbn(String(d.isbn || "").replace(/\D/g, ""))){ const r = await nachschlagen(String(d.isbn).replace(/\D/g, "")); mergeBuch(e.buch, r, false); if (r.coverUrl && !e.coverDatei) e.fotoAlsCover = false; }
+    if (istIsbn(String(d.isbn || "").replace(/\D/g, ""))){ const r = await nachschlagen(String(d.isbn).replace(/\D/g, "")); if (S.edit !== e) return; mergeBuch(e.buch, r, false); if (r.coverUrl && !e.coverDatei) e.fotoAlsCover = false; }
     e.info = "KI-Vorschlag übernommen. Bitte prüfen und speichern.";
   } catch (err){ e.info = err.message || "KI-Analyse fehlgeschlagen."; }
-  e.laeuft = false; if (S.view === "edit") renderEdit();
+  e.laeuft = false; if (S.edit === e && S.view === "edit") renderEdit();
 }
 const slug = s => norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
 async function speichereBuch(){
   const e = S.edit; syncEdit(); const b = e.buch;
   if (!b.titel || !b.autor){ toast("Bitte Titel und Autor:in eintragen."); ($("#f-titel").value ? $("#f-autor") : $("#f-titel")).focus(); return; }
+  if (S.busy) return;
   if (e.neu && !b.id) b.id = `${slug(b.autor.split(",")[0] + "-" + b.titel)}-${Math.random().toString(36).slice(2, 6)}`;
   S.busy = true; renderEdit();
   try {
     const bild = e.coverDatei || (e.fotoAlsCover && e.fotos.cover);
-    if (bild){ toast("Lade Cover hoch …"); b.cover = (await hochladen(bild, "cover")).url; }
+    if (bild){ toast("Lade Cover hoch …"); b.cover = (await hochladen(bild, "cover")).url; e.coverDatei = null; e.fotoAlsCover = false; }
     const sauber = { ...b }; delete sauber.coverVorschau; sauber.beispiel = false;
-    apply(await Store.act({ action: "saveBook", pin: S.admin, book: sauber, seed: S.fromSeed ? SEED : undefined }));
-    toast("Gespeichert."); S.edit = null; S.busy = false; renderFilter(); render(); wechsle("admin");
-  } catch (err){ S.busy = false; toast(err.message || "Speichern fehlgeschlagen."); renderEdit(); }
+    apply(await call({ action: "saveBook", pin: S.admin, book: sauber, seed: S.fromSeed ? SEED : undefined }));
+    toast("Gespeichert."); S.busy = false; renderFilter(); render();
+    if (S.edit === e && S.view === "edit"){ S.edit = null; wechsle("admin"); }
+  } catch (err){ S.busy = false; toast(err.message || "Speichern fehlgeschlagen."); if (S.edit === e && S.view === "edit") renderEdit(); }
 }
 async function adminSpeichern(b, aenderung, ok){
-  const neu = { ...b, ...aenderung }; delete neu.coverVorschau;
-  try { apply(await Store.act({ action: "saveBook", pin: S.admin, book: neu, seed: S.fromSeed ? SEED : undefined })); toast(ok); renderFilter(); render(); }
-  catch (err){ toast(err.message); }
+  if (S.speichert.has(b.id)) return;
+  const vorher = { ...b }, neu = { ...b, ...aenderung }; delete neu.coverVorschau;
+  S.speichert.add(b.id); Object.assign(b, aenderung); renderFilter(); render();
+  try { apply(await call({ action: "saveBook", pin: S.admin, book: neu, seed: S.fromSeed ? SEED : undefined })); toast(ok); }
+  catch (err){ const x = buchVon(vorher.id); if (x) Object.assign(x, vorher); toast(err.message); }
+  finally { S.speichert.delete(b.id); renderFilter(); render(); }
 }
 
 /* ===== Aktionen ===== */
@@ -1439,8 +1578,8 @@ let toastT;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
 async function act(p, ok){
   if (S.busy) return; S.busy = true; if (S.view === "edit") syncEdit(); renderSheet();
-  try { apply(await Store.act(p)); toast(ok); }
-  catch (e){ toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); if (/PIN/.test(e.message || "") && p.pin){ S.admin = null; ss.set("bib.admin", null); } try { apply(await Store.list()); } catch {} }
+  try { apply(await call(p)); toast(ok); }
+  catch (e){ toast(e.message || "Das hat nicht geklappt. Bitte noch einmal versuchen."); try { apply(await Store.list()); } catch {} }
   finally { S.busy = false; render(); if (S.view === "edit") renderEdit(); if (S.view === "login" && !S.admin) renderLogin(); }
 }
 async function teilen(b){
@@ -1450,15 +1589,16 @@ async function teilen(b){
   const i = $("#linkfeld"); i.focus(); i.select(); toast("Link markiert, bitte kopieren");
 }
 async function speichereBewertung(){
+  if (S.busy) return;
   const kuerzel = leseKuerzel("r"); if (!kuerzel) return;
   const e = S.entwurf; e.kuerzel = kuerzel; S.busy = true; renderBuch();
   try {
-    const medien = [];
-    for (const m of e.medien){
-      if (m.neu){ toast(`Lade ${m.typ === "video" ? "Video" : "Bild"} hoch …`); medien.push(await hochladen(m.datei, "kommentar", m.typ)); }
-      else medien.push({ typ: m.typ, url: m.url, thumb: m.thumb });
+    for (let i = 0; i < e.medien.length; i++){
+      const m = e.medien[i];
+      if (m.neu){ toast(`Lade ${m.typ === "video" ? "Video" : "Bild"} hoch …`); const hoch = await hochladen(m.datei, "kommentar", m.typ); URL.revokeObjectURL(m.vorschau); e.medien[i] = hoch; }
     }
-    apply(await Store.act({ action: "rate", bookId: S.open, kuerzel, sterne: e.sterne, kommentar: e.kommentar.trim().slice(0, 500), medien }));
+    const medien = e.medien.map(m => ({ typ: m.typ, url: m.url, thumb: m.thumb }));
+    apply(await call({ action: "rate", bookId: S.open, kuerzel, sterne: e.sterne, kommentar: e.kommentar.trim().slice(0, 500), medien }));
     e.medien = medien; toast("Danke für deine Bewertung.");
   } catch (err){ toast(err.message || "Speichern fehlgeschlagen."); }
   S.busy = false; render();
@@ -1470,6 +1610,11 @@ $("#leeren").addEventListener("click", () => { $("#q").value = ""; S.q = ""; ren
 $("#filter").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; themaUmschalten(c.dataset.t); renderFilter(); render(); });
 $("#filter-oeffnen").addEventListener("click", () => { setFilter(false); openSheet("filter"); });
 document.querySelectorAll(".merk-taste").forEach(t => t.addEventListener("click", () => { setFilter(false); openSheet("merkliste"); }));
+$("#info-oeffnen").addEventListener("click", () => openSheet("info"));
+$("#intro").addEventListener("click", e => {
+  if (e.target.closest("#intro-ok")){ ls.set("bib.intro", true); renderIntro(); $("#q").focus({ preventScroll: true }); }
+  if (e.target.closest("#intro-mehr")){ ls.set("bib.intro", true); openSheet("info"); renderIntro(); }
+});
 $("#liste").addEventListener("click", e => {
   const v = e.target.closest("[data-vorschlag]"); if (v){ $("#q").value = v.dataset.vorschlag; S.q = v.dataset.vorschlag; render(); return; }
   if (e.target.closest("[data-zuruecksetzen]")){ zuruecksetzen(); return; }
@@ -1484,7 +1629,7 @@ $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") 
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   if (!$("#lightbox").hidden) return schliesseLightbox();
-  if (!$("#einstellungen-menue").hidden) return menue(false);
+  if (!$("#einstellungen-menue").hidden){ menue(false); return menueTaste.focus(); }
   if (S.view) closeSheet();
 });
 
@@ -1496,17 +1641,19 @@ D.addEventListener("submit", e => {
   if (id === "ausleihen"){ const k = leseKuerzel("k"); if (k) act({ action: "borrow", bookId: S.open, kuerzel: k }, "Ausgeliehen. Viel Freude beim Lesen."); }
   if (id === "verleihen-admin"){ const k = leseKuerzel("a"); if (k) act({ action: "borrow", bookId: S.edit.buch.id, kuerzel: k }, `Als verliehen an ${k} erfasst.`); }
   if (id === "bewerten") speichereBewertung();
+  if (id === "feedback") sendeFeedback();
   if (id === "edit-form") speichereBuch();
   if (id === "login"){
+    if (S.busy) return;
     const pin = lesePin("p"); if (!pin) return;
-    S.busy = true;
-    Store.act({ action: "checkPin", pin }).then(() => { S.admin = pin; ss.set("bib.admin", pin); S.busy = false; wechsle("admin"); render(); })
+    S.busy = true; renderLogin();
+    call({ action: "checkPin", pin }).then(j => { S.admin = pin; ss.set("bib.admin", pin); S.pinPflicht = j.eigenePin === false; S.busy = false; S.feedback = null; wechsle("admin"); render(); })
       .catch(err => { S.busy = false; toast(err.message || "PIN ist nicht richtig."); renderLogin(); $("#p0").focus(); });
   }
   if (id === "pin-form"){
     const a = lesePin("n"); if (!a) return; const b = lesePin("m"); if (!b) return;
     if (a !== b){ toast("Die beiden PINs stimmen nicht überein."); felderVon("m").forEach(f => f.value = ""); $("#m0").focus(); return; }
-    Store.act({ action: "setPin", pin: S.admin, neu: a }).then(() => { S.admin = a; ss.set("bib.admin", a); toast("PIN geändert."); renderAdmin(); })
+    call({ action: "setPin", pin: S.admin, neu: a }).then(() => { S.admin = a; ss.set("bib.admin", a); S.pinPflicht = false; toast("PIN geändert."); renderAdmin(); })
       .catch(err => toast(err.message));
   }
 });
@@ -1515,6 +1662,7 @@ D.addEventListener("input", e => {
   if (f){
     f.value = zeichenNorm(f.value, f.dataset.art).slice(-1); f.removeAttribute("aria-invalid");
     if (f.dataset.g === "r") S.entwurf.kuerzel = felderVon("r").map(x => x.value).join("");
+    if (f.dataset.g === "f" && S.fb) S.fb.kuerzel = felderVon("f").map(x => x.value).join("");
     if (f.value){
       const n = document.getElementById(f.dataset.g + (+f.dataset.i + 1));
       if (n) n.focus();
@@ -1523,6 +1671,7 @@ D.addEventListener("input", e => {
     return;
   }
   if (e.target.id === "kommentar") S.entwurf.kommentar = e.target.value;
+  if (e.target.id === "fb-text" && S.fb) S.fb.text = e.target.value;
 });
 D.addEventListener("keydown", e => {
   if (e.target.id === "f-thema-neu" && e.key === "Enter"){
@@ -1547,8 +1696,8 @@ D.addEventListener("change", async e => {
     if (t.id === "medien-datei"){
       const e2 = S.entwurf;
       for (const d of [...t.files].slice(0, CONFIG.MAX_MEDIEN - e2.medien.length)){
-        const typ = d.type.startsWith("video/") ? "video" : d.type.startsWith("image/") ? "bild" : null;
-        if (!typ){ toast("Nur Bilder und Videos sind möglich."); continue; }
+        const typ = /^video\/(mp4|quicktime|webm)$/.test(d.type) ? "video" : d.type.startsWith("image/") ? "bild" : null;
+        if (!typ){ toast(d.type.startsWith("video/") ? "Dieses Videoformat geht nicht. Bitte MP4 oder MOV nutzen." : "Nur Bilder und Videos sind möglich."); continue; }
         e2.medien.push({ neu: true, typ, datei: d, vorschau: URL.createObjectURL(d) });
       }
       renderBuch();
@@ -1563,6 +1712,12 @@ D.addEventListener("click", e => {
   const a = el("[data-act]");
   if (a){ const id = S.view === "edit" ? S.edit.buch.id : S.open, l = openLoan(id);
     if (l) act({ action: a.dataset.act, loanId: l.id }, a.dataset.act === "return" ? "Zurückgegeben. Danke!" : "Um vier Wochen verlängert."); return; }
+  const fbn = el("[data-fbn]"); if (fbn){ const n = +fbn.dataset.fbn; S.fb.text = $("#fb-text").value; S.fb.sterne = S.fb.sterne === n ? 0 : n; renderInfo(); const x = document.querySelector(`[data-fbn="${n}"]`); if (x) x.focus(); return; }
+  if (el("#fb-neu")){ S.fb = FB0(); renderInfo(); return; }
+  const fbw = el("[data-fbweg]"); if (fbw){
+    const id = fbw.dataset.fbweg; if (S.loeschFrage !== id){ S.loeschFrage = id; renderAdmin(); return; }
+    S.loeschFrage = null; call({ action: "deleteFeedback", pin: S.admin, id }).then(j => { S.feedback = j.feedback || []; toast("Feedback entfernt."); renderAdmin(); }).catch(err => toast(err.message)); return;
+  }
   const ob = el("[data-oeffne]"); if (ob){ openSheet("buch", ob.dataset.oeffne); return; }
   const mw = el("[data-merkweg]"); if (mw){ merken(mw.dataset.merkweg); render(); return; }
   const mk = el("[data-merken]"); if (mk){ merken(mk.dataset.merken); renderBuch(); render(); return; }
@@ -1594,19 +1749,19 @@ D.addEventListener("click", e => {
   const rl = el("[data-rlb]"); if (rl){ oeffneLightbox(S.redit.medien[+rl.dataset.rlb]); return; }
   if (el("[data-rspeichern]")){
     const e2 = S.redit; e2.kommentar = $("#r-kommentar").value.trim().slice(0, 500);
-    Store.act({ action: "updateRating", pin: S.admin, id: e2.id, sterne: e2.sterne, kommentar: e2.kommentar, medien: e2.medien.map(m => ({ typ: m.typ, url: m.url, thumb: m.thumb })) })
+    call({ action: "updateRating", pin: S.admin, id: e2.id, sterne: e2.sterne, kommentar: e2.kommentar, medien: e2.medien.map(m => ({ typ: m.typ, url: m.url, thumb: m.thumb })) })
       .then(j => { apply(j); toast("Bewertung gespeichert."); S.redit = null; render(); wechsle("admin"); }).catch(err => toast(err.message));
     return;
   }
   if (el("[data-rloeschen]")){
     const id = S.redit.id; S.redit.kommentar = $("#r-kommentar").value;
     if (S.loeschFrage !== id){ S.loeschFrage = id; renderBewertungEdit(); return; }
-    Store.act({ action: "deleteRating", pin: S.admin, id }).then(j => { apply(j); toast("Bewertung gelöscht."); S.redit = null; S.loeschFrage = null; render(); wechsle("admin"); }).catch(err => toast(err.message));
+    call({ action: "deleteRating", pin: S.admin, id }).then(j => { apply(j); toast("Bewertung gelöscht."); S.redit = null; S.loeschFrage = null; render(); wechsle("admin"); }).catch(err => toast(err.message));
     return;
   }
   if (el("#teilen")){ teilen(buchVon(S.open)); return; }
   const st = el(".stern"); if (st){ const n = +st.dataset.n; S.entwurf.sterne = S.entwurf.sterne === n ? 0 : n; renderBuch(); const f = document.querySelector(`.stern[data-n="${n}"]`); if (f) f.focus(); return; }
-  const weg = el("[data-weg]"); if (weg){ S.entwurf.medien.splice(+weg.dataset.weg, 1); renderBuch(); return; }
+  const weg = el("[data-weg]"); if (weg){ const [m] = S.entwurf.medien.splice(+weg.dataset.weg, 1); if (m && m.vorschau) URL.revokeObjectURL(m.vorschau); renderBuch(); return; }
   const lb = el("[data-lb]"); if (lb){ const r = S.ratings.find(x => x.id === lb.dataset.lb); if (r) oeffneLightbox(r.medien[+lb.dataset.i]); return; }
   const lo = el("[data-loeschen]"); if (lo){
     if (S.loeschFrage !== lo.dataset.loeschen){ S.loeschFrage = lo.dataset.loeschen; renderBuch(); return; }
@@ -1621,6 +1776,7 @@ function renderMenue(){
   menueEl.innerHTML = `<p class="etikett menue-etikett">Darstellung</p>
     ${[["system", "Wie System"], ["hell", "Hell"], ["dunkel", "Dunkel"]].map(([k, l]) => `<button role="menuitemradio" aria-checked="${m === k}" data-modus="${k}"><span>${l}</span>${m === k ? ICON.haken : ""}</button>`).join("")}
     <div class="menue-linie" role="separator"></div>
+    <button role="menuitem" data-menue="info"><span>So funktioniert’s · Feedback</span></button>
     <button role="menuitem" data-menue="verwaltung"><span>Verwaltung</span>${S.admin ? `<span class="meta">angemeldet</span>` : ""}</button>`;
 }
 function menue(offen){
@@ -1634,6 +1790,7 @@ menueEl.addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.modus){ setzeModus(b.dataset.modus); renderMenue(); menueEl.querySelector(`[data-modus="${b.dataset.modus}"]`).focus(); return; }
   if (b.dataset.menue === "verwaltung"){ menue(false); openSheet(S.admin ? "admin" : "login"); }
+  if (b.dataset.menue === "info"){ menue(false); openSheet("info"); }
 });
 menueEl.addEventListener("keydown", e => {
   const items = [...menueEl.querySelectorAll("button")], i = items.indexOf(document.activeElement);
@@ -1665,16 +1822,18 @@ window.addEventListener("resize", pruefeMini, { passive: true });
 window.addEventListener("hashchange", () => { const m = location.hash.match(/^#b-(.+)$/); if (m && m[1] !== S.open) openSheet("buch", m[1], false); });
 
 /* ===== Start ===== */
-async function refresh(){
+const tippt = () => { const a = document.activeElement; return !!(S.view && a && $("#sheet").contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
+async function refresh(erstes){
+  if (!erstes && (["edit", "bewertung", "login", "info"].includes(S.view) || tippt() || S.busy)) return;
   try { apply(await Store.list()); renderFilter(); render(); }
-  catch { if (Store.mode === "remote") toast("Keine Verbindung. Angezeigt wird der letzte Stand."); }
+  catch (e){ if (Store.mode === "remote") toast(S.geladen && S.books.length ? "Keine Verbindung. Angezeigt wird der zuletzt geladene Stand." : (e.message || "Bestand konnte nicht geladen werden.")); }
 }
 (async function start(){
   if (Store.mode === "local"){ $("#vorschau").hidden = false;
     $("#vorschau-text").textContent = "Vorschau: Änderungen bleiben nur auf diesem Gerät. Mit verbundener Tabelle sehen alle denselben Stand."; }
-  renderFilter(); render(); await refresh();
+  renderFilter(); render(); await refresh(true);
   const m = location.hash.match(/^#b-(.+)$/); if (m) openSheet("buch", m[1], false);
-  if (Store.mode === "remote"){ setInterval(() => { if (S.view !== "edit") refresh(); }, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden && S.view !== "edit") refresh(); }); }
+  if (Store.mode === "remote"){ setInterval(() => refresh(), 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); }); }
 })();
 </script>
 
