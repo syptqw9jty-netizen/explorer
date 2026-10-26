@@ -1,4 +1,4 @@
-const VERSION = 'v8';
+const VERSION = 'v9';
 const CACHE = 'explorer-' + VERSION;
 const APP = ['./', 'index.html', 'assets/app.css', 'assets/app.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 // Beim Installieren immer frisch vom Netz holen (GitHub Pages cached 10 Min. per HTTP)
@@ -8,6 +8,8 @@ self.addEventListener('message', e => { if (e.data === 'version') e.source.postM
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin || e.request.method !== 'GET') return;
+  // Andere Apps im selben Repo (Bibliothek, Werbemittel, Spur …) nicht aus diesem Cache bedienen.
+  if (/\/explorer\/(bibliothek|buecherei|werbemittel|spur|shop)\//.test(url.pathname)) return;
   if (url.pathname.endsWith('index.enc.json')) {
     e.respondWith(fetch(e.request, { cache: 'no-cache' }).then(r => { if (r.ok) { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); } return r; }).catch(() => caches.match(e.request)));
     return;
