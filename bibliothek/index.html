@@ -282,6 +282,11 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .zeile .cover .ct{font-size:6.5px}.zeile .cover .ca{font-size:5px}
 .gross .cover{border-radius:var(--radius-block)}
 .gross .cover .ct{font-size:14px}.gross .cover .ca{font-size:9px}
+.cover{container-type:inline-size}
+.emp-marke{position:absolute;top:6%;left:50%;transform:translateX(-50%);z-index:1;display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 8px 0 6px;border-radius:999px;
+  background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-size:11px;line-height:1;font-weight:600;letter-spacing:.01em;white-space:nowrap;box-shadow:0 1px 3px rgb(0 0 0 / .25)}
+.emp-marke svg{width:11px;height:11px;flex:none}
+@container (max-width:60px){.emp-marke{top:3px;height:16px;width:16px;padding:0;justify-content:center;gap:0}.emp-marke svg{width:10px;height:10px}.emp-text{display:none}}
 .cover-bild{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;background:var(--erhoeht)}
 .quellen{margin:0 4px;display:grid;gap:4px;font-size:13px;line-height:20px;color:var(--tertiaer)}
 .quellen p{margin:0}
@@ -935,10 +940,10 @@ function coverUrl(b){
   return olCover(b);
 }
 function coverFehler(img){ const alt = img.dataset.alt; if (alt){ delete img.dataset.alt; img.src = alt; } else img.remove(); }
-function cover(b){
+function cover(b, opt = {}){
   const h = hash(b.id || b.titel), t = TONES[h % 4], f = FORMS[(h >> 3) % 4];
   const last = (b.autor || "").split(",")[0].trim().split(" ").pop(), u = coverUrl(b), alt = !b.coverVorschau && b.cover ? olCover(b) : "";
-  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel || "Ohne Titel")}</div><div class="ca">${esc(last)}</div>${u ? `<img class="cover-bild" src="${esc(u)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"${alt && alt !== u ? ` data-alt="${esc(alt)}"` : ""} onerror="coverFehler(this)">` : ""}</div>`;
+  return `<div class="cover" style="--c:var(--cover-${t});--t:var(--cover-${t}-t)" aria-hidden="true"><span class="form ${f}"></span><div class="ct">${esc(b.titel || "Ohne Titel")}</div><div class="ca">${esc(last)}</div>${u ? `<img class="cover-bild" src="${esc(u)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"${alt && alt !== u ? ` data-alt="${esc(alt)}"` : ""} onerror="coverFehler(this)">` : ""}${b.empfohlen && b.aktiv !== false && !opt.ohneEmpfohlen ? `<span class="emp-marke">${ICON.stern}<span class="emp-text">Empfohlen</span></span>` : ""}</div>`;
 }
 
 /* ===== Medien: verkleinern, hochladen, anzeigen ===== */
@@ -1092,7 +1097,7 @@ function karussell(sektion, liste){
   $("#" + sektion).hidden = !liste.length || filterAktiv();
   $("#" + sektion + "-liste").innerHTML = liste.map(b => {
     const s = status(b.id);
-    return `<li><button class="empfehlung" data-id="${esc(b.id)}">${cover(b)}
+    return `<li><button class="empfehlung" data-id="${esc(b.id)}">${cover(b, { ohneEmpfohlen: true })}
       <span class="e-info"><span class="e-titel">${esc(b.titel)}</span><span class="meta">${esc(b.autor)}</span><span class="badge ${s.cls}">${esc(s.label)}</span></span></button></li>`;
   }).join("");
 }
@@ -1180,7 +1185,7 @@ function render(){
     const s = status(b.id), r = schnitt(b.id);
     return `<button class="zeile" data-id="${esc(b.id)}">
       ${cover(b)}
-      <span class="info"><span class="t">${markiere(b.titel, woerter)}</span><span class="meta">${markiere(b.autor, woerter)}</span>
+      <span class="info"><span class="t">${markiere(b.titel, woerter)}${b.empfohlen ? `<span class="sr-only">, empfohlen</span>` : ""}</span><span class="meta">${markiere(b.autor, woerter)}</span>
         <span class="unten"><span class="badge ${s.cls}">${esc(s.label)}</span>${r ? `<span class="bewertet">${ICON.stern} ${komma(r.wert)} <span class="meta">(${r.anzahl})</span></span>` : ""}</span></span>
       <span class="rechts">${gemerkt(b.id) ? `<span class="merk-symbol" role="img" title="Gemerkt" aria-label="Gemerkt">${ICON.gemerkt}</span>` : ""}
       <svg class="chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m1 1 5 5-5 5"/></svg></span>
