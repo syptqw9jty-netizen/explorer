@@ -1,8 +1,8 @@
 /**
- * GAUSS Bibliothek – gemeinsamer Speicher in Google Sheets und Google Drive.
+ * GAUSS Design Bibliothek – gemeinsamer Speicher in Google Sheets und Google Drive.
  *
  * Einrichtung (einmalig, ca. 10 Minuten):
- * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Bibliothek“ (im Firmen-Workspace).
+ * 1. Neue Google-Tabelle anlegen, z. B. „GAUSS Design Bibliothek“ (im Firmen-Workspace).
  * 2. Erweiterungen → Apps Script. Diesen Code einfügen, speichern.
  * 3. Optional für „Mit KI ausfüllen“: Projekteinstellungen → Skripteigenschaften →
  *    ANTHROPIC_API_KEY = API-Schlüssel (console.anthropic.com).
@@ -17,7 +17,7 @@
  *
  * Blätter „Buecher“, „Ausleihen“, „Bewertungen“ und „Feedback“ entstehen beim ersten Aufruf.
  * Feedback ist nur über die Verwaltung (PIN) lesbar, nicht über die öffentliche Abfrage.
- * Bilder und Videos landen im Drive-Ordner „GAUSS Bibliothek Medien“.
+ * Bilder und Videos landen im Drive-Ordner „GAUSS Design Bibliothek Medien“.
  * PIN nur als Hash gespeichert; nach 5 Fehlversuchen 10 Minuten Sperre.
  */
 const LEIHTAGE = 28;
@@ -93,7 +93,7 @@ function pinPruefen_(pin, aktion) {
 function ordner_() {
   const id = PROPS.getProperty('MEDIEN_ORDNER');
   if (id) { try { return DriveApp.getFolderById(id); } catch (e) {} }
-  const f = DriveApp.createFolder('GAUSS Bibliothek Medien');
+  const f = DriveApp.createFolder('GAUSS Design Bibliothek Medien');
   PROPS.setProperty('MEDIEN_ORDNER', f.getId());
   return f;
 }

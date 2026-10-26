@@ -1,8 +1,8 @@
 {
-  "name": "GAUSS Bibliothek",
-  "short_name": "Bibliothek",
+  "name": "GAUSS Design Bibliothek",
+  "short_name": "Design Bibliothek",
   "lang": "de",
-  "description": "Bücher der GAUSS-Bibliothek finden, ausleihen und zurückgeben.",
+  "description": "Bücher der GAUSS Design Bibliothek finden, ausleihen und zurückgeben.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
