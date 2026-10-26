@@ -197,7 +197,9 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .minikopf.on{transform:none;visibility:visible}
 .minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .minikopf .zeichen{width:24px;height:24px}
-.minikopf .kopf-titel{font-size:16px;line-height:24px;font-weight:600;letter-spacing:-.018em;margin:0 auto 0 10px}
+.titel-app{font-size:34px;line-height:40px;letter-spacing:-.025em}
+.minikopf .kopf-titel{display:flex;align-items:center;gap:12px;font-size:17px;line-height:24px;font-weight:500;letter-spacing:-.016em;margin:0 auto 0 12px}
+.minikopf .kopf-titel::before{content:"";width:1px;height:20px;background:var(--linie)}
 .icon-taste.frei{position:relative;width:40px;height:40px}
 .icon-taste.frei::after{content:"";position:absolute;inset:-2px}
 .icon-taste.frei svg{transition:transform 160ms ease-out}
@@ -307,6 +309,7 @@ mark{background:var(--marke-200);color:inherit;border-radius:3px;padding:0 1px}
   :root{--inhalt:1040px}
   .wrap{padding-block:32px 64px}
   .titel-seite{font-size:32px;line-height:40px}
+  .titel-app{font-size:40px;line-height:48px}
   .leiste{grid-template-columns:minmax(0,1fr);max-width:none}
   .filter{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;margin-right:0;padding-right:0}
   .karussell{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0 4px;scroll-snap-type:none}
@@ -321,6 +324,7 @@ mark{background:var(--marke-200);color:inherit;border-radius:3px;padding:0 1px}
 /* Kleine Phones */
 @media (max-width:359px){
   .titel-seite{font-size:24px;line-height:32px}
+  .titel-app{font-size:30px;line-height:36px}
   .zeile{grid-template-columns:40px minmax(0,1fr) auto;gap:12px;padding:12px}
   .held{grid-template-columns:84px minmax(0,1fr)}
   .held h2{font-size:19px;line-height:25px}
@@ -552,7 +556,7 @@ button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
     </svg>
   </div>
   <header class="seitenkopf">
-    <h1 class="titel-seite">Bibliothek</h1>
+    <h1 class="titel-seite titel-app">Bibliothek</h1>
     <p class="meta zahl" id="summary" style="margin:0">Bücher werden geladen …</p>
   </header>
 
