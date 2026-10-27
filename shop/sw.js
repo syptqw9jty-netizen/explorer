@@ -1,5 +1,5 @@
 /* GAUSS Shop – App-Hülle offline verfügbar. Seite zuerst aus dem Netz, Daten nie aus dem Cache. */
-const VERSION = 's1';
+const VERSION = 's2';
 const CACHE = 'shop-' + VERSION;
 const APP = ['./', 'index.html', 'manifest.webmanifest', 'icons/favicon-32.png', 'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(APP.map(u => fetch(u, { cache: 'reload' }).then(r => { if (r.ok) return c.put(u, r); }).catch(() => {})))).then(() => self.skipWaiting())); });

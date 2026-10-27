@@ -32,12 +32,13 @@
   --font-ui:"Funnel Sans",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
   --neutral-0:oklch(1 0 0);--neutral-50:oklch(0.985 0.004 265);--neutral-100:oklch(0.965 0.007 265);--neutral-200:oklch(0.92 0.01 265);
   --neutral-300:oklch(0.85 0.014 265);--neutral-400:oklch(0.71 0.02 265);--neutral-500:oklch(0.58 0.028 265);--neutral-600:oklch(0.48 0.038 265);
-  --neutral-700:oklch(0.4 0.048 265);--neutral-800:oklch(0.34 0.035 265);--neutral-900:oklch(0.27 0.04 265);--neutral-950:oklch(0.22 0.045 265);
-  --marke-hue:345;
-  --marke-050:oklch(0.97 0.016 var(--marke-hue));--marke-100:oklch(0.94 0.033 var(--marke-hue));--marke-200:oklch(0.89 0.064 var(--marke-hue));
-  --marke-300:oklch(0.82 0.11 var(--marke-hue));--marke-400:oklch(0.75 0.148 var(--marke-hue));--marke-500:oklch(0.68 0.163 var(--marke-hue));
-  --marke-600:oklch(0.6 0.153 var(--marke-hue));--marke-700:oklch(0.52 0.136 var(--marke-hue));
-  --status-fehler-text:oklch(0.5 0.18 25);--status-fehler-flaeche:oklch(0.965 0.02 25);
+  --neutral-700:oklch(0.4 0.048 265);--neutral-800:oklch(0.34 0.035 265);--neutral-900:oklch(0.27 0.04 265);--neutral-950:oklch(0.22 0.075 265);
+  --neutral-1000:oklch(0.135 0.035 265); /* Nacht: Grund im Dark Mode, eine Stufe unter der Tinte */
+  /* Ausprägung Unternehmen: Magenta wie im Logo (HKS 29), gleiche Helligkeit je Stufe wie Blutorange */
+  --marke-050:oklch(0.97 0.019 339);--marke-100:oklch(0.94 0.039 339);--marke-200:oklch(0.89 0.076 339);--marke-300:oklch(0.82 0.133 339);
+  --marke-400:oklch(0.75 0.185 339);--marke-500:oklch(0.68 0.204 339);--marke-600:oklch(0.6 0.191 339);--marke-700:oklch(0.52 0.17 339);
+  --marke-800:oklch(0.44 0.141 339);--marke-900:oklch(0.36 0.117 339);
+  --status-fehler-text:oklch(0.5 0.18 18);--status-fehler-flaeche:oklch(0.965 0.02 18);
   --status-erfolg-text:oklch(0.47 0.11 150);--status-erfolg-flaeche:oklch(0.965 0.03 150);
   --status-info-text:oklch(0.48 0.14 250);--status-info-flaeche:oklch(0.965 0.02 250);
   --status-warnung-text:oklch(0.5 0.105 85);--status-warnung-flaeche:oklch(0.97 0.055 92);
@@ -48,38 +49,38 @@
   --hover:color-mix(in oklab,var(--neutral-950) 6%,transparent);--pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
   --ort-aktiv:var(--neutral-300);--gewaehlt:var(--marke-600);--gewaehlt-text-flaeche:var(--marke-700);--gewaehlt-text-farbe:var(--neutral-0);
   --zaehler:var(--marke-600);--fokus:var(--marke-700);--fokus-innen:var(--neutral-0);--link:var(--marke-700);
-  --logo:var(--tinte-text);--logo-marke:var(--marke-600);--logo-marke-schatten:var(--marke-700);
+  --logo:var(--neutral-950);--logo-magenta:#9E1981;
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 20%,transparent);--schatten-farbe:var(--neutral-950);
   --schatten-widget:0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
   --schatten-hoch:0 20px 48px -16px color-mix(in oklab,var(--schatten-farbe) 16%,transparent),0 4px 14px -8px color-mix(in oklab,var(--schatten-farbe) 8%,transparent);
   --inhalt:680px;--radius-aktion:999px;--radius-zeile:8px;--radius-block:12px;--radius-karte:16px;--radius-flaeche:20px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --dunkel-seite:oklch(0.16 0.028 265);--dunkel-karte:oklch(0.20 0.03 265);--dunkel-erhoeht:oklch(0.245 0.032 265);--dunkel-linie:oklch(0.29 0.03 265);
-  --status-fehler-text:oklch(0.78 0.13 25);--status-fehler-flaeche:oklch(0.29 0.06 25);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --dunkel-seite:var(--neutral-1000);--dunkel-karte:oklch(0.18 0.05 265);--dunkel-erhoeht:oklch(0.25 0.055 265);--dunkel-linie:oklch(0.31 0.05 265);
+  --status-fehler-text:oklch(0.76 0.14 18);--status-fehler-flaeche:oklch(0.29 0.06 22);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
   --status-info-text:oklch(0.78 0.11 250);--status-info-flaeche:oklch(0.29 0.06 250);--status-warnung-text:oklch(0.85 0.13 88);--status-warnung-flaeche:oklch(0.3 0.06 85);
   --background:var(--dunkel-seite);--leiste:var(--dunkel-seite);--rahmenflaeche:var(--dunkel-seite);--objekt:var(--dunkel-karte);--erhoeht:var(--dunkel-erhoeht);
   --tastenflaeche:var(--dunkel-erhoeht);--popover:var(--dunkel-karte);--linie:var(--dunkel-linie);--rahmen:var(--neutral-400);
   --foreground:var(--neutral-50);--text-sekundaer:var(--neutral-300);--tertiaer:var(--neutral-300);--deaktiviert:var(--neutral-600);
   --primary:var(--neutral-50);--primary-foreground:var(--neutral-950);--hover:color-mix(in oklab,white 8%,transparent);--pressed:color-mix(in oklab,white 10%,transparent);
   --ort-aktiv:var(--dunkel-erhoeht);--gewaehlt:var(--marke-500);--zaehler:var(--marke-500);--gewaehlt-text-flaeche:var(--marke-300);--gewaehlt-text-farbe:var(--neutral-950);
-  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-marke:var(--marke-400);--logo-marke-schatten:var(--marke-600);
+  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-magenta:oklch(0.75 0.185 339);
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);--schatten-farbe:oklch(0.1 0.03 270);
-  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-widget:0 1px 2px color-mix(in oklab,var(--schatten-farbe) 60%,transparent),0 8px 20px -10px color-mix(in oklab,var(--schatten-farbe) 80%,transparent);
   --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --dunkel-seite:oklch(0.16 0.028 265);--dunkel-karte:oklch(0.20 0.03 265);--dunkel-erhoeht:oklch(0.245 0.032 265);--dunkel-linie:oklch(0.29 0.03 265);
-  --status-fehler-text:oklch(0.78 0.13 25);--status-fehler-flaeche:oklch(0.29 0.06 25);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --dunkel-seite:var(--neutral-1000);--dunkel-karte:oklch(0.18 0.05 265);--dunkel-erhoeht:oklch(0.25 0.055 265);--dunkel-linie:oklch(0.31 0.05 265);
+  --status-fehler-text:oklch(0.76 0.14 18);--status-fehler-flaeche:oklch(0.29 0.06 22);--status-erfolg-text:oklch(0.78 0.12 150);--status-erfolg-flaeche:oklch(0.28 0.05 150);
   --status-info-text:oklch(0.78 0.11 250);--status-info-flaeche:oklch(0.29 0.06 250);--status-warnung-text:oklch(0.85 0.13 88);--status-warnung-flaeche:oklch(0.3 0.06 85);
   --background:var(--dunkel-seite);--leiste:var(--dunkel-seite);--rahmenflaeche:var(--dunkel-seite);--objekt:var(--dunkel-karte);--erhoeht:var(--dunkel-erhoeht);
   --tastenflaeche:var(--dunkel-erhoeht);--popover:var(--dunkel-karte);--linie:var(--dunkel-linie);--rahmen:var(--neutral-400);
   --foreground:var(--neutral-50);--text-sekundaer:var(--neutral-300);--tertiaer:var(--neutral-300);--deaktiviert:var(--neutral-600);
   --primary:var(--neutral-50);--primary-foreground:var(--neutral-950);--hover:color-mix(in oklab,white 8%,transparent);--pressed:color-mix(in oklab,white 10%,transparent);
   --ort-aktiv:var(--dunkel-erhoeht);--gewaehlt:var(--marke-500);--zaehler:var(--marke-500);--gewaehlt-text-flaeche:var(--marke-300);--gewaehlt-text-farbe:var(--neutral-950);
-  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-marke:var(--marke-400);--logo-marke-schatten:var(--marke-600);
+  --fokus:var(--marke-400);--fokus-innen:var(--neutral-950);--link:var(--marke-300);--logo:var(--neutral-50);--logo-magenta:oklch(0.75 0.185 339);
   --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);--schatten-farbe:oklch(0.1 0.03 270);
-  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-widget:0 1px 2px color-mix(in oklab,var(--schatten-farbe) 60%,transparent),0 8px 20px -10px color-mix(in oklab,var(--schatten-farbe) 80%,transparent);
   --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
   color-scheme:dark}
 
@@ -132,8 +133,8 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 @media (max-width:359px){.mini-filter-text{display:none}.icon-taste.mini-filter{width:40px;padding:0}}
 .merk-taste{position:relative;flex:none}
 .merk-taste svg{width:20px;height:20px}
-.zaehler-zahl{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);
-  font-size:11px;line-height:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--rahmenflaeche)}
+.zaehler-zahl{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);
+  font-size:11px;line-height:20px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--rahmenflaeche)}
 .kopf .merk-taste{margin-left:auto}
 .umschalter{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
 .umschalter button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);
@@ -272,7 +273,9 @@ button.zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
   margin:4px calc(-1 * max(16px,env(safe-area-inset-right,0px))) calc(-28px - env(safe-area-inset-bottom,0px));
   padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + 28px + env(safe-area-inset-bottom,0px));
   background:var(--background);border-top:1px solid var(--linie)}
-.sheet-fuss .taste{flex:1 1 0;padding:0 12px;min-width:0}
+.sheet-fuss .taste{flex:1 1 0;padding:0 12px;min-width:0;font-size:15px;min-height:48px}
+.sheet-fuss .taste svg{width:20px;height:20px}
+@media (min-width:768px){.sheet-fuss .taste{min-height:44px}}
 .held{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:center}
 .held .kachel{width:72px;height:72px;border-radius:var(--radius-karte)}
 .held h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
@@ -287,17 +290,28 @@ button.zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
 .zurueck{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--text-sekundaer);font-size:15px;font-weight:500;min-height:44px;padding:0 8px 0 0;border-radius:var(--radius-aktion)}
 .zurueck:hover{color:var(--foreground)}
 .aktionen{display:flex;gap:8px;flex-wrap:wrap}
-.taste{flex:1 1 150px;min-height:44px;padding:0 20px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:15px;font-weight:500;
+@media (max-width:767px){.aktionen.gruppe-tasten{flex-direction:column-reverse}.aktionen.gruppe-tasten .taste{flex:none;width:100%}}
+.taste{flex:1 1 150px;min-height:44px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:13px;line-height:18px;font-weight:500;
   display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color 120ms ease;text-align:center}
 .taste.primaer{background:var(--primary);color:var(--primary-foreground)}
 .taste.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 12%,transparent),color-mix(in oklab,var(--primary-foreground) 12%,transparent))}
 .taste.sekundaer{background:var(--objekt);border-color:var(--linie);color:var(--foreground)}
 .taste.sekundaer:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
-.taste.gefahr{background:var(--objekt);border-color:var(--linie);color:var(--status-fehler-text)}
+.taste.still{background:transparent;color:var(--text-sekundaer)}
+.taste.still:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover));color:var(--foreground)}
+.taste.gefahr{background:var(--status-fehler-text);color:var(--neutral-0)}
+.taste.gefahr:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--neutral-0) 12%,transparent),color-mix(in oklab,var(--neutral-0) 12%,transparent))}
+:root[data-theme="dark"] .taste.gefahr{color:var(--neutral-950)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .taste.gefahr{color:var(--neutral-950)}}
+.taste.gross{font-size:15px;padding:0 20px;min-height:48px}
+.taste.gross svg{width:20px;height:20px}
+.taste:active:not(:disabled){background-image:linear-gradient(var(--pressed),var(--pressed))}
 .taste:disabled{color:var(--deaktiviert);background:var(--tastenflaeche);cursor:default}
-.taste.klein{flex:none;min-height:36px;padding:0 14px;font-size:13px}
+.taste.klein{flex:none;min-height:36px;padding:0 12px;font-size:12px}
 .taste.ganz{width:100%;flex:none}
-.taste svg{flex:none;width:18px;height:18px}
+.taste svg{flex:none;width:16px;height:16px}
+.taste{gap:6px}
+@media (min-width:768px){.taste{min-height:36px}.taste.klein{min-height:30px}.taste.gross{min-height:44px}}
 .text{margin:0;font-size:15px;line-height:24px;color:var(--text-sekundaer);max-width:65ch}
 
 dl{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0}
@@ -336,10 +350,11 @@ input.datum{-webkit-appearance:none;appearance:none;display:block;text-align:lef
 .schalter-zeile{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:6px 16px}
 .schalter-zeile+.schalter-zeile{box-shadow:inset 0 1px 0 var(--linie)}
 .schalter-zeile .meta{display:block}
-.schalter{position:relative;width:48px;height:28px;min-width:48px;border-radius:999px;border:0;background:var(--rahmen);padding:0;flex:none}
-.schalter span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--neutral-0);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform 160ms ease}
-.schalter[aria-checked="true"]{background:var(--gewaehlt)}
-.schalter[aria-checked="true"] span{transform:translateX(20px)}
+.schalter{position:relative;width:44px;height:26px;min-width:44px;border-radius:999px;border:0;background:var(--neutral-300);box-shadow:inset 0 0 0 1.5px var(--neutral-500);padding:0;flex:none}
+.schalter span{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--neutral-0);box-shadow:0 1px 2px color-mix(in oklab,var(--schatten-farbe) 25%,transparent);transition:transform 160ms ease}
+.schalter[aria-checked="true"]{background:var(--gewaehlt);box-shadow:none}
+.schalter::before{content:"";position:absolute;inset:-9px 0}
+.schalter[aria-checked="true"] span{transform:translateX(18px)}
 
 /* Produkt im Sheet */
 .galerie{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));
@@ -455,12 +470,8 @@ button.kennzahl:hover{background-image:linear-gradient(var(--hover),var(--hover)
   <div class="innen-kopf">
     <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
       <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
-      <defs>
-        <linearGradient id="lm-oben-m" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".32" style="stop-color:var(--logo-marke)"/></linearGradient>
-        <linearGradient id="lm-rechts-m" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".45" style="stop-color:var(--logo-marke)"/></linearGradient>
-      </defs>
-      <path fill="url(#lm-oben-m)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
-      <path fill="url(#lm-rechts-m)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <path fill="var(--logo-magenta)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="var(--logo-magenta)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
       <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
     </svg>
     <p class="kopf-titel" id="mini-titel">Shop</p>
@@ -476,12 +487,8 @@ button.kennzahl:hover{background-image:linear-gradient(var(--hover),var(--hover)
   <div class="kopf">
     <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
       <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
-      <defs>
-        <linearGradient id="lm-oben" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".32" style="stop-color:var(--logo-marke)"/></linearGradient>
-        <linearGradient id="lm-rechts" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".45" style="stop-color:var(--logo-marke)"/></linearGradient>
-      </defs>
-      <path fill="url(#lm-oben)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
-      <path fill="url(#lm-rechts)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <path fill="var(--logo-magenta)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="var(--logo-magenta)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
       <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
     </svg>
     <button class="zurueck" data-act="bereich" data-b="shop" id="kopf-zurueck" hidden><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 1 1 7l6 6"/></svg>Zum Shop</button>
@@ -838,7 +845,7 @@ function render(){
   $("#mini-titel").textContent = verw ? "Verwaltung" : "Shop";
   $(".mini-filter-text").textContent = verw ? "Bereiche" : "Filtern";
   $("#kopf-zurueck").hidden = !verw;
-  $("#summary").textContent = !S.geladen ? "Sortiment wird geladen …" : verw ? `Mitarbeitershop · ${neu ? plural(neu, "neue Bestellung", "neue Bestellungen") : "keine neuen Bestellungen"}` : `Mitarbeitershop GAUSS LVS · ${plural(ap.length, "Artikel", "Artikel")}`;
+  $("#summary").textContent = !S.geladen ? "Sortiment wird geladen …" : verw ? `Mitarbeitershop · ${neu ? plural(neu, "neue Bestellung", "neue Bestellungen") : "keine neuen Bestellungen"}` : `Mitarbeitershop GAUSS-LVS · ${plural(ap.length, "Artikel", "Artikel")}`;
   const vt = $("#verwaltung-taste"); vt.hidden = !S.admin;
   vt.innerHTML = verw ? `${ICON.zurueck}Zurück zum Shop` : `${ICON.zahnrad}Verwaltung${neu ? ` <span class="badge klein st-info">${neu} neu</span>` : ""}`;
   vt.dataset.b = verw ? "shop" : "verwaltung";
@@ -863,7 +870,7 @@ function render(){
   if (fokus){ const q = $("#q"); if (q){ q.focus(); try { q.setSelectionRange(pos, pos); } catch {} } }
 
   let h = "";
-  if (S.anmeldung){ $("#leiste").innerHTML = ""; $("#inhalt").innerHTML = renderAnmeldung(); $("#hinweis-box").innerHTML = ""; $("#summary").textContent = "Mitarbeitershop GAUSS LVS"; $("#verwaltung-taste").hidden = true; for (const id of ["#kopf-korb", "#mini-korb"]) $(id).hidden = true; return; }
+  if (S.anmeldung){ $("#leiste").innerHTML = ""; $("#inhalt").innerHTML = renderAnmeldung(); $("#hinweis-box").innerHTML = ""; $("#summary").textContent = "Mitarbeitershop GAUSS-LVS"; $("#verwaltung-taste").hidden = true; for (const id of ["#kopf-korb", "#mini-korb"]) $(id).hidden = true; return; }
   if (S.ohneDb) h = `<div class="karte leer" style="margin-top:20px"><p class="titel-karte">Shop nicht verbunden</p><p class="meta" style="margin:0">Der Shop braucht den gemeinsamen Speicher. Bitte die Seite in claude.ai öffnen und angemeldet sein.</p></div>`;
   else if (verw) h = renderVerwaltung();
   else if (S.tab === "shop") h = renderShop(ap);
@@ -1157,7 +1164,7 @@ function sheetProdukt(v){
       </div></div>
     <div class="karte"><dl><dt>Lieferung</dt><dd>${lief}</dd>${p.max ? `<dt>Pro Person</dt><dd>höchstens ${p.max}</dd>` : ""}${p.artikelnr ? `<dt>Artikelnummer</dt><dd>${esc(p.artikelnr)}</dd>` : ""}</dl></div>
     ${S.admin ? `<div class="aktionen"><button class="taste sekundaer klein" data-act="edit-produkt" data-id="${esc(p.id)}">Produkt bearbeiten</button></div>` : ""}
-    <div class="sheet-fuss">${grund ? `<span class="fuss-grund" role="status">${grund}</span>` : ""}<button class="taste primaer" data-act="in-korb" ${kannRein ? "" : "disabled"}>${ICON.tasche}In den Warenkorb · ${euro(p.vk * v.m)}</button></div>`;
+    <div class="sheet-fuss">${grund ? `<span class="fuss-grund" role="status">${grund}</span>` : ""}<button class="taste primaer" data-act="in-korb" ${kannRein ? "" : "disabled"}>${ICON.tasche}In den Warenkorb</button></div>`;
 }
 
 /* ----- Kasse ----- */
@@ -1195,8 +1202,8 @@ function sheetKasse(v){
         <div class="gruppe"><label for="k-hinweis">Hinweis (optional)</label><input class="eingabe" id="k-hinweis" value="${esc(v.hinweis || "")}" placeholder="z. B. Abholung erst ab Montag"></div>
         ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
       </div></div>
-    <p class="hinweis" style="margin-top:0">Mit der Bestellung entsteht ein Kauf bei ${esc(E().firma || "GAUSS LVS")}. Rechnungen gehen an die Buchhaltung. Stornieren geht, solange die Bestellung noch nicht bearbeitet wird.</p>
-    <div class="sheet-fuss"><button class="taste primaer" data-act="bestellen" ${S.busy || S.schreibGesperrt ? "disabled" : ""}>${S.busy ? "Wird gesendet …" : `Verbindlich bestellen · ${euro(b.summe)}`}</button></div>`;
+    <p class="hinweis" style="margin-top:0">Mit der Bestellung entsteht ein Kauf bei ${esc(E().firma || "GAUSS-LVS mbH")}. Rechnungen gehen an die Buchhaltung. Stornieren geht, solange die Bestellung noch nicht bearbeitet wird.</p>
+    <div class="sheet-fuss"><button class="taste primaer" data-act="bestellen" ${S.busy || S.schreibGesperrt ? "disabled" : ""}>${S.busy ? "Wird gesendet …" : "Verbindlich bestellen"}</button></div>`;
 }
 function merkeKasse(v){
   if (!$("#k-name")) return;
@@ -1270,7 +1277,7 @@ function sheetBestellung(v){
     <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3>${positionenKarte(o, false)}</div>
     <div class="abschnitt"><h3 class="titel-bereich">Verlauf</h3>${verlaufKarte(o)}</div>
     <div class="aktionen"><button class="taste sekundaer" data-act="pdf-bestaetigung" data-nr="${esc(o.nr)}">${ICON.pdf}Bestätigung als PDF</button>
-    ${o.status === "eingegangen" ? `<button class="taste gefahr" data-act="selbst-storno" data-nr="${esc(o.nr)}">Stornieren</button>` : ""}</div>`;
+    ${o.status === "eingegangen" ? `<button class="taste sekundaer" data-act="selbst-storno" data-nr="${esc(o.nr)}">Stornieren …</button>` : ""}</div>`;
 }
 
 /* ----- Bestellung (Verwaltung) ----- */
@@ -1280,18 +1287,18 @@ function sheetAuftrag(v){
   const gruppen = {};
   for (const x of pos) if (x.fulfillment !== "intern"){ (gruppen[x.lieferantId || "?"] ||= []).push(x); }
   const aktion = [];
+  if (OFFEN.includes(o.status)) aktion.push(`<button class="taste sekundaer" data-act="storno-frage">Stornieren …</button>`);
   if (o.status === "eingegangen") aktion.push(`<button class="taste primaer" data-act="status" data-s="angenommen">Annehmen</button>`);
   if (["angenommen", "bestellt"].includes(o.status)) aktion.push(`<button class="taste primaer" data-act="status" data-s="bereit">Abholbereit melden</button>`);
-  if (o.status === "bereit") aktion.push(`<button class="taste primaer" data-act="status" data-s="abgeschlossen">Ausgegeben, abschließen</button>`);
-  if (OFFEN.includes(o.status)) aktion.push(`<button class="taste gefahr" data-act="storno-frage">Stornieren</button>`);
+  if (o.status === "bereit") aktion.push(`<button class="taste primaer" data-act="status" data-s="abgeschlossen">Abschließen</button>`);
   const lieferBlock = Object.keys(gruppen).length && !["abgeschlossen", "storniert"].includes(o.status) ? `<div class="abschnitt"><h3 class="titel-bereich">Lieferanten und Anbieter</h3><div class="karte">${Object.entries(gruppen).map(([lid, xs]) => {
       const l = lieferant(lid), gesendet = o.lieferanten?.[lid];
       const pod = l?.art === "pod";
       return `<div class="schalter-zeile"><span><b>${esc(l?.name || "Kein Lieferant gewählt")}</b><span class="meta">${plural(xs.reduce((s, x) => s + x.menge, 0), "Stück", "Stück")} · ${gesendet ? `${gesendet.art === "pod" ? "übergeben" : gesendet.art === "entwurf" ? "Mail-Entwurf erstellt" : "Mail gesendet"} ${fmtZeit(gesendet.am)}` : "noch nicht bestellt"}</span></span>
-        <span class="aktionen" style="flex:none">${pod ? `<button class="taste sekundaer klein" data-act="pod" data-lid="${esc(lid)}">Auftrag</button>` : ""}${l?.email ? `<button class="taste ${gesendet ? "sekundaer" : "primaer"} klein" data-act="lieferant-mail" data-lid="${esc(lid)}">${ICON.mail}${gesendet ? "Erneut" : "Bestellen"}</button>` : `<span class="badge klein st-warnung">E-Mail fehlt</span>`}</span></div>`; }).join("")}</div></div>` : "";
+        <span class="aktionen" style="flex:none">${pod ? `<button class="taste sekundaer klein" data-act="pod" data-lid="${esc(lid)}">Auftrag</button>` : ""}${l?.email ? `<button class="taste ${gesendet ? "sekundaer" : "primaer"} klein" data-act="lieferant-mail" data-lid="${esc(lid)}">${ICON.mail}${gesendet ? "Erneut senden" : "Bestellen"}</button>` : `<span class="badge klein st-warnung">E-Mail fehlt</span>`}</span></div>`; }).join("")}</div></div>` : "";
   return `
     <div class="abschnitt" style="gap:6px"><span class="etikett zahl">${esc(o.nr)} · ${fmtZeit(o.am)}</span><h2 class="titel-seite" style="font-size:24px;line-height:30px">${esc(o.name)} <span class="meta" style="font-size:17px">${esc(o.kuerzel)}</span></h2><div>${badge(o.status)}</div></div>
-    ${aktion.length ? `<div class="aktionen">${aktion.join("")}</div>` : ""}
+    ${aktion.length ? `<div class="aktionen gruppe-tasten">${aktion.join("")}</div>` : ""}
     ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
     ${o.hinweis ? `<div class="vorschau">${ICON.info}<span>Hinweis: ${esc(o.hinweis)}</span></div>` : ""}
     <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3>${positionenKarte(o, true)}</div>
@@ -1300,19 +1307,19 @@ function sheetAuftrag(v){
       <dl><dt>E-Mail</dt><dd>${esc(o.email)}</dd><dt>Bezahlung</dt><dd>${ZAHLWEG[o.zahlweg] || ""}${o.einverstanden ? ` · Einverständnis ${fmt(o.einverstanden)}` : ""}</dd>
       <dt>Rechnung</dt><dd>${o.rechnung ? `${o.rechnung.art === "entwurf" ? "Entwurf erstellt" : "gesendet"} ${fmtZeit(o.rechnung.am)}` : "noch nicht versendet"}</dd>
       ${o.werbemittel ? `<dt>Werbemittel</dt><dd>${o.werbemittel.offen ? "Ausgabe noch zu buchen" : `gebucht ${fmt(o.werbemittel.am)}`}</dd>` : ""}</dl>
-      <div class="innen" style="padding-top:0"><div class="aktionen"><button class="taste sekundaer" data-act="pdf-rechnung">${ICON.pdf}Als PDF</button><button class="taste sekundaer" data-act="rechnung-mail" ${o.status === "storniert" ? "disabled" : ""}>${ICON.mail}Per Mail</button></div></div></div></div>
+      <div class="innen" style="padding-top:0"><div class="aktionen gruppe-tasten"><button class="taste sekundaer" data-act="pdf-rechnung">${ICON.pdf}PDF herunterladen</button><button class="taste sekundaer" data-act="rechnung-mail" ${o.status === "storniert" ? "disabled" : ""}>${ICON.mail}Rechnung senden</button></div></div></div></div>
     <div class="abschnitt"><h3 class="titel-bereich">Verlauf</h3>${verlaufKarte(o)}</div>
     <div class="abschnitt"><h3 class="titel-bereich">Interne Notiz</h3><div class="karte innen"><textarea class="eingabe" id="a-notiz" placeholder="Nur in der Verwaltung sichtbar">${esc(o.notizIntern || "")}</textarea><div class="aktionen"><button class="taste sekundaer klein" data-act="notiz-speichern">Notiz speichern</button></div></div></div>`;
 }
 function sheetFrage(v){
   return `<div class="abschnitt" style="gap:8px;padding-top:8px"><h2 class="titel-seite" style="font-size:22px;line-height:28px">${esc(v.titel)}</h2><p class="text">${esc(v.text)}</p></div>
-    <div class="aktionen"><button class="taste sekundaer" data-act="zurueck">Abbrechen</button><button class="taste ${v.gefahr ? "gefahr" : "primaer"}" data-act="frage-ja">${esc(v.ja)}</button></div>`;
+    <div class="aktionen" style="justify-content:flex-end"><button class="taste still" style="flex:0 1 auto" data-act="zurueck">Abbrechen</button><button class="taste ${v.gefahr ? "gefahr" : "primaer"}" style="flex:0 1 auto" data-act="frage-ja">${esc(v.ja)}</button></div>`;
 }
 function podAuftrag(o, lid){
   const l = lieferant(lid), e = E();
   return {
     anbieter: l?.anbieter || l?.name || "", shop_id: l?.shopId || "", external_id: o.nr,
-    recipient: { name: e.firma || "GAUSS LVS", attention: `${o.name} (${o.kuerzel})`, address: e.anschrift || "", email: e.shopEmail || "" },
+    recipient: { name: e.firma || "GAUSS-LVS mbH", attention: `${o.name} (${o.kuerzel})`, address: e.anschrift || "", email: e.shopEmail || "" },
     items: (o.positionen || []).filter(x => x.lieferantId === lid).map(x => { const p = produkt(x.produktId), va = p ? vars(p).find(y => (y.name || "") === (x.variante || "")) : null;
       return { name: x.name, variant: x.variante || null, sku: va?.extSku || va?.sku || "", quantity: x.menge }; })
   };
@@ -1327,7 +1334,7 @@ function sheetPod(v){
 }
 
 /* ----- Produkt bearbeiten ----- */
-function leeresProdukt(){ return { name: "", beschreibung: "", kategorie: "Kleidung", marke: "GAUSS LVS", aktiv: false, ekNetto: "", vk: "", marktpreis: "", ust: 19, max: 0, fulfillment: "intern", lieferantId: "", lieferzeit: "", artikelnr: "", werbemittel: { artikelnr: "" }, varianten: [], fotos: [], sort: 50 }; }
+function leeresProdukt(){ return { name: "", beschreibung: "", kategorie: "Kleidung", marke: "GAUSS-LVS", aktiv: false, ekNetto: "", vk: "", marktpreis: "", ust: 19, max: 0, fulfillment: "intern", lieferantId: "", lieferzeit: "", artikelnr: "", werbemittel: { artikelnr: "" }, varianten: [], fotos: [], sort: 50 }; }
 function sheetProduktEdit(v){
   const p = v.p;
   const lieferanten = S.lief.filter(l => p.fulfillment === "pod" ? l.art === "pod" : l.art !== "pod");
@@ -1350,7 +1357,7 @@ function sheetProduktEdit(v){
     <div class="abschnitt"><h3 class="titel-bereich">Artikel</h3><div class="karte innen formular">
       <div class="gruppe"><label for="p-name">Name</label><input class="eingabe" id="p-name" value="${esc(p.name)}" placeholder="T-Shirt Team, Navy"></div>
       <div class="zwei umbruch"><div class="gruppe"><label for="p-kat">Kategorie</label><select class="eingabe" id="p-kat">${KATEGORIEN.map(k => `<option ${p.kategorie === k ? "selected" : ""}>${k}</option>`).join("")}</select></div>
-        <div class="gruppe"><label for="p-marke">Marke</label><select class="eingabe" id="p-marke">${["GAUSS LVS", "SoPart", "Neutral"].map(k => `<option ${p.marke === k ? "selected" : ""}>${k}</option>`).join("")}</select></div></div>
+        <div class="gruppe"><label for="p-marke">Marke</label><select class="eingabe" id="p-marke">${["GAUSS-LVS", "SoPart", "Neutral"].map(k => `<option ${(p.marke || "").replace(" ", "-") === k ? "selected" : ""}>${k}</option>`).join("")}</select></div></div>
       <div class="gruppe"><label for="p-beschr">Beschreibung</label><textarea class="eingabe" id="p-beschr">${esc(p.beschreibung)}</textarea></div>
       <div class="gruppe"><span class="gruppe-titel">Fotos</span><div class="foto-reihe">${(p.fotos || []).map((f, i) => `<span class="foto"><img src="${esc(fotoUrl(f))}" alt=""><button class="weg" data-act="foto-weg" data-i="${i}" aria-label="Foto entfernen">${ICON.weg}</button></span>`).join("")}
         ${CAP.assets ? `<label class="foto-hinzu" for="foto-datei">${ICON.kamera}Foto</label>` : `<span class="meta">${!IM_ARTIFACT && EIGEN.modus === "vorschau" ? "Fotos hochladen geht erst mit verbundenem Server." : "Fotos hochladen ist nur mit Bearbeitungsrecht möglich."}</span>`}</div></div>
@@ -1375,7 +1382,7 @@ function sheetProduktEdit(v){
       <div class="karte innen">${vsZeilen ? `<div class="var-tabelle"><div class="var-zeile kopf-z"><span>Variante</span><span>${p.fulfillment === "intern" ? "SKU" : "SKU beim Anbieter"}</span><span>Bestand</span><span></span></div>${vsZeilen}</div>`
         : `${p.fulfillment === "intern" ? `<div class="gruppe"><label for="p-bestand">Bestand</label><input class="eingabe zahl kurz" style="text-transform:none;letter-spacing:0;font-weight:400" id="p-bestand" inputmode="numeric" value="${esc(p.bestand ?? 0)}"></div>` : ""}<p class="meta">Ohne Varianten wird der Artikel als ein Stück geführt. Für Kleidung Größen anlegen.</p>`}</div></div>
     ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
-    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="produkt-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="produkt-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+    <div class="sheet-fuss">${v.id ? `<button class="taste sekundaer" data-act="produkt-loeschen">Löschen …</button>` : ""}<button class="taste primaer" data-act="produkt-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
 }
 function merkeProdukt(v){
   const p = v.p; if (!$("#p-name")) return;
@@ -1426,7 +1433,7 @@ function sheetGutscheinEdit(v){
       <div class="gruppe"><label for="g-notiz">Notiz</label><input class="eingabe" id="g-notiz" value="${esc(g.notiz || "")}" placeholder="z. B. Willkommenspaket"></div>
     </div>
     ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
-    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="gutschein-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="gutschein-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+    <div class="sheet-fuss">${v.id ? `<button class="taste sekundaer" data-act="gutschein-loeschen">Löschen …</button>` : ""}<button class="taste primaer" data-act="gutschein-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
 }
 function merkeGutschein(v){
   const g = v.g; if (!$("#g-code")) return;
@@ -1470,7 +1477,7 @@ function sheetLieferantEdit(v){
       ${pod ? `<p class="meta">Die Schnittstelle ist vorbereitet: Aufträge entstehen im Datenformat der Anbieter. Für die automatische Übertragung braucht es den API-Schlüssel und einen Server, der ihn hält; der Schlüssel gehört nicht in diese Seite.</p>` : ""}
     </div>
     ${v.fehler ? `<p class="fehler-text" role="alert">${esc(v.fehler)}</p>` : ""}
-    <div class="sheet-fuss">${v.id ? `<button class="taste gefahr" data-act="lieferant-loeschen">Löschen</button>` : ""}<button class="taste primaer" data-act="lieferant-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
+    <div class="sheet-fuss">${v.id ? `<button class="taste sekundaer" data-act="lieferant-loeschen">Löschen …</button>` : ""}<button class="taste primaer" data-act="lieferant-speichern" ${S.busy ? "disabled" : ""}>Speichern</button></div>`;
 }
 function merkeLieferant(v){
   const l = v.l; if (!$("#l-name")) return;
@@ -1553,12 +1560,12 @@ function renderEinstellungen(){
   const sch = (k, t, m) => `<div class="schalter-zeile"><span><b>${t}</b><span class="meta">${m}</span></span><button class="schalter" role="switch" data-act="e-schalter" data-k="${k}" aria-checked="${!!e[k]}" aria-label="${t}"><span></span></button></div>`;
   return `<section class="bereich"><header><h2 class="titel-bereich">Automatik</h2></header>
     <div class="karte">${sch("autoLieferant", "Lieferanten beim Annehmen anschreiben", "Erzeugt die Bestellmail für jeden Lieferanten der Bestellung")}
-      ${sch("autoRechnung", "Rechnung beim Abschluss mailen", "An Besteller:in, Buchhaltung in Kopie, PDF im Anhang")}
+      ${sch("autoRechnung", "Rechnung beim Abschluss mailen", "An die bestellende Person, Buchhaltung in Kopie, PDF im Anhang")}
       <div class="schalter-zeile"><span><b>Mails</b><span class="meta">Entwurf: liegt in Gmail zum Prüfen bereit</span></span><span class="segment" style="width:200px;flex:none" role="group" aria-label="Mailversand"><button data-act="e-mailmodus" data-m="entwurf" aria-pressed="${(e.mailModus || "entwurf") === "entwurf"}">Entwurf</button><button data-act="e-mailmodus" data-m="senden" aria-pressed="${e.mailModus === "senden"}">Senden</button></span></div></div>
     <p class="hinweis" style="margin-top:0">${IM_ARTIFACT ? "Mails gehen über das Gmail-Konto der Person, die in der Verwaltung klickt. Gmail muss in claude.ai verbunden sein." : "Mails gehen über das Gmail-Konto, unter dem der Shop-Server läuft."}</p></section>
   <section class="bereich"><header><h2 class="titel-bereich">Firma und Rechnung</h2></header>
     <div class="karte innen formular">
-      <div class="gruppe"><label for="e-firma">Firma</label><input class="eingabe" id="e-firma" value="${esc(e.firma || "")}" placeholder="GAUSS LVS GmbH"></div>
+      <div class="gruppe"><label for="e-firma">Firma</label><input class="eingabe" id="e-firma" value="${esc(e.firma || "")}" placeholder="GAUSS-LVS mbH"></div>
       <div class="gruppe"><label for="e-anschrift">Anschrift</label><textarea class="eingabe" id="e-anschrift" placeholder="Straße Nr.&#10;PLZ Ort">${esc(e.anschrift || "")}</textarea></div>
       <div class="zwei umbruch"><div class="gruppe"><label for="e-ustid">USt-IdNr.</label><input class="eingabe" id="e-ustid" value="${esc(e.ustId || "")}"></div><div class="gruppe"><label for="e-stnr">Steuernummer</label><input class="eingabe" id="e-stnr" value="${esc(e.steuernr || "")}"></div></div>
       <div class="zwei umbruch"><div class="gruppe"><label for="e-iban">IBAN</label><input class="eingabe" id="e-iban" value="${esc(e.iban || "")}"></div><div class="gruppe"><label for="e-bank">Bank</label><input class="eingabe" id="e-bank" value="${esc(e.bank || "")}"></div></div>
@@ -1663,8 +1670,8 @@ async function lieferantMailen(o, lid, still){
   const xs = (o.positionen || []).filter(x => x.lieferantId === lid);
   const body = (l.vorlage || STANDARD_VORLAGE).replace(/\{bestellnr\}/g, o.nr).replace(/\{positionen\}/g, positionenText(xs))
     .replace(/\{lieferadresse\}/g, [e.firma, `z. Hd. ${o.name}`, e.anschrift].filter(Boolean).join("\n")).replace(/\{ansprechpartner\}/g, l.ansprechpartner || "")
-    .replace(/\{kundennr\}/g, l.kundennr || "–").replace(/\{firma\}/g, e.firma || "GAUSS LVS").replace(/Guten Tag ,/, "Guten Tag,");
-  const art = await gmail({ to: [l.email], cc: e.shopEmail ? [e.shopEmail] : [], subject: `Bestellung ${o.nr} – ${e.firma || "GAUSS LVS"}`, body });
+    .replace(/\{kundennr\}/g, l.kundennr || "–").replace(/\{firma\}/g, e.firma || "GAUSS-LVS mbH").replace(/Guten Tag ,/, "Guten Tag,");
+  const art = await gmail({ to: [l.email], cc: e.shopEmail ? [e.shopEmail] : [], subject: `Bestellung ${o.nr} – ${e.firma || "GAUSS-LVS mbH"}`, body });
   const jetzt = new Date().toISOString();
   await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: { lieferanten: { [lid]: { art, am: jetzt } } } } });
   const frisch = o;
@@ -1677,7 +1684,7 @@ async function rechnungMailen(o, still){
   const pdf = await belegPdf(o, "rechnung");
   const cc = [e.buchhaltungEmail, e.shopEmail].filter(x => x && mailOk(x));
   const zahl = o.zahlweg === "gehalt" ? "Der Betrag wird mit der nächsten Gehaltsabrechnung einbehalten." : o.zahlweg === "ueberweisung" ? `Bitte überweise den Betrag${e.iban ? ` auf ${e.iban}` : ""} mit dem Verwendungszweck ${o.nr}.` : "Es ist nichts zu bezahlen.";
-  const body = `Hallo ${o.name.split(" ")[0]},\n\nanbei die Rechnung zu deiner Bestellung ${o.nr} über ${euro(o.summe)}.\n${zahl}\n\nViele Grüße\n${e.firma || "GAUSS LVS"}`;
+  const body = `Hallo ${o.name.split(" ")[0]},\n\nanbei die Rechnung zu deiner Bestellung ${o.nr} über ${euro(o.summe)}.\n${zahl}\n\nViele Grüße\n${e.firma || "GAUSS-LVS mbH"}`;
   const art = await gmail({ to: [o.email], cc, subject: `Rechnung ${o.nr} – Mitarbeitershop`, body, attachments: [{ filename: `Rechnung_${o.nr}.pdf`, mimeType: "application/pdf", content: pdf.b64 }] });
   await DB.doc("bestellungen/" + o.uid).update({ orders: { [o.nr]: { rechnung: { art, am: new Date().toISOString() } } } });
   toast(art === "entwurf" ? "Rechnung liegt als Entwurf in Gmail" : "Rechnung gesendet");
@@ -1687,7 +1694,7 @@ async function rechnungMailen(o, still){
 let LOGO = null;
 async function logoPng(){
   if (LOGO !== null) return LOGO;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.31 156.31" width="312" height="312"><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" stop-color="#a33a6a"/><stop offset=".32" stop-color="#c24b80"/></linearGradient><linearGradient id="b" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" stop-color="#a33a6a"/><stop offset=".45" stop-color="#c24b80"/></linearGradient></defs><polygon fill="#26335d" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="url(#a)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="url(#b)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="#26335d" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.31 156.31" width="312" height="312"><defs><linearGradient id="a" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" stop-color="#9E1981"/><stop offset="1" stop-color="#9E1981"/></linearGradient><linearGradient id="b" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" stop-color="#9E1981"/><stop offset="1" stop-color="#9E1981"/></linearGradient></defs><polygon fill="#09173D" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="url(#a)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="url(#b)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="#09173D" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg>`;
   try {
     const img = new Image(); img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     await img.decode();
@@ -1700,13 +1707,13 @@ const pEuro = n => Number(n || 0).toLocaleString("de-DE", { minimumFractionDigit
 async function pdfKopf(doc, titel){
   const e = E(), logo = await logoPng(), M = 20;
   if (logo) doc.addImage(logo, "PNG", M, 16, 10, 10);
-  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(38, 51, 93);
-  doc.text(e.firma || "GAUSS LVS", M + 14, 20.5);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(27, 47, 84);
+  doc.text(e.firma || "GAUSS-LVS mbH", M + 14, 20.5);
   doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(90, 100, 130);
   doc.text("Mitarbeitershop", M + 14, 24.8);
   const adr = (e.anschrift || "").split("\n").filter(Boolean);
   if (adr.length) doc.text(adr, 190, 18, { align: "right" });
-  doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(38, 51, 93);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(27, 47, 84);
   doc.text(titel, M, 48);
   return M;
 }
@@ -1720,15 +1727,15 @@ async function belegPdf(o, art){
   const { jsPDF } = await ladePdf(); const doc = new jsPDF({ unit: "mm", format: "a4" }); const e = E();
   const titel = art === "rechnung" ? "Rechnung" : "Bestellbestätigung";
   const M = await pdfKopf(doc, titel);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(38, 51, 93);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(27, 47, 84);
   const datum = art === "rechnung" ? (o.abgeschlossenAm || new Date().toISOString()) : o.am;
   const links = [o.name, `Kürzel ${o.kuerzel}`, o.email];
   const rechts = [[art === "rechnung" ? "Rechnungsnummer" : "Bestellnummer", o.nr], ["Datum", fmt(datum)], ["Bestellt am", fmt(o.am)], ["Bezahlung", ZAHLWEG[o.zahlweg] || ""]];
   doc.text(links.filter(Boolean), M, 60);
-  rechts.forEach(([k, w], i) => { doc.setTextColor(110, 118, 145); doc.text(k, 130, 60 + i * 5); doc.setTextColor(38, 51, 93); doc.text(String(w), 190, 60 + i * 5, { align: "right" }); });
+  rechts.forEach(([k, w], i) => { doc.setTextColor(110, 118, 145); doc.text(k, 130, 60 + i * 5); doc.setTextColor(27, 47, 84); doc.text(String(w), 190, 60 + i * 5, { align: "right" }); });
   let y = 88;
   const kopf = () => { doc.setFontSize(8); doc.setTextColor(110, 118, 145); doc.text("ARTIKEL", M, y); doc.text("MENGE", 120, y, { align: "right" }); doc.text("EINZEL", 145, y, { align: "right" }); doc.text("USt", 160, y, { align: "right" }); doc.text("BETRAG", 190, y, { align: "right" });
-    y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(38, 51, 93); };
+    y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(27, 47, 84); };
   kopf();
   for (const x of o.positionen || []){
     if (y > 250){ doc.addPage(); y = 24; kopf(); }
@@ -1750,7 +1757,7 @@ async function belegPdf(o, art){
     o.zahlweg === "ueberweisung" ? `Bitte überweisen Sie den Betrag innerhalb von 14 Tagen${e.iban ? ` auf ${e.iban}${e.bank ? ` (${e.bank})` : ""}` : ""}. Verwendungszweck: ${o.nr}.` : "Es ist nichts zu bezahlen.";
   doc.text(doc.splitTextToSize(hinweis + (art === "rechnung" ? " Leistungsdatum entspricht dem Rechnungsdatum." : ""), 170), M, y);
   doc.setFontSize(7.5); doc.setTextColor(110, 118, 145);
-  doc.text([e.firma || "GAUSS LVS", [e.ustId ? `USt-IdNr. ${e.ustId}` : "", e.steuernr ? `Steuernummer ${e.steuernr}` : ""].filter(Boolean).join(" · ")].filter(Boolean), M, 284);
+  doc.text([e.firma || "GAUSS-LVS mbH", [e.ustId ? `USt-IdNr. ${e.ustId}` : "", e.steuernr ? `Steuernummer ${e.steuernr}` : ""].filter(Boolean).join(" · ")].filter(Boolean), M, 284);
   const uri = doc.output("datauristring");
   return { blob: doc.output("blob"), b64: uri.slice(uri.indexOf(",") + 1) };
 }
@@ -1762,7 +1769,7 @@ async function monatsPdf(ym){
   const sp = [M, 40, 120, 150, 190];
   doc.setFontSize(8); doc.setTextColor(110, 118, 145);
   ["KÜRZEL", "NAME", "GEHALTSABZUG", "ÜBERWEISUNG", "VORTEIL"].forEach((t, i) => doc.text(t, sp[i], y, i >= 2 ? { align: "right" } : undefined));
-  y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(38, 51, 93);
+  y += 3; doc.setDrawColor(200, 205, 220); doc.line(M, y, 190, y); y += 6; doc.setFontSize(9.5); doc.setTextColor(27, 47, 84);
   for (const p of pers){
     if (y > 260){ doc.addPage(); y = 24; }
     doc.text(p.kuerzel, sp[0], y); doc.text(doc.splitTextToSize(p.name, 60)[0], sp[1], y); doc.text(pEuro(p.gehalt), sp[2], y, { align: "right" }); doc.text(pEuro(p.ueberweisung), sp[3], y, { align: "right" });
@@ -1886,14 +1893,14 @@ document.addEventListener("click", async e => {
     case "bestellen": await bestellen(v); break;
     case "bestellung": oeffne("bestellung", { nr: b.dataset.nr }); break;
     case "pdf-bestaetigung": { const o = S.mein?.orders?.[b.dataset.nr] || (v?.view === "auftrag" ? auftrag(v.uid, v.nr) : null); if (!o) break; const p = await belegPdf(o, "bestaetigung"); speichern(`Bestellbestaetigung_${o.nr}.pdf`, p.blob); break; }
-    case "selbst-storno": oeffne("frage", { titel: "Bestellung stornieren?", text: "Die Bestellung wird storniert und der Bestand wieder freigegeben.", ja: "Stornieren", gefahr: true, ziel: "selbst-storno", nr: b.dataset.nr }); break;
+    case "selbst-storno": oeffne("frage", { titel: "Bestellung stornieren?", text: "Die Bestellung wird storniert und der Bestand wieder freigegeben.", ja: "Endgültig stornieren", gefahr: true, ziel: "selbst-storno", nr: b.dataset.nr }); break;
 
     case "frage-ja": {
       const unten = S.stack[S.stack.length - 2];
       if (v.ziel === "selbst-storno"){
         const o = S.mein?.orders?.[v.nr];
         if (o?.status !== "eingegangen"){ toast("Die Bestellung wird schon bearbeitet. Bitte die Verwaltung ansprechen."); zurueck(); break; }
-        try { await setzeStatus({ ...o, uid: S.uid }, "storniert", {}, "durch Besteller:in"); toast("Bestellung storniert"); } catch (er){ toast(fehlerText(er)); }
+        try { await setzeStatus({ ...o, uid: S.uid }, "storniert", {}, "von der bestellenden Person"); toast("Bestellung storniert"); } catch (er){ toast(fehlerText(er)); }
         zurueck();
       } else if (v.ziel === "storno"){
         const o = auftrag(unten.uid, unten.nr);
@@ -1912,7 +1919,7 @@ document.addEventListener("click", async e => {
     /* Verwaltung: Bestellungen */
     case "auftrag": oeffne("auftrag", { nr: b.dataset.nr, uid: b.dataset.uid }); break;
     case "status": await statusAktion(v, b.dataset.s); break;
-    case "storno-frage": oeffne("frage", { titel: "Bestellung stornieren?", text: "Reservierter Bestand wird wieder frei. Bereits verschickte Lieferantenbestellungen bitte selbst absagen.", ja: "Stornieren", gefahr: true, ziel: "storno" }); break;
+    case "storno-frage": oeffne("frage", { titel: "Bestellung stornieren?", text: "Reservierter Bestand wird wieder frei. Bereits verschickte Lieferantenbestellungen bitte selbst absagen.", ja: "Endgültig stornieren", gefahr: true, ziel: "storno" }); break;
     case "lieferant-mail": {
       b.disabled = true; v.fehler = "";
       try { await lieferantMailen(auftrag(v.uid, v.nr), b.dataset.lid); } catch (er){ v.fehler = er?.mailFehler || fehlerText(er); }
@@ -1964,7 +1971,7 @@ document.addEventListener("click", async e => {
     case "var-weg": merkeProdukt(v); v.p.varianten.splice(+b.dataset.i, 1); renderSheet(); break;
     case "foto-weg": merkeProdukt(v); v.p.fotos.splice(+b.dataset.i, 1); renderSheet(); break;
     case "produkt-speichern": await produktSpeichern(v); break;
-    case "produkt-loeschen": oeffne("frage", { titel: "Produkt löschen?", text: "Das Produkt verschwindet aus Shop und Verwaltung. Bestehende Bestellungen bleiben erhalten. Zum vorübergehenden Ausblenden reicht der Schalter „Im Shop sichtbar“.", ja: "Löschen", gefahr: true, ziel: "produkt-loeschen" }); break;
+    case "produkt-loeschen": oeffne("frage", { titel: "Produkt löschen?", text: "Das Produkt verschwindet aus Shop und Verwaltung. Bestehende Bestellungen bleiben erhalten. Zum vorübergehenden Ausblenden reicht der Schalter „Im Shop sichtbar“.", ja: "Endgültig löschen", gefahr: true, ziel: "produkt-loeschen" }); break;
 
     /* Verwaltung: Gutscheine */
     case "neu-gutschein": oeffne("gutschein-edit", { id: null, g: { code: zufallsCode(), typ: "prozent", wert: 10, aktiv: true, maxProPerson: 1, kategorien: [] } }); break;
@@ -1974,14 +1981,14 @@ document.addEventListener("click", async e => {
     case "g-typ": merkeGutschein(v); v.g.typ = b.dataset.t; renderSheet(); break;
     case "g-kat": { merkeGutschein(v); const k = b.dataset.k, l = new Set(v.g.kategorien || []); l.has(k) ? l.delete(k) : l.add(k); v.g.kategorien = [...l]; renderSheet(); break; }
     case "gutschein-speichern": await gutscheinSpeichern(v); break;
-    case "gutschein-loeschen": oeffne("frage", { titel: "Gutschein löschen?", text: "Der Code lässt sich danach nicht mehr einlösen. Bisherige Bestellungen behalten ihren Rabatt.", ja: "Löschen", gefahr: true, ziel: "gutschein-loeschen" }); break;
+    case "gutschein-loeschen": oeffne("frage", { titel: "Gutschein löschen?", text: "Der Code lässt sich danach nicht mehr einlösen. Bisherige Bestellungen behalten ihren Rabatt.", ja: "Endgültig löschen", gefahr: true, ziel: "gutschein-loeschen" }); break;
 
     /* Verwaltung: Lieferanten */
     case "neu-lieferant": if (v?.view === "produkt-edit") merkeProdukt(v); oeffne("lieferant-edit", { id: null, l: { name: "", art: b.dataset.art || "lieferant", email: "", vorlage: STANDARD_VORLAGE } }); break;
     case "edit-lieferant": { const l = lieferant(b.dataset.id); oeffne("lieferant-edit", { id: l.id, l: structuredClone(l) }); break; }
     case "l-art": merkeLieferant(v); v.l.art = b.dataset.a; renderSheet(); break;
     case "lieferant-speichern": await lieferantSpeichern(v); break;
-    case "lieferant-loeschen": oeffne("frage", { titel: "Löschen?", text: "Produkte mit diesem Lieferanten brauchen danach einen neuen Bestellweg.", ja: "Löschen", gefahr: true, ziel: "lieferant-loeschen" }); break;
+    case "lieferant-loeschen": oeffne("frage", { titel: "Löschen?", text: "Produkte mit diesem Lieferanten brauchen danach einen neuen Bestellweg.", ja: "Endgültig löschen", gefahr: true, ziel: "lieferant-loeschen" }); break;
 
     /* Verwaltung: Buchhaltung */
     case "monat": { const [y, m] = S.monat.split("-").map(Number), d = new Date(y, m - 1 + Number(b.dataset.d), 15); S.monat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; render(); break; }
