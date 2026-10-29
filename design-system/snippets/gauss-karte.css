@@ -1,0 +1,97 @@
+/* GAUSS Design System · Karte und Kachel · Stand 29.10.2026
+   Gezogen aus dem Design System, nicht von Hand pflegen. Braucht gauss-tokens.css. */
+.g-karte {
+  background: var(--objekt);
+  border: 1px solid var(--linie);
+  border-radius: var(--radius-karte);
+  box-shadow: var(--schatten-widget);
+  overflow: hidden;
+}
+.g-kacheln {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: 10px;
+}
+.g-kachel {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--radius-karte);
+  border: 1px solid var(--linie);
+  background: var(--objekt);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: var(--schatten-widget);
+}
+a.g-kachel:hover {
+  background-image: linear-gradient(var(--hover),var(--hover));
+}
+.g-kachel b {
+  font-weight: 600;
+}
+.g-kachel span {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-sekundaer);
+}
+.g-kachel.g-folgt {
+  box-shadow: none;
+  background: transparent;
+  border-style: dashed;
+}
+.g-kachel.g-folgt b {
+  color: var(--text-sekundaer);
+}
+.g-kachel {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+.g-kachel > b {
+  display: block;
+  line-height: 22px;
+}
+.g-kachel > .g-meta + .g-meta {
+  margin-top: auto;
+  padding-top: 8px;
+}
+.g-kachel span {
+  text-wrap: pretty;
+}
+.g-kachel span {
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+@media (max-width: 600px) {
+  .g-kachel {
+    display: grid;
+    grid-template-columns: 88px minmax(0px, 1fr);
+    gap: 2px 12px;
+    align-content: start;
+    padding: 12px;
+  }
+  .g-kachel > .g-vorschau {
+    grid-area: 1 / 1 / span 4;
+    width: 88px;
+    margin: 0px;
+    align-self: start;
+  }
+  .g-kachel > :not(.g-vorschau) {
+    grid-column: 2;
+  }
+  .g-kachel > .g-meta + .g-meta {
+    margin-top: 0px;
+    padding-top: 4px;
+  }
+}
+.g-kachel .g-vorschau {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 200 / 96;
+  margin: 0px 0px 8px;
+  border-radius: 10px;
+  background: var(--rahmenflaeche,var(--background));
+  box-shadow: inset 0 0 0 1px var(--linie);
+}

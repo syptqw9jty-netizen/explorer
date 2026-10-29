@@ -1,0 +1,344 @@
+/* GAUSS Design System · Tokens: Farben, Schrift, Radien, Schatten, Raster, hell/dunkel, Marken · Stand 29.10.2026
+   Gezogen aus dem Design System, nicht von Hand pflegen. */
+/* Dunkel: folgt dem System, außer <html data-theme="light|dark">. Marke: <html data-marke="sopart"> (Glutorange), ohne Attribut GAUSS (Magenta). */
+:root {
+  --font-ui: "Funnel Sans",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+  --neutral-0: oklch(1 0 0);
+  --neutral-50: oklch(0.985 0.004 265);
+  --neutral-100: oklch(0.965 0.007 265);
+  --neutral-200: oklch(0.92 0.01 265);
+  --neutral-300: oklch(0.85 0.014 265);
+  --neutral-400: oklch(0.71 0.02 265);
+  --neutral-500: oklch(0.58 0.028 265);
+  --neutral-600: oklch(0.48 0.038 265);
+  --neutral-700: oklch(0.4 0.048 265);
+  --neutral-800: oklch(0.34 0.035 265);
+  --neutral-900: oklch(0.27 0.04 265);
+  --neutral-950: oklch(0.22 0.075 265);
+  --neutral-1000: oklch(0.16 0.028 265);
+  --marke-hue: 339;
+  --marke-050: oklch(0.97 0.016 var(--marke-hue));
+  --marke-100: oklch(0.94 0.033 var(--marke-hue));
+  --marke-200: oklch(0.89 0.064 var(--marke-hue));
+  --marke-300: oklch(0.82 0.11 var(--marke-hue));
+  --marke-400: oklch(0.75 0.148 var(--marke-hue));
+  --marke-500: oklch(0.68 0.163 var(--marke-hue));
+  --marke-600: oklch(0.6 0.153 var(--marke-hue));
+  --marke-700: oklch(0.52 0.136 var(--marke-hue));
+  --status-fehler-text: oklch(0.5 0.18 18);
+  --status-fehler-flaeche: oklch(0.965 0.02 18);
+  --status-erfolg-text: oklch(0.47 0.11 150);
+  --status-erfolg-flaeche: oklch(0.965 0.03 150);
+  --status-info-text: oklch(0.48 0.14 250);
+  --status-info-flaeche: oklch(0.965 0.02 250);
+  --status-warnung-text: oklch(0.5 0.105 85);
+  --status-warnung-flaeche: oklch(0.97 0.055 92);
+  --background: var(--neutral-50);
+  --leiste: var(--neutral-100);
+  --rahmenflaeche: var(--neutral-50);
+  --objekt: var(--neutral-0);
+  --erhoeht: var(--neutral-200);
+  --tastenflaeche: var(--neutral-100);
+  --popover: var(--neutral-0);
+  --linie: var(--neutral-200);
+  --rahmen: var(--neutral-500);
+  --tinte-text: oklch(0.31 0.072 262);
+  --foreground: var(--tinte-text);
+  --text-sekundaer: oklch(0.45 0.062 262);
+  --tertiaer: oklch(0.52 0.05 262);
+  --deaktiviert: var(--neutral-400);
+  --primary: var(--tinte-text);
+  --primary-foreground: var(--neutral-0);
+  --hover: color-mix(in oklab,var(--neutral-950) 6%,transparent);
+  --pressed: color-mix(in oklab,var(--neutral-950) 10%,transparent);
+  --ort-aktiv: var(--neutral-200);
+  --linie-weich: color-mix(in oklab,var(--linie) 50%,transparent);
+  --feld-flaeche: var(--neutral-100);
+  --vorgang-kopf: var(--neutral-100);
+  --rahmen-leise: var(--neutral-300);
+  --gewaehlt: var(--marke-600);
+  --gewaehlt-text-flaeche: var(--marke-700);
+  --gewaehlt-text-farbe: var(--neutral-0);
+  --gewaehlt-text: var(--neutral-0);
+  --zaehler: var(--marke-600);
+  --fokus: var(--marke-700);
+  --fokus-innen: var(--neutral-0);
+  --link: var(--marke-700);
+  --logo: var(--tinte-text);
+  --popup-backdrop: color-mix(in oklab,var(--neutral-950) 20%,transparent);
+  --schatten-farbe: var(--neutral-950);
+  --schatten-widget: 0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
+  --schatten-hoch: 0 20px 48px -16px color-mix(in oklab,var(--schatten-farbe) 16%,transparent),0 4px 14px -8px color-mix(in oklab,var(--schatten-farbe) 8%,transparent);
+  --cover-a: var(--neutral-950);
+  --cover-a-t: var(--neutral-50);
+  --cover-b: var(--neutral-700);
+  --cover-b-t: var(--neutral-0);
+  --cover-c: var(--neutral-200);
+  --cover-c-t: var(--neutral-950);
+  --cover-d: var(--neutral-100);
+  --cover-d-t: var(--neutral-950);
+  --inhalt: 680px;
+  --radius-aktion: 999px;
+  --radius-zeile: 8px;
+  --radius-block: 12px;
+  --radius-karte: 16px;
+  --radius-flaeche: 20px;
+  --hoehe-touchziel: 44px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --dunkel-seite: var(--neutral-1000);
+    --dunkel-karte: oklch(0.20 0.03 265);
+    --dunkel-erhoeht: oklch(0.245 0.032 265);
+    --dunkel-linie: oklch(0.29 0.03 265);
+    --status-fehler-text: oklch(0.76 0.14 18);
+    --status-fehler-flaeche: oklch(0.29 0.06 22);
+    --status-erfolg-text: oklch(0.78 0.12 150);
+    --status-erfolg-flaeche: oklch(0.28 0.05 150);
+    --status-info-text: oklch(0.78 0.11 250);
+    --status-info-flaeche: oklch(0.29 0.06 250);
+    --status-warnung-text: oklch(0.85 0.13 88);
+    --status-warnung-flaeche: oklch(0.3 0.06 85);
+    --background: var(--dunkel-seite);
+    --leiste: var(--dunkel-seite);
+    --rahmenflaeche: var(--dunkel-seite);
+    --objekt: var(--dunkel-karte);
+    --erhoeht: var(--dunkel-erhoeht);
+    --tastenflaeche: var(--dunkel-erhoeht);
+    --popover: var(--dunkel-karte);
+    --linie: var(--dunkel-linie);
+    --rahmen: var(--neutral-400);
+    --foreground: var(--neutral-50);
+    --text-sekundaer: var(--neutral-300);
+    --tertiaer: var(--neutral-300);
+    --deaktiviert: var(--neutral-600);
+    --primary: var(--neutral-50);
+    --primary-foreground: var(--neutral-950);
+    --hover: color-mix(in oklab,white 8%,transparent);
+    --pressed: color-mix(in oklab,white 10%,transparent);
+    --ort-aktiv: var(--dunkel-erhoeht);
+    --feld-flaeche: var(--dunkel-seite);
+    --vorgang-kopf: var(--dunkel-karte);
+    --rahmen-leise: var(--dunkel-linie);
+    --gewaehlt: var(--marke-500);
+    --zaehler: var(--marke-500);
+    --gewaehlt-text-flaeche: var(--marke-300);
+    --gewaehlt-text-farbe: var(--neutral-950);
+    --fokus: var(--marke-400);
+    --fokus-innen: var(--neutral-950);
+    --link: var(--marke-300);
+    --logo: var(--neutral-50);
+    --popup-backdrop: color-mix(in oklab,var(--neutral-950) 55%,transparent);
+    --schatten-farbe: oklch(0.1 0.03 270);
+    --schatten-widget: 0 1px 2px color-mix(in oklab,var(--schatten-farbe) 60%,transparent),0 8px 20px -10px color-mix(in oklab,var(--schatten-farbe) 80%,transparent);
+    --schatten-hoch: 0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+    --cover-a: var(--neutral-50);
+    --cover-a-t: var(--neutral-950);
+    --cover-b: var(--neutral-400);
+    --cover-b-t: var(--neutral-950);
+    --cover-c: var(--neutral-800);
+    --cover-c-t: var(--neutral-50);
+    --cover-d: var(--dunkel-erhoeht);
+    --cover-d-t: var(--neutral-50);
+  }
+}
+:root[data-theme="dark"] {
+  --dunkel-seite: var(--neutral-1000);
+  --dunkel-karte: oklch(0.20 0.03 265);
+  --dunkel-erhoeht: oklch(0.245 0.032 265);
+  --dunkel-linie: oklch(0.29 0.03 265);
+  --status-fehler-text: oklch(0.76 0.14 18);
+  --status-fehler-flaeche: oklch(0.29 0.06 22);
+  --status-erfolg-text: oklch(0.78 0.12 150);
+  --status-erfolg-flaeche: oklch(0.28 0.05 150);
+  --status-info-text: oklch(0.78 0.11 250);
+  --status-info-flaeche: oklch(0.29 0.06 250);
+  --status-warnung-text: oklch(0.85 0.13 88);
+  --status-warnung-flaeche: oklch(0.3 0.06 85);
+  --background: var(--dunkel-seite);
+  --leiste: var(--dunkel-seite);
+  --rahmenflaeche: var(--dunkel-seite);
+  --objekt: var(--dunkel-karte);
+  --erhoeht: var(--dunkel-erhoeht);
+  --tastenflaeche: var(--dunkel-erhoeht);
+  --popover: var(--dunkel-karte);
+  --linie: var(--dunkel-linie);
+  --rahmen: var(--neutral-400);
+  --foreground: var(--neutral-50);
+  --text-sekundaer: var(--neutral-300);
+  --tertiaer: var(--neutral-300);
+  --deaktiviert: var(--neutral-600);
+  --primary: var(--neutral-50);
+  --primary-foreground: var(--neutral-950);
+  --hover: color-mix(in oklab,white 8%,transparent);
+  --pressed: color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv: var(--dunkel-erhoeht);
+  --feld-flaeche: var(--dunkel-seite);
+  --vorgang-kopf: var(--dunkel-karte);
+  --rahmen-leise: var(--dunkel-linie);
+  --gewaehlt: var(--marke-500);
+  --zaehler: var(--marke-500);
+  --gewaehlt-text-flaeche: var(--marke-300);
+  --gewaehlt-text-farbe: var(--neutral-950);
+  --fokus: var(--marke-400);
+  --fokus-innen: var(--neutral-950);
+  --link: var(--marke-300);
+  --logo: var(--neutral-50);
+  --popup-backdrop: color-mix(in oklab,var(--neutral-950) 55%,transparent);
+  --schatten-farbe: oklch(0.1 0.03 270);
+  --schatten-widget: 0 1px 2px color-mix(in oklab,var(--schatten-farbe) 60%,transparent),0 8px 20px -10px color-mix(in oklab,var(--schatten-farbe) 80%,transparent);
+  --schatten-hoch: 0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  --cover-a: var(--neutral-50);
+  --cover-a-t: var(--neutral-950);
+  --cover-b: var(--neutral-400);
+  --cover-b-t: var(--neutral-950);
+  --cover-c: var(--neutral-800);
+  --cover-c-t: var(--neutral-50);
+  --cover-d: var(--dunkel-erhoeht);
+  --cover-d-t: var(--neutral-50);
+}
+:root {
+  --marke-800: oklch(0.44 0.113 var(--marke-hue));
+  --marke-900: oklch(0.36 0.094 var(--marke-hue));
+  --inhalt: 760px;
+  --logo-magenta: #9E1981;
+  --logo: var(--neutral-950);
+  --pb: var(--neutral-950);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --logo: var(--neutral-50);
+    --logo-magenta: oklch(0.75 0.185 339);
+  }
+}
+:root[data-theme="dark"] {
+  --logo: var(--neutral-50);
+  --logo-magenta: oklch(0.75 0.185 339);
+}
+:root {
+  --marke-050: oklch(0.97 0.019 339);
+  --marke-100: oklch(0.94 0.039 339);
+  --marke-200: oklch(0.89 0.076 339);
+  --marke-300: oklch(0.82 0.133 339);
+  --marke-400: oklch(0.75 0.185 339);
+  --marke-500: oklch(0.68 0.204 339);
+  --marke-600: oklch(0.6 0.191 339);
+  --marke-700: oklch(0.52 0.17 339);
+  --marke-800: oklch(0.44 0.141 339);
+  --marke-900: oklch(0.36 0.117 339);
+}
+html[data-marke="sopart51"] {
+  --marke-050: oklch(0.97 0.014 258);
+  --marke-100: oklch(0.94 0.029 258);
+  --marke-200: oklch(0.89 0.057 258);
+  --marke-300: oklch(0.82 0.099 258);
+  --marke-400: oklch(0.75 0.147 258);
+  --marke-500: oklch(0.68 0.19 258);
+  --marke-600: oklch(0.6 0.17 258);
+  --marke-700: oklch(0.52 0.15 258);
+  --marke-800: oklch(0.44 0.125 258);
+  --marke-900: oklch(0.36 0.1 258);
+}
+html[data-marke="sopart"] {
+  --marke-050: oklch(0.97 0.014 36);
+  --marke-100: oklch(0.94 0.029 36);
+  --marke-200: oklch(0.89 0.057 36);
+  --marke-300: oklch(0.82 0.099 36);
+  --marke-400: oklch(0.75 0.147 36);
+  --marke-500: oklch(0.68 0.203 36);
+  --marke-600: oklch(0.6 0.191 36);
+  --marke-700: oklch(0.52 0.17 36);
+  --marke-800: oklch(0.44 0.141 36);
+  --marke-900: oklch(0.36 0.117 36);
+}
+:root {
+  --logo-orange: #FB5C2F;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --logo-orange: oklch(0.75 0.147 36);
+  }
+}
+:root[data-theme="dark"] {
+  --logo-orange: oklch(0.75 0.147 36);
+}
+:root {
+  --nav-flaeche: var(--neutral-100);
+  --nav-breit: 264px;
+  --nav-schmal: 64px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nav-flaeche: oklch(0.135 0.026 265);
+  }
+}
+:root[data-theme="dark"] {
+  --nav-flaeche: oklch(0.135 0.026 265);
+}
+:root {
+  --rand: 40px;
+  --spalten: 12;
+  --spaltenabstand: 24px;
+  --inhalt-max: 880px;
+}
+@media (min-width: 1280px) {
+  :root {
+    --rand: 48px;
+  }
+}
+@media (max-width: 1023px) {
+  :root {
+    --rand: 32px;
+    --spalten: 8;
+    --spaltenabstand: 20px;
+  }
+}
+@media (max-width: 767px) {
+  :root {
+    --rand: 16px;
+    --spalten: 2;
+    --spaltenabstand: 16px;
+  }
+}
+:root {
+  --buehne-punkt: color-mix(in oklab,var(--rahmen) 30%,transparent);
+}
+:root {
+  --ps-blau: oklch(0.55 0.15 255);
+  --ps-gruen: oklch(0.55 0.12 150);
+  --ps-gelb: oklch(0.78 0.14 88);
+  --ps-orange: oklch(0.66 0.16 50);
+  --ps-rot: oklch(0.57 0.18 25);
+  --ps-violett: oklch(0.52 0.15 295);
+  --ps-tuerkis: oklch(0.58 0.1 200);
+  --ps-grau: oklch(0.58 0.01 265);
+}
+:root {
+  --text-hero: 44px;
+  --text-hero-zeile: 48px;
+  --text-hero-laufweite: -.028em;
+}
+@media (max-width: 1023px) {
+  :root {
+    --text-hero: 40px;
+    --text-hero-zeile: 44px;
+  }
+}
+@media (max-width: 767px) {
+  :root {
+    --text-hero: 34px;
+    --text-hero-zeile: 40px;
+    --text-hero-laufweite: -.025em;
+  }
+}
+:root {
+  --schatten-fenster: 0 0 0 1px color-mix(in oklab,var(--neutral-950,#0b0d12) 10%,transparent),0 2px 4px color-mix(in oklab,var(--neutral-950,#0b0d12) 6%,transparent),0 12px 24px -4px color-mix(in oklab,var(--neutral-950,#0b0d12) 12%,transparent),0 32px 64px -12px color-mix(in oklab,var(--neutral-950,#0b0d12) 24%,transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --schatten-fenster: 0 0 0 1px color-mix(in oklab,#fff 14%,transparent),0 12px 24px -4px rgb(0 0 0/.45),0 32px 64px -12px rgb(0 0 0/.6);
+  }
+}
+:root[data-theme="dark"] {
+  --schatten-fenster: 0 0 0 1px color-mix(in oklab,#fff 14%,transparent),0 12px 24px -4px rgb(0 0 0/.45),0 32px 64px -12px rgb(0 0 0/.6);
+}

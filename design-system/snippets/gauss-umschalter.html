@@ -1,0 +1,14 @@
+<div class="g-umschalter g-ku" role="group" aria-label="Zeitraum">
+  <button type="button" aria-pressed="false">Tag</button>
+  <button type="button" aria-pressed="true">Woche</button>
+  <button type="button" aria-pressed="false">Monat</button>
+</div>
+<script>
+/* Ein Klick wählt, aria-pressed trägt den Zustand. */
+document.querySelectorAll('.g-umschalter').forEach(function (g) {
+  g.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    g.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  });
+});
+</script>

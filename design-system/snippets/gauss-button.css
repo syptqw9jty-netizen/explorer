@@ -1,0 +1,153 @@
+/* GAUSS Design System · Button · Stand 29.10.2026
+   Gezogen aus dem Design System, nicht von Hand pflegen. Braucht gauss-tokens.css. */
+.g-kt {
+  position: relative;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 120ms, color 120ms;
+}
+.g-kt::after {
+  content: "";
+  position: absolute;
+  inset: calc(-4px);
+}
+.g-kt > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+.g-kt.g-primaer {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.g-kt.g-sekundaer {
+  background-color: var(--objekt);
+  border-color: var(--linie);
+  color: var(--foreground);
+}
+.g-kt.g-still {
+  color: var(--text-sekundaer);
+}
+.g-kt.g-gefahr {
+  background-color: var(--status-fehler-text);
+  color: var(--primary-foreground);
+}
+.g-kt.g-icon {
+  width: 36px;
+  padding: 0px;
+}
+.g-kt.g-icon.g-zeile {
+  width: 30px;
+  height: 30px;
+  color: var(--text-sekundaer);
+}
+.g-kt.g-icon.g-frei {
+  background-color: var(--objekt);
+  border-color: var(--linie);
+}
+.g-kt.g-klein {
+  height: 30px;
+  padding: 0px 12px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.g-kt.g-klein::after {
+  inset: -7px;
+}
+.g-kt.g-icon.g-zeile::after {
+  inset: -7px;
+}
+.g-kt:hover:not(:disabled) {
+  background-image: linear-gradient(var(--hover),var(--hover));
+}
+.g-kt:active:not(:disabled) {
+  background-image: linear-gradient(var(--pressed),var(--pressed));
+}
+.g-kt.g-still:hover:not(:disabled),.g-kt.g-zeile:hover:not(:disabled) {
+  color: var(--foreground);
+}
+.g-kt:is(.g-primaer, .g-gefahr):hover:not(:disabled) {
+  background-image: linear-gradient(color-mix(in oklab,var(--primary-foreground) 14%,transparent),color-mix(in oklab,var(--primary-foreground) 14%,transparent));
+}
+.g-kt:is(.g-primaer, .g-gefahr):active:not(:disabled) {
+  background-image: linear-gradient(color-mix(in oklab,var(--primary-foreground) 22%,transparent),color-mix(in oklab,var(--primary-foreground) 22%,transparent));
+}
+.g-kt:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.g-kt[aria-pressed="true"] {
+  background-color: var(--ort-aktiv);
+  color: var(--foreground);
+  box-shadow: inset 0 0 0 1.5px var(--neutral-500);
+  font-weight: 600;
+}
+.g-kt[aria-busy="true"] {
+  cursor: progress;
+}
+.g-kt[aria-busy="true"] > svg {
+  animation: 900ms linear 0s infinite normal none running g-kt-dreh;
+}
+.g-kt .g-punkt {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--zaehler);
+  box-shadow: 0 0 0 2px var(--objekt);
+}
+@media (max-width: 767px) {
+  .g-kt,.g-kt.g-klein {
+    height: 44px;
+  }
+  .g-kt.g-icon,.g-kt.g-icon.g-zeile {
+    width: 44px;
+    height: 44px;
+  }
+  .g-kt::after,.g-kt.g-klein::after,.g-kt.g-icon.g-zeile::after {
+    inset: 0px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-kt[aria-busy="true"] > svg {
+    animation: none;
+  }
+}
+.g-kt {
+  height: auto;
+  min-height: 36px;
+}
+.g-kt.g-klein {
+  min-height: 30px;
+}
+.g-kt.g-icon {
+  height: 36px;
+}
+@media (max-width: 767px) {
+  .g-kt.g-icon {
+    height: 44px;
+  }
+}
+@keyframes g-kt-dreh {
+  100% {
+  transform: rotate(360deg);
+  }
+}
