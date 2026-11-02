@@ -2097,8 +2097,8 @@ ol.anat-legende.sg-regeln,.karte>ol.sg-regeln{padding:16px 16px 16px 40px}
   --flaeche-marke:linear-gradient(160deg in oklch,var(--flaeche-a) 0%,var(--flaeche-b) 100%)}
 html[data-marke="sopart"]{--flaeche-hue:36}
 html[data-marke="sopart51"]{--flaeche-hue:258}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.026 var(--flaeche-hue))}}
-:root[data-theme="dark"]{--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.026 var(--flaeche-hue))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.017 var(--flaeche-hue))}}
+:root[data-theme="dark"]{--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.017 var(--flaeche-hue))}
 .markenflaeche{background:linear-gradient(160deg in oklch,var(--flaeche-a) 0%,var(--flaeche-b) 100%);color:var(--foreground)}
 @media (forced-colors:active){.markenflaeche{background:Canvas}}
 @media print{.markenflaeche{background:none}}
@@ -2108,7 +2108,7 @@ html[data-marke="sopart51"]{--flaeche-hue:258}
 .mf-muster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .mf-muster>div{display:grid;gap:6px}
 .mf-probe{height:96px;border-radius:var(--radius-block);box-shadow:inset 0 0 0 1px var(--linie)}
-.mf-probe.dunkel{--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.026 var(--flaeche-hue));box-shadow:inset 0 0 0 1px oklch(0.29 0.03 265)}
+.mf-probe.dunkel{--flaeche-a:oklch(0.215 0.032 265);--flaeche-b:oklch(0.222 0.017 var(--flaeche-hue));box-shadow:inset 0 0 0 1px oklch(0.29 0.03 265)}
 /* 1 Assistent */
 .mf-assist{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);min-height:360px}
 .mf-schritte{margin:12px;padding:20px;border-radius:var(--radius-block);display:grid;align-content:start;gap:4px}
@@ -2155,6 +2155,14 @@ html[data-marke="sopart51"]{--flaeche-hue:258}
 .mf-nicht figcaption{font-size:13px;line-height:18px;color:var(--text-sekundaer)}
 @media (max-width:767px){.mf-assist{grid-template-columns:minmax(0,1fr)}.mf-schritte{margin:8px 8px 0}.mf-form{padding:20px 16px}
  .mf-widgets,.mf-muster,.mf-nicht{grid-template-columns:minmax(0,1fr)}.mf-web{padding:32px 20px}.mf-web .mf-h{font-size:28px;line-height:34px}}
+
+/* ===== Heldenbild auf Markenfläche (02.11.2026): eine Fläche je Seite, Vorschaubilder und Wireframes bleiben neutral ===== */
+.seite-hero{background:linear-gradient(160deg in oklch,var(--flaeche-a) 0%,var(--flaeche-b) 100%);box-shadow:none}
+.seite-hero .vorschau .g{stroke:color-mix(in oklab,var(--foreground) 8%,transparent);stroke-width:.5}
+.seite-hero .vorschau .k.o,.seite-hero .vorschau .k2{fill:var(--objekt)}
+.seite-hero .vorschau .a{stroke:var(--objekt);stroke-width:1.6;paint-order:stroke}
+.seite-hero .vorschau .pd{fill:color-mix(in oklab,var(--foreground) 10%,transparent)}
+@media print{.seite-hero{background:none;box-shadow:inset 0 0 0 1px var(--linie)}}
 </style>
 <svg class="v51-defs" aria-hidden="true" height="0" style="position:absolute" width="0">
 <defs>
@@ -3675,11 +3683,14 @@ html[data-marke="sopart"] .ws-tl{color:var(--foreground)}
     <div class="bereich">
       <header><h4 class="titel-bereich">5 · Website und Landingpage</h4><p class="einleitung">Kopfbereich einer Produktseite auf gauss-lvs.de. Gleiches Token wie in der Software, dadurch eine Marke über alle Kanäle.</p></header><div class="mf-rahmen"><div class="mf-web markenflaeche"><span class="mf-etikett">SoPart für Jugendämter</span><h3 class="mf-h">Fallarbeit, die sich nicht wie Verwaltung anfühlt</h3><p>Vorgänge, Fristen und Hilfepläne an einem Ort. Barrierefrei nach BITV, betrieben in deutschen Rechenzentren.</p><div class="mf-aktionen"><button type="button" class="kt primaer">Demo vereinbaren</button><button type="button" class="kt sekundaer">SoPart erleben</button></div></div></div>
     </div>
-    <div class="bereich">
+        <div class="bereich">
+      <header><h4 class="titel-bereich">Illustrationen</h4><p class="einleitung">Das Heldenbild einer Seite steht auf der Markenfläche, alles andere bleibt sachlich.</p></header><div class="karte"><div class="tab-wrap"><table><thead><tr><th>Illustration</th><th>Grund</th><th>Warum</th></tr></thead><tbody><tr><td><b>Heldenbild</b> oben auf jeder Seite</td><td>Markenfläche, ohne Rahmen</td><td>eines je Seite, nur Stimmung; die Seite trägt leise die Marke</td></tr><tr><td><b>Vorschaubild</b> in Kacheln und Musterkarten</td><td>neutral mit Raster</td><td>auf der Übersicht über 25 nebeneinander; Verläufe würden laut und nähmen dem Heldenbild die Wirkung</td></tr><tr><td><b>Wireframe</b> (Aufbau, App-Rahmen, Anatomie)</td><td>neutral mit Raster</td><td>Schema, also beinahe Information: sachlich und vergleichbar halten</td></tr></tbody></table></div></div><div class="karte" style="padding:12px 16px"><ul class="ia-liste" style="margin:0;padding-left:18px"><li><b>Raster</b> auf der Fläche heller und transparent (8 % Vordergrund), damit es die Tönung aufnimmt</li><li><b>Karten im Motiv</b> bleiben Kartenfarbe, wie Inhalt auf der Fläche</li><li><b>Markenpunkt</b> genau einer, mit feinem Ring in Kartenfarbe, damit er sich von der Tönung löst</li></ul></div>
+    </div>
+<div class="bereich">
       <header><h4 class="titel-bereich">Nicht so</h4><p class="einleitung">Drei Fehler, die die Fläche entwerten.</p></header><div class="mf-nicht"><figure><div class="mf-falsch markenflaeche"><div style="position:absolute;inset:12px;display:grid;gap:6px"><div style="height:14px;border-radius:4px;background:color-mix(in oklab,var(--foreground) 10%,transparent)"></div><div style="height:14px;border-radius:4px;background:color-mix(in oklab,var(--foreground) 10%,transparent)"></div><div style="height:14px;border-radius:4px;background:color-mix(in oklab,var(--foreground) 10%,transparent)"></div><div style="height:14px;border-radius:4px;background:color-mix(in oklab,var(--foreground) 10%,transparent)"></div></div></div><figcaption><b>Nicht hinter Tabellen und Formularen.</b> Arbeitsflächen bleiben neutral, sonst konkurriert die Fläche mit den Daten.</figcaption></figure><figure><div class="mf-falsch" style="display:grid;place-items:center"><span class="kt primaer" style="background:var(--flaeche-marke);color:var(--foreground)" aria-hidden="true">Speichern</span></div><figcaption><b>Nicht auf Bedienelementen.</b> Buttons, Hover und Auswahl bleiben bei ihren Rollen.</figcaption></figure><figure><div class="mf-falsch" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px"><div class="markenflaeche" style="border-radius:8px"></div><div class="markenflaeche" style="border-radius:8px"></div></div><figcaption><b>Nicht mehrfach.</b> Höchstens eine Markenfläche je Ansicht.</figcaption></figure></div>
     </div>
     <div class="bereich">
-      <header><h4 class="titel-bereich">Regeln</h4><p class="einleitung">Prüfbar, damit es konsequent bleibt.</p></header><div class="karte"><ol class="anat-legende sg-regeln"><li><b>Eine je Ansicht</b> höchstens eine Markenfläche, immer großflächig und ohne eigene Bedienung</li><li><b>Nur Orientierungsflächen</b> Assistent-Leiste, Begrüßung, leerer Zustand, Anmeldung, Website-Kopf; nie Arbeitsflächen, Widgets, Tabellen, Formulare</li><li><b>Sättigung</b> höchstens 0,02 Chroma bei Helligkeit ≥ 0,96 (hell) bzw. ≤ 0,23 (dunkel); Text bleibt Tinte</li><li><b>Inhalt darauf</b> weiße Karten und Bedienelemente stehen auf der Fläche, nie umgekehrt</li><li><b>Abschalten</b> Druck ohne Fläche, Kontrastmodus mit Systemfarbe</li></ol></div>
+      <header><h4 class="titel-bereich">Regeln</h4><p class="einleitung">Prüfbar, damit es konsequent bleibt.</p></header><div class="karte"><ol class="anat-legende sg-regeln"><li><b>Eine je Ansicht</b> höchstens eine Markenfläche, immer großflächig und ohne eigene Bedienung</li><li><b>Nur Orientierungsflächen</b> Assistent-Leiste, Begrüßung, leerer Zustand, Anmeldung, Website-Kopf; nie Arbeitsflächen, Widgets, Tabellen, Formulare</li><li><b>Sättigung</b> höchstens 0,02 Chroma bei Helligkeit ≥ 0,96 (hell) bzw. ≤ 0,23 (dunkel); Text bleibt Tinte</li><li><b>Inhalt darauf</b> weiße Karten und Bedienelemente stehen auf der Fläche, nie umgekehrt</li><li><b>Abschalten</b> Druck ohne Fläche, Kontrastmodus mit Systemfarbe</li><li><b>Heldenbild</b> das Heldenbild oben auf einer Seite ist ihre eine Markenfläche; Beispiele in eigenen Demo-Rahmen zählen nicht mit</li><li><b>Illustrationen</b> nur das Heldenbild steht auf der Fläche; Vorschaubilder in Kacheln und erklärende Wireframes bleiben neutral mit Raster</li></ol></div>
     </div>
     <div class="bereich">
       <header><h4 class="titel-bereich">Barrierefreiheit</h4><p class="einleitung">Was die Fläche mitbringt.</p></header><div class="karte"><div class="tab-wrap"><table><thead><tr><th>Kriterium</th><th>Umsetzung</th></tr></thead><tbody><tr><td>1.4.3 Kontrast</td><td>Text auf der Fläche wie auf Weiß: Tinte ≥ 12 : 1, Text 2 ≥ 7 : 1</td></tr><tr><td>1.4.1 Farbe</td><td>die Fläche trägt keine Information; nichts geht verloren, wenn sie fehlt</td></tr><tr><td>1.4.11 Nicht-Text-Kontrast</td><td>Bedienelemente auf der Fläche behalten ihre eigenen Konturen</td></tr><tr><td>Kontrastmodus</td><td><code>forced-colors</code>: Fläche wird Canvas</td></tr></tbody></table></div></div>
@@ -3694,7 +3705,7 @@ html[data-marke="sopart"] .ws-tl{color:var(--foreground)}
 html[data-marke="sopart"] { --flaeche-hue: 36; }
 :root[data-theme="dark"] {
   --flaeche-a: oklch(0.215 0.032 265);
-  --flaeche-b: oklch(0.222 0.026 var(--flaeche-hue));
+  --flaeche-b: oklch(0.222 0.017 var(--flaeche-hue));
 }
 .markenflaeche { background: linear-gradient(160deg in oklch, var(--flaeche-a), var(--flaeche-b));
                  color: var(--foreground); }   /* direkt, damit Marke und Dunkel je Fläche umschalten */
