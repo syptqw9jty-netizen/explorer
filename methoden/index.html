@@ -1,0 +1,1435 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f9fafc">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Werkstatt">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Methodensammlung der GAUSS Werkstatt: Methoden für den Alltag, verknüpft mit der Design Bibliothek.">
+<link rel="manifest" href="manifest.webmanifest?v=1">
+<link rel="icon" href="icons/favicon.svg?v=1" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>GAUSS Werkstatt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600&display=swap">
+<style>
+/*
+ * GAUSS Werkstatt — Methodensammlung, Anwendung im GAUSS-Designsystem.
+ * Shell, Tokens und Komponenten 1:1 aus der GAUSS Design Bibliothek (Ausprägung Unternehmen, Magenta).
+ * Layout: eine Spalte, Seitentitel, sticky Suche/Filter, Situationen als Kacheln, Liste als Widget Typ A, Detail als Sheet.
+ */
+:root{
+  --font-ui:"Funnel Sans",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+
+  --neutral-0:oklch(1 0 0);
+  --neutral-50:oklch(0.985 0.004 265);
+  --neutral-100:oklch(0.965 0.007 265);
+  --neutral-200:oklch(0.92 0.01 265);
+  --neutral-300:oklch(0.85 0.014 265);
+  --neutral-400:oklch(0.71 0.02 265);
+  --neutral-500:oklch(0.58 0.028 265);
+  --neutral-600:oklch(0.48 0.038 265);
+  --neutral-700:oklch(0.4 0.048 265);
+  --neutral-800:oklch(0.34 0.035 265);
+  --neutral-900:oklch(0.27 0.04 265);
+  --neutral-950:oklch(0.22 0.045 265);
+
+  /* Ausprägung Unternehmen: Magenta */
+  --marke-hue:345;
+  --marke-050:oklch(0.97 0.016 var(--marke-hue));
+  --marke-100:oklch(0.94 0.033 var(--marke-hue));
+  --marke-200:oklch(0.89 0.064 var(--marke-hue));
+  --marke-300:oklch(0.82 0.11 var(--marke-hue));
+  --marke-400:oklch(0.75 0.148 var(--marke-hue));
+  --marke-500:oklch(0.68 0.163 var(--marke-hue));
+  --marke-600:oklch(0.6 0.153 var(--marke-hue));
+  --marke-700:oklch(0.52 0.136 var(--marke-hue));
+
+  --status-fehler-text:oklch(0.5 0.18 25);   --status-fehler-flaeche:oklch(0.965 0.02 25);
+  --status-erfolg-text:oklch(0.47 0.11 150); --status-erfolg-flaeche:oklch(0.965 0.03 150);
+  --status-info-text:oklch(0.48 0.14 250);   --status-info-flaeche:oklch(0.965 0.02 250);
+  --status-warnung-text:oklch(0.5 0.105 85); --status-warnung-flaeche:oklch(0.97 0.055 92);
+
+  --background:var(--neutral-50);
+  --leiste:var(--neutral-100);
+  --rahmenflaeche:var(--neutral-50);
+  --objekt:var(--neutral-0);
+  --erhoeht:var(--neutral-200);
+  --tastenflaeche:var(--neutral-100);
+  --popover:var(--neutral-0);
+  --linie:var(--neutral-200);
+  --rahmen:var(--neutral-500);
+  /* Hell: Texttinte leichter und blauer als neutral-950 (Hue 262, mehr Chroma); Kontraste auf Weiß ≈ 11:1 / 7:1 / 5,3:1 */
+  --tinte-text:oklch(0.31 0.072 262);
+  --foreground:var(--tinte-text);
+  --text-sekundaer:oklch(0.45 0.062 262);
+  --tertiaer:oklch(0.52 0.05 262);
+  --deaktiviert:var(--neutral-400);
+  --primary:var(--tinte-text);
+  --primary-foreground:var(--neutral-0);
+  --hover:color-mix(in oklab,var(--neutral-950) 6%,transparent);
+  --pressed:color-mix(in oklab,var(--neutral-950) 10%,transparent);
+  --ort-aktiv:var(--neutral-300);
+  --gewaehlt:var(--marke-600);
+  /* Gewählt mit Text (Chips): Magenta 600 + Weiß < 4,5:1 → Stufe 700 hell, im Dunkeln helle Fläche mit Tinte */
+  --gewaehlt-text-flaeche:var(--marke-700);
+  --gewaehlt-text-farbe:var(--neutral-0);
+  --gewaehlt-text:var(--neutral-0);
+  --zaehler:var(--marke-600);
+  --fokus:var(--marke-700);
+  --fokus-innen:var(--neutral-0);
+  --link:var(--marke-700);
+  --logo:var(--tinte-text);
+  --logo-marke:var(--marke-600);
+  --logo-marke-schatten:var(--marke-700);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 20%,transparent);
+  --schatten-farbe:var(--neutral-950);
+  --schatten-widget:0 1px 2px color-mix(in oklab,var(--neutral-950) 6%,transparent),0 6px 16px -8px color-mix(in oklab,var(--neutral-950) 18%,transparent);
+  --schatten-hoch:0 20px 48px -16px color-mix(in oklab,var(--schatten-farbe) 16%,transparent),0 4px 14px -8px color-mix(in oklab,var(--schatten-farbe) 8%,transparent);
+
+  /* Cover: nur Neutralskala, Bauhaus-Form als Unterscheidung */
+  --cover-a:var(--neutral-950); --cover-a-t:var(--neutral-50);
+  --cover-b:var(--neutral-700); --cover-b-t:var(--neutral-0);
+  --cover-c:var(--neutral-200); --cover-c-t:var(--neutral-950);
+  --cover-d:var(--neutral-100); --cover-d-t:var(--neutral-950);
+
+  --inhalt:680px;
+  --radius-aktion:999px; --radius-zeile:8px; --radius-block:12px; --radius-karte:16px; --radius-flaeche:20px;
+  --hoehe-touchziel:44px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --dunkel-seite:oklch(0.16 0.028 265); --dunkel-karte:oklch(0.20 0.03 265); --dunkel-erhoeht:oklch(0.245 0.032 265); --dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);   --status-fehler-flaeche:oklch(0.29 0.06 25);
+  --status-erfolg-text:oklch(0.78 0.12 150);  --status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);    --status-info-flaeche:oklch(0.29 0.06 250);
+  --status-warnung-text:oklch(0.85 0.13 88);  --status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite); --leiste:var(--dunkel-seite); --rahmenflaeche:var(--dunkel-seite);
+  --objekt:var(--dunkel-karte); --erhoeht:var(--dunkel-erhoeht); --tastenflaeche:var(--dunkel-erhoeht); --popover:var(--dunkel-karte);
+  --linie:var(--dunkel-linie); --rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
+  --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500); --gewaehlt-text-flaeche:var(--marke-300); --gewaehlt-text-farbe:var(--neutral-950);
+  --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50); --logo-marke:var(--marke-400); --logo-marke-schatten:var(--marke-600);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
+  --schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  --cover-a:var(--neutral-50); --cover-a-t:var(--neutral-950);
+  --cover-b:var(--neutral-400); --cover-b-t:var(--neutral-950);
+  --cover-c:var(--neutral-800); --cover-c-t:var(--neutral-50);
+  --cover-d:var(--dunkel-erhoeht); --cover-d-t:var(--neutral-50);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --dunkel-seite:oklch(0.16 0.028 265); --dunkel-karte:oklch(0.20 0.03 265); --dunkel-erhoeht:oklch(0.245 0.032 265); --dunkel-linie:oklch(0.29 0.03 265);
+  --status-fehler-text:oklch(0.78 0.13 25);   --status-fehler-flaeche:oklch(0.29 0.06 25);
+  --status-erfolg-text:oklch(0.78 0.12 150);  --status-erfolg-flaeche:oklch(0.28 0.05 150);
+  --status-info-text:oklch(0.78 0.11 250);    --status-info-flaeche:oklch(0.29 0.06 250);
+  --status-warnung-text:oklch(0.85 0.13 88);  --status-warnung-flaeche:oklch(0.3 0.06 85);
+  --background:var(--dunkel-seite); --leiste:var(--dunkel-seite); --rahmenflaeche:var(--dunkel-seite);
+  --objekt:var(--dunkel-karte); --erhoeht:var(--dunkel-erhoeht); --tastenflaeche:var(--dunkel-erhoeht); --popover:var(--dunkel-karte);
+  --linie:var(--dunkel-linie); --rahmen:var(--neutral-400);
+  --foreground:var(--neutral-50); --text-sekundaer:var(--neutral-300); --tertiaer:var(--neutral-300); --deaktiviert:var(--neutral-600);
+  --primary:var(--neutral-50); --primary-foreground:var(--neutral-950);
+  --hover:color-mix(in oklab,white 8%,transparent); --pressed:color-mix(in oklab,white 10%,transparent);
+  --ort-aktiv:var(--dunkel-erhoeht); --gewaehlt:var(--marke-500); --zaehler:var(--marke-500); --gewaehlt-text-flaeche:var(--marke-300); --gewaehlt-text-farbe:var(--neutral-950);
+  --fokus:var(--marke-400); --fokus-innen:var(--neutral-950); --link:var(--marke-300); --logo:var(--neutral-50); --logo-marke:var(--marke-400); --logo-marke-schatten:var(--marke-600);
+  --popup-backdrop:color-mix(in oklab,var(--neutral-950) 55%,transparent);
+  --schatten-farbe:oklch(0.1 0.03 270);
+  --schatten-widget:0 1px 2px color-mix(in oklab,black 30%,transparent),0 8px 20px -10px color-mix(in oklab,black 55%,transparent);
+  --schatten-hoch:0 24px 56px -18px color-mix(in oklab,var(--schatten-farbe) 65%,transparent),0 4px 16px -8px color-mix(in oklab,var(--schatten-farbe) 40%,transparent);
+  --cover-a:var(--neutral-50); --cover-a-t:var(--neutral-950);
+  --cover-b:var(--neutral-400); --cover-b-t:var(--neutral-950);
+  --cover-c:var(--neutral-800); --cover-c-t:var(--neutral-50);
+  --cover-d:var(--dunkel-erhoeht); --cover-d-t:var(--neutral-50);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--background);color:var(--foreground);font-family:var(--font-ui);font-size:15px;line-height:22px;letter-spacing:-.0025em;
+  font-feature-settings:"cv01","cv09","ss03","calt","liga";-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--rahmenflaeche)}
+::selection{background:color-mix(in oklab,var(--marke-500) 28%,transparent)}
+button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
+.wrap{max-width:var(--inhalt);margin:0 auto;padding-block:16px 48px}
+
+/* Rollen-Typografie */
+.etikett{font-size:11px;line-height:16px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;color:var(--tertiaer)}
+.titel-seite{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.titel-bereich{font-size:17px;line-height:24px;font-weight:600;letter-spacing:-.016em;margin:0}
+.titel-karte{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;margin:0}
+.meta{font-size:13px;line-height:20px;color:var(--text-sekundaer)}
+.zahl{font-variant-numeric:tabular-nums}
+
+/* Kopf */
+.kopf{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.kopf .merk-taste{margin-left:auto}
+.merk-taste{position:relative;width:44px;height:44px;flex:none}
+.merk-taste.klein{width:40px;height:40px}
+.minikopf .innen-kopf .merk-taste{margin-right:-4px}
+.zaehler-zahl{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);
+  font-size:11px;line-height:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--rahmenflaeche)}
+.zeichen{width:28px;height:28px;color:var(--logo);flex:none}
+.kopf .etikett{margin:0}
+.seitenkopf{display:grid;gap:4px}
+
+/* Sticky Leiste: Rahmenfläche, Linie erst beim Scrollen */
+.leiste{position:relative;z-index:5;background:var(--rahmenflaeche);
+  margin:16px calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
+  display:grid;gap:10px;border-bottom:1px solid transparent;transition:border-color 120ms ease}
+.leiste.schwebend{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 57px);margin:0;z-index:8;
+  padding-left:max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2));
+  border-bottom-color:var(--linie);box-shadow:var(--schatten-hoch);animation:panel-ein 240ms cubic-bezier(.22,1,.36,1) both}
+.leiste.schwebend .filter{margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2)));padding-right:max(16px,env(safe-area-inset-right,0px),calc((100vw - var(--inhalt)) / 2))}
+@keyframes panel-ein{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
+
+/* Mini-Kopf beim Scrollen: Zeichen links, Suche/Filter über runde Icon-Taste rechts */
+.minikopf{position:fixed;left:0;right:0;top:0;z-index:9;background:var(--rahmenflaeche);border-bottom:1px solid var(--linie);
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px),calc((100% - var(--inhalt)) / 2)) 0 max(16px,env(safe-area-inset-left,0px),calc((100% - var(--inhalt)) / 2));
+  transform:translateY(-100%);transition:transform 160ms ease-out;visibility:hidden}
+.minikopf.on{transform:none;visibility:visible}
+.minikopf .innen-kopf{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.minikopf .zeichen{width:24px;height:24px}
+.titel-app{font-size:34px;line-height:40px;letter-spacing:-.025em}
+.minikopf .kopf-titel{display:flex;align-items:center;gap:10px;font-size:17px;line-height:24px;font-weight:500;letter-spacing:-.016em;margin:0 auto 0 8px}
+.minikopf .kopf-titel{white-space:nowrap;min-width:0}.minikopf .kopf-titel::before{flex:none}@media (max-width:359px){.minikopf .kopf-titel{font-size:16px;gap:8px;margin-left:6px}}
+.minikopf .kopf-titel::before{content:"";width:2px;height:20px;border-radius:1px;background:color-mix(in oklab,var(--foreground) 22%,transparent)}
+.icon-taste.frei{position:relative;width:40px;height:40px}
+.icon-taste.frei::after{content:"";position:absolute;inset:-2px}
+.icon-taste.frei svg{transition:transform 160ms ease-out}
+.icon-taste.frei[aria-expanded="true"] svg{transform:rotate(180deg)}
+.icon-taste.frei[aria-expanded="true"]{background-color:var(--ort-aktiv)}
+.mini-filter{width:auto!important;display:inline-flex!important;align-items:center;gap:6px;padding:0 12px 0 16px;font-size:14px;font-weight:500}
+.mini-filter .punkt{top:4px;right:4px}
+@media (max-width:374px){.mini-filter-text{display:none}.mini-filter{width:40px!important;padding:0;justify-content:center}}
+.punkt{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--zaehler);box-shadow:0 0 0 2px var(--objekt)}
+.suche{position:relative}
+.suche svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
+.suche input{width:100%;height:44px;border:1px solid var(--linie);border-radius:var(--radius-aktion);background:var(--objekt);
+  padding:0 44px 0 42px;font-size:16px;outline-offset:2px;transition:border-color 120ms ease}
+.suche input::placeholder{color:var(--tertiaer)}
+.suche input:hover{border-color:var(--rahmen)}
+.suche input::-webkit-search-cancel-button{display:none}
+.leeren{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--tertiaer);display:grid;place-items:center}
+.leeren:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+
+/* Umschalter = Ort-Leiter */
+.umschalter-alt{display:grid;grid-template-columns:repeat(3,1fr);background:var(--leiste);border:1px solid var(--linie);border-radius:var(--radius-aktion);padding:3px;gap:2px}
+.umschalter button{border:0;background:transparent;border-radius:var(--radius-aktion);min-height:38px;font-size:14px;font-weight:500;color:var(--text-sekundaer);
+  display:flex;align-items:center;justify-content:center;gap:6px}
+.umschalter button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.umschalter button[aria-pressed="true"]{background-color:var(--ort-aktiv);color:var(--foreground);font-weight:600}
+.umschalter .zahl{color:var(--tertiaer);font-weight:500}
+.umschalter button[aria-pressed="true"] .zahl{color:var(--text-sekundaer)}
+
+/* Themen-Filter = Toggle: gewählt in Marke */
+.leiste{grid-template-columns:minmax(0,1fr)}
+.filterzeile{display:flex;align-items:center;gap:8px;min-width:0}
+.filter-taste{width:44px!important;height:44px!important;flex:none}
+.filter-taste[data-aktiv]{background-color:var(--ort-aktiv)}
+.filter{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding:4px max(16px,env(safe-area-inset-right,0px)) 4px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10px);mask-image:linear-gradient(90deg,transparent 0,#000 10px);padding-left:10px;margin-left:-10px}
+.filter::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:var(--radius-aktion);border:1px solid var(--linie);
+  background:var(--objekt);color:var(--text-sekundaer);font-size:13px;font-weight:500;white-space:nowrap;position:relative}
+.chip::after{content:"";position:absolute;inset:-4px 0}
+.chip:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.chip[aria-pressed="true"]{background-color:var(--gewaehlt-text-flaeche);border-color:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-weight:600}
+
+/* Widget Typ A: Titel außen, Karte weiß */
+.bereich{margin-top:20px;display:grid;gap:10px}
+.bereich>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px}
+.karte{background:var(--objekt);border:1px solid var(--linie);border-radius:var(--radius-karte);box-shadow:var(--schatten-widget);overflow:hidden}
+.zeile{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;text-align:left;border:0;background:transparent;
+  padding:12px 16px;min-height:88px;position:relative;transition:background-color 120ms ease}
+.zeile+.zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.zeile:active{background-image:linear-gradient(var(--pressed),var(--pressed))}
+.zeile .info{min-width:0;display:grid;gap:2px}
+.zeile .t{font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em}
+.zeile .t,.zeile .info>.meta{overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.zeile .rechts{display:flex;align-items:center;gap:10px}
+.zeile .unten{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:6px}
+.zeile .unten .badge{height:22px;padding:0 8px}
+.chev{width:7px;height:12px;color:var(--tertiaer)}
+
+/* Cover: typografische Tafel, nur Neutral */
+.cover{--c:var(--cover-a);--t:var(--cover-a-t);aspect-ratio:2/3;width:100%;max-width:100%;border-radius:var(--radius-zeile);background:var(--c);color:var(--t);
+  position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--foreground) 8%,transparent);
+  display:flex;flex-direction:column;justify-content:space-between;padding:9% 10% 10%}
+.cover .form{position:absolute;right:-12%;bottom:-8%;width:62%;aspect-ratio:1;background:currentColor;opacity:.14}
+.cover .form.kreis{border-radius:50%}
+.cover .form.halb{border-radius:999px 999px 0 0;aspect-ratio:2/1;width:78%;right:-6%;bottom:0}
+.cover .form.balken{width:20%;aspect-ratio:auto;top:0;bottom:0;right:14%}
+.cover .ct{font-weight:600;line-height:1.06;letter-spacing:-.02em;overflow:hidden;word-break:break-word;hyphens:auto;position:relative}
+.cover .ca{font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;position:relative}
+.zeile .cover .ct{font-size:6.5px}.zeile .cover .ca{font-size:5px}
+.gross .cover{border-radius:var(--radius-block)}
+.gross .cover .ct{font-size:14px}.gross .cover .ca{font-size:9px}
+.cover{container-type:inline-size}
+.emp-marke{position:absolute;top:6%;left:50%;transform:translateX(-50%);z-index:1;display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 8px 0 6px;border-radius:999px;
+  background:var(--gewaehlt-text-flaeche);color:var(--gewaehlt-text-farbe);font-size:11px;line-height:1;font-weight:600;letter-spacing:.01em;white-space:nowrap;box-shadow:0 1px 3px rgb(0 0 0 / .25)}
+.emp-marke svg{width:11px;height:11px;flex:none}
+@container (max-width:60px){.emp-marke{top:3px;height:16px;width:16px;padding:0;justify-content:center;gap:0}.emp-marke svg{width:10px;height:10px}.emp-text{display:none}}
+.cover-bild{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;background:var(--erhoeht)}
+.quellen{margin:0 4px;display:grid;gap:4px;font-size:13px;line-height:20px;color:var(--tertiaer)}
+.quellen p{margin:0}
+.quellen a{color:var(--link);text-underline-offset:2px}
+
+/* Badge: Statuspille mit Punkt */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-aktion);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;
+  border:1px solid color-mix(in oklab,currentColor 30%,transparent)}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.st-erfolg{background:var(--status-erfolg-flaeche);color:var(--status-erfolg-text)}
+.badge.st-info{background:var(--status-info-flaeche);color:var(--status-info-text)}
+.badge.st-warnung{background:var(--status-warnung-flaeche);color:var(--status-warnung-text)}
+.badge.st-fehler{background:var(--status-fehler-flaeche);color:var(--status-fehler-text)}
+
+.leer{padding:40px 24px;text-align:center}
+.leer .titel-karte{margin-bottom:4px}
+.leer-aktionen{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.leer-aktionen:empty{display:none}
+mark{background:var(--marke-200);color:inherit;border-radius:3px;padding:0 1px}
+:root[data-theme="dark"] mark{background:color-mix(in oklab,var(--marke-500) 30%,transparent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) mark{background:color-mix(in oklab,var(--marke-500) 30%,transparent)}}
+.hinweis{margin:16px 4px 0;font-size:13px;line-height:20px;color:var(--tertiaer);text-wrap:balance}
+.vorschau{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:var(--radius-block);
+  background:var(--status-info-flaeche);border:1px solid color-mix(in oklab,var(--status-info-text) 40%,var(--status-info-flaeche));color:var(--foreground);font-size:13px;line-height:20px}
+.vorschau svg{flex:none;width:18px;height:18px;color:var(--status-info-text);margin-top:1px}
+
+/* Sheet von unten, 240 ms */
+.backdrop{position:fixed;inset:0;background:var(--popup-backdrop);z-index:20;opacity:0;transition:opacity 240ms cubic-bezier(.22,1,.36,1)}
+.backdrop.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--background);border-radius:var(--radius-flaeche) var(--radius-flaeche) 0 0;
+  box-shadow:var(--schatten-hoch);max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;overscroll-behavior:contain;
+  transform:translateY(100%);transition:transform 240ms cubic-bezier(.22,1,.36,1);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet.on{transform:none}
+@media (min-width:720px){.sheet{left:50%;width:640px;margin-left:-320px}}
+/* Desktop: breitere Fläche, Bestand zweispaltig, Karussells als Raster, Chips umbrechen */
+@media (min-width:1024px){
+  :root{--inhalt:1040px}
+  .wrap{padding-block:32px 64px}
+  .titel-seite{font-size:32px;line-height:40px}
+  .titel-app{font-size:40px;line-height:48px}
+  .leiste{grid-template-columns:minmax(0,1fr);max-width:none}
+  .filter{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;margin-right:0;padding-right:0}
+  .karussell{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0 4px;scroll-snap-type:none}
+  .karussell li{width:calc((100% - 5 * 12px) / 6)}
+  #liste{display:grid;grid-template-columns:1fr 1fr}
+  #liste .zeile,#liste .zeile+.zeile{box-shadow:inset 0 -1px 0 var(--linie)}
+  #liste .zeile:nth-child(odd){box-shadow:inset -1px -1px 0 var(--linie)}
+  #liste .zeile:nth-child(odd):nth-last-child(-n+2){box-shadow:inset -1px 0 0 var(--linie)}
+  #liste .zeile:nth-child(even):last-child{box-shadow:none}
+  #liste .leer{grid-column:1/-1}
+  .sheet{width:720px;margin-left:-360px}
+}
+/* Kleine Phones */
+@media (max-width:359px){
+  .titel-seite{font-size:24px;line-height:32px}
+  .titel-app{font-size:30px;line-height:36px}
+  .zeile{grid-template-columns:40px minmax(0,1fr) auto;gap:12px;padding:12px}
+  .held{grid-template-columns:84px minmax(0,1fr)}
+  .held h2{font-size:19px;line-height:25px}
+  .k-feld{width:46px;height:52px}
+  .pin-felder .k-feld{width:48px}
+  .stern{width:40px;height:40px}
+  .karussell li{width:132px}
+  .schalter-paar{gap:6px}
+  .admin-oeffnen{grid-template-columns:32px minmax(0,1fr);padding-left:12px}
+}
+.griff{position:sticky;top:0;background:var(--background);padding:8px 0 6px;display:flex;justify-content:center;z-index:2}
+.griff i{width:36px;height:5px;border-radius:3px;background:var(--erhoeht)}
+.icon-taste{width:44px;height:44px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--objekt);color:var(--foreground);display:grid;place-items:center}
+.icon-taste:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.griff .icon-taste{position:absolute;right:0;top:6px;width:36px;height:36px}
+.griff .icon-taste::after{content:"";position:absolute;inset:-4px}
+.detail{display:grid;gap:20px;padding-top:6px}
+.held{display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;align-items:end}
+.held h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.held .meta{margin-top:4px;font-size:15px;line-height:22px}
+.abschnitt{display:grid;gap:10px}
+.abschnitt>.titel-bereich{padding-inline:4px}
+.innen{padding:16px}
+.status-zeile{display:grid;gap:6px}
+.feld{display:grid;gap:6px;margin-top:14px}
+.feld label{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer)}
+.kuerzel{border:0;margin:0;padding:0;display:grid;gap:8px}
+.kuerzel legend{padding:0;margin-bottom:8px;font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer)}
+.kuerzel .meta{margin:0}
+.kuerzel-felder{display:flex;gap:8px}
+.k-feld{width:52px;height:56px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);text-align:center;
+  font-size:22px;line-height:1;font-weight:600;text-transform:uppercase;letter-spacing:0;caret-color:var(--fokus);padding:0}
+.k-feld:hover{border-color:var(--foreground)}
+.k-feld[aria-invalid="true"]{border-color:var(--status-fehler-text)}
+.kuerzel-text{font-weight:600;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.aktionen{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.taste{flex:1 1 150px;min-height:44px;padding:0 20px;border-radius:var(--radius-aktion);border:1px solid transparent;font-size:15px;font-weight:500;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background-color 120ms ease}
+.taste.primaer{background:var(--primary);color:var(--primary-foreground)}
+.taste.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 12%,transparent),color-mix(in oklab,var(--primary-foreground) 12%,transparent))}
+.taste.sekundaer{background:var(--objekt);border-color:var(--linie);color:var(--foreground)}
+.taste.sekundaer:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.taste:disabled{color:var(--deaktiviert);background:var(--tastenflaeche);cursor:default}
+.text{margin:0;font-size:15px;line-height:24px;color:var(--text-sekundaer);max-width:65ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{min-height:32px;padding:0 12px;border-radius:var(--radius-aktion);border:1px solid var(--linie);background:var(--erhoeht);color:var(--text-sekundaer);font-size:13px;font-weight:500;position:relative}
+.tag::after{content:"";position:absolute;inset:-6px 0}
+.tag:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+dl{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0}
+dt,dd{padding:12px 16px;font-size:15px;line-height:22px}
+dt{color:var(--tertiaer);padding-right:8px}
+dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+dt:not(:first-of-type),dt:not(:first-of-type)+dd{box-shadow:inset 0 1px 0 var(--linie)}
+.historie{list-style:none;margin:0;padding:0}
+.historie li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 16px;min-height:52px;font-size:15px}
+.historie li+li{box-shadow:inset 0 1px 0 var(--linie)}
+.historie .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.historie .keine{color:var(--tertiaer)}
+.linkfeld{margin-top:10px;width:100%;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:14px}
+
+.sterne{display:inline-flex;gap:2px;vertical-align:middle;color:var(--foreground)}
+.sterne svg{width:14px;height:14px}
+.sterne .leer-stern{color:var(--erhoeht)}
+.bewertung-kopf{display:flex;align-items:center;gap:12px;padding:16px}
+.bewertung-kopf .schnitt{font-size:28px;line-height:36px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bewertung-kopf .sterne svg{width:16px;height:16px}
+.bewertungen{list-style:none;margin:0;padding:0}
+.bewertungen li{padding:12px 16px;display:grid;gap:4px;box-shadow:inset 0 1px 0 var(--linie)}
+.bewertungen .zeile-kopf{display:flex;align-items:center;gap:10px}
+.bewertungen .d{margin-left:auto;color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums}
+.bewertungen p{margin:0;font-size:15px;line-height:22px;color:var(--text-sekundaer);overflow-wrap:anywhere}
+.stern-wahl{display:flex;gap:4px;margin-top:4px}
+.stern{width:44px;height:44px;border:0;border-radius:var(--radius-aktion);background:transparent;color:var(--deaktiviert);display:grid;place-items:center;padding:0}
+.stern:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.stern svg{width:28px;height:28px}
+.stern.an{color:var(--gewaehlt)}
+.stern-label{margin:0}
+.kommentar{width:100%;min-height:96px;resize:vertical;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:10px 12px;font-size:16px;line-height:22px}
+.kommentar:hover{border-color:var(--foreground)}
+.bewerten-form{display:grid;gap:16px}
+.bewerten-form .gruppe{display:grid;gap:6px}
+.bewerten-form label,.bewerten-form .gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
+.zeile .bewertet{display:inline-flex;align-items:center;gap:4px;color:var(--text-sekundaer);font-size:13px;line-height:20px;font-variant-numeric:tabular-nums}
+.zeile .bewertet svg{width:12px;height:12px;color:var(--foreground)}
+.karussell-bereich{margin-top:24px}
+.karussell{list-style:none;margin:0 calc(-1 * max(16px,env(safe-area-inset-right,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(16px,env(safe-area-inset-left,0px));scrollbar-width:none;overscroll-behavior-x:contain}
+.karussell::-webkit-scrollbar{display:none}
+.karussell li{flex:none;width:148px;scroll-snap-align:start;display:flex}
+.empfehlung{width:100%;height:100%;display:grid;grid-template-rows:auto 1fr;align-content:start;gap:10px;padding:8px 8px 12px;border-radius:var(--radius-karte);border:1px solid var(--linie);background:var(--objekt);box-shadow:var(--schatten-widget);text-align:left}
+.empfehlung:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.empfehlung .cover{border-radius:calc(var(--radius-karte) - 8px)}
+.empfehlung .cover .ct{font-size:13px}.empfehlung .cover .ca{font-size:9px}
+.e-info{display:grid;grid-template-rows:40px 18px auto;gap:4px;min-width:0;justify-items:start;padding-inline:4px}
+.e-titel{height:40px;max-width:100%;font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.012em;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;hyphens:auto}
+.e-info .meta{font-size:13px;line-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.merk-symbol{display:inline-grid;color:var(--foreground)}
+.merk-symbol svg{width:14px;height:14px}
+.merken{margin-top:12px}
+.merken svg{width:16px;height:16px}
+.merken[aria-pressed="true"] svg{color:var(--gewaehlt)}
+.taste.klein{flex:none;min-height:44px;padding:0 16px;font-size:14px}
+.taste.ganz{width:100%;flex:none}
+.taste svg{flex:none}
+.taste>svg:not([width]){width:20px;height:20px}
+.fuss{margin-top:28px;display:flex;justify-content:center;padding-bottom:12px}
+.menue-anker{position:relative}
+.menue{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);min-width:232px;z-index:15;padding:4px;
+  background:var(--popover);border:1px solid color-mix(in oklab,var(--linie) 50%,transparent);border-radius:var(--radius-block);box-shadow:var(--schatten-hoch);
+  animation:ebene-ein 160ms ease-out both;transform-origin:bottom center}
+@keyframes ebene-ein{from{opacity:0;scale:.98}to{opacity:1;scale:1}}
+.menue button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 12px;border:0;border-radius:var(--radius-zeile);background:transparent;font-size:15px;text-align:left}
+.menue button:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.menue button[aria-checked="true"]{font-weight:600}
+.menue-etikett{margin:0;padding:8px 12px 4px}
+.menue-linie{height:1px;background:var(--linie);margin:4px 8px}
+.zurueck{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--text-sekundaer);font-size:15px;font-weight:500;min-height:44px;padding:0 8px 0 0;border-radius:var(--radius-aktion)}
+.zurueck:hover{color:var(--foreground)}
+.eingabe{width:100%;height:44px;border-radius:var(--radius-zeile);border:1px solid var(--rahmen);background:var(--objekt);padding:0 12px;font-size:16px}
+.eingabe:hover{border-color:var(--foreground)}
+.formular{display:grid;gap:14px;min-width:0}
+.formular .gruppe{display:grid;gap:6px;min-width:0}
+.formular label,.formular .gruppe-titel{font-size:13px;line-height:20px;font-weight:500;color:var(--text-sekundaer);margin:0}
+.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.foto-raster{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.foto-kachel{aspect-ratio:3/4;border-radius:var(--radius-block);border:1px dashed var(--rahmen);background:var(--leiste);display:grid;place-items:center;align-content:center;gap:8px;
+  text-align:center;color:var(--text-sekundaer);font-size:13px;font-weight:500;overflow:hidden;cursor:pointer;position:relative;padding:8px}
+.foto-kachel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.foto-kachel:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.foto-kachel svg{width:28px;height:28px}
+.info-zeile{margin:12px 0 0}
+.cover-zeile{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;align-items:start}
+.formular .taste.klein{justify-self:start}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;color:var(--foreground)!important}
+.check input{width:20px;height:20px;accent-color:var(--gewaehlt)}
+.themen-wahl{display:flex;flex-wrap:wrap;gap:6px}
+.schalter{position:relative;width:48px;height:28px;min-width:48px;border-radius:999px;border:0;background:var(--rahmen);padding:0;flex:none}
+.schalter span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--neutral-0);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform 160ms ease}
+.schalter[aria-checked="true"]{background:var(--gewaehlt)}
+.schalter[aria-checked="true"] span{transform:translateX(20px)}
+.schalter::after{content:"";position:absolute;inset:-8px -2px}
+.schalter-zeile{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.schalter-zeile+.schalter-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.schalter-paar{display:flex;gap:10px;flex:none}
+.bereich-kopf{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px}
+.admin-zeile{display:flex;align-items:center;gap:8px;padding-right:12px}
+.admin-zeile+.admin-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.admin-oeffnen{flex:1;min-width:0;display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center;border:0;background:transparent;text-align:left;padding:10px 0 10px 16px;min-height:76px}
+.admin-oeffnen:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.admin-oeffnen .info{display:grid;gap:2px;min-width:0}
+.admin-oeffnen .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-oeffnen .meta{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-oeffnen .cover .ct{font-size:5.5px}.admin-oeffnen .cover .ca{font-size:4px}
+.admin-zeile.inaktiv .cover{filter:grayscale(1)}.admin-zeile.inaktiv .info .t{color:var(--text-sekundaer)}
+.entfernen{border:0;background:transparent;color:var(--status-fehler-text);font-size:13px;font-weight:500;min-height:44px;padding:0 8px;margin-left:-8px;border-radius:var(--radius-aktion)}
+.entfernen:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.medien{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.thumb{width:64px;height:64px;border-radius:var(--radius-zeile);border:1px solid var(--linie);padding:0;overflow:hidden;background:var(--leiste);position:relative;display:block}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.4))}
+button.thumb:hover{box-shadow:0 0 0 2px var(--linie)}
+.medien-wahl{display:flex;gap:12px;flex-wrap:wrap;padding-top:8px}
+.medien-wahl .thumb{width:80px;height:80px}
+.medium-vorschau{position:relative}
+.medium-weg{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--linie);background:var(--objekt);display:grid;place-items:center;color:var(--foreground);padding:0}
+.medium-weg::after{content:"";position:absolute;inset:-9px}
+.medium-hinzu{width:80px;height:80px;border-radius:var(--radius-zeile);border:1px dashed var(--rahmen);display:grid;place-items:center;align-content:center;gap:4px;padding:4px;text-align:center;color:var(--text-sekundaer);font-size:12px;line-height:16px;font-weight:500;cursor:pointer;background:var(--objekt)}
+.medium-hinzu svg{width:20px;height:20px}
+.medium-hinzu:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.lightbox{position:fixed;inset:0;z-index:50;background:color-mix(in oklab,var(--neutral-950) 90%,transparent);display:grid;place-items:center;
+  padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb-inhalt{width:100%;height:100%;display:grid;place-items:center;min-height:0}
+.lb-inhalt img,.lb-inhalt video{max-width:100%;max-height:100%;border-radius:var(--radius-block);object-fit:contain}
+.lb-inhalt iframe{width:min(100%,900px);aspect-ratio:16/9;border:0;border-radius:var(--radius-block);background:#000}
+.lightbox .icon-taste{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px))}
+.filter-gruppe{display:flex;flex-wrap:wrap;gap:6px}
+.filter-gruppe .chip .zahl{margin-left:6px;opacity:.75;font-weight:500}
+.sheet-fuss{position:sticky;bottom:calc(-28px - env(safe-area-inset-bottom,0px));z-index:2;display:flex;gap:8px;
+  margin:4px calc(-1 * max(16px,env(safe-area-inset-right,0px))) calc(-28px - env(safe-area-inset-bottom,0px));
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + 28px + env(safe-area-inset-bottom,0px));
+  background:var(--background);border-top:1px solid var(--linie)}
+.sheet-fuss .taste{flex:1 1 0;padding:0 12px;white-space:nowrap;min-width:0}
+.rating-zeile{width:100%;display:grid;gap:2px;text-align:left;border:0;background:transparent;padding:12px 16px;min-height:64px}
+.rating-zeile+.rating-zeile{box-shadow:inset 0 1px 0 var(--linie)}
+.rating-zeile:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.rating-zeile .rz-kopf{display:flex;align-items:center;gap:8px;min-width:0}
+.rating-zeile .buch{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.rating-zeile .d{color:var(--tertiaer);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rating-zeile .auszug{font-size:13px;line-height:20px;color:var(--text-sekundaer);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rating-zeile .meta{display:flex;align-items:center;gap:8px}
+.sr-only{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+label:has(>.sr-only:focus-visible){outline:2px solid var(--fokus);outline-offset:2px;box-shadow:0 0 0 2px var(--fokus-innen)}
+.intro{margin-top:20px;padding:20px;border-radius:var(--radius-karte);background:var(--objekt);border:1px solid var(--linie);box-shadow:var(--schatten-widget);display:grid;gap:14px}
+.intro h2{margin:0}
+.schritte{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.schritte li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start;font-size:15px;line-height:22px;counter-increment:s}
+.schritte li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--leiste);border:1px solid var(--linie);display:grid;place-items:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.schritte b{font-weight:600}
+.intro .aktionen{margin-top:0}
+.info-link{border:0;background:transparent;color:var(--link);font-size:13px;font-weight:500;text-decoration:underline;text-underline-offset:2px;padding:0;min-height:44px}
+.regeln{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px;line-height:22px;color:var(--text-sekundaer)}
+.feedback-danke{display:grid;gap:4px}
+.pin-pflicht{border-color:color-mix(in oklab,var(--status-warnung-text) 40%,var(--status-warnung-flaeche));background:var(--status-warnung-flaeche)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;z-index:40;
+  background:var(--primary);color:var(--primary-foreground);padding:12px 18px;border-radius:var(--radius-aktion);font-size:14px;font-weight:500;box-shadow:var(--schatten-hoch);
+  transition:opacity 160ms ease-out,transform 160ms ease-out;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.sheet.on~.toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:reduce){*{transition-duration:0ms!important;animation-duration:0ms!important}}
+.untertitel{margin:4px 0 0;font-size:15px;line-height:1.35;color:var(--text-sekundaer)}
+.pruef-marke{display:block;margin-top:2px;font-size:12px;font-weight:500;color:var(--status-warnung-text)}
+/* E-Book: Anfrage, Freigabe, interner Leser */
+.anfrage-aktionen{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.anfrage-aktionen .taste{flex:none}
+.datei-zeile{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.datei-zeile .meta{flex:1;min-width:160px;margin:0}
+.leser{position:fixed;inset:0;z-index:60;background:var(--background);display:grid;grid-template-rows:auto minmax(0,1fr)}
+.leser-kopf{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));
+  background:var(--rahmenflaeche);border-bottom:1px solid var(--linie)}
+.leser-kopf .icon-taste{width:40px;height:40px;flex:none}
+.leser-info{flex:1;min-width:0;display:grid}
+.leser-titel{margin:0;font-size:15px;line-height:20px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leser-seiten{overflow:auto;overscroll-behavior:contain;padding:16px max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));
+  display:grid;justify-items:center;align-content:start;gap:12px;background:var(--leiste)}
+.leser-seite{position:relative;width:100%;max-width:var(--leser-breite,860px);background:#fff;box-shadow:var(--schatten-widget);border-radius:4px;overflow:hidden}
+.leser-seite canvas{display:block;width:100%;height:auto}
+.leser-seite .lade{position:absolute;inset:0;display:grid;place-items:center;color:#667;font-size:13px}
+.leser-status{padding:40px 16px;text-align:center}
+@media (max-width:420px){.leser-kopf .nur-breit{display:none}}
+/* ===== Werkstatt: Ergänzungen zur Bibliotheks-Shell (gleiche Tokens, keine neuen Farben) ===== */
+.leiste{position:sticky;top:env(safe-area-inset-top,0px)}
+.leiste .filter + .filter{margin-top:-2px}
+.dauer-zeile{display:flex;align-items:center;gap:8px;min-width:0}
+.dauer-zeile .etikett{flex:none;padding-left:4px}
+
+/* Situationen als Kacheln */
+.kacheln{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kachel{display:grid;gap:2px;align-content:start;text-align:left;min-height:88px;padding:14px 14px 12px;border-radius:var(--radius-block);
+  border:1px solid var(--linie);background:var(--objekt);box-shadow:var(--schatten-widget);position:relative}
+.kachel:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.kachel b{font-size:15px;line-height:20px;font-weight:600;letter-spacing:-.01em}
+.kachel span{font-size:13px;line-height:18px;color:var(--text-sekundaer)}
+.kachel .zahl-ecke{position:absolute;top:12px;right:12px;font-size:12px;line-height:16px;color:var(--tertiaer);font-variant-numeric:tabular-nums}
+@media (min-width:640px){.kacheln{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Dauer-Block statt Buchcover */
+.dauer{width:48px;height:48px;border-radius:var(--radius-zeile);background:var(--leiste);border:1px solid var(--linie);display:grid;place-items:center;align-content:center;gap:0}
+.dauer b{font-size:17px;line-height:18px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.dauer i{font-style:normal;font-size:10px;line-height:12px;color:var(--tertiaer);text-transform:uppercase;letter-spacing:.04em}
+.dauer.gross{width:64px;height:64px}.dauer.gross b{font-size:22px;line-height:24px}
+.zeile .erfahren{font-size:12px;color:var(--tertiaer);font-variant-numeric:tabular-nums}
+
+/* Methodenfinder */
+.finder{display:grid;gap:12px;padding:16px}
+.finder .text{max-width:none}
+.ki-feld{width:100%;min-height:96px;resize:vertical;border:1px solid var(--rahmen);border-radius:var(--radius-block);background:var(--objekt);
+  padding:12px 14px;font-size:16px;line-height:24px}
+.ki-feld:hover{border-color:var(--foreground)}
+.ki-feld::placeholder{color:var(--tertiaer)}
+.datenschutz{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:20px;color:var(--text-sekundaer);
+  background:var(--status-info-flaeche);border-radius:var(--radius-zeile);padding:10px 12px}
+.datenschutz svg{flex:none;margin-top:2px;color:var(--status-info-text)}
+.finder-ergebnis{display:grid}
+.finder-ergebnis:empty{display:none}
+.finder-ergebnis .zeile{min-height:72px;border-top:1px solid var(--linie);margin-inline:-16px;width:calc(100% + 32px)}
+.grund{font-size:13px;line-height:20px;color:var(--text-sekundaer)}
+
+/* Methode des Monats */
+.monat{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;padding:16px;text-align:left;width:100%;border:0;background:transparent}
+.monat:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+.monat .info{display:grid;gap:4px;min-width:0}
+
+/* Detail */
+.kopf-detail{display:grid;grid-template-columns:64px minmax(0,1fr);gap:16px;align-items:center}
+.kopf-detail h2{font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.kopf-detail .meta{margin-top:2px}
+.fakten{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--linie)}
+.fakten div{background:var(--objekt);padding:12px 16px;display:grid;gap:2px;min-width:0}
+.fakten dt{padding:0;font-size:12px;line-height:16px}
+.fakten dd{padding:0;margin:0;font-size:15px;line-height:22px}
+.fakten .breit{grid-column:1/-1}
+.liste-punkte{margin:0;padding:0 0 0 20px;display:grid;gap:6px;font-size:15px;line-height:22px;color:var(--text-sekundaer)}
+.innen .schritte{gap:12px}
+.kurz5{display:flex;gap:12px;align-items:flex-start}
+.kurz5 svg{flex:none;color:var(--tertiaer);margin-top:3px}
+
+/* KI-Ausgabe */
+.ki-ausgabe{display:grid;gap:8px;font-size:15px;line-height:23px;border-top:1px solid var(--linie);padding-top:14px;margin-top:2px;overflow-wrap:anywhere}
+.ki-ausgabe:empty{display:none}
+.ki-ausgabe h3{font-size:15px;line-height:22px;font-weight:600;margin:6px 0 0}
+.ki-ausgabe p{margin:0}
+.ki-ausgabe ul,.ki-ausgabe ol{margin:0;padding-left:20px;display:grid;gap:4px}
+.ki-ausgabe .warte{color:var(--tertiaer)}
+.ki-kopf{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* Quellen = Bücher */
+a.zeile{color:inherit;text-decoration:none}
+.buch{width:40px;height:52px;border-radius:3px 6px 6px 3px;background:var(--cover-a);color:var(--cover-a-t);display:grid;place-items:end start;padding:5px;box-shadow:inset 3px 0 0 color-mix(in oklab,var(--cover-a-t) 18%,transparent)}
+.buch.vertiefung{background:var(--cover-c);color:var(--cover-c-t)}
+.buch i{width:12px;height:12px;border-radius:50%;background:currentColor;opacity:.85}
+.buch.vertiefung i{border-radius:0;height:6px;width:16px}
+.quellen-karte .zeile{grid-template-columns:40px minmax(0,1fr) auto;min-height:76px}
+.empfehlung-text{padding:16px;display:grid;gap:4px}
+
+/* Erfahrungen */
+.erfahrungen{list-style:none;margin:0;padding:0}
+.erfahrungen li{padding:12px 16px;display:grid;gap:2px}
+.erfahrungen li+li{box-shadow:inset 0 1px 0 var(--linie)}
+.erfahrungen .k{font-weight:600;letter-spacing:.04em}
+.erfahren-form{display:grid;gap:10px;padding:16px;border-top:1px solid var(--linie)}
+.erfahren-form .zwei-felder{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px}
+.erfahren-form .eingabe{text-transform:none}
+#e-kuerzel{text-transform:uppercase;letter-spacing:.06em;font-weight:600;text-align:center}
+.zaehler-gross{font-size:28px;line-height:32px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+.merken[aria-pressed="true"] svg path{fill:currentColor}
+.sheet-aktionen{display:flex;flex-wrap:wrap;gap:8px}
+.sheet-aktionen .taste{flex:1 1 140px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.sheet-aktionen .merken{margin-top:0}
+.fakten dd{text-align:left}
+.kachel b{padding-right:24px}
+</style>
+<main class="wrap">
+  <div class="kopf">
+    <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
+      <polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/>
+      <defs>
+        <linearGradient id="lm-oben" gradientUnits="userSpaceOnUse" x1="32.56" y1="0" x2="156.31" y2="0"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".32" style="stop-color:var(--logo-marke)"/></linearGradient>
+        <linearGradient id="lm-rechts" gradientUnits="userSpaceOnUse" x1="0" y1="123.74" x2="0" y2="58.61"><stop offset="0" style="stop-color:var(--logo-marke-schatten)"/><stop offset=".45" style="stop-color:var(--logo-marke)"/></linearGradient>
+      </defs>
+      <path fill="url(#lm-oben)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/>
+      <path fill="url(#lm-rechts)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/>
+      <polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/>
+    </svg>
+    <button class="icon-taste frei merk-taste" id="merk-oben" aria-label="Merkliste anzeigen">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>
+      <span class="zaehler-zahl" id="merk-zahl" hidden></span>
+    </button>
+  </div>
+  <header class="seitenkopf">
+    <h1 class="titel-seite titel-app">Werkstatt</h1>
+    <p class="meta zahl" id="summary" style="margin:0"></p>
+  </header>
+
+  <div class="leiste" id="leiste">
+    <div class="suche">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="6"/><path d="m13 13 4.5 4.5"/></svg>
+      <input id="q" type="search" placeholder="Methode, Situation, Stichwort …" autocomplete="off" enterkeyhint="search" aria-label="Methoden durchsuchen">
+      <button class="leeren" id="leeren" aria-label="Suche leeren" hidden>
+        <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l10 10M12 2 2 12"/></svg>
+      </button>
+    </div>
+    <div class="filter" id="filter-sit" role="group" aria-label="Nach Situation filtern"></div>
+    <div class="dauer-zeile"><span class="etikett">Zeit</span><div class="filter" id="filter-dauer" role="group" aria-label="Nach Dauer filtern"></div></div>
+  </div>
+
+  <section class="bereich" id="b-situationen" aria-labelledby="sit-titel">
+    <header><h2 class="titel-bereich" id="sit-titel">Was steht an?</h2></header>
+    <div class="kacheln" id="kacheln"></div>
+  </section>
+
+  <section class="bereich" id="b-finder" aria-labelledby="finder-titel" hidden>
+    <header><h2 class="titel-bereich" id="finder-titel">Methode finden lassen</h2><span class="meta">mit KI</span></header>
+    <div class="karte finder">
+      <p class="text">Beschreib in ein, zwei Sätzen, was gerade ansteht. Du bekommst drei passende Methoden mit Begründung.</p>
+      <label class="sr-only" for="finder-eingabe">Was steht an?</label>
+      <textarea class="ki-feld" id="finder-eingabe" placeholder="Zum Beispiel: Wir müssen bis Freitag entscheiden, welche von vier Funktionen in die erste Version kommt, und das Team ist uneinig."></textarea>
+      <div class="datenschutz" id="finder-hinweis"></div>
+      <div class="aktionen" style="margin-top:0"><button class="taste primaer" id="finder-los">Passende Methoden finden</button></div>
+      <div class="finder-ergebnis" id="finder-ergebnis" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="bereich" id="b-monat" aria-labelledby="monat-titel">
+    <header><h2 class="titel-bereich" id="monat-titel">Methode des Monats</h2><span class="meta" id="monat-name"></span></header>
+    <div class="karte" id="monat"></div>
+  </section>
+
+  <section class="bereich" id="b-merk" aria-labelledby="merk-titel" hidden>
+    <header><h2 class="titel-bereich" id="merk-titel">Deine Merkliste</h2><span class="meta zahl" id="merk-anzahl"></span></header>
+    <div class="karte" id="merkliste"></div>
+  </section>
+
+  <section class="bereich" aria-labelledby="liste-titel">
+    <header><h2 class="titel-bereich" id="liste-titel">Alle Methoden</h2><span class="meta zahl" id="treffer" aria-live="polite"></span></header>
+    <div class="karte" id="liste"></div>
+  </section>
+
+  <p class="hinweis">Jede Methode gibt es auch als Fünf-Minuten-Version für allein. Wer mehr wissen will, findet das passende Buch in der <a href="" id="bib-link" target="_blank" rel="noopener" style="color:var(--link)">Design Bibliothek</a>.</p>
+</main>
+
+<div class="backdrop" id="backdrop" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="d-titel" hidden>
+  <div class="griff"><i></i><button class="icon-taste" id="schliessen" aria-label="Schließen">
+    <svg width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div>
+  <div class="detail" id="detail"></div>
+</section>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/* ===== Inhalte (Stand 28.10.2026). Texte in eigenen Worten, keine Auszüge aus den Büchern.
+   quellen.b = Buch-ID aus der Design Bibliothek (gemeinsamer Schlüssel). ===== */
+/* CONFIG.API_URL: Web-App-URL des Google Apps Script (apps-script/Code.gs). Leer = Vorschau: Erfahrungen nur auf diesem Gerät, KI-Funktionen aus. */
+const CONFIG = { API_URL: "" };
+const BIB_URL = "../bibliothek/";
+const METHODE_DES_MONATS = { id: "pre-mortem", monat: "November 2026" };
+
+const BUECHER = {
+  "liker-the-toyota-way": ["The Toyota Way", "Jeffrey K. Liker"],
+  "knapp-sprint": ["Sprint", "Jake Knapp, John Zeratsky, Braden Kowitz"],
+  "brown-change-by-design": ["Change by Design", "Tim Brown"],
+  "greenberg-sketching-user-experiences": ["Sketching User Experiences", "Saul Greenberg u. a."],
+  "rustler-denkwerkzeuge-der-kreativitaet-u": ["Denkwerkzeuge der Kreativität und Innovation", "Florian Rustler"],
+  "kahneman-thinking-fast-and-slow": ["Thinking, Fast and Slow", "Daniel Kahneman"],
+  "gothelf-lean-ux": ["Lean UX", "Jeff Gothelf, Josh Seiden"],
+  "sharon-validating-product-ideas": ["Validating Product Ideas", "Tomer Sharon"],
+  "klement-when-coffee-and-kale-compete": ["When Coffee & Kale Compete", "Alan Klement"],
+  "osterwalder-value-proposition-design": ["Value Proposition Design", "Alexander Osterwalder u. a."],
+  "dark-horse-digital-innovation-playbook": ["Digital Innovation Playbook", "Dark Horse Innovation"],
+  "stickdorn-this-is-service-design-doing": ["This Is Service Design Doing", "Marc Stickdorn u. a."],
+  "kalbach-mapping-experiences": ["Mapping Experiences", "James Kalbach"],
+  "patton-user-story-mapping": ["User Story Mapping", "Jeff Patton, Peter Economy"],
+  "sinek-frag-immer-erst": ["Frag immer erst", "Simon Sinek"],
+  "duarte-slideology": ["slide:ology", "Nancy Duarte"],
+  "brand-visual-thinking": ["Visual Thinking", "Willemien Brand"],
+  "rogelberg-surprising-science-of-meetings": ["The Surprising Science of Meetings", "Steven G. Rogelberg"],
+  "sibbet-visuelle-meetings": ["Visuelle Meetings", "David Sibbet"],
+  "pichler-scrum": ["Scrum", "Roman Pichler"],
+  "squirrel-agile-conversations": ["Agile Conversations", "Douglas Squirrel, Jeffrey Fredrick"],
+  "buie-usability-in-government-systems": ["Usability in Government Systems", "Elizabeth Buie, Dianne Murray"],
+  "thaler-nudge": ["Nudge", "Richard H. Thaler, Cass R. Sunstein"],
+  "pereira-digital-nudge": ["Digital Nudge", "Fabio Pereira"],
+  "keeley-ten-types-of-innovation": ["Ten Types of Innovation", "Larry Keeley u. a."],
+  "kleon-steal-like-an-artist": ["Steal Like an Artist", "Austin Kleon"],
+  "lidwell-universal-principles-of-design": ["Universal Principles of Design", "William Lidwell u. a."],
+  "metts-writing-is-designing": ["Writing Is Designing", "Michael J. Metts, Andy Welfle"],
+  "ramanujam-monetizing-innovation": ["Monetizing Innovation", "Madhavan Ramanujam, Georg Tacke"],
+  "sull-simple-rules": ["Simple Rules", "Donald Sull, Kathleen M. Eisenhardt"]
+};
+
+const SITUATIONEN = [
+  { id: "verstehen", t: "Problem verstehen", s: "Ursache statt Symptom" },
+  { id: "ideen", t: "Ideen finden", s: "Mehr als die erste Idee" },
+  { id: "entscheiden", t: "Entscheiden", s: "Zwischen Optionen wählen" },
+  { id: "nutzer", t: "Nutzer:innen verstehen", s: "Die Sicht der Anwender:innen" },
+  { id: "absichern", t: "Vorhaben absichern", s: "Risiken früh sehen" },
+  { id: "botschaft", t: "Botschaft schärfen", s: "Klar sagen, worum es geht" },
+  { id: "meeting", t: "Meeting strukturieren", s: "Kürzer und mit Ergebnis" },
+  { id: "feedback", t: "Feedback einholen", s: "Lernen statt rechtfertigen" }
+];
+const FELDER = ["Design", "Innovation", "Produkt", "Marketing", "Business", "Kreativität"];
+
+const METHODEN = [
+{ id: "fuenf-warum", name: "Fünfmal Warum", orig: "5 Whys", sit: ["verstehen"], feld: ["Business", "Produkt"], dauer: 15, personen: "Allein oder im Team", material: "Zettel und Stift",
+  kurz: "Fragt so lange nach dem Warum, bis die eigentliche Ursache auf dem Tisch liegt.",
+  schritte: ["Schreibt das Problem als einen Satz auf, so konkret wie möglich.", "Fragt: Warum passiert das? Schreibt die Antwort darunter.", "Fragt zu dieser Antwort wieder: Warum? Wiederholt das etwa fünfmal.", "Hört auf, wenn ihr bei einer Ursache landet, an der ihr etwas ändern könnt.", "Formuliert eine Maßnahme für genau diese Ursache."],
+  kurz5: "Allein: ein Problem, drei Warum-Fragen, eine Maßnahme.",
+  ergebnis: "Eine Ursachenkette und eine Maßnahme, die an der Wurzel ansetzt.",
+  beispiel: "Kund:innen melden, dass Angaben im Jugendamt doppelt erfasst werden. Warum? Das Feld kommt in zwei Masken vor. Warum? Die zweite Maske wurde für einen Sonderfall gebaut. Warum? Es gibt keine gemeinsame Feldliste. Maßnahme: Feldinventar anlegen.",
+  fallen: ["Bei Personen landen statt bei Abläufen („weil Herr X …“).", "Zu früh aufhören, weil die erste Antwort plausibel klingt.", "Nur eine Kette verfolgen, obwohl es mehrere Ursachen gibt."],
+  quellen: [{ b: "liker-the-toyota-way", bezug: "Ursprung", h: "Problemlösung im Toyota-Produktionssystem" }],
+  ki: "Wende die Methode „Fünfmal Warum“ auf das folgende Problem an. Bilde eine Kette aus fünf Warum-Fragen mit plausiblen Antworten und kennzeichne Annahmen als Annahmen. Nenne am Ende die vermutete Grundursache und eine konkrete Maßnahme. Schlage zusätzlich eine zweite mögliche Ursachenkette vor." },
+
+{ id: "wie-koennten-wir", name: "„Wie könnten wir …?“-Fragen", orig: "How Might We", sit: ["verstehen", "ideen"], feld: ["Design", "Innovation"], dauer: 15, personen: "Allein oder im Team", material: "Haftnotizen",
+  kurz: "Verwandelt ein Problem in Fragen, die zum Lösen einladen.",
+  schritte: ["Schreibt das Problem oder eine Beobachtung auf.", "Formuliert daraus Fragen, die mit „Wie könnten wir …“ beginnen.", "Variiert den Blick: kleiner, größer, aus Sicht anderer Beteiligter, umgedreht.", "Wählt die zwei Fragen aus, die am meisten Energie auslösen.", "Nehmt sie als Startpunkt für die Ideensuche."],
+  kurz5: "Drei „Wie könnten wir …?“-Fragen zu einem Ärgernis aus deiner Woche.",
+  ergebnis: "Eine Handvoll gut formulierter Fragen als Ausgangspunkt für Ideen.",
+  beispiel: "Beobachtung: Fachkräfte tragen Notizen erst abends ins System ein. Fragen: Wie könnten wir das Erfassen unterwegs erleichtern? Wie könnten wir Notizen ohne Abtippen übernehmen? Wie könnten wir die Abendarbeit überflüssig machen?",
+  fallen: ["Die Lösung schon in die Frage packen („Wie könnten wir eine App bauen …“).", "Zu breit („… die Verwaltung verbessern“) oder zu eng formulieren."],
+  quellen: [{ b: "knapp-sprint", bezug: "Vertiefung", h: "Fragen sammeln am ersten Sprint-Tag" }, { b: "brown-change-by-design", bezug: "Vertiefung", h: "Design Thinking aus der Praxis" }],
+  ki: "Formuliere zum folgenden Problem zehn „Wie könnten wir …?“-Fragen. Variiere bewusst: enger, breiter, aus Sicht verschiedener Beteiligter, positiv umgedeutet, umgekehrt. Packe keine Lösungen in die Fragen. Markiere die drei ergiebigsten Fragen und begründe kurz." },
+
+{ id: "acht-skizzen", name: "Acht Skizzen in acht Minuten", orig: "Crazy 8s", sit: ["ideen"], feld: ["Design", "Kreativität"], dauer: 15, personen: "Allein oder im Team", material: "Ein A4-Blatt, dreimal gefaltet, dicker Stift",
+  kurz: "Erzwingt Varianten: acht schnelle Skizzen, bevor sich die erste Idee festsetzt.",
+  schritte: ["Faltet ein A4-Blatt so, dass acht Felder entstehen.", "Stellt einen Timer auf acht Minuten.", "Skizziert pro Minute eine Variante, ohne zu radieren.", "Wählt danach die stärkste Skizze und schreibt einen Satz dazu.", "Zeigt eure Favoriten einander, ohne sie zu verteidigen."],
+  kurz5: "Vier Felder, vier Minuten, eine Frage.",
+  ergebnis: "Acht Varianten statt einer, davon eine Favoritin.",
+  beispiel: "Frage: Wie zeigt SoPart, dass ein Vorgang gespeichert ist? Acht Skizzen von Häkchen über Zeitstempel bis zur Statuszeile. Am Ende gewinnt eine Kombination aus zwei Skizzen.",
+  fallen: ["Schön zeichnen wollen. Strichmännchen reichen.", "Die Zeit verlängern. Der Druck gehört zur Methode."],
+  quellen: [{ b: "knapp-sprint", bezug: "Ursprung", h: "Skizzentag im Design Sprint" }, { b: "greenberg-sketching-user-experiences", bezug: "Vertiefung", h: "Skizzieren als Denkwerkzeug" }],
+  ki: "Ich mache die Methode „Acht Skizzen in acht Minuten“. Schlage zur folgenden Frage acht deutlich unterschiedliche Lösungsideen vor, jede in einem Satz plus einer Zeile, wie man sie grob skizzieren würde. Reiche von naheliegend bis ungewöhnlich." },
+
+{ id: "scamper", name: "SCAMPER-Fragen", orig: "SCAMPER", sit: ["ideen"], feld: ["Kreativität", "Produkt"], dauer: 15, personen: "Allein oder im Team", material: "Liste der sieben Fragen",
+  kurz: "Sieben Prüffragen, mit denen sich Bestehendes systematisch weiterdenken lässt.",
+  schritte: ["Nehmt ein bestehendes Produkt, einen Ablauf oder eine Vorlage.", "Geht die sieben Fragen durch: Ersetzen, Kombinieren, Anpassen, Verändern, Anders nutzen, Weglassen, Umdrehen.", "Notiert zu jeder Frage mindestens eine Idee, auch unfertige.", "Markiert die zwei Ideen, die mit wenig Aufwand viel ändern."],
+  kurz5: "Nur zwei Fragen: Was lassen wir weg? Was drehen wir um?",
+  ergebnis: "Eine Ideenliste entlang von sieben Blickwinkeln.",
+  beispiel: "Gegenstand: Messeflyer. Weglassen: den Fließtext. Kombinieren: Flyer und Terminbuchung per QR-Code. Anders nutzen: als Gesprächsleitfaden am Stand.",
+  fallen: ["Bei jeder Frage zu lange hängen bleiben.", "Nur Verbesserungen im Detail suchen."],
+  quellen: [{ b: "rustler-denkwerkzeuge-der-kreativitaet-u", bezug: "Vertiefung", h: "Werkzeuge der Ideenfindung" }],
+  ki: "Wende SCAMPER auf den folgenden Gegenstand an. Gib pro Buchstabe (Ersetzen, Kombinieren, Anpassen, Verändern, Anders nutzen, Weglassen, Umkehren) zwei konkrete Ideen. Markiere am Ende die zwei Ideen mit dem besten Verhältnis von Aufwand zu Wirkung." },
+
+{ id: "kopfstand", name: "Kopfstand-Methode", orig: "Reverse Brainstorming", sit: ["ideen", "absichern"], feld: ["Kreativität", "Business"], dauer: 15, personen: "Im Team", material: "Haftnotizen",
+  kurz: "Fragt, wie man das Problem verschlimmern würde, und dreht die Antworten danach um.",
+  schritte: ["Dreht die Frage um: Wie sorgen wir dafür, dass es garantiert schiefgeht?", "Sammelt zügig möglichst viele, gern übertriebene Antworten.", "Dreht jede Antwort ins Gegenteil.", "Prüft, welche Gegenteile neue Maßnahmen sind."],
+  kurz5: "Fünf Wege, das Problem zu verschlimmern, dann umdrehen.",
+  ergebnis: "Ideen und Stolperstellen, die mit der normalen Frage nicht aufgetaucht wären.",
+  beispiel: "Wie vergraulen wir neue Kolleg:innen in der ersten Woche? Kein Rechner am ersten Tag, niemand stellt sie vor. Umgedreht: Arbeitsplatz vorbereitet, Pat:in benannt, Vorstellung im Insights.",
+  fallen: ["Beim Lachen stehen bleiben und nicht umdrehen."],
+  quellen: [{ b: "rustler-denkwerkzeuge-der-kreativitaet-u", bezug: "Vertiefung", h: "Umkehrtechniken" }],
+  ki: "Wende die Kopfstand-Methode an. Formuliere die umgekehrte Frage („Wie erreichen wir garantiert das Gegenteil?“), sammle zehn zugespitzte Antworten und drehe jede in eine konstruktive Maßnahme um. Gib das Ergebnis als Liste im Format „Verschlimmerung → Maßnahme“ aus." },
+
+{ id: "pre-mortem", name: "Pre-Mortem", orig: "Pre-Mortem", sit: ["absichern", "entscheiden"], feld: ["Business", "Produkt"], dauer: 30, personen: "Im Team", material: "Zettel und Stift",
+  kurz: "Stellt euch vor, das Vorhaben ist gescheitert, und sucht die Gründe, bevor es losgeht.",
+  schritte: ["Beschreibt kurz das Vorhaben und das Ziel.", "Sagt: Es ist ein Jahr später. Das Vorhaben ist klar gescheitert.", "Jede Person schreibt still auf, warum es gescheitert ist.", "Sammelt reihum, ohne zu diskutieren.", "Wählt die drei wahrscheinlichsten Gründe und legt je eine Gegenmaßnahme fest."],
+  kurz5: "Allein: drei Gründe, warum dein Vorhaben in sechs Monaten gescheitert ist.",
+  ergebnis: "Eine Risikoliste mit Gegenmaßnahmen, ohne dass jemand als Bremser:in dasteht.",
+  beispiel: "Vorhaben: SoPart 6.0 beim ersten Pilotkunden einführen. Gründe für das Scheitern: Fachadmins nicht geschult, Datenübernahme unklar, Gewohnheiten aus 5.1 nicht bedacht. Maßnahmen: Schulung vor dem Start, Probemigration, Umsteigehilfe.",
+  fallen: ["Gründe sofort entkräften, statt sie zu sammeln.", "Nur technische Risiken nennen."],
+  quellen: [{ b: "kahneman-thinking-fast-and-slow", bezug: "Vertiefung", h: "Teil über Planung und Selbstüberschätzung" }],
+  ki: "Führe ein Pre-Mortem für das folgende Vorhaben durch. Nimm an, es ist ein Jahr später und das Vorhaben ist gescheitert. Nenne acht plausible Gründe aus verschiedenen Bereichen (Menschen, Ablauf, Technik, Kommunikation, Markt). Bewerte jeden mit einer Wahrscheinlichkeit (hoch, mittel, niedrig) und schlage je eine Gegenmaßnahme vor. Sortiere nach Wahrscheinlichkeit." },
+
+{ id: "annahmen", name: "Annahmen-Landkarte", orig: "Assumption Mapping", sit: ["absichern"], feld: ["Produkt", "Innovation"], dauer: 30, personen: "Im Team", material: "Wand, Haftnotizen",
+  kurz: "Macht sichtbar, worauf ein Vorhaben stillschweigend baut und was zuerst geprüft werden muss.",
+  schritte: ["Schreibt alle Annahmen auf: über Nutzer:innen, Nutzen, Technik, Geld.", "Formuliert jede als Satz: Wir glauben, dass …", "Ordnet sie auf zwei Achsen: wie wichtig, wie gut belegt.", "Was wichtig und schlecht belegt ist, prüft ihr zuerst.", "Legt für die oberste Annahme einen kleinen Test fest."],
+  kurz5: "Drei Annahmen aufschreiben und die riskanteste markieren.",
+  ergebnis: "Eine priorisierte Liste von Annahmen und ein erster Test.",
+  beispiel: "Funktion: Diktat für Fachkräfte. Riskante Annahme: Fachkräfte dürfen und wollen im Büro diktieren. Test: fünf Gespräche mit Teamleitungen in zwei Jugendämtern.",
+  fallen: ["Annahmen als Fakten formulieren.", "Zu große Tests planen statt eines kleinen."],
+  quellen: [{ b: "gothelf-lean-ux", bezug: "Ursprung", h: "Annahmen und Hypothesen" }, { b: "sharon-validating-product-ideas", bezug: "Vertiefung", h: "Ideen mit Forschung prüfen" }],
+  ki: "Erstelle eine Annahmen-Landkarte für das folgende Vorhaben. Liste zehn Annahmen im Format „Wir glauben, dass …“, gruppiert nach Nutzer:innen, Nutzen, Machbarkeit und Wirtschaftlichkeit. Bewerte je Wichtigkeit und Belegstand (hoch oder niedrig). Nenne die drei riskantesten und schlage für jede einen Test vor, der in einer Woche machbar ist." },
+
+{ id: "job-story", name: "Job-Story", orig: "Jobs to be Done", sit: ["nutzer", "verstehen"], feld: ["Produkt", "Innovation"], dauer: 15, personen: "Allein", material: "Nichts",
+  kurz: "Beschreibt, welchen Fortschritt jemand in einer Situation erreichen will, statt Merkmale aufzuzählen.",
+  schritte: ["Wählt eine konkrete Situation, in der jemand das Produkt nutzt.", "Schreibt: Wenn ich …, möchte ich …, damit ich …", "Prüft: Steckt darin eine Lösung? Dann streicht sie.", "Sammelt, womit die Person das heute erledigt, auch Umwege wie Excel oder Papier.", "Leitet ab, woran ihr Erfolg messen würdet."],
+  kurz5: "Eine Job-Story zu einer Funktion schreiben, an der du gerade arbeitest.",
+  ergebnis: "Eine lösungsfreie Beschreibung des eigentlichen Bedarfs.",
+  beispiel: "Wenn ich nach einem Hausbesuch zurück im Büro bin, möchte ich meine Eindrücke festhalten, solange sie frisch sind, damit der Bericht stimmt und ich abends nicht nacharbeite.",
+  fallen: ["Eine Rolle statt einer Situation beschreiben („Als Sachbearbeiterin …“).", "Den Wunsch nach einer Funktion als Job ausgeben."],
+  quellen: [{ b: "klement-when-coffee-and-kale-compete", bezug: "Ursprung", h: "Jobs to be Done und Job-Storys" }],
+  ki: "Formuliere zur folgenden Situation drei Job-Storys im Format „Wenn …, möchte ich …, damit ich …“, ohne Lösungen zu nennen. Liste danach auf, womit Menschen diesen Job heute vermutlich erledigen (auch Umwege), und wie man Erfolg messen könnte." },
+
+{ id: "nutzenversprechen", name: "Nutzenversprechen-Karte", orig: "Value Proposition Canvas", sit: ["nutzer", "botschaft"], feld: ["Marketing", "Produkt", "Innovation"], dauer: 60, personen: "Im Team", material: "Plakat A1, Haftnotizen",
+  kurz: "Gleicht ab, was Kund:innen wirklich brauchen, mit dem, was euer Angebot leistet.",
+  schritte: ["Wählt eine Zielgruppe, nicht alle Kund:innen auf einmal.", "Rechte Seite: Aufgaben, Ärgernisse und Gewinne der Zielgruppe.", "Linke Seite: Leistungen, Ärgernis-Löser und Gewinn-Erzeuger eures Angebots.", "Verbindet, was zusammenpasst. Streicht, was keinem Bedarf dient.", "Formuliert daraus einen Satz als Nutzenversprechen."],
+  kurz5: "Drei Ärgernisse der Zielgruppe notieren und markieren, welches ihr löst.",
+  ergebnis: "Ein belegbares Nutzenversprechen und eine Liste von Lücken.",
+  beispiel: "Zielgruppe: Leitungen kleiner Jugendämter. Ärgernis: Berichte für den Ausschuss kosten Tage. Ärgernis-Löser: Auswertungen auf Knopfdruck. Satz: Zahlen für den Ausschuss in Minuten statt in Tagen.",
+  fallen: ["Mit dem Produkt anfangen statt mit der Zielgruppe.", "Alle Zielgruppen in eine Karte packen."],
+  quellen: [{ b: "osterwalder-value-proposition-design", bezug: "Ursprung", h: "Value Proposition Canvas" }],
+  ki: "Erstelle eine Nutzenversprechen-Karte für das folgende Angebot und die genannte Zielgruppe. Kundenseite: je vier Aufgaben, Ärgernisse und Gewinne. Angebotsseite: Leistungen, Ärgernis-Löser, Gewinn-Erzeuger. Zeige, was zusammenpasst und wo Lücken sind. Formuliere am Ende zwei Varianten eines Nutzenversprechens in je einem Satz." },
+
+{ id: "empathiekarte", name: "Empathiekarte", orig: "Empathy Map", sit: ["nutzer"], feld: ["Design", "Marketing"], dauer: 30, personen: "Im Team", material: "Plakat, Haftnotizen",
+  kurz: "Sammelt auf einer Seite, was eine Person sagt, tut, denkt und fühlt.",
+  schritte: ["Wählt eine reale Person oder Rolle, die ihr gut kennt.", "Füllt vier Felder: Sagt, Tut, Denkt, Fühlt.", "Ergänzt darunter, was sie belastet und was sie gewinnen will.", "Markiert Widersprüche zwischen Sagen und Tun. Dort liegen die Erkenntnisse."],
+  kurz5: "Zu einer Person aus dem letzten Kundentermin je einen Satz pro Feld.",
+  ergebnis: "Ein gemeinsames Bild der Person und erste Fragen für Gespräche.",
+  beispiel: "Fachadmin in einer Kreisverwaltung: sagt „Das System ist zu komplex“, pflegt eigene Excel-Listen, denkt „Nur ich kann das“, fühlt Verantwortung und Überlastung.",
+  fallen: ["Vermutungen als Wissen behandeln.", "Eine Durchschnittsperson erfinden."],
+  quellen: [{ b: "dark-horse-digital-innovation-playbook", bezug: "Vertiefung", h: "Werkzeuge zum Verstehen von Nutzer:innen" }, { b: "stickdorn-this-is-service-design-doing", bezug: "Vertiefung", h: "Forschungsmethoden im Service Design" }],
+  ki: "Erstelle eine Empathiekarte für die folgende Person oder Rolle mit den Feldern Sagt, Tut, Denkt, Fühlt, Belastungen und Gewinne (je drei bis vier Punkte). Kennzeichne alles als Hypothese. Nenne danach fünf offene Fragen für ein Gespräch mit der Person." },
+
+{ id: "journey", name: "Ablauf aus Kundensicht", orig: "Customer Journey Map", sit: ["nutzer", "verstehen"], feld: ["Design", "Marketing", "Produkt"], dauer: 60, personen: "Im Team", material: "Wand, Haftnotizen",
+  kurz: "Zeichnet Schritt für Schritt, was eine Person erlebt und wo es hakt.",
+  schritte: ["Legt Anfang und Ende des Ablaufs fest.", "Schreibt die Schritte der Person in eine Zeile.", "Ergänzt je Schritt: Was tut sie, womit, wie geht es ihr?", "Markiert die schlechtesten Momente.", "Wählt einen Moment, den ihr als Erstes verbessert."],
+  kurz5: "Fünf Schritte eines Ablaufs aufschreiben und den schlechtesten markieren.",
+  ergebnis: "Eine Karte des Ablaufs mit priorisierten Problemstellen.",
+  beispiel: "Ablauf: Eine Kommune fragt eine Demo an. Schritte: Website, Formular, Rückruf, Termin, Demo, Angebot. Tiefpunkt: drei Wochen ohne Rückmeldung nach dem Formular.",
+  fallen: ["Den internen Prozess statt des Erlebens zeichnen.", "Zu viele Details auf einmal."],
+  quellen: [{ b: "kalbach-mapping-experiences", bezug: "Vertiefung", h: "Erfahrungskarten anlegen" }, { b: "stickdorn-this-is-service-design-doing", bezug: "Vertiefung", h: "Journey Maps" }],
+  ki: "Erstelle eine Customer Journey Map für den folgenden Ablauf mit sechs bis acht Schritten. Nenne je Schritt: was die Person tut, Berührungspunkt, Gefühl (gut, neutral, schlecht) und Problem. Markiere die zwei kritischsten Momente und schlage je eine Verbesserung vor." },
+
+{ id: "story-landkarte", name: "Story-Landkarte", orig: "User Story Mapping", sit: ["entscheiden", "nutzer"], feld: ["Produkt"], dauer: 60, personen: "Im Team", material: "Wand, Haftnotizen in zwei Farben",
+  kurz: "Ordnet Anforderungen entlang des Arbeitsablaufs und schneidet daraus sinnvolle Ausbaustufen.",
+  schritte: ["Schreibt die großen Schritte des Ablaufs von links nach rechts.", "Hängt unter jeden Schritt die Aufgaben und Details.", "Sortiert jede Spalte von wichtig nach unwichtig.", "Zieht eine waagerechte Linie. Alles darüber ist die erste Ausbaustufe.", "Prüft, ob die erste Stufe den Ablauf von Anfang bis Ende abdeckt."],
+  kurz5: "Den Ablauf in fünf Schritten notieren und je Schritt das Unverzichtbare markieren.",
+  ergebnis: "Eine gemeinsame Sicht auf den Umfang und eine geschnittene erste Version.",
+  beispiel: "SoPart 6.0: Fall anlegen, Partner erfassen, Leistung planen, dokumentieren, abrechnen. Erste Stufe: pro Schritt nur der Standardfall.",
+  fallen: ["Nach Komponenten statt nach Ablauf sortieren.", "Die Linie so tief ziehen, dass alles drin ist."],
+  quellen: [{ b: "patton-user-story-mapping", bezug: "Ursprung", h: "Story Maps" }],
+  ki: "Erstelle eine Story-Landkarte für das folgende Produkt oder Vorhaben. Gib die Hauptschritte des Ablaufs in Reihenfolge und je Schritt drei bis fünf Aufgaben, sortiert nach Wichtigkeit. Schlage eine erste Ausbaustufe vor, die den Ablauf vollständig, aber minimal abdeckt, und eine zweite." },
+
+{ id: "wirkung-aufwand", name: "Wirkung-Aufwand-Matrix", orig: "Impact-Effort Matrix", sit: ["entscheiden"], feld: ["Business", "Produkt"], dauer: 15, personen: "Im Team", material: "Whiteboard oder Wand",
+  kurz: "Sortiert Ideen nach Wirkung und Aufwand und zeigt, womit ihr anfangt.",
+  schritte: ["Sammelt die Optionen auf Zetteln.", "Zeichnet zwei Achsen: Wirkung (hoch, niedrig) und Aufwand (hoch, niedrig).", "Platziert jede Option, im Zweifel nach kurzer Abstimmung.", "Startet mit hoher Wirkung und niedrigem Aufwand.", "Plant große Vorhaben bewusst, statt sie nebenbei zu beginnen."],
+  kurz5: "Fünf offene Aufgaben in die vier Felder legen.",
+  ergebnis: "Eine Reihenfolge, die alle nachvollziehen können.",
+  beispiel: "Ideen für die Messe: neuer Stand (hohe Wirkung, hoher Aufwand), Terminbuchung per QR-Code (hoch, niedrig), neue Kugelschreiber (niedrig, niedrig). Start: QR-Code.",
+  fallen: ["Wirkung nicht definieren: für wen?", "Aufwand nur aus eigener Sicht schätzen."],
+  quellen: [],
+  ki: "Ordne die folgenden Optionen in eine Wirkung-Aufwand-Matrix ein. Schätze für jede Wirkung und Aufwand (hoch oder niedrig) mit einem Satz Begründung. Gruppiere das Ergebnis nach den vier Feldern und empfiehl eine Reihenfolge. Nenne Annahmen, die die Einordnung stark verändern würden." },
+
+{ id: "punkte-kleben", name: "Punkte kleben", orig: "Dot Voting", sit: ["entscheiden", "meeting"], feld: ["Business", "Design"], dauer: 5, personen: "Im Team", material: "Klebepunkte",
+  kurz: "Jede Person verteilt eine feste Zahl Punkte. Die Gruppe sieht sofort, wo die Mehrheit steht.",
+  schritte: ["Hängt alle Optionen sichtbar auf.", "Gebt jeder Person drei Punkte.", "Alle kleben gleichzeitig und still.", "Besprecht nur die Optionen mit den meisten Punkten.", "Bei Gleichstand entscheidet die verantwortliche Person."],
+  kurz5: "Digital: drei Reaktionen pro Person im Chat.",
+  ergebnis: "Eine schnelle Vorauswahl ohne lange Diskussion.",
+  beispiel: "Zwölf Namensvorschläge für eine neue interne App, drei Punkte pro Person, zwei Favoriten bleiben übrig.",
+  fallen: ["Nacheinander kleben, dann folgen alle den Ersten.", "Das Ergebnis als endgültige Entscheidung ausgeben."],
+  quellen: [{ b: "knapp-sprint", bezug: "Vertiefung", h: "Entscheiden im Design Sprint" }],
+  ki: "Ich bereite eine Abstimmung mit Punkten vor. Prüfe die folgende Liste von Optionen: Fasse Doppelungen zusammen, formuliere jede Option kurz und neutral und schlage vor, wie viele Punkte pro Person sinnvoll sind. Nenne zwei Kriterien, die die Gruppe vor dem Kleben im Kopf haben sollte." },
+
+{ id: "erst-warum", name: "Erst das Warum", orig: "Golden Circle", sit: ["botschaft"], feld: ["Marketing", "Business"], dauer: 15, personen: "Allein oder im Team", material: "Ein Blatt mit drei Kreisen",
+  kurz: "Erklärt zuerst, warum es etwas gibt, dann wie, und erst zuletzt was.",
+  schritte: ["Schreibt in die Mitte: Warum machen wir das?", "Darum herum: Wie machen wir es anders?", "Außen: Was genau bieten wir an?", "Erzählt es in dieser Reihenfolge von innen nach außen.", "Prüft: Würde eine Kundin das Warum in eigenen Worten wiedergeben?"],
+  kurz5: "Einen Satz mit „Weil wir glauben, dass …“ für dein aktuelles Projekt.",
+  ergebnis: "Eine Botschaft, die mit dem Sinn beginnt statt mit Funktionen.",
+  beispiel: "Warum: Weil Fachkräfte ihre Zeit mit Menschen verbringen sollen, nicht mit Formularen. Wie: Software, die sich wie eine moderne App anfühlt. Was: SoPart 6.0.",
+  fallen: ["Das Warum als Werbeslogan formulieren.", "Umsatz als Warum nennen."],
+  quellen: [{ b: "sinek-frag-immer-erst", bezug: "Ursprung", h: "Golden Circle" }],
+  ki: "Formuliere für das folgende Angebot einen Golden Circle: Warum (ein Satz, Überzeugung statt Werbung), Wie (zwei bis drei Unterschiede), Was (konkret). Schreibe danach einen kurzen Absatz, der in dieser Reihenfolge erzählt, und eine Variante für eine E-Mail an eine Kommune." },
+
+{ id: "erst-skizzieren", name: "Erst skizzieren, dann Folien", orig: "Sketch before slides", sit: ["botschaft", "meeting"], feld: ["Design", "Marketing"], dauer: 15, personen: "Allein", material: "Haftnotizen",
+  kurz: "Plant eine Präsentation auf Zetteln, bevor die Folien entstehen.",
+  schritte: ["Schreibt die eine Kernaussage auf.", "Skizziert jede Folie auf einen Zettel, eine Aussage pro Zettel.", "Legt die Zettel in eine Reihenfolge und erzählt sie laut.", "Streicht Zettel, die die Kernaussage nicht stützen.", "Baut erst jetzt die Folien."],
+  kurz5: "Fünf Zettel, fünf Aussagen, einmal laut erzählen.",
+  ergebnis: "Eine klare Dramaturgie und weniger Folien.",
+  beispiel: "Vortrag zum Design System für die Geschäftsführung. Kernaussage: Einheitliche Begriffe sparen uns jede Woche Stunden. Aus 25 geplanten Folien werden neun.",
+  fallen: ["Direkt in die Vorlage springen.", "Mehrere Aussagen auf einem Zettel."],
+  quellen: [{ b: "duarte-slideology", bezug: "Ursprung", h: "Ideen skizzieren vor dem Folienbau" }, { b: "brand-visual-thinking", bezug: "Vertiefung", h: "Einfaches Zeichnen im Beruf" }],
+  ki: "Plane eine Präsentation zum folgenden Thema. Formuliere zuerst die eine Kernaussage in einem Satz. Schlage dann sechs bis neun Folien vor, je mit einer Aussage als Überschrift (ganzer Satz) und einer Zeile dazu, was zu sehen ist. Kennzeichne Folien, die man streichen könnte." },
+
+{ id: "agenda-fragen", name: "Agenda als Fragen", orig: "Questions-based agenda", sit: ["meeting"], feld: ["Business"], dauer: 5, personen: "Allein", material: "Nichts",
+  kurz: "Formuliert jeden Punkt der Tagesordnung als Frage, die das Meeting beantworten soll.",
+  schritte: ["Schreibt das Ziel des Meetings in einen Satz.", "Formuliert jeden Agendapunkt als Frage („Welche Variante nehmen wir?“).", "Prüft je Frage: Braucht es dafür alle Anwesenden?", "Streicht Punkte, die eine Nachricht klären kann.", "Haltet am Ende fest, welche Fragen beantwortet sind."],
+  kurz5: "Die nächste Einladung umschreiben: drei Fragen statt drei Stichworte.",
+  ergebnis: "Kürzere Meetings mit klaren Entscheidungen.",
+  beispiel: "Statt „Messe 2027“ steht in der Einladung: Fahren wir zur Messe? Mit welchem Budget? Wer betreut den Stand?",
+  fallen: ["Fragen stellen, die niemand im Raum beantworten kann."],
+  quellen: [{ b: "rogelberg-surprising-science-of-meetings", bezug: "Ursprung", h: "Agenda und Meetingdauer" }],
+  ki: "Wandle die folgende Agenda oder Meeting-Beschreibung in eine Agenda aus Fragen um. Formuliere ein Ziel in einem Satz, drei bis fünf Fragen mit Zeitangabe und kennzeichne Punkte, die besser per Nachricht geklärt würden. Schlage eine passende Dauer vor." },
+
+{ id: "visuelles-protokoll", name: "Visuelles Protokoll", orig: "Graphic Recording", sit: ["meeting", "verstehen"], feld: ["Design", "Kreativität"], dauer: 15, personen: "Eine Person im Team", material: "Flipchart, zwei Stiftfarben",
+  kurz: "Haltet Gespräche als einfaches Bild fest: Kästen, Pfeile, wenige Wörter.",
+  schritte: ["Teilt das Flipchart in Bereiche: Ziel, Punkte, Entscheidungen, Offenes.", "Schreibt nur Stichworte und verbindet sie mit Pfeilen.", "Nutzt drei Grundformen: Kasten, Kreis, Pfeil.", "Fasst am Ende gemeinsam vor dem Bild zusammen.", "Fotografiert das Bild als Protokoll."],
+  kurz5: "Das nächste Telefonat in drei Kästen und Pfeilen notieren.",
+  ergebnis: "Ein Protokoll, das alle auf einen Blick verstehen.",
+  beispiel: "Abstimmung zu 5.1 und 6.0: links die Bereiche aus 5.1, rechts ihr Ort in 6.0, Pfeile zeigen den Umzug, Fragezeichen markieren Ungeklärtes.",
+  fallen: ["Zu viel Text.", "Schönheit vor Verständlichkeit."],
+  quellen: [{ b: "sibbet-visuelle-meetings", bezug: "Ursprung", h: "Visuell moderieren" }, { b: "brand-visual-thinking", bezug: "Vertiefung", h: "Visuelles Denken" }],
+  ki: "Fasse die folgenden Meeting-Notizen so zusammen, dass man sie als visuelles Protokoll zeichnen kann: Ziel, drei bis fünf Kernpunkte als Kästen, Beziehungen als Pfeile („A → B: Erklärung“), Entscheidungen, offene Fragen. Halte jedes Element unter acht Wörtern." },
+
+{ id: "rueckschau", name: "Kurze Rückschau", orig: "Retrospektive", sit: ["feedback", "meeting"], feld: ["Produkt", "Business"], dauer: 30, personen: "Im Team", material: "Haftnotizen in drei Farben",
+  kurz: "Drei Fragen nach einem Abschnitt: Was lief gut, was war schwierig, was probieren wir?",
+  schritte: ["Legt den Zeitraum fest, auf den ihr zurückschaut.", "Jede Person schreibt still auf: Gut, Schwierig, Ausprobieren.", "Sammelt und gruppiert ähnliche Punkte.", "Wählt höchstens zwei Dinge zum Ausprobieren.", "Legt fest, wer sich kümmert und wann ihr nachschaut."],
+  kurz5: "Allein am Freitag: je ein Satz zu Gut, Schwierig, Ausprobieren.",
+  ergebnis: "Zwei konkrete Verbesserungen statt einer langen Mängelliste.",
+  beispiel: "Nach dem Messeauftritt. Gut: Terminbuchung für Demos. Schwierig: Material zu spät gedruckt. Ausprobieren: Drucktermin sechs Wochen vorher in den Kalender.",
+  fallen: ["Schuldige suchen.", "Zu viele Maßnahmen beschließen."],
+  quellen: [{ b: "pichler-scrum", bezug: "Vertiefung", h: "Sprint-Retrospektive" }, { b: "squirrel-agile-conversations", bezug: "Vertiefung", h: "Schwierige Gespräche im Team" }],
+  ki: "Werte die folgenden Rückmeldungen zu einem abgeschlossenen Abschnitt als Rückschau aus. Gruppiere sie in Gut, Schwierig und Ausprobieren, fasse Ähnliches zusammen und schlage höchstens zwei konkrete Maßnahmen mit Platzhalter für die Verantwortung und einem Prüfzeitpunkt vor. Formuliere sachlich und ohne Schuldzuweisung." },
+
+{ id: "nutzertest", name: "Kurzer Nutzertest", orig: "Guerilla Usability Test", sit: ["nutzer", "feedback"], feld: ["Design", "Produkt"], dauer: 30, personen: "Zu zweit", material: "Prototyp oder Screenshot, Aufgabenliste",
+  kurz: "Lasst drei bis fünf Personen eine Aufgabe lösen und schaut nur zu.",
+  schritte: ["Formuliert eine realistische Aufgabe, ohne Begriffe aus der Oberfläche zu verraten.", "Bittet die Person, laut zu denken.", "Schaut zu, helft nicht und notiert, wo sie stockt.", "Fragt am Ende: Was war unklar?", "Nach drei bis fünf Personen wiederholen sich die Probleme meist. Behebt die häufigsten."],
+  kurz5: "Eine Kollegin aus einer anderen Abteilung sucht eine Funktion, du schaust nur zu.",
+  ergebnis: "Eine Liste echter Stolperstellen statt Meinungen.",
+  beispiel: "Aufgabe für drei Consultants: „Hinterlege eine neue Ansprechperson beim Träger.“ Zwei suchen im falschen Reiter. Ergebnis: Bezeichnung des Reiters ändern.",
+  fallen: ["Die Person mit Hinweisen retten.", "Meinungen („gefällt mir“) statt Verhalten auswerten."],
+  quellen: [{ b: "sharon-validating-product-ideas", bezug: "Vertiefung", h: "Nutzerforschung in der Praxis" }, { b: "buie-usability-in-government-systems", bezug: "Vertiefung", h: "Usability in Verwaltungssystemen" }],
+  ki: "Bereite einen kurzen Nutzertest für die folgende Funktion vor. Formuliere drei realistische Aufgaben ohne Begriffe aus der Oberfläche, eine Einleitung für Testpersonen (lautes Denken, es gibt keine falschen Antworten), vier Beobachtungspunkte und drei Abschlussfragen. Schlage einen einfachen Notizbogen vor." },
+
+{ id: "voreinstellung", name: "Gute Voreinstellung", orig: "Smart Defaults", sit: ["nutzer", "absichern"], feld: ["Design", "Produkt"], dauer: 15, personen: "Allein", material: "Screenshot des Formulars",
+  kurz: "Prüft, was passiert, wenn niemand etwas ändert, und macht das zur besten Wahl.",
+  schritte: ["Wählt ein Formular, einen Ablauf oder eine Einstellung.", "Schreibt auf, was heute voreingestellt ist.", "Fragt: Was wählen die meisten, und was ist für sie am besten?", "Setzt die Voreinstellung darauf und macht das Abweichen leicht.", "Erklärt die Voreinstellung in einem Satz neben dem Feld."],
+  kurz5: "Bei einem Formular fragen: Welches Feld könnte schon richtig ausgefüllt sein?",
+  ergebnis: "Weniger Eingaben und weniger Fehler, ohne Wahlfreiheit wegzunehmen.",
+  beispiel: "Bei der Leistungserfassung ist das Datum leer. Neue Voreinstellung: das heutige Datum, zuständig ist die angemeldete Person.",
+  fallen: ["Voreinstellungen, die dem Unternehmen dienen statt den Nutzer:innen.", "Das Abweichen schwer machen."],
+  quellen: [{ b: "thaler-nudge", bezug: "Ursprung", h: "Voreinstellungen und Entscheidungsarchitektur" }, { b: "pereira-digital-nudge", bezug: "Vertiefung", h: "Nudging in digitalen Produkten" }],
+  ki: "Prüfe das folgende Formular oder den folgenden Ablauf auf Voreinstellungen. Nenne je Feld oder Schritt: heutige Voreinstellung (falls bekannt), empfohlene Voreinstellung, Begründung aus Sicht der Nutzer:innen, Risiko. Achte darauf, dass die Wahlfreiheit erhalten bleibt und nichts manipulativ wirkt." },
+
+{ id: "zehn-arten", name: "Zehn Arten von Innovation", orig: "Ten Types of Innovation", sit: ["ideen"], feld: ["Innovation", "Business"], dauer: 30, personen: "Im Team", material: "Liste der zehn Arten",
+  kurz: "Prüft, ob es außer dem Produkt andere Hebel gibt: Service, Kanal, Preis, Zusammenarbeit.",
+  schritte: ["Beschreibt euer Angebot heute in einem Satz.", "Geht die zehn Arten durch, vom Gewinnmodell bis zur Kundenbindung.", "Notiert je Art, was ihr heute macht.", "Sucht die Arten, in denen ihr nichts tut. Dort liegen Chancen.", "Kombiniert zwei Arten zu einer neuen Idee."],
+  kurz5: "Drei Arten prüfen: Preis, Service, Kanal.",
+  ergebnis: "Ideen jenseits neuer Funktionen.",
+  beispiel: "Angebot: SoPart. Lücke beim Service: Einführung als Paket mit festen Lernpfaden. Lücke beim Netzwerk: Austauschrunde der Fachadmins mehrerer Kommunen.",
+  fallen: ["Nur beim Produkt bleiben.", "Alle zehn Arten gleichzeitig angehen."],
+  quellen: [{ b: "keeley-ten-types-of-innovation", bezug: "Ursprung", h: "Die zehn Innovationsarten" }],
+  ki: "Analysiere das folgende Angebot mit den zehn Innovationsarten (Gewinnmodell, Netzwerk, Struktur, Prozess, Produktleistung, Produktsystem, Service, Kanal, Marke, Kundenbindung). Beschreibe je Art kurz den vermuteten Stand und eine Idee. Markiere die drei Arten mit dem größten Potenzial und kombiniere zwei davon zu einer neuen Idee." },
+
+{ id: "sammelmappe", name: "Ideen-Sammelmappe", orig: "Swipe File", sit: ["ideen"], feld: ["Kreativität", "Design", "Marketing"], dauer: 5, personen: "Allein", material: "Ordner, Notiz-App oder Pinnwand",
+  kurz: "Sammelt laufend gute Beispiele anderer, damit ihr beim nächsten Projekt nicht bei null anfangt.",
+  schritte: ["Legt einen festen Ort an, digital oder auf Papier.", "Speichert, was euch auffällt: Websites, Flyer, Formulierungen, Formulare.", "Notiert zu jedem Fund einen Satz: Was genau ist gut?", "Schaut zu Beginn jedes Projekts in die Mappe.", "Kombiniert Elemente aus mehreren Funden, statt einen zu kopieren."],
+  kurz5: "Heute drei Funde speichern, je mit einem Satz.",
+  ergebnis: "Ein wachsender Fundus an Vorbildern.",
+  beispiel: "Für die nächste Kundenmail liegen drei gesammelte Newsletter anderer Softwarehersteller bereit. Gut ist jeweils die Betreffzeile mit konkretem Nutzen.",
+  fallen: ["Sammeln, ohne zu notieren, warum.", "Eins zu eins übernehmen."],
+  quellen: [{ b: "kleon-steal-like-an-artist", bezug: "Ursprung", h: "Von anderen lernen" }],
+  ki: "Ich arbeite am folgenden Vorhaben. Nenne mir acht Arten von Vorbildern, die ich dafür sammeln sollte (zum Beispiel Branchen, Formate, Elemente), je mit einem Hinweis, worauf ich bei Funden achten soll. Schlage eine einfache Ordnung für meine Sammelmappe vor." },
+
+{ id: "drei-varianten", name: "Drei Varianten skizzieren", orig: "Sketching alternatives", sit: ["ideen", "entscheiden"], feld: ["Design"], dauer: 15, personen: "Allein", material: "Papier, Stift",
+  kurz: "Skizziert immer mindestens drei Lösungen, bevor ihr eine ausarbeitet.",
+  schritte: ["Formuliert die Aufgabe in einem Satz.", "Skizziert eine naheliegende, eine radikale und eine minimale Lösung.", "Schreibt zu jeder Vor- und Nachteile.", "Zeigt alle drei und fragt nach Kombinationen.", "Arbeitet erst dann eine aus."],
+  kurz5: "Drei Rahmen auf ein Blatt, je eine Lösung.",
+  ergebnis: "Eine bewusst gewählte Lösung statt der ersten Idee.",
+  beispiel: "Neuer Filter in der Fallliste: Auswahlliste (naheliegend), Suche mit Vorschlägen (radikal), nur drei feste Chips (minimal). Gewählt: Chips plus Suche.",
+  fallen: ["Drei Varianten derselben Idee.", "Die Lieblingsvariante sorgfältiger zeichnen als die anderen."],
+  quellen: [{ b: "greenberg-sketching-user-experiences", bezug: "Ursprung", h: "Varianten skizzieren" }, { b: "lidwell-universal-principles-of-design", bezug: "Vertiefung", h: "Gestaltungsprinzipien zum Abwägen" }],
+  ki: "Schlage zur folgenden Gestaltungsaufgabe drei klar unterschiedliche Lösungen vor: naheliegend, radikal, minimal. Beschreibe jede so, dass man sie in einer Minute skizzieren kann, und nenne je zwei Vor- und Nachteile. Schlage am Ende eine mögliche Kombination vor." },
+
+{ id: "text-zuerst", name: "Text zuerst", orig: "Content first", sit: ["botschaft"], feld: ["Design", "Marketing"], dauer: 15, personen: "Allein", material: "Liste aller Texte einer Seite",
+  kurz: "Schreibt die Wörter einer Oberfläche oder Seite, bevor ihr sie gestaltet.",
+  schritte: ["Listet alle Texte: Überschrift, Knöpfe, Hinweise, Fehlermeldungen.", "Schreibt sie aus Sicht der Nutzer:innen, in ihren Worten.", "Kürzt jeden Text um ein Drittel.", "Lest die Texte in Reihenfolge vor. Ergibt das einen Ablauf?", "Gestaltet erst dann."],
+  kurz5: "Eine Fehlermeldung umschreiben: Was ist passiert, was tue ich jetzt?",
+  ergebnis: "Klare, einheitliche Texte und ein Layout, das zur echten Textlänge passt.",
+  beispiel: "Statt „Validierungsfehler im Feld 3“ steht da: „Bitte ein Geburtsdatum in der Vergangenheit eingeben.“",
+  fallen: ["Platzhaltertexte bis zum Schluss stehen lassen.", "Interne Begriffe verwenden."],
+  quellen: [{ b: "metts-writing-is-designing", bezug: "Ursprung", h: "Texte für Oberflächen" }],
+  ki: "Überarbeite die folgenden Oberflächentexte (Überschriften, Knöpfe, Hinweise, Fehlermeldungen). Schreibe aus Sicht der Nutzer:innen, aktiv, kurz und ohne interne Begriffe. Gib je Text: Vorher, Nachher und eine Begründung in wenigen Wörtern. Fehlermeldungen sagen, was passiert ist und was man jetzt tun kann." },
+
+{ id: "zahlungsbereitschaft", name: "Zahlungsbereitschaft früh klären", orig: "Willingness-to-pay talk", sit: ["absichern", "entscheiden"], feld: ["Business", "Produkt"], dauer: 30, personen: "Zu zweit", material: "Gesprächsleitfaden",
+  kurz: "Sprecht über Preis und Wert, bevor ihr baut, nicht erst danach.",
+  schritte: ["Beschreibt das geplante Angebot in drei Sätzen.", "Fragt Kund:innen, welches Problem es löst und was es heute kostet.", "Fragt nach einer Preisspanne: Ab wann zu teuer, ab wann verdächtig billig?", "Fragt, welche Bestandteile unverzichtbar sind.", "Passt Umfang und Paket vor dem Bau an."],
+  kurz5: "Einer Vertriebskollegin die Idee schildern und fragen: Wer würde dafür zahlen?",
+  ergebnis: "Ein Angebot, das auf belegtem Wert beruht statt auf Hoffnung.",
+  beispiel: "Vor dem Bau eines Auswertungsmoduls fragt der Vertrieb fünf Kommunen. Ergebnis: gewünscht ist ein festes Jahrespaket, nicht die Abrechnung pro Bericht.",
+  fallen: ["Fragen, ob es „interessant“ ist. Das sagen alle.", "Den Preis als Tabu behandeln."],
+  quellen: [{ b: "ramanujam-monetizing-innovation", bezug: "Ursprung", h: "Preisgespräche vor der Entwicklung" }],
+  ki: "Erstelle einen Gesprächsleitfaden, um die Zahlungsbereitschaft für das folgende geplante Angebot zu klären: acht bis zehn offene Fragen in sinnvoller Reihenfolge (Problem, heutige Kosten, Wert, Preisspanne, Paketbestandteile). Ergänze, worauf man bei den Antworten achten sollte und welche Fragen man vermeiden sollte." },
+
+{ id: "einfache-regeln", name: "Einfache Regeln", orig: "Simple Rules", sit: ["entscheiden", "meeting"], feld: ["Business"], dauer: 30, personen: "Im Team", material: "Nichts",
+  kurz: "Legt drei bis fünf Faustregeln fest, mit denen alle wiederkehrende Entscheidungen selbst treffen können.",
+  schritte: ["Wählt eine Entscheidung, die immer wieder ansteht.", "Sammelt Fälle, die gut liefen, und Fälle, die schlecht liefen.", "Formuliert daraus drei bis fünf kurze Regeln.", "Testet die Regeln an zwei echten Fällen.", "Überprüft die Regeln nach drei Monaten."],
+  kurz5: "Drei Faustregeln für eine Entscheidung, die du jede Woche triffst.",
+  ergebnis: "Schnellere Entscheidungen mit weniger Abstimmung.",
+  beispiel: "Regeln für Werbemittel: Nur bestellen, was zu einem Termin passt. Nie mehr als einen Jahresbedarf. Logo immer nach Styleguide.",
+  fallen: ["Zu viele Regeln.", "Regeln, die niemand überprüft."],
+  quellen: [{ b: "sull-simple-rules", bezug: "Ursprung", h: "Faustregeln für Entscheidungen" }],
+  ki: "Leite aus der folgenden Beschreibung einer wiederkehrenden Entscheidung drei bis fünf einfache Faustregeln ab, jede höchstens zwölf Wörter, konkret und prüfbar. Teste jede Regel an einem typischen Fall und einem Grenzfall und nenne, wann die Regeln überprüft werden sollten." }
+];
+/* ===== Werkstatt — Logik ===== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ls = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const SIT = Object.fromEntries(SITUATIONEN.map(s => [s.id, s]));
+const M = Object.fromEntries(METHODEN.map(m => [m.id, m]));
+const DAUERN = [{ id: "", t: "Alle" }, { id: "5", t: "5 Min." }, { id: "15", t: "15 Min." }, { id: "30", t: "30 Min." }, { id: "60", t: "1 Std." }];
+const S = { sit: "", dauer: "", q: "", offen: null, erf: [], merk: ls.get("werkstatt.merk", []), ausloeser: null };
+let KI = null, DB = null, DL = null, ERF_COL = null;
+
+const ICON_MERK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12v17l-6-4.2-6 4.2z"/></svg>';
+const CHEV = '<svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>';
+const ICON_EXTERN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h4v4M13 3 7 9M11 9.5V13H3V5h3.5"/></svg>';
+const ICON_INFO = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg>';
+const DATENSCHUTZ = ICON_INFO + "<span>Bitte keine Namen, Fall- oder Sozialdaten und keine Kundennamen eingeben. Die Eingabe geht an Claude. Das Ergebnis ist ein Vorschlag, keine Entscheidung.</span>";
+
+const dauerText = d => d >= 60 ? "1 Std." : d + " Min.";
+const dauerBlock = (d, gross) => `<span class="dauer${gross ? " gross" : ""}" aria-hidden="true"><b>${d >= 60 ? "60" : d}</b><i>Min.</i></span>`;
+const anzahlErf = id => S.erf.filter(e => e.methode === id).length;
+
+/* ----- Filtern ----- */
+function treffer(){
+  const q = S.q.trim().toLowerCase();
+  return METHODEN.filter(m => {
+    if (S.sit && !m.sit.includes(S.sit)) return false;
+    if (S.dauer && String(m.dauer) !== S.dauer) return false;
+    if (!q) return true;
+    const heu = [m.name, m.orig, m.kurz, m.feld.join(" "), m.sit.map(s => SIT[s].t).join(" "), m.beispiel].join(" ").toLowerCase();
+    return q.split(/\s+/).every(w => heu.includes(w));
+  });
+}
+
+function zeile(m, extra = ""){
+  const n = anzahlErf(m.id);
+  const sits = m.sit.slice(0, 2).map(s => `<span class="badge">${esc(SIT[s].t)}</span>`).join("");
+  return `<button class="zeile" data-id="${m.id}">
+    ${dauerBlock(m.dauer)}
+    <span class="info"><span class="t">${esc(m.name)}</span><span class="meta">${extra || esc(m.kurz)}</span>
+      <span class="unten">${sits}${n ? `<span class="erfahren">${n}× ausprobiert</span>` : ""}</span></span>
+    <span class="rechts">${CHEV}</span></button>`;
+}
+
+function render(){
+  const liste = treffer();
+  const filtert = !!(S.sit || S.dauer || S.q.trim());
+  $("#summary").textContent = `${METHODEN.length} Methoden für den Alltag · ${SITUATIONEN.length} Situationen · verknüpft mit der Design Bibliothek`;
+  $("#filter-sit").innerHTML = [{ id: "", t: "Alle" }, ...SITUATIONEN].map(s =>
+    `<button class="chip" data-sit="${s.id}" aria-pressed="${S.sit === s.id}">${esc(s.t)}</button>`).join("");
+  $("#filter-dauer").innerHTML = DAUERN.map(d => `<button class="chip" data-dauer="${d.id}" aria-pressed="${S.dauer === d.id}">${d.t}</button>`).join("");
+  $("#leeren").hidden = !S.q;
+
+  $("#b-situationen").hidden = filtert;
+  $("#kacheln").innerHTML = SITUATIONEN.map(s => {
+    const n = METHODEN.filter(m => m.sit.includes(s.id)).length;
+    return `<button class="kachel" data-sit="${s.id}"><span class="zahl-ecke">${n}</span><b>${esc(s.t)}</b><span>${esc(s.s)}</span></button>`;
+  }).join("");
+
+  const mm = M[METHODE_DES_MONATS.id];
+  $("#b-monat").hidden = filtert || !mm;
+  if (mm){
+    $("#monat-name").textContent = METHODE_DES_MONATS.monat;
+    $("#monat").innerHTML = `<button class="monat" data-id="${mm.id}">${dauerBlock(mm.dauer, true)}
+      <span class="info"><span class="titel-karte">${esc(mm.name)}</span><span class="meta">${esc(mm.kurz)}</span><span class="meta">${esc(mm.kurz5)}</span></span></button>`;
+  }
+
+  const merk = S.merk.map(id => M[id]).filter(Boolean);
+  $("#b-merk").hidden = filtert || !merk.length;
+  $("#merkliste").innerHTML = merk.map(m => zeile(m)).join("");
+  $("#merk-anzahl").textContent = merk.length ? `${merk.length}` : "";
+  const mz = $("#merk-zahl"); mz.hidden = !merk.length; mz.textContent = merk.length;
+
+  $("#liste-titel").textContent = filtert ? (S.sit ? SIT[S.sit].t : "Treffer") : "Alle Methoden";
+  $("#treffer").textContent = filtert ? `${liste.length} von ${METHODEN.length}` : `${METHODEN.length}`;
+  $("#liste").innerHTML = liste.length ? liste.map(m => zeile(m)).join("") :
+    `<div class="leer"><p class="titel-karte">Keine Methode gefunden</p><p class="meta" style="margin:0">Probier ein anderes Stichwort oder setz die Filter zurück.</p>
+     <div class="leer-aktionen"><button class="taste sekundaer klein" id="zuruecksetzen">Filter zurücksetzen</button></div></div>`;
+}
+
+/* ----- Detail ----- */
+function abschnitt(titel, inhalt, extra = ""){ return `<section class="abschnitt"><h3 class="titel-bereich">${titel}</h3>${extra}${inhalt}</section>`; }
+
+function erfahrungenHTML(m){
+  const eigene = S.erf.filter(e => e.methode === m.id);
+  if (!DB) return `<div class="karte innen"><p class="meta" style="margin:0">Erfahrungen der Kolleg:innen sind in dieser Ansicht nicht verfügbar.</p></div>`;
+  const kuerzel = ls.get("werkstatt.kuerzel", "");
+  const items = eigene.slice(0, 5).map(e => `<li><span class="meta"><span class="k">${esc(e.kuerzel)}</span> · ${new Date(e.ts).toLocaleDateString("de-DE")}</span>${e.satz ? `<span>${esc(e.satz)}</span>` : ""}</li>`).join("");
+  return `<div class="karte">
+    <div class="innen" style="display:flex;align-items:baseline;gap:10px"><span class="zaehler-gross">${eigene.length}</span><span class="meta">${eigene.length === 1 ? "Person hat das bei uns ausprobiert" : "Mal bei uns ausprobiert"}</span></div>
+    ${CONFIG.API_URL ? "" : `<p class="meta" style="margin:0;padding:0 16px 12px">Vorschau: Einträge bleiben vorerst auf diesem Gerät.</p>`}
+    ${items ? `<ul class="erfahrungen" style="border-top:1px solid var(--linie)">${items}</ul>` : ""}
+    <form class="erfahren-form" id="erfahren-form">
+      <div class="zwei-felder">
+        <div class="feld" style="margin:0"><label for="e-kuerzel">Kürzel</label><input class="eingabe" id="e-kuerzel" maxlength="3" autocomplete="off" value="${esc(kuerzel)}" placeholder="ABC"></div>
+        <div class="feld" style="margin:0"><label for="e-satz">Ein Satz dazu (optional)</label><input class="eingabe" id="e-satz" maxlength="200" autocomplete="off" placeholder="Was hat es gebracht?"></div>
+      </div>
+      <button class="taste sekundaer" type="submit">Habe ich ausprobiert</button>
+    </form></div>`;
+}
+
+function quellenHTML(m){
+  if (!m.quellen.length) return `<div class="karte empfehlung-text"><p class="titel-karte" style="margin:0">Noch kein Buch im Bestand</p>
+    <p class="meta" style="margin:0">Für diese Methode fehlt ein passender Titel in der Design Bibliothek. Vorschläge zur Anschaffung gern an die Bibliothek.</p></div>`;
+  return `<div class="karte quellen-karte">${m.quellen.map(q => {
+    const b = BUECHER[q.b] || [q.b, ""];
+    return `<a class="zeile" href="${BIB_URL}#b-${encodeURIComponent(q.b)}" target="_blank" rel="noopener">
+      <span class="buch${q.bezug === "Vertiefung" ? " vertiefung" : ""}" aria-hidden="true"><i></i></span>
+      <span class="info"><span class="t">${esc(b[0])}</span><span class="meta">${esc(b[1])}</span>
+        <span class="unten"><span class="badge ${q.bezug === "Ursprung" ? "st-info" : ""}">${q.bezug}</span><span class="meta">${esc(q.h)}</span></span></span>
+      <span class="rechts">${ICON_EXTERN}</span></a>`;
+  }).join("")}</div>`;
+}
+
+function kiHTML(m){
+  const knoepfe = `<div class="aktionen" style="margin-top:0">
+      ${KI ? `<button class="taste primaer" id="ki-los">Mit KI anwenden</button>` : ""}
+      <button class="taste sekundaer" id="ki-prompt">Prompt kopieren</button></div>`;
+  return `<div class="karte finder">
+    <p class="text">${KI ? "Gib deine Stichpunkte ein. Claude wendet die Methode darauf an und liefert ein Ergebnis zum Weiterarbeiten." : "Kopiere den fertigen Prompt und nutze ihn in deinem KI-Werkzeug."}</p>
+    <label class="sr-only" for="ki-eingabe">Deine Stichpunkte</label>
+    <textarea class="ki-feld" id="ki-eingabe" placeholder="Worum geht es? Ein paar Stichpunkte reichen."></textarea>
+    <div class="datenschutz">${DATENSCHUTZ}</div>
+    ${knoepfe}
+    <div id="ki-block" hidden><div class="ki-kopf"><span class="etikett">Vorschlag von Claude</span><button class="taste sekundaer klein" id="ki-kopieren">Ergebnis kopieren</button></div>
+    <div class="ki-ausgabe" id="ki-ausgabe" aria-live="polite"></div></div>
+  </div>`;
+}
+
+function renderDetail(m){
+  const gemerkt = S.merk.includes(m.id);
+  const etik = [m.sit.map(s => SIT[s].t).join(" · "), m.feld.join(", ")].join("  —  ");
+  $("#detail").innerHTML = `
+    <header class="kopf-detail">${dauerBlock(m.dauer, true)}
+      <div><p class="etikett" style="margin:0 0 2px">${esc(m.sit.map(s => SIT[s].t).join(" · "))}</p>
+      <h2 id="d-titel">${esc(m.name)}</h2><p class="meta" style="margin:2px 0 0">${esc(m.orig)} · ${esc(m.feld.join(", "))}</p></div></header>
+    <p class="text" style="color:var(--foreground);font-size:17px;line-height:26px">${esc(m.kurz)}</p>
+    <div class="karte"><dl class="fakten">
+      <div><dt>Dauer</dt><dd>${dauerText(m.dauer)}</dd></div><div><dt>Personen</dt><dd>${esc(m.personen)}</dd></div>
+      <div class="breit"><dt>Material</dt><dd>${esc(m.material)}</dd></div>
+      <div class="breit"><dt>Am Ende habt ihr</dt><dd>${esc(m.ergebnis)}</dd></div></dl></div>
+    <div class="sheet-aktionen">
+      <button class="taste sekundaer merken" id="d-merken" aria-pressed="${gemerkt}">${ICON_MERK}${gemerkt ? "Gemerkt" : "Merken"}</button>
+      <button class="taste sekundaer" id="d-text">Als Text kopieren</button>
+      ${DL ? `<button class="taste sekundaer" id="d-datei">Als Datei speichern</button>` : ""}
+    </div>
+    ${abschnitt("So geht’s", `<div class="karte innen"><ol class="schritte">${m.schritte.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol></div>`)}
+    ${abschnitt("In fünf Minuten, allein", `<div class="karte innen kurz5"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 5.5V10l3 2"/></svg><p class="text" style="color:var(--foreground)">${esc(m.kurz5)}</p></div>`)}
+    ${abschnitt("Beispiel aus unserem Alltag", `<div class="karte innen"><p class="text">${esc(m.beispiel)}</p></div>`)}
+    ${abschnitt("Stolperstellen", `<div class="karte innen"><ul class="liste-punkte">${m.fallen.map(f => `<li>${esc(f)}</li>`).join("")}</ul></div>`)}
+    ${abschnitt("Mit KI durchführen", kiHTML(m))}
+    ${abschnitt("Mehr dazu in der Design Bibliothek", quellenHTML(m))}
+    ${abschnitt("Bei uns ausprobiert", `<div id="erf-block">${erfahrungenHTML(m)}</div>`)}`;
+}
+
+function openSheet(id, setzeHash = true){
+  const m = M[id]; if (!m) return;
+  S.offen = id;
+  if (!$("#sheet").classList.contains("on")) S.ausloeser = document.activeElement;
+  renderDetail(m);
+  $("#sheet").hidden = false; $("#backdrop").hidden = false;
+  requestAnimationFrame(() => { $("#sheet").classList.add("on"); $("#backdrop").classList.add("on"); });
+  $("#sheet").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  if (setzeHash && location.hash !== "#m-" + id){ try { history.replaceState(null, "", "#m-" + id); } catch { location.hash = "m-" + id; } }
+  setTimeout(() => $("#schliessen").focus({ preventScroll: true }), 60);
+}
+function closeSheet(){
+  if (!S.offen) return;
+  S.offen = null; kiAbbrechen();
+  $("#sheet").classList.remove("on"); $("#backdrop").classList.remove("on");
+  document.body.style.overflow = "";
+  setTimeout(() => { if (!S.offen){ $("#sheet").hidden = true; $("#backdrop").hidden = true; } }, 260);
+  try { history.replaceState(null, "", location.pathname + location.search); } catch {}
+  if (S.ausloeser && document.contains(S.ausloeser)) S.ausloeser.focus({ preventScroll: true });
+}
+
+/* ----- Text, Kopieren, Datei ----- */
+function methodeAlsText(m){
+  const q = m.quellen.map(x => { const b = BUECHER[x.b] || [x.b, ""]; return `- ${b[0]} (${b[1]}) – ${x.bezug}: ${x.h}`; }).join("\n") || "- Noch kein Buch im Bestand";
+  return `# ${m.name} (${m.orig})\n\n${m.kurz}\n\nDauer: ${dauerText(m.dauer)} · ${m.personen} · Material: ${m.material}\nErgebnis: ${m.ergebnis}\n\n## So geht's\n${m.schritte.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\n## In fünf Minuten, allein\n${m.kurz5}\n\n## Beispiel\n${m.beispiel}\n\n## Stolperstellen\n${m.fallen.map(f => "- " + f).join("\n")}\n\n## Mehr dazu in der Design Bibliothek\n${q}\n\nAus der GAUSS Werkstatt`;
+}
+async function kopiere(text, meldung){
+  try { await navigator.clipboard.writeText(text); toast(meldung); return; } catch {}
+  const t = document.createElement("textarea"); t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+  document.body.appendChild(t); t.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch {}
+  t.remove(); toast(ok ? meldung : "Kopieren geht hier nicht. Bitte den Text markieren und kopieren.");
+}
+let toastTimer;
+function toast(t){ const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 2600); }
+
+/* ----- KI ----- */
+const KI_RAHMEN = "Du hilfst Mitarbeitenden von GAUSS LVS, einem Softwarehersteller für soziale Dienste, Jugendämter und Verwaltung, eine Arbeitsmethode im Alltag anzuwenden. Antworte auf Deutsch, sachlich, kompakt und ohne Fachjargon. Gliedere mit kurzen Zwischenüberschriften (Zeilen, die mit ## beginnen) und Aufzählungen (Zeilen, die mit - beginnen). Verwende keine Tabellen. Erfinde keine Namen und keine personenbezogenen Daten. Kennzeichne Annahmen als Annahmen. Das Ergebnis ist ein Vorschlag, keine Entscheidung.";
+function kiPrompt(m, eingabe){
+  return `${KI_RAHMEN}\n\nMethode: ${m.name} (${m.orig}). ${m.kurz}\nSchritte der Methode:\n${m.schritte.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nAufgabe: ${m.ki}\n\nEingabe der Person:\n${eingabe || "[Hier deine Stichpunkte einfügen]"}`;
+}
+function md(text){
+  const zeilen = String(text).split(/\r?\n/); let html = "", liste = null;
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const zu = () => { if (liste){ html += `</${liste}>`; liste = null; } };
+  for (let z of zeilen){
+    z = z.trimEnd();
+    if (/^\s*-{3,}\s*$/.test(z)) continue;
+    if (/^#{1,4}\s+/.test(z)){ zu(); html += `<h3>${inline(z.replace(/^#+\s+/, ""))}</h3>`; continue; }
+    if (/^\s*[-*•]\s+/.test(z)){ if (liste !== "ul"){ zu(); html += "<ul>"; liste = "ul"; } html += `<li>${inline(z.replace(/^\s*[-*•]\s+/, ""))}</li>`; continue; }
+    if (/^\s*\d+[.)]\s+/.test(z)){ if (liste !== "ol"){ zu(); html += "<ol>"; liste = "ol"; } html += `<li>${inline(z.replace(/^\s*\d+[.)]\s+/, ""))}</li>`; continue; }
+    if (/^\|.*\|$/.test(z)){ if (/^\|[\s:|-]+\|$/.test(z)) continue; zu(); html += `<p>${inline(z.slice(1, -1).split("|").map(c => c.trim()).join(" · "))}</p>`; continue; }
+    if (!z.trim()){ zu(); continue; }
+    zu(); html += `<p>${inline(z)}</p>`;
+  }
+  zu(); return html;
+}
+let kiCtrl = null, kiText = "";
+function kiAbbrechen(){ if (kiCtrl){ try { kiCtrl.abort(); } catch {} kiCtrl = null; } }
+async function kiAnwenden(m){
+  const eingabe = $("#ki-eingabe").value.trim();
+  if (!eingabe){ toast("Bitte zuerst ein paar Stichpunkte eingeben."); $("#ki-eingabe").focus(); return; }
+  kiAbbrechen(); kiCtrl = new AbortController(); kiText = "";
+  const btn = $("#ki-los"), aus = $("#ki-ausgabe");
+  $("#ki-block").hidden = false; btn.disabled = true; btn.textContent = "Claude arbeitet …";
+  aus.innerHTML = `<p class="warte">Claude wendet „${esc(m.name)}“ an …</p>`;
+  try {
+    const r = await KI(kiPrompt(m, eingabe), { signal: kiCtrl.signal, onText: u => { kiText = u.text; if (kiText) aus.innerHTML = md(kiText); } });
+    kiText = r.text || kiText; aus.innerHTML = md(kiText);
+    if (r.truncated) aus.insertAdjacentHTML("beforeend", `<p class="meta">Die Antwort wurde gekürzt. Für mehr: Eingabe eingrenzen.</p>`);
+  } catch (e){
+    if (e && e.name === "AbortError") return;
+    const code = e && e.code;
+    aus.innerHTML = `<p class="meta">${code === "rate_limited" ? "Gerade zu viele Anfragen. Bitte in einer Minute noch einmal." : code === "not_granted" ? "Die KI ist für diese Seite nicht freigegeben. Du kannst den Prompt kopieren und in deinem Werkzeug nutzen." : "Das hat nicht geklappt. Bitte noch einmal versuchen oder den Prompt kopieren."}</p>`;
+    if (e && e.text){ kiText = e.text; aus.insertAdjacentHTML("afterbegin", md(e.text)); }
+  } finally {
+    if (S.offen === m.id && $("#ki-los")){ btn.disabled = false; btn.textContent = "Noch einmal anwenden"; }
+    kiCtrl = null;
+  }
+}
+async function finder(){
+  const eingabe = $("#finder-eingabe").value.trim();
+  if (!eingabe){ toast("Beschreib kurz, was ansteht."); $("#finder-eingabe").focus(); return; }
+  const btn = $("#finder-los"), aus = $("#finder-ergebnis");
+  btn.disabled = true; btn.textContent = "Suche passende Methoden …"; aus.innerHTML = "";
+  const katalog = METHODEN.map(m => `${m.id} | ${m.name} | ${m.kurz} | ${m.sit.map(s => SIT[s].t).join(", ")} | ${dauerText(m.dauer)}`).join("\n");
+  const prompt = `${KI_RAHMEN}\n\nWähle aus dem folgenden Katalog genau drei Methoden, die am besten zur Situation der Person passen. Antworte nur mit JSON in der Form {"vorschlaege":[{"id":"…","grund":"ein Satz, warum diese Methode hier hilft, in der Du-Form"}]}. Verwende nur IDs aus dem Katalog.\n\nKatalog (id | Name | Kurzbeschreibung | Situationen | Dauer):\n${katalog}\n\nSituation der Person:\n${eingabe}`;
+  try {
+    const r = await KI.json(prompt, { modelTier: "quick" });
+    const v = (r && Array.isArray(r.vorschlaege) ? r.vorschlaege : []).filter(x => x && M[x.id]).slice(0, 3);
+    aus.innerHTML = v.length ? v.map(x => zeile(M[x.id], `<span class="grund">${esc(x.grund || M[x.id].kurz)}</span>`)).join("")
+      : `<p class="meta" style="margin:0">Keine eindeutige Empfehlung. Probier es mit einer etwas genaueren Beschreibung.</p>`;
+  } catch (e){
+    aus.innerHTML = `<p class="meta" style="margin:0">${e && e.code === "rate_limited" ? "Gerade zu viele Anfragen. Bitte in einer Minute noch einmal." : e && e.code === "not_granted" ? "Die KI ist für diese Seite nicht freigegeben. Nutze die Situationen oben." : "Das hat nicht geklappt. Bitte noch einmal versuchen."}</p>`;
+  } finally { btn.disabled = false; btn.textContent = "Passende Methoden finden"; }
+}
+
+/* ----- Erfahrungen ----- */
+async function erfahrungEintragen(m){
+  const k = $("#e-kuerzel").value.trim().toUpperCase(), satz = $("#e-satz").value.trim();
+  if (!/^[A-ZÄÖÜ]{2,3}$/.test(k)){ toast("Bitte dein Kürzel mit 2 oder 3 Buchstaben eingeben."); $("#e-kuerzel").setAttribute("aria-invalid", "true"); $("#e-kuerzel").focus(); return; }
+  const btn = $("#erfahren-form button[type=submit]"); btn.disabled = true;
+  try {
+    await ERF_COL.add({ methode: m.id, kuerzel: k, satz: satz.slice(0, 200), ts: Date.now() });
+    ls.set("werkstatt.kuerzel", k); toast("Danke. Eingetragen.");
+  } catch (e){
+    btn.disabled = false;
+    toast(e && (e.code === "permission_denied" || e.code === "not_granted") ? "Eintragen ist mit deinen Rechten nicht möglich." : "Eintragen hat nicht geklappt. Bitte noch einmal.");
+  }
+}
+
+/* ----- Ereignisse ----- */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-id],[data-sit],[data-dauer],#zuruecksetzen,#leeren,#merk-oben,#schliessen,#backdrop,#d-merken,#d-text,#d-datei,#ki-los,#ki-prompt,#ki-kopieren,#finder-los");
+  if (!el) return;
+  if (el.matches("#backdrop,#schliessen")) return closeSheet();
+  if (el.dataset.id){ e.preventDefault(); return openSheet(el.dataset.id); }
+  if (el.dataset.sit !== undefined){
+    S.sit = S.sit === el.dataset.sit && el.classList.contains("kachel") ? "" : el.dataset.sit; render();
+    if (el.classList.contains("kachel")) $("#liste-titel").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth", block: "start" });
+    return;
+  }
+  if (el.dataset.dauer !== undefined){ S.dauer = el.dataset.dauer; return render(); }
+  if (el.id === "zuruecksetzen"){ S.sit = ""; S.dauer = ""; S.q = ""; $("#q").value = ""; return render(); }
+  if (el.id === "leeren"){ S.q = ""; $("#q").value = ""; render(); return $("#q").focus(); }
+  if (el.id === "merk-oben"){
+    if (!S.merk.length) return toast("Noch nichts gemerkt. Öffne eine Methode und tippe auf Merken.");
+    S.sit = ""; S.dauer = ""; S.q = ""; $("#q").value = ""; render(); return $("#merk-titel").scrollIntoView({ block: "start" });
+  }
+  const m = M[S.offen]; if (!m) { if (el.id === "finder-los") finder(); return; }
+  if (el.id === "d-merken"){
+    S.merk = S.merk.includes(m.id) ? S.merk.filter(x => x !== m.id) : [...S.merk, m.id]; ls.set("werkstatt.merk", S.merk);
+    const an = S.merk.includes(m.id); el.setAttribute("aria-pressed", an); el.innerHTML = ICON_MERK + (an ? "Gemerkt" : "Merken");
+    toast(an ? "Auf der Merkliste." : "Von der Merkliste entfernt."); return render();
+  }
+  if (el.id === "d-text") return kopiere(methodeAlsText(m), "Methode kopiert.");
+  if (el.id === "d-datei"){
+    DL.save({ filename: `${m.id}.md`, data: new Blob([methodeAlsText(m)], { type: "text/markdown" }) })
+      .then(() => toast("Gespeichert.")).catch(err => toast(err && err.code === "declined" ? "Abgebrochen." : "Speichern geht in dieser Ansicht nicht."));
+    return;
+  }
+  if (el.id === "ki-los") return kiAnwenden(m);
+  if (el.id === "ki-prompt") return kopiere(kiPrompt(m, $("#ki-eingabe").value.trim()), "Prompt kopiert. Einfach in dein KI-Werkzeug einfügen.");
+  if (el.id === "ki-kopieren") return kopiere(kiText, "Ergebnis kopiert.");
+});
+document.addEventListener("submit", e => {
+  if (e.target.id !== "erfahren-form") return;
+  e.preventDefault(); const m = M[S.offen]; if (m && ERF_COL) erfahrungEintragen(m);
+});
+$("#q").addEventListener("input", e => { S.q = e.target.value; render(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.offen) closeSheet(); });
+window.addEventListener("hashchange", () => { const h = location.hash.match(/^#m-(.+)$/); if (h && h[1] !== S.offen) openSheet(h[1], false); else if (!h && S.offen) closeSheet(); });
+
+/* ----- Start ----- */
+$("#bib-link").href = BIB_URL;
+$("#finder-hinweis").innerHTML = DATENSCHUTZ;
+render();
+{ const h = location.hash.match(/^#m-(.+)$/); if (h) openSheet(h[1], false); }
+
+/* ----- Laufzeit: Download, gemeinsamer Speicher (Apps Script), KI über Apps Script ----- */
+DL = { save({ filename, data }){
+  return new Promise((ok, fail) => { try {
+    const u = URL.createObjectURL(data), a = document.createElement("a");
+    a.href = u; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(u), 4000); ok();
+  } catch (e){ fail(e); } });
+} };
+
+async function netz(url, opt = {}, ms = 30000){
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  if (opt.signal) opt.signal.addEventListener("abort", () => c.abort());
+  try {
+    const r = await fetch(url, Object.assign({}, opt, { signal: c.signal, redirect: "follow" }));
+    const j = await r.json();
+    if (!j || j.ok === false){ const e = new Error((j && j.error) || "Fehler"); e.code = j && j.code; throw e; }
+    return j;
+  } catch (e){ if (opt.signal && opt.signal.aborted){ const a = new Error("abgebrochen"); a.name = "AbortError"; throw a; } throw e; }
+  finally { clearTimeout(t); }
+}
+const post = (p, ms, signal) => netz(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p), signal }, ms);
+
+function erfSetzen(liste){
+  S.erf = liste.filter(x => x && M[x.methode]).sort((a, b) => b.ts - a.ts);
+  render();
+  if (S.offen && $("#erf-block")) $("#erf-block").innerHTML = erfahrungenHTML(M[S.offen]);
+}
+
+if (CONFIG.API_URL){
+  DB = true;
+  ERF_COL = { async add(e){ const j = await post({ action: "erfahrung", ...e }); erfSetzen(j.erfahrungen || [...S.erf, e]); } };
+  const laden = () => netz(CONFIG.API_URL + "?action=list", { cache: "no-store" }).then(j => {
+    erfSetzen(j.erfahrungen || []);
+    if (j.ki && !KI){
+      KI = async (prompt, o = {}) => { const j = await post({ action: "ki", prompt }, 120000, o.signal); return { text: j.text || "", truncated: !!j.truncated }; };
+      KI.json = async prompt => { const j = await post({ action: "ki", prompt, json: true }, 60000); return j.daten; };
+      $("#b-finder").hidden = false;
+      if (S.offen){ const t = $("#ki-eingabe") ? $("#ki-eingabe").value : ""; renderDetail(M[S.offen]); if ($("#ki-eingabe")) $("#ki-eingabe").value = t; }
+    }
+  }).catch(() => {});
+  laden();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") laden(); });
+} else {
+  /* Vorschau: Erfahrungen nur in diesem Browser */
+  DB = true;
+  ERF_COL = { async add(e){ const l = [...ls.get("werkstatt.erfahrungen", []), e]; ls.set("werkstatt.erfahrungen", l); erfSetzen(l); } };
+  erfSetzen(ls.get("werkstatt.erfahrungen", []));
+}
+
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+<script>
+/* GAUSS Werkzeug-Brücke: meldet dem Werkzeugfenster im Design System, wenn eine Ebene (Blatt, Dialog, Leser) offen ist. Wirkt nur eingebettet. */
+(function(){if(window===window.parent)return;
+  function an(m){var w=window;while(w!==w.parent){w=w.parent;try{w.postMessage(Object.assign({gauss:"werkzeug"},m),"*");}catch(e){}}}
+  an({typ:"bereit",titel:document.title});
+  var EBENE=".sheet.on,.lightbox:not([hidden]),.leser:not([hidden]),dialog[open]",war=false;
+  new MutationObserver(function(){var o=!!document.querySelector(EBENE);if(o!==war){war=o;an({typ:"ebene",offen:o});}})
+    .observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class","hidden","open"]});
+})();
+</script>
+
+</body></html>
