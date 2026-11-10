@@ -2775,6 +2775,7 @@ function menueHtml(){
     ${S.ablage ? `<p class="etikett menue-etikett">Ordner und Excel</p><button role="menuitem" data-pfad-kopieren="${esc(ablagePfad(""))}"><span>Ablage-Pfad kopieren</span><span class="meta">${S.ablage.fehler ? "Hinweis" : S.ablage.excel === "geöffnet" ? "Excel offen" : "synchron"}</span></button>${S.ablage.fehler ? `<p class="meta menue-hinweis">${esc(S.ablage.fehler)}</p>` : ""}<div class="menue-linie" role="separator"></div>` : ""}
     <button role="menuitem" data-menue="verwaltung"><span>Verwaltung</span>${S.admin ? `<span class="meta">angemeldet</span>` : VICON.schloss}</button>
     <div class="menue-linie" role="separator"></div>
+    ${hatDemo() && (S.admin || !S.server) ? `<button role="menuitem" data-menue="demo"><span>Beispieldaten entfernen</span></button>` : ""}
     <button role="menuitem" data-menue="kuerzel"><span>Mein Kürzel</span>${k ? `<span class="meta kuerzel-text">${esc(k)}</span>` : ""}</button>
 `;
 }

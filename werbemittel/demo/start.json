@@ -46,7 +46,7 @@
    "datum": "2026-11-10",
    "am": "2026-11-10T08:00:00.000Z",
    "kuerzel": "NNE",
-   "notiz": "Beispiel: Startbestand gezählt. Mit „Demo entfernen“ in den Einstellungen verschwindet der Beispielartikel samt Buchung.",
+   "notiz": "Beispiel: Startbestand gezählt. Mit „Beispieldaten entfernen“ in den Einstellungen verschwindet der Beispielartikel samt Buchung.",
    "demo": true
   }
  ],
