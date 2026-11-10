@@ -763,6 +763,7 @@ a.taste{text-decoration:none}
 .kt.icon.kt-zeile{width:32px;height:32px;color:var(--text-sekundaer)}
 .kt.icon.frei{background-color:var(--objekt);border-color:var(--linie)}
 .kt.klein{height:30px;padding:0 12px;font-size:12.5px}
+.kt.gefahr{background-color:var(--status-fehler-text);color:var(--objekt);font-weight:600}
 .kt:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
 .kt.kt-zeile:hover:not(:disabled){color:var(--foreground)}
 .kt.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 14%,transparent),color-mix(in oklab,var(--primary-foreground) 14%,transparent))}
@@ -788,53 +789,69 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   main.wrap,#minikopf{display:none!important}
   .desk{display:block;position:fixed;inset:0;padding-top:env(safe-area-inset-top,0px)}
   .drahmen{height:100%;display:grid;grid-template-columns:var(--nav-b,248px) minmax(0,1fr);transition:grid-template-columns .2s ease-out}
-  .drahmen[data-nav="zu"]{--nav-b:64px}
+  .drahmen[data-nav="zu"]{--nav-b:72px}
 
   /* Hauptleiste */
   .dnav{display:flex;flex-direction:column;min-height:0;padding-left:env(safe-area-inset-left,0px)}
   .dnav-kopf,.dnav-fuss{overflow:hidden}
-  .dnav-kopf{height:64px;flex:none;display:flex;align-items:center;gap:10px;padding:0 20px;color:var(--foreground);text-decoration:none;border-bottom:1px solid var(--linie)}
+  .dnav-kopf{height:64px;flex:none;display:flex;align-items:center;gap:10px;padding:0 23px;color:var(--foreground);text-decoration:none;border-bottom:1px solid var(--linie)}
   .dnav-zeichen{width:26px;height:26px;flex:none}
   .dnav-titel{display:grid;line-height:18px;min-width:0}
   .dnav-name{font-size:15px;font-weight:600;letter-spacing:-.012em;white-space:nowrap}
   .dnav-unterzeile{font-size:12px;line-height:16px;color:var(--text-sekundaer);white-space:nowrap}
-  .dnav-liste{flex:1;min-height:0;overflow-y:auto;padding:12px;display:grid;align-content:start;gap:2px}
-  .dnav-ziel{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;border-radius:8px;color:var(--text-sekundaer);font-size:13.5px;line-height:20px;font-weight:500;width:100%;border:0;background:transparent;text-align:left;white-space:nowrap}
+  .dnav-liste{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:12px;display:grid;align-content:start;gap:2px}
+  .dnav-unten{flex:none;padding:8px 12px;display:grid;gap:2px}
+  .dnav-unten:empty{display:none}
+  .dnav-ziel{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;color:var(--text-sekundaer);font-size:13.5px;line-height:20px;font-weight:500;width:100%;border:0;background:transparent;text-align:left;white-space:nowrap;position:relative}
   .dnav-ziel:hover{background:var(--hover);color:var(--foreground)}
   .dnav-ziel[aria-current="page"]{background:var(--ort-aktiv);color:var(--foreground);font-weight:600}
-  .dnav-ziel svg{width:20px;height:20px;flex:none}
+  .dnav-ziel[aria-current="page"] svg{color:var(--gewaehlt)}
+  .dnav-ziel svg{width:22px;height:22px;flex:none}
   .dnav-ziel .text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
   .dnav-zahl{min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:var(--status-warnung-flaeche);color:var(--status-warnung-text);font-size:12px;font-weight:600;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
   .dnav-zahl.neutral{background:var(--ort-aktiv);color:var(--foreground)}
-  .dnav-etikett{margin:14px 0 0;padding:8px 10px 6px}
-  .dnav-fuss{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linie)}
-  .dnav-fuss-text{font-size:12px;color:var(--tertiaer);padding-left:10px;white-space:nowrap}
+  .dnav-trenn{height:1px;background:var(--linie);margin:10px 8px}
+  .dnav-fuss{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linie)}
+  .dnav-fuss-text{font-size:12px;color:var(--tertiaer);padding-left:12px;white-space:nowrap}
   .dnav-klapp{width:44px;height:44px;border-radius:999px;border:0;background:transparent;color:var(--tertiaer);display:grid;place-items:center;flex:none}
   .dnav-klapp:hover{background:var(--hover);color:var(--foreground)}
   .dnav-klapp svg{width:20px;height:20px;transition:transform .2s}
-  .drahmen[data-nav="zu"] :is(.dnav-titel,.dnav-ziel .text,.dnav-fuss-text,.dnav-etikett){display:none}
-  .drahmen[data-nav="zu"] .dnav-kopf{padding:0 19px}
-  .drahmen[data-nav="zu"] .dnav-ziel{justify-content:center;padding:0;position:relative}
-  .drahmen[data-nav="zu"] .dnav-zahl{position:absolute;top:2px;right:2px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
+  .drahmen[data-nav="zu"] :is(.dnav-titel,.dnav-ziel .text,.dnav-fuss-text){display:none}
+  .drahmen[data-nav="zu"] .dnav-ziel{justify-content:center;padding:0}
+  .drahmen[data-nav="zu"] .dnav-zahl{position:absolute;top:3px;right:3px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
   .drahmen[data-nav="zu"] .dnav-fuss{justify-content:center}
   .drahmen[data-nav="zu"] .dnav-klapp svg{transform:rotate(180deg)}
-  .drahmen[data-nav="zu"] .dnav-liste{padding:12px 10px}
 
-  /* Hauptkarte und globaler Kopf: Titel links, Suche Mitte, Primäraktion und Einstellungen rechts */
+  /* Tooltip der eingeklappten Leiste: dunkelblau, weiße Schrift */
+  .dtip{position:fixed;z-index:80;pointer-events:none;background:#1B2F54;color:#fff;font-size:13px;line-height:18px;font-weight:500;padding:6px 10px;border-radius:8px;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(9,23,61,.45);transform:translateY(-50%);animation:tip-ein 120ms ease-out both}
+  .dtip::before{content:"";position:absolute;left:-4px;top:50%;width:8px;height:8px;background:inherit;transform:translateY(-50%) rotate(45deg);border-radius:1px}
+  @keyframes tip-ein{from{opacity:0;translate:-4px 0}to{opacity:1;translate:0 0}}
+
+  /* Hauptkarte und globaler Kopf: Titel links, Suche immer mittig, Primäraktion und Einstellungen rechts */
   .dhaupt{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--background);border-left:1px solid var(--linie);border-radius:20px 0 0 20px;overflow:hidden;position:relative;box-shadow:var(--nav-schatten)}
-  .dkopf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px) minmax(0,1fr);align-items:center;gap:16px;height:64px;padding:0 max(20px,env(safe-area-inset-right,0px)) 0 24px;border-bottom:1px solid var(--linie);position:relative;z-index:6}
-  .dkopf-titel{display:flex;align-items:center;gap:10px;min-width:0;opacity:0;transform:translateY(4px);transition:opacity 160ms,transform 160ms}
-  .dkopf.an .dkopf-titel{opacity:1;transform:none}
+  .dkopf{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,440px) minmax(0,1fr);align-items:center;gap:16px;height:64px;padding:0 max(20px,env(safe-area-inset-right,0px)) 0 28px;border-bottom:1px solid var(--linie);position:relative;z-index:6}
+  .dkopf-titel{display:flex;align-items:center;gap:10px;min-width:0}
   .dkopf-ic{width:32px;height:32px;border-radius:10px;flex:none;display:grid;place-items:center;background:var(--objekt);border:1px solid var(--linie);color:var(--text-sekundaer)}
   .dkopf-ic svg{width:18px;height:18px}
-  .dkopf h1{margin:0;font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .dkopf-rechts{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+  .dkopf h1{margin:0;font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .dkopf-rechts{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+  .dkopf-rechts .kt.primaer{white-space:nowrap}
+
+  /* Breadcrumb wie im Design System: Chevron, Link sekundär unterstrichen, aktuelle Seite fett */
+  .bc{min-width:0}
+  .bc ol{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:8px;min-width:0}
+  .bc li{display:flex;align-items:center;gap:8px;min-width:0}
+  .bc li+li::before{content:"";flex:none;width:6px;height:6px;border-top:1.5px solid var(--tertiaer);border-right:1.5px solid var(--tertiaer);transform:rotate(45deg);margin:0 4px 0 0}
+  .bc a{color:var(--text-sekundaer);font-size:16px;line-height:22px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in oklab,var(--text-sekundaer) 45%,transparent);white-space:nowrap;border-radius:4px}
+  .bc a:hover{color:var(--foreground);text-decoration-color:currentColor}
+  .bc li:first-child{flex:none}
+  .bc li:last-child{min-width:0;flex:0 1 auto;overflow:hidden}
 
   /* Globale Suche */
   .gs{position:relative;min-width:0}
   .gs-feld{position:relative}
   .gs-feld>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
-  .gs-feld input{width:100%;min-height:38px;padding:8px 72px 8px 38px;border-radius:999px;border:1px solid var(--rahmen-leise);background:var(--objekt);color:var(--foreground);font:inherit;font-size:14px;line-height:20px;box-shadow:0 1px 2px rgba(9,23,61,.05),0 4px 12px -4px rgba(9,23,61,.10)}
+  .gs-feld input{width:100%;min-height:38px;padding:8px 72px 8px 38px;border-radius:999px;border:1px solid var(--rahmen-leise);background:var(--objekt);color:var(--foreground);font:inherit;font-size:14px;line-height:20px;box-shadow:0 1px 2px rgba(9,23,61,.05),0 4px 12px -4px rgba(9,23,61,.10);text-overflow:ellipsis}
   .gs-feld input::placeholder{color:var(--tertiaer)}
   .gs-feld input::-webkit-search-cancel-button{display:none}
   .gs-feld input:hover{border-color:var(--rahmen)}
@@ -842,7 +859,7 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .gs-kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none}
   .gs.hat-text .gs-kbd{display:none}
   .gs-leeren{position:absolute;right:4px;top:50%;transform:translateY(-50%)}
-  .gs-panel{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--popover);border:1px solid var(--linie);border-radius:16px;box-shadow:var(--schatten-hoch);padding:6px;max-height:min(70vh,560px);overflow-y:auto;animation:ebene-ein 140ms ease-out both}
+  .gs-panel{position:absolute;left:50%;width:max(100%,480px);transform:translateX(-50%);top:calc(100% + 8px);background:var(--popover);border:1px solid var(--linie);border-radius:16px;box-shadow:var(--schatten-hoch);padding:6px;max-height:min(70vh,560px);overflow-y:auto}
   .gs-gruppe{margin:0;padding:10px 10px 4px}
   .gs-opt{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:52px;padding:6px 10px;border-radius:10px;cursor:pointer}
   .gs-opt[aria-selected="true"]{background:var(--ort-aktiv)}
@@ -859,16 +876,16 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .gs-filtern:hover{background-image:linear-gradient(var(--hover),var(--hover))}
   .gs-fuss{display:flex;gap:14px;padding:8px 10px 4px;font-size:12px;color:var(--tertiaer);border-top:1px solid var(--linie)}
 
-  /* Inhalt und Seitenblatt nebeneinander */
-  .dkoerper{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1fr)}
-  .dkoerper.mit-panel{grid-template-columns:minmax(0,1fr) var(--panel-b,560px)}
+  /* Inhalt: Seitenscrollbar am Bildschirmrand, Detailkarte liegt darüber und scrollt nicht mit */
+  .dkoerper{position:relative;min-height:0}
+  .dscroll{position:absolute;inset:0;overflow-y:auto;scrollbar-width:thin;scrollbar-gutter:stable}
+  .dseite{max-width:1180px;margin:0 auto;padding:24px 32px 64px;display:grid;gap:16px;align-content:start;transition:padding-right .2s ease-out}
+  .dkoerper.mit-panel .dseite{max-width:none;margin:0;padding-right:calc(var(--panel-b,560px) + 56px)}
   .dkoerper.mit-panel.breit{--panel-b:860px}
-  .dscroll{min-height:0;overflow-y:auto;scrollbar-width:thin}
-  .dseite{max-width:1180px;margin:0 auto;padding:28px 32px 64px;display:grid;gap:16px;align-content:start}
-  .dseitenkopf{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .dseitenkopf .titel-seite{font-size:28px;line-height:36px}
-  .dseitenkopf .meta{margin:4px 0 0}
+  .dseitenkopf{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:40px}
+  .dseiten-meta{margin:0;font-size:14px;color:var(--text-sekundaer)}
   .dwerkzeuge{display:flex;align-items:center;gap:8px}
+  .dwerkzeuge #ds-extra{display:contents}
   .dchips{display:flex;flex-wrap:wrap;gap:8px}
   .dchips:empty{display:none}
   .dchips .chip{min-height:32px;padding:0 12px;font-size:13.5px}
@@ -883,7 +900,7 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   /* Tabelle (Widget Typ A: Titel außen, weiße Karte), Zeilen einzeilig */
   .dtab-wrap{overflow-x:auto}
   .dtab{width:100%;border-collapse:collapse;font-size:14px;line-height:20px}
-  .dtab th{position:sticky;top:0;text-align:left;font-size:12px;line-height:16px;font-weight:500;color:var(--tertiaer);padding:10px 12px;border-bottom:1px solid var(--linie);background:var(--objekt);white-space:nowrap}
+  .dtab th{text-align:left;font-size:12px;line-height:16px;font-weight:500;color:var(--tertiaer);padding:10px 12px;border-bottom:1px solid var(--linie);background:var(--objekt);white-space:nowrap}
   .dtab td{padding:0 12px;height:56px;border-bottom:1px solid var(--linie);white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis}
   .dtab tr:last-child td{border-bottom:0}
   .dtab th:first-child,.dtab td:first-child{padding-left:16px}
@@ -896,11 +913,14 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .dtab .sek{color:var(--text-sekundaer)}
   .dtab .neg{color:var(--status-fehler-text)}
   .dtab .badge{height:22px;padding:0 8px}
+  .dtab .pfeil{width:28px;color:var(--tertiaer)}
+  .dtab .pfeil .chev{width:7px;height:12px}
   .dzelle{display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:0;text-align:left;min-height:44px;max-width:100%;color:var(--foreground)}
   .dzelle .kachel{width:36px;height:36px;border-radius:10px}
   .dzelle .kachel svg{width:18px;height:18px}
   .dname{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .dkurz{max-width:240px}
+  .dkoerper.mit-panel .dtab .opt{display:none}
 
   /* Karten */
   .dkarten{display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:16px}
@@ -921,25 +941,110 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .menge-k b{font-size:17px;color:var(--foreground)}
   .dkarte-reihe{display:flex;gap:6px;padding:14px 14px 0}
   .dkarte-reihe .kachel{width:44px;height:44px;border-radius:10px}
-  .dkarte.vorgang{grid-template-rows:auto 1fr}
 
-  /* Seitenblatt rechts: nicht modal, Liste bleibt bedienbar */
-  .dpanel{min-height:0;display:flex;flex-direction:column;background:var(--objekt);border-left:1px solid var(--linie);box-shadow:-12px 0 28px -20px rgba(9,23,61,.25);animation:panel-rein 200ms cubic-bezier(.22,1,.36,1) both}
-  @keyframes panel-rein{from{opacity:0;translate:16px 0}to{opacity:1;translate:0 0}}
-  .dpanel-kopf{display:flex;align-items:center;gap:4px;height:52px;flex:none;padding:0 10px 0 20px;border-bottom:1px solid var(--linie)}
-  .dpanel-kopf .luecke{flex:1}
-  .dpanel-body{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding:20px 24px 40px;background:var(--background);display:flex;flex-direction:column;gap:20px}
+  /* Unterseite eines Vorgangs */
+  .dvkarte{background:var(--objekt);border:1px solid var(--linie);border-radius:var(--radius-karte);box-shadow:var(--schatten-widget);padding:20px 24px;display:grid;gap:16px}
+  .dfelder{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px 24px;margin:0}
+  .dfelder>div{display:grid;gap:2px;min-width:0}
+  .dfelder dt{font-size:12px;line-height:16px;color:var(--tertiaer);font-weight:500}
+  .dfelder dd{margin:0;font-size:14px;line-height:20px;color:var(--foreground);overflow-wrap:anywhere}
+  .dfelder dd.gross{font-size:20px;line-height:28px;font-weight:600}
+  .dvnotiz{margin:0;padding-top:16px;border-top:1px solid var(--linie);font-size:14px;line-height:21px;color:var(--text-sekundaer);white-space:pre-wrap}
+  .dvrechnung{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--linie)}
+  .dvrechnung .meta{margin:0;font-weight:500}
+  .dbestaetigen{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 12px 12px 16px;border-radius:var(--radius-block);background:var(--status-fehler-flaeche, var(--status-warnung-flaeche));font-size:14px}
+  .dbestaetigen>span{flex:1;min-width:220px}
+  .dmenge-plus{color:var(--status-erfolg-text,var(--foreground))}
+
+  /* Detailkarte rechts: große weiße Karte mit weichem Schatten nach unten, nicht modal */
+  .dpanel{position:absolute;z-index:4;top:16px;bottom:20px;right:max(20px,env(safe-area-inset-right,0px));width:var(--panel-b,560px);max-width:calc(100% - 360px);display:flex;flex-direction:column;background:var(--objekt);border:1px solid var(--linie);border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(9,23,61,.04),0 12px 24px -12px rgba(9,23,61,.16),0 32px 56px -24px rgba(9,23,61,.22);animation:panel-rein 220ms cubic-bezier(.22,1,.36,1) both}
+  .dkoerper.breit .dpanel{--panel-b:860px}
+  @keyframes panel-rein{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
+  .dpanel-kopf{display:flex;align-items:flex-start;gap:4px;flex:none;padding:18px 12px 14px 24px;border-bottom:1px solid var(--linie)}
+  .dpanel-titel{flex:1;min-width:0;display:grid;gap:2px;padding-top:2px}
+  .dpanel-titel .dpanel-aktionen{margin-top:12px;padding-top:0;flex-wrap:wrap}
+  .dpanel-titel h2{margin:0;font-size:20px;line-height:28px;font-weight:600;letter-spacing:-.014em;overflow-wrap:anywhere}
+  .dpanel-titel .meta{margin:0;font-size:13px;line-height:18px}
+  #p-titel:focus,#p-titel:focus-visible{outline:none;box-shadow:none;background:none}
+  .dpanel-aktionen{display:flex;align-items:center;gap:6px;flex:none;padding-top:4px}
+  .dpanel-aktionen:empty{display:none}
+  .dpanel-aktionen .kt.klein{height:32px;font-size:13px;padding:0 12px 0 10px}
+  .dpanel-kopf>.kt{margin-top:2px}
+  .dpanel-body{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding:0 24px 28px;display:flex;flex-direction:column}
   .dpanel-body>*{flex:none}
   .dpanel-body [tabindex="-1"]:focus{outline:none}
-  .dkoerper.mit-panel .dtab .opt{display:none}
-  .dpanel-body .held{grid-template-columns:88px minmax(0,1fr)}
-  .dpanel-body .held .kachel{width:88px;height:88px}
-  .dpanel-body .held h2{font-size:22px;line-height:28px}
-  .dpanel-body .galerie{margin:0;padding:2px 0 6px}
-  .dpanel-body .galerie-bild{width:min(72%,300px)}
-  .dpanel.breit .dpanel-body .galerie-bild{width:300px}
-  .dpanel-body .galerie.einzeln .galerie-bild{max-width:320px}
-  .dpanel-body .aktionsleiste{margin-top:0}
+  .dpanel-fuss{flex:none;border-top:1px solid var(--linie);padding:12px 16px 14px 24px;background:var(--objekt)}
+  .dpanel-fuss:empty{display:none}
+
+  /* Bibliotheks-dl (zweispaltig, rechtsbündig) für Desktop-Felder zurücksetzen */
+  :is(.dart-kennzahlen,.dart-dl,.dfelder) :is(dt,dd){padding:0;text-align:left;box-shadow:none}
+  :is(.dart-kennzahlen,.dart-dl,.dfelder) dt{font-size:12px;line-height:16px}
+
+  /* Artikelseite in der Karte: scannbar, Kennzahlen zuerst */
+  .dart-kennzahlen{display:grid;grid-template-columns:minmax(0,1fr) max-content minmax(0,1fr) minmax(0,1.25fr);gap:0;margin:20px 0 0;border:1px solid var(--linie);border-radius:14px;overflow:hidden}
+  .dart-kennzahlen>div{padding:12px 14px;display:grid;gap:2px;align-content:start;min-width:0}
+  .dart-kennzahlen>div+div{border-left:1px solid var(--linie)}
+  .dart-kennzahlen dt{font-size:12px;line-height:16px;color:var(--tertiaer);font-weight:500;white-space:nowrap}
+  .dart-kennzahlen dd{margin:0;font-size:14px;line-height:20px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dart-kennzahlen dd.gross{font-size:24px;line-height:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .dart-kennzahlen dd.gross small{font-size:13px;font-weight:500;color:var(--text-sekundaer);letter-spacing:0}
+  .dart-kennzahlen dd .badge{height:22px;padding:0 8px}
+  .dart-kennzahlen .umbruch{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .dart-kennzahlen .hinweis{font-size:12px;line-height:16px;color:var(--text-sekundaer);font-weight:400;white-space:normal}
+  .dart-medien{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;margin-top:20px;align-items:start}
+  .dart-medien.ohne-foto{grid-template-columns:minmax(0,1fr)}
+  .dart-fotos{display:grid;grid-template-columns:repeat(3,56px);gap:8px;width:184px}
+  .dart-fotos button{border:1px solid var(--linie);border-radius:10px;background:var(--leiste);padding:0;aspect-ratio:1;overflow:hidden;position:relative;cursor:zoom-in}
+  .dart-fotos button:first-child{grid-column:1/-1;aspect-ratio:4/3;border-radius:14px}
+  .dart-fotos img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:8%}
+  .dart-fotos img.foto-voll{object-fit:cover;padding:0}
+  .dart-fotos button:hover{border-color:var(--rahmen)}
+  .dart-text{margin:0;font-size:14px;line-height:22px;color:var(--text-sekundaer)}
+  .dart-text.leer{color:var(--tertiaer)}
+  .dab{padding:20px 0 0;margin-top:20px;border-top:1px solid var(--linie);display:grid;gap:12px}
+  .dab>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .dab h3{margin:0;font-size:14px;line-height:20px;font-weight:600}
+  .dab>header .meta{margin:0;font-size:12.5px}
+  .dab .info-link{font-size:13px}
+  .dart-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;margin:0}
+  .dkoerper.breit .dart-dl{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dart-dl>div{display:grid;gap:2px;min-width:0}
+  .dart-dl dt{font-size:12px;line-height:16px;color:var(--tertiaer);font-weight:500}
+  .dart-dl dd{margin:0;font-size:14px;line-height:20px;overflow-wrap:anywhere}
+  .dgroessen{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));border:1px solid var(--linie);border-radius:12px;overflow:hidden}
+  .dgroessen>div{display:grid;justify-items:center;gap:2px;padding:8px 6px;border-right:1px solid var(--linie);margin-right:-1px}
+  .dgroessen span{font-size:12px;line-height:16px;color:var(--tertiaer);font-weight:500}
+  .dgroessen b{font-size:16px;line-height:22px;font-variant-numeric:tabular-nums}
+  .dgroessen b.null{color:var(--status-fehler-text)}
+  .dgroessen .summe{background:var(--leiste)}
+  .dverlauf{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13.5px;line-height:20px}
+  .dverlauf td{padding:0 8px;height:44px;border-top:1px solid var(--linie);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
+  .dverlauf tr:first-child td{border-top:0}
+  .dverlauf td:first-child{padding-left:0;width:84px;color:var(--text-sekundaer);font-variant-numeric:tabular-nums}
+  .dverlauf td:last-child{padding-right:0;width:72px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+  .dverlauf td .meta{font-size:12.5px;margin-left:6px}
+  .dverlauf tr{cursor:pointer}
+  .dverlauf tr:hover td{background:var(--hover)}
+  .dverlauf .plus{color:var(--status-erfolg-text,var(--foreground))}
+  .dverlauf-mehr{justify-self:start}
+  .dkommentare{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .dkommentare li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start}
+  .dkommentare .kz{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;background:var(--ort-aktiv);font-size:12px;font-weight:600;letter-spacing:.02em}
+  .dkommentare .kopf{display:flex;align-items:baseline;gap:8px;font-size:12.5px;color:var(--tertiaer)}
+  .dkommentare .kopf b{color:var(--foreground);font-size:13px}
+  .dkommentare p{margin:2px 0 0;font-size:14px;line-height:21px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .dkommentare .weg{margin-left:auto;border:0;background:none;color:var(--tertiaer);font-size:12.5px;padding:0 4px;min-height:24px;border-radius:6px}
+  .dkommentare .weg:hover{color:var(--status-fehler-text)}
+  .dkommentare .ja{color:var(--status-fehler-text);font-weight:600}
+  .dart-leer{margin:0;font-size:13.5px;color:var(--tertiaer)}
+
+  /* Kommentarfeld im Kartenfuß */
+  .dkform{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+  .dkform textarea{width:100%;min-height:40px;max-height:140px;resize:none;padding:9px 12px;border-radius:12px;border:1px solid var(--rahmen-leise);background:var(--objekt);color:var(--foreground);font:inherit;font-size:14px;line-height:20px;field-sizing:content}
+  .dkform textarea:focus{outline:2px solid var(--fokus);outline-offset:0;border-color:transparent}
+  .dkform-zeile{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tertiaer);min-height:24px}
+  .dkform-zeile input{width:64px;min-height:28px;padding:2px 8px;border-radius:8px;border:1px solid var(--rahmen-leise);background:var(--objekt);color:var(--foreground);font:inherit;font-size:13px;text-transform:uppercase}
+  .dkform-zeile .fehler-text{margin:0 0 0 auto;font-size:12.5px}
 
   /* Tiefere Ebenen: Popup-Fenster mittig */
   .sheet{top:50%;bottom:auto;left:50%;width:720px;margin-left:-360px;max-height:min(88vh,920px);border-radius:20px;opacity:0;transform:translateY(calc(-50% + 16px)) scale(.985);transition:transform 200ms cubic-bezier(.22,1,.36,1),opacity 160ms;padding:0 28px 28px}
@@ -950,14 +1055,26 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .sheet-fuss{bottom:-28px}
   .toast{bottom:24px}
 }
-@media (min-width:1024px) and (max-width:1279px){
-  .dkoerper.mit-panel{grid-template-columns:minmax(0,1fr) min(480px,50%)}
-  .dkoerper.mit-panel.breit{grid-template-columns:minmax(0,1fr) min(720px,62%)}
-  .dkopf{grid-template-columns:minmax(0,1fr) minmax(0,320px) auto}
-  .gs-kbd{display:none}
-  .dseite{padding:24px 24px 56px}
+@media (min-width:1024px) and (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .dpanel{box-shadow:0 1px 2px rgba(0,0,0,.3),0 16px 32px -12px rgba(0,0,0,.55),0 40px 64px -24px rgba(0,0,0,.6)}
 }
-@media (prefers-reduced-motion:reduce){.drahmen,.dpanel,.gs-panel,.sheet{transition:none!important;animation:none!important}}
+@media (min-width:1024px){
+  :root[data-theme="dark"] .dpanel{box-shadow:0 1px 2px rgba(0,0,0,.3),0 16px 32px -12px rgba(0,0,0,.55),0 40px 64px -24px rgba(0,0,0,.6)}
+}
+@media (min-width:1024px) and (max-width:1279px){
+  .dkopf{grid-template-columns:minmax(0,1fr) minmax(200px,340px) minmax(0,1fr);gap:12px;padding-left:24px}
+  .gs-kbd{display:none}
+  .gs-feld input{padding-right:40px}
+  .dkopf-rechts .kt.primaer .lang{display:none}
+  .dseite{padding:20px 24px 56px}
+  .dkoerper.mit-panel .dseite{padding-right:calc(var(--panel-b,480px) + 44px)}
+  .dpanel{--panel-b:480px}
+  .dkoerper.breit .dpanel{--panel-b:640px}
+  .dart-kennzahlen{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dart-kennzahlen>div:nth-child(3){border-left:0}
+  .dart-kennzahlen>div:nth-child(n+3){border-top:1px solid var(--linie)}
+}
+@media (prefers-reduced-motion:reduce){.drahmen,.dpanel,.gs-panel,.sheet,.dseite,.dtip{transition:none!important;animation:none!important}}
 </style>
 
 <div class="minikopf" id="minikopf" aria-hidden="true">
@@ -983,17 +1100,18 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
 </div>
 
 
-<!-- Desktop ab 1024 px: Hauptleiste links, globaler Kopf, Inhalt, Seitenblatt rechts (GAUSS Design System) -->
+<!-- Desktop ab 1024 px: Hauptleiste links, globaler Kopf, Inhalt, Detailkarte rechts (GAUSS Design System) -->
 <div class="desk" id="desk">
-  <div class="drahmen" id="drahmen" data-nav="offen">
+  <div class="drahmen" id="drahmen" data-nav="zu">
     <aside class="dnav" aria-label="Hauptnavigation">
-      <a class="dnav-kopf" href="#" id="dnav-start" aria-label="Werbemittel, zum Bestand"><svg class="dnav-zeichen" viewBox="0 0 156.31 156.31" aria-hidden="true"><polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="var(--logo-marke)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="var(--logo-marke)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg><span class="dnav-titel"><span class="dnav-name">Werbemittel</span><span class="dnav-unterzeile">GAUSS LVS</span></span></a>
+      <a class="dnav-kopf" href="#" id="dnav-start" data-tip="Werbemittel" aria-label="Werbemittel, zum Bestand"><svg class="dnav-zeichen" viewBox="0 0 156.31 156.31" aria-hidden="true"><polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="var(--logo-marke)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="var(--logo-marke)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg><span class="dnav-titel"><span class="dnav-name">Werbemittel</span><span class="dnav-unterzeile">GAUSS LVS</span></span></a>
       <nav class="dnav-liste" id="dnav" aria-label="Seiten"></nav>
-      <div class="dnav-fuss"><span class="dnav-fuss-text">GAUSS-LVS</span><button type="button" class="dnav-klapp" id="dnav-klapp" aria-label="Navigation einklappen" aria-expanded="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 5 7.5 10l5 5"/></svg></button></div>
+      <div class="dnav-unten" id="dnav-unten"></div>
+      <div class="dnav-fuss"><span class="dnav-fuss-text">GAUSS-LVS</span><button type="button" class="dnav-klapp" id="dnav-klapp" aria-label="Navigation ausklappen" data-tip="Navigation ausklappen" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 5 7.5 10l5 5"/></svg></button></div>
     </aside>
     <main class="dhaupt">
       <header class="dkopf" id="dkopf">
-        <div class="dkopf-titel"><span class="dkopf-ic" id="dk-ic" aria-hidden="true"></span><h1 id="dk-titel">Bestand</h1></div>
+        <div class="dkopf-titel" id="dk-titelblock"></div>
         <div class="gs" id="gs">
           <div class="gs-feld" role="search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
@@ -1008,19 +1126,20 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
           </div>
         </div>
         <div class="dkopf-rechts">
-          <button type="button" class="kt primaer" id="dk-ausgabe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ausgabe buchen</button>
+          <button type="button" class="kt primaer" id="dk-ausgabe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Ausgabe<span class="lang"> buchen</span></span></button>
           <div class="menue-anker">
-            <button type="button" class="icon-rund frei" id="dk-einst" aria-label="Einstellungen" aria-haspopup="menu" aria-expanded="false" aria-controls="dk-einst-menue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+            <button type="button" class="icon-rund frei" id="dk-einst" aria-label="Einstellungen" title="Einstellungen" aria-haspopup="menu" aria-expanded="false" aria-controls="dk-einst-menue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
             <div class="menue menue-unten" id="dk-einst-menue" role="menu" aria-label="Einstellungen" hidden></div>
           </div>
         </div>
       </header>
       <div class="dkoerper" id="dkoerper">
         <div class="dscroll" id="dscroll">
-          <div class="dseite">
+          <div class="dseite" id="dseite">
             <div class="dseitenkopf">
-              <div class="dseitenkopf-text"><h2 class="titel-seite" id="ds-titel">Bestand</h2><p class="meta zahl" id="ds-summary"></p></div>
+              <p class="meta zahl dseiten-meta" id="ds-meta"></p>
               <div class="dwerkzeuge">
+                <span id="ds-extra"></span>
                 <button type="button" class="kt icon frei" id="ds-filter" aria-haspopup="dialog" aria-label="Filter und Sortierung" title="Filter und Sortierung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span class="punkt" id="ds-filter-punkt" hidden></span></button>
                 <div class="seg" role="group" aria-label="Ansicht" id="ds-ansicht">
                   <button type="button" data-ansicht="liste" aria-pressed="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10M3.5 5h.01M3.5 10h.01M3.5 15h.01"/></svg>Liste</button>
@@ -1029,22 +1148,23 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
               </div>
             </div>
             <div class="dchips" id="ds-chips" role="group" aria-label="Nach Kategorie filtern"></div>
-            <div id="d-inhalt" aria-live="polite"></div>
+            <div id="d-inhalt" class="d-inhalt" aria-live="polite"></div>
             <div class="vorschau" id="d-vorschau" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg><span id="d-vorschau-text"></span></div>
           </div>
         </div>
         <section class="dpanel" id="dpanel" aria-labelledby="p-titel" hidden>
           <header class="dpanel-kopf">
-            <span class="etikett" id="p-etikett">Artikel</span>
-            <span class="luecke"></span>
+            <div class="dpanel-titel"><h2 id="p-titel" tabindex="-1"></h2><p class="meta" id="p-unter"></p><div class="dpanel-aktionen" id="p-aktionen" role="toolbar" aria-label="Aktionen zum Artikel"></div></div>
             <button type="button" class="kt icon kt-zeile" id="p-breit" aria-pressed="false" aria-label="Breiter anzeigen" title="Breiter anzeigen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v4M15 5h4v4M9 19H5v-4M15 19h4v-4"/></svg></button>
             <button type="button" class="kt icon kt-zeile" id="p-zu" aria-label="Schließen" title="Schließen (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
           </header>
-          <div class="dpanel-body detail" id="dpanel-body"></div>
+          <div class="dpanel-body" id="dpanel-body"></div>
+          <footer class="dpanel-fuss" id="dpanel-fuss"></footer>
         </section>
       </div>
     </main>
   </div>
+  <div class="dtip" id="dtip" role="tooltip" hidden></div>
 </div>
 <main class="wrap">
   <div class="kopf">
@@ -2628,43 +2748,79 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.view &&
 window.addEventListener("scroll", pruefeMini, { passive: true });
 window.addEventListener("resize", pruefeMini, { passive: true });
 
-/* ===== Desktop ab 1024 px: Hauptleiste, globaler Kopf, Seitenblatt, Popup (GAUSS Design System) ===== */
+/* ===== Desktop ab 1024 px: Hauptleiste, globaler Kopf, Detailkarte, Unterseiten, Popup (GAUSS Design System) ===== */
 const DESK = matchMedia("(min-width:1024px)");
 const desk = () => DESK.matches;
-const P = { view: null, open: null, stack: [], frage: null, kEdit: null, kWert: null, kText: "", breit: ls.get("breit", false), opener: null };
+const P = { view: null, open: null, frage: null, kEdit: null, kWert: null, kText: "", breit: ls.get("breit", false), opener: null, navAuto: false, verlaufAlle: false, sub: null, subFrage: null, subScroll: 0 };
 S.ansicht = ls.get("ansicht", "liste") === "karten" ? "karten" : "liste";
+const svg = (d, w = 1.7) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const NICON = {
-  box: KAT_ICON.Sonstiges, raus: ICON.raus, rein: ICON.rein, korb: VICON.korb, lkw: VICON.lkw, haus: VICON.haus,
-  schloss: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
-  zahnrad: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`
+  regal: svg(`<path d="M4 3v18M20 3v18M4 12h16M4 20.5h16"/><rect x="7" y="6" width="4" height="6" rx=".8"/><rect x="12.5" y="8" width="4.5" height="4" rx=".8"/><rect x="7" y="14.5" width="6" height="6" rx=".8"/>`),
+  raus: svg(`<path d="M4 12v7.5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V12"/><path d="M8.5 12H4l2-4h2.5M15.5 12H20l-2-4h-2.5"/><path d="M12 16V3M8.5 6.5 12 3l3.5 3.5"/>`),
+  rein: svg(`<path d="M4 12v7.5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V12"/><path d="M8.5 12H4l2-4h2.5M15.5 12H20l-2-4h-2.5"/><path d="M12 3v13M8.5 12.5 12 16l3.5-3.5"/>`),
+  korb: svg(`<circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/><path d="M2.5 3.5h2.2l2.4 11.3a1 1 0 0 0 1 .8h9a1 1 0 0 0 1-.8L20 7.5H5.6"/><path d="M12.5 9.5v3M11 11h3"/>`),
+  lkw: svg(`<path d="M2.5 6.5h11.5v10H2.5zM14 10h4.2l3.3 3.4v3.1H14"/><circle cx="6.5" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/>`),
+  werk: svg(`<path d="M3 21h18M4 21V10.5l5 3v-3l5 3v-3l5 3V4h-3v6"/><path d="M7.5 17.5h2M12 17.5h2M16.5 17.5h1"/>`),
+  ordner: svg(`<path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.3l2 2h8.7A1.5 1.5 0 0 1 21 9.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M8 14h8M8 17h5"/>`),
+  schloss: svg(`<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2"/>`),
+  offen: svg(`<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 7.6-1.7"/><path d="M12 14.5v2"/>`),
+  stift: svg(`<path d="M15.5 4.5l4 4L9 19l-5 1 1-5z"/><path d="M13.5 6.5l4 4"/>`, 1.8),
+  zaehlen: ICON.zaehlen
 };
-const SEITEN = { bestand: { titel: "Bestand", icon: "box" }, ausgabe: { titel: "Ausgaben", icon: "raus" }, eingang: { titel: "Eingänge", icon: "rein" } };
+const SEITEN = { bestand: { titel: "Bestand", icon: "regal" }, ausgabe: { titel: "Ausgaben", icon: "raus" }, eingang: { titel: "Eingänge", icon: "rein" } };
+const ARTKURZ = { ausgabe: "Ausgabe", eingang: "Eingang", inventur: "Inventur" };
 
 /* --- Hauptleiste --- */
 function renderNav(){
   const nb = S.geladen && S.admin ? nachbestellVorschlaege().length : 0, off = S.admin ? S.bestellungen.filter(b => OFFEN.includes(b.status)).length : 0;
-  const seite = (id, text) => `<button type="button" class="dnav-ziel" data-seite="${id}" ${S.tab === id ? 'aria-current="page"' : ""} title="${text}">${NICON[SEITEN[id].icon]}<span class="text">${text}</span></button>`;
-  const pop = (v, icon, text, n, neutral) => `<button type="button" class="dnav-ziel" data-nav-pop="${v}" title="${text}">${NICON[icon]}<span class="text">${text}</span>${n ? `<span class="dnav-zahl${neutral ? " neutral" : ""}">${zahl(n)}</span>` : ""}</button>`;
-  $("#dnav").innerHTML = seite("bestand", "Bestand") + seite("ausgabe", "Ausgaben")
-    + `<p class="etikett dnav-etikett">Verwaltung</p>`
-    + (S.admin ? seite("eingang", "Eingänge") + pop("nachbestellen", "korb", "Nachbestellen", nb) + pop("bestellungen", "lkw", "Bestellungen", off, true) + pop("lieferanten", "haus", "Lieferanten") + pop("verwaltung", "zahnrad", "Stammdaten und Belege")
-      : pop("login", "schloss", "Anmelden"));
+  const ziel = (attr, icon, text, n, neutral, aktiv) => `<button type="button" class="dnav-ziel" ${attr} ${aktiv ? 'aria-current="page"' : ""} aria-label="${esc(text)}${n ? `, ${n}` : ""}" data-tip="${esc(text)}">${NICON[icon]}<span class="text">${esc(text)}</span>${n ? `<span class="dnav-zahl${neutral ? " neutral" : ""}" aria-hidden="true">${zahl(n)}</span>` : ""}</button>`;
+  const seite = id => ziel(`data-seite="${id}"`, SEITEN[id].icon, SEITEN[id].titel, 0, false, S.tab === id);
+  $("#dnav").innerHTML = seite("bestand") + seite("ausgabe")
+    + (S.admin ? `<div class="dnav-trenn" role="separator"></div>` + seite("eingang") + ziel('data-nav-pop="nachbestellen"', "korb", "Nachbestellen", nb) + ziel('data-nav-pop="bestellungen"', "lkw", "Bestellungen", off, true)
+      + ziel('data-nav-pop="lieferanten"', "werk", "Lieferanten") + ziel('data-nav-pop="verwaltung"', "ordner", "Stammdaten und Belege") : "");
+  $("#dnav-unten").innerHTML = S.admin ? ziel("data-abmelden", "offen", "Abmelden") : ziel('data-nav-pop="login"', "schloss", "Anmelden");
+}
+const tip = $("#dtip");
+function tipZeigen(el){
+  if ($("#drahmen").dataset.nav !== "zu" || !el.dataset.tip) return tipWeg();
+  const r = el.getBoundingClientRect(); tip.textContent = el.dataset.tip; tip.hidden = false;
+  tip.style.left = Math.round(r.right + 10) + "px"; tip.style.top = Math.round(r.top + r.height / 2) + "px";
+}
+function tipWeg(){ tip.hidden = true; }
+const navEl = document.querySelector(".dnav");
+navEl.addEventListener("mouseover", e => { const t = e.target.closest("[data-tip]"); if (t) tipZeigen(t); else tipWeg(); });
+navEl.addEventListener("mouseleave", tipWeg);
+navEl.addEventListener("focusin", e => { const t = e.target.closest("[data-tip]"); if (t && t.matches(":focus-visible")) tipZeigen(t); });
+navEl.addEventListener("focusout", tipWeg);
+navEl.addEventListener("click", tipWeg);
+$("#dnav").addEventListener("scroll", tipWeg, { passive: true });
+
+/* --- Kopf links: Seitentitel oder Breadcrumb --- */
+function renderTitel(){
+  const sx = SEITEN[S.tab] || SEITEN.bestand, v = P.sub && vorgangVon(P.sub);
+  $("#dk-titelblock").innerHTML = v
+    ? `<nav class="bc" aria-label="Pfad"><ol><li><a href="#" data-bc>${esc(sx.titel)}</a></li><li><h1 aria-current="page">${esc(vorgangTitel(v))}</h1></li></ol></nav>`
+    : `<span class="dkopf-ic" aria-hidden="true">${NICON[sx.icon]}</span><h1>${esc(sx.titel)}</h1>`;
+  document.title = (v ? vorgangTitel(v) + " · " : "") + sx.titel + " · Werbemittel";
 }
 
-/* --- Seite: Kopf, Chips, Liste oder Karten --- */
+/* --- Seite: Werkzeuge, Chips, Liste oder Karten --- */
 function renderDesk(summe){
   renderNav();
-  const sx = SEITEN[S.tab] || SEITEN.bestand, best = S.tab === "bestand";
-  $("#dk-ic").innerHTML = NICON[sx.icon]; $("#dk-titel").textContent = sx.titel; $("#ds-titel").textContent = sx.titel;
-  const nV = S.vorgaenge.filter(v => v.art === S.tab).length;
-  $("#ds-summary").textContent = best ? summe : !S.geladen ? "Wird geladen …" : nV ? plural(nV, S.tab === "ausgabe" ? "Ausgabe" : "Eingang", S.tab === "ausgabe" ? "Ausgaben" : "Eingänge") : "";
-  $("#ds-filter").hidden = !best; $("#ds-filter-punkt").hidden = S.status === "alle" && S.sort === "name";
+  if (P.sub && S.geladen && !vorgangVon(P.sub)){ P.sub = null; P.subFrage = null; }
+  renderTitel();
   document.querySelectorAll("#ds-ansicht [data-ansicht]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.ansicht === S.ansicht)));
+  $("#d-vorschau").hidden = $("#vorschau").hidden; $("#d-vorschau-text").textContent = $("#vorschau-text").textContent;
+  if (P.sub) return renderSub();
+  const best = S.tab === "bestand", nV = S.vorgaenge.filter(v => v.art === S.tab).length;
+  $("#ds-meta").textContent = best ? summe : !S.geladen ? "Wird geladen …" : nV ? plural(nV, S.tab === "ausgabe" ? "Ausgabe" : "Eingang", S.tab === "ausgabe" ? "Ausgaben" : "Eingänge") : "";
+  $("#ds-filter").hidden = !best; $("#ds-filter-punkt").hidden = S.status === "alle" && S.sort === "name";
+  $("#ds-extra").innerHTML = best && S.admin ? `<button type="button" class="kt sekundaer klein" data-neu-artikel>${ICON.plus}Neuer Artikel</button>`
+    : S.tab === "eingang" ? `<button type="button" class="kt sekundaer klein" data-buchen="eingang">${ICON.plus}Eingang buchen</button>` : "";
   const genutzt = new Set(aktive().map(a => a.kategorie)), kats = KATEGORIEN.map(x => x.k).filter(k => genutzt.has(k) || S.kat.includes(k));
   $("#ds-chips").innerHTML = (S.q ? `<button class="chip chip-weg" data-q-weg aria-pressed="true">Suche „${esc(S.q)}“ ${ICON.weg}</button>` : "")
     + (best && S.status !== "alle" ? `<button class="chip chip-weg" data-status-weg aria-pressed="true">${{ knapp: "Knapp oder leer", leer: "Leer", ok: "Vorrätig" }[S.status]} ${ICON.weg}</button>` : "")
-    + (kats.length > 1 ? kats.map(k => `<button class="chip" data-kat="${esc(k)}" aria-pressed="${S.kat.includes(k)}">${esc(k)}</button>`).join("") : "");
-  $("#d-vorschau").hidden = $("#vorschau").hidden; $("#d-vorschau-text").textContent = $("#vorschau-text").textContent;
+    + (best && kats.length > 1 ? kats.map(k => `<button class="chip" data-kat="${esc(k)}" aria-pressed="${S.kat.includes(k)}">${esc(k)}</button>`).join("") : "");
   const el = $("#d-inhalt"), w = woerter();
   if (!S.geladen){ el.innerHTML = `<div class="karte"><div class="leer"><p class="meta" style="margin:0">Wird geladen …</p></div></div>`; return; }
   if (best){
@@ -2677,8 +2833,7 @@ function renderDesk(summe){
     const items = filterVorgaenge(S.tab);
     if (!items.length){
       const nie = !S.vorgaenge.some(v => v.art === S.tab);
-      el.innerHTML = `<div class="karte">${nie ? `<div class="leer"><p class="titel-karte">${S.tab === "ausgabe" ? "Noch nichts ausgegeben" : "Noch keine Eingänge"}</p><p class="meta" style="margin:0">${S.tab === "ausgabe" ? "Jede Ausgabe hält fest, was an wen ging und wofür." : "Jeder Eingang hält Lieferant, Bestellung und Rechnung fest."}</p>
-        <div class="leer-aktionen"><button class="taste primaer klein" data-buchen="${S.tab}">${S.tab === "ausgabe" ? "Ausgabe buchen" : "Eingang buchen"}</button></div></div>` : nichtsGefunden()}</div>`;
+      el.innerHTML = `<div class="karte">${nie ? `<div class="leer"><p class="titel-karte">${S.tab === "ausgabe" ? "Noch nichts ausgegeben" : "Noch keine Eingänge"}</p><p class="meta" style="margin:0">${S.tab === "ausgabe" ? "Jede Ausgabe hält fest, was an wen ging und wofür." : "Jeder Eingang hält Lieferant, Bestellung und Rechnung fest."}</p></div>` : nichtsGefunden()}</div>`;
     } else {
       const gruppen = new Map();
       for (const v of items){ const m = monat(v.datum); if (!gruppen.has(m)) gruppen.set(m, []); gruppen.get(m).push(v); }
@@ -2686,146 +2841,253 @@ function renderDesk(summe){
         ${S.ansicht === "karten" ? `<div class="dkarten">${l.map(v => vorgangKarte(v, w)).join("")}</div>` : vorgangTabelle(l, w)}</section>`).join("");
     }
   }
+  markiereAuswahl();
 }
-function istAuswahl(view, id){ return P.view === view && P.open === id; }
+const istAuswahl = id => P.view === "artikel" && P.open === id;
 function artikelTabelle(items, w){
   return `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Artikel</th><th scope="col" class="opt">Kategorie</th><th scope="col" class="opt">Lagerort</th><th scope="col">Status</th><th scope="col" class="r">Bestand</th></tr></thead><tbody>${items.map(a => {
     const s = status(a), n = bestand(a.id), u = unterwegs(a.id);
-    return `<tr data-zeile="artikel" data-id="${esc(a.id)}" aria-selected="${istAuswahl("artikel", a.id)}"><td><button type="button" class="dzelle" data-artikel="${esc(a.id)}">${kachel(a)}<span class="dname">${markiere(a.name, w)}</span></button></td>
+    return `<tr data-zeile="artikel" data-id="${esc(a.id)}"><td><button type="button" class="dzelle" data-artikel="${esc(a.id)}">${kachel(a)}<span class="dname">${markiere(a.name, w)}</span></button></td>
       <td class="sek opt">${esc(a.kategorie || "")}</td><td class="sek opt">${markiere(a.lagerort || "–", w)}</td>
-      <td><span class="badge ${s.cls}">${s.label}</span>${u ? ` <span class="badge st-info">${zahl(u)} bestellt</span>` : ""}</td>
+      <td><span class="badge ${s.cls}">${s.label}</span>${u ? ` <span class="badge st-info opt">${zahl(u)} bestellt</span>` : ""}</td>
       <td class="r zahl"><b class="${n < 0 ? "neg" : ""}">${ca(a.id)}${zahl(n)}</b> <span class="sek">${esc(einheit(a))}</span></td></tr>`; }).join("")}</tbody></table></div>`;
 }
-function artikelKarte(a, w){
+function artikelKarte(a, w, fuss){
   const s = status(a), n = bestand(a.id), f = (a.fotos || []).filter(fotoUrl)[0];
-  return `<button type="button" class="dkarte" data-artikel="${esc(a.id)}" aria-current="${istAuswahl("artikel", a.id)}">
+  return `<button type="button" class="dkarte" data-artikel="${esc(a.id)}">
     <span class="dkarte-bild">${f ? `<img src="${esc(fotoUrl(f))}" alt="" loading="lazy" class="${f.frei === false ? "foto-voll" : ""}">` : `<span class="dkarte-ic">${KAT_ICON[a.kategorie] || KAT_ICON.Sonstiges}</span>`}</span>
-    <span class="dkarte-text"><span class="t">${markiere(a.name, w)}</span><span class="meta">${esc([a.kategorie, a.lagerort].filter(Boolean).join(" · "))}</span>
-      <span class="dkarte-fuss"><span class="badge ${s.cls}">${s.label}</span><span class="menge-k zahl"><b>${ca(a.id)}${zahl(n)}</b> ${esc(einheit(a))}</span></span></span></button>`;
+    <span class="dkarte-text"><span class="t">${markiere(a.name, w || [])}</span><span class="meta">${esc([a.kategorie, a.lagerort].filter(Boolean).join(" · "))}</span>
+      ${fuss || `<span class="dkarte-fuss"><span class="badge ${s.cls}">${s.label}</span><span class="menge-k zahl"><b>${ca(a.id)}${zahl(n)}</b> ${esc(einheit(a))}</span></span>`}</span></button>`;
 }
-const vorgangTitel = v => v.art === "eingang" ? (v.lieferant || "Eingang") : (v.an || "Ausgabe");
+const vorgangTitel = v => v.art === "eingang" ? (v.lieferant || "Eingang") : v.art === "inventur" ? (v.an || "Inventur") : (v.an || "Ausgabe");
 function vorgangInfo(v){
   const bs = buchungenVon(v.id), summe = bs.reduce((s, b) => s + Math.abs(Number(b.menge || 0)), 0);
   const ids = [...new Set(bs.map(b => b.artikelId))], namen = ids.map(id => artikelVon(id)?.name || "Gelöschter Artikel");
-  return { summe, ids, namen, kurz: namen.slice(0, 2).join(", ") + (namen.length > 2 ? ` und ${namen.length - 2} weitere` : "") };
+  return { bs, summe, ids, namen, kurz: namen.slice(0, 2).join(", ") + (namen.length > 2 ? ` und ${namen.length - 2} weitere` : "") };
 }
 function vorgangTabelle(l, w){
   const ein = S.tab === "eingang";
-  return `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Datum</th><th scope="col">${ein ? "Lieferant" : "An"}</th><th scope="col">${ein ? "Bestellung" : "Wofür"}</th><th scope="col" class="opt">Artikel</th><th scope="col" class="r">Menge</th><th scope="col" class="opt">Kürzel</th></tr></thead><tbody>${l.map(v => {
+  return `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Datum</th><th scope="col">${ein ? "Lieferant" : "An"}</th><th scope="col">${ein ? "Bestellung" : "Wofür"}</th><th scope="col" class="opt">Artikel</th><th scope="col" class="r">Menge</th><th scope="col" class="opt">Kürzel</th><th scope="col" class="pfeil"><span class="sr-only">Öffnen</span></th></tr></thead><tbody>${l.map(v => {
     const x = vorgangInfo(v);
-    return `<tr data-zeile="vorgang" data-id="${esc(v.id)}" aria-selected="${istAuswahl("vorgang", v.id)}"><td class="zahl sek">${fmt(v.datum)}</td>
+    return `<tr data-zeile="vorgang" data-id="${esc(v.id)}"><td class="zahl sek">${fmt(v.datum)}</td>
       <td><button type="button" class="dzelle" data-vorgang="${esc(v.id)}"><span class="dname">${markiere(vorgangTitel(v), w)}</span></button></td>
-      <td class="sek">${markiere(ein ? (v.bestellnr || "–") : (v.anlass || "–"), w)}${ein && v.rechnung === "offen" ? ` <span class="badge st-warnung opt">Rechnung offen</span>` : ""}</td>
-      <td class="sek dkurz opt">${markiere(x.kurz, w)}</td><td class="r zahl"><b>${ein ? "+" : "−"}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)}</b></td><td class="sek opt">${esc(v.kuerzel || "")}</td></tr>`; }).join("")}</tbody></table></div>`;
+      <td class="sek">${markiere(ein ? (v.bestellnr || "–") : (v.anlass || "–"), w)}${ein && v.rechnung === "offen" ? ` <span class="badge st-warnung">Rechnung offen</span>` : ""}</td>
+      <td class="sek dkurz opt">${markiere(x.kurz, w)}</td><td class="r zahl"><b>${ein ? "+" : "−"}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)}</b></td><td class="sek opt">${esc(v.kuerzel || "")}</td><td class="pfeil">${ICON.chev}</td></tr>`; }).join("")}</tbody></table></div>`;
 }
 function vorgangKarte(v, w){
   const x = vorgangInfo(v), ein = v.art === "eingang";
-  return `<button type="button" class="dkarte vorgang" data-vorgang="${esc(v.id)}" aria-current="${istAuswahl("vorgang", v.id)}">
+  return `<button type="button" class="dkarte vorgang" data-vorgang="${esc(v.id)}">
     <span class="dkarte-reihe">${x.ids.slice(0, 4).map(id => kachel(artikelVon(id) || { kategorie: "Sonstiges" })).join("")}</span>
     <span class="dkarte-text"><span class="t">${markiere(vorgangTitel(v), w)}</span><span class="meta">${esc([fmt(v.datum), ein ? v.bestellnr : v.anlass].filter(Boolean).join(" · "))}</span>
       <span class="meta">${markiere(x.kurz, w)}</span>
       <span class="dkarte-fuss"><span class="meta">${esc(v.kuerzel || "")}</span><span class="menge-k zahl"><b>${ein ? "+" : "−"}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)}</b></span></span></span></button>`;
 }
 function markiereAuswahl(){
-  document.querySelectorAll("#d-inhalt tr[data-zeile]").forEach(tr => tr.setAttribute("aria-selected", String(istAuswahl(tr.dataset.zeile, tr.dataset.id))));
-  document.querySelectorAll("#d-inhalt .dkarte").forEach(k => k.setAttribute("aria-current", String(k.dataset.artikel ? istAuswahl("artikel", k.dataset.artikel) : istAuswahl("vorgang", k.dataset.vorgang))));
+  document.querySelectorAll('#d-inhalt tr[data-zeile="artikel"]').forEach(tr => tr.setAttribute("aria-selected", String(istAuswahl(tr.dataset.id))));
+  document.querySelectorAll("#d-inhalt .dkarte[data-artikel]").forEach(k => k.setAttribute("aria-current", String(istAuswahl(k.dataset.artikel))));
 }
 
-/* --- Seitenblatt (Detailbereich) rechts --- */
-function mitP(fn){
-  const k = ["open", "frage", "stack", "kEdit", "kWert", "kText"], alt = {};
-  for (const x of k){ alt[x] = S[x]; S[x] = P[x]; }
-  try { return fn(); } finally { for (const x of k){ P[x] = S[x]; S[x] = alt[x]; } }
+/* --- Unterseite eines Vorgangs: Angaben, dann Artikel als Liste oder Karten --- */
+function openSub(id){
+  const v = vorgangVon(id); if (!v) return;
+  if (v.art === "eingang" && !S.admin) return;
+  closePanel(); tipWeg();
+  if (!P.sub) P.subScroll = $("#dscroll").scrollTop;
+  if (v.art === "ausgabe" || v.art === "eingang"){ if (S.tab !== v.art){ S.tab = v.art; renderFilter(); } }
+  P.sub = id; P.subFrage = null; render(); $("#dscroll").scrollTop = 0;
+  setTimeout(() => document.querySelector("#dk-titelblock h1")?.setAttribute("tabindex", "-1"), 0);
 }
+function subZurueck(){
+  if (!P.sub) return; const id = P.sub; P.sub = null; P.subFrage = null; closePanel(); render();
+  $("#dscroll").scrollTop = P.subScroll || 0;
+  setTimeout(() => document.querySelector(`#d-inhalt [data-vorgang="${CSS.escape(id)}"]`)?.focus({ preventScroll: true }), 0);
+}
+function renderSub(){
+  const v = vorgangVon(P.sub); if (!v) return;
+  const x = vorgangInfo(v), aus = v.art === "ausgabe", ein = v.art === "eingang", vz = ein ? "+" : aus ? "−" : "±";
+  $("#ds-meta").textContent = [`${ARTKURZ[v.art]} vom ${fmt(v.datum)}`, plural(x.ids.length, "Artikel", "Artikel"), `${vz}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)} gesamt${v.geschaetzt ? ", geschätzt" : ""}`].join(" · ");
+  $("#ds-filter").hidden = true; $("#ds-chips").innerHTML = "";
+  $("#ds-extra").innerHTML = stornoErlaubt(v) && P.subFrage !== "storno" ? `<button type="button" class="kt sekundaer klein" data-storno>${S.admin ? "Stornieren" : "Eigene Buchung stornieren"}</button>` : "";
+  const felder = (aus ? [["An", v.an], ["Wofür", v.anlass], ["Kostenstelle", v.kostenstelle]] : ein ? [["Lieferant", v.lieferant], ["Bestellnummer", v.bestellnr], ["Rechnungsnummer", v.rechnungsnr], ["Betrag netto", v.betrag ? euro(v.betrag) : ""]] : [["Gezählt von", v.an]])
+    .concat([["Datum", fmt(v.datum)], ["Gebucht von", v.kuerzel], ["Erfasst am", v.am ? fmt(v.am) + ", " + new Date(v.am).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""]]).filter(f => f[1]);
+  const pos = x.bs.map(b => ({ b, a: artikelVon(b.artikelId) })).sort((p, q) => (p.a?.name || "").localeCompare(q.a?.name || "", "de") || String(p.b.variante || "").localeCompare(String(q.b.variante || "")));
+  const menge = b => { const m = Number(b.menge || 0); return `${m > 0 ? "+" : m < 0 ? "−" : "±"}${zahl(Math.abs(m))}`; };
+  const liste = S.ansicht === "karten"
+    ? `<div class="dkarten">${pos.map(({ b, a }) => a ? artikelKarte(a, [], `<span class="dkarte-fuss"><span class="meta">${esc(b.variante || einheit(a))}</span><span class="menge-k zahl"><b>${menge(b)}</b></span></span>`) : "").join("")}</div>`
+    : `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Artikel</th><th scope="col">${pos.some(p => p.b.variante) ? "Größe oder Variante" : "Einheit"}</th><th scope="col" class="r">Menge</th><th scope="col" class="r opt">Bestand heute</th><th scope="col" class="pfeil"><span class="sr-only">Öffnen</span></th></tr></thead><tbody>${pos.map(({ b, a }) => a
+      ? `<tr data-zeile="artikel" data-id="${esc(a.id)}"><td><button type="button" class="dzelle" data-artikel="${esc(a.id)}">${kachel(a)}<span class="dname">${esc(a.name)}</span></button></td><td class="sek">${esc(b.variante || einheit(a))}</td><td class="r zahl"><b>${menge(b)}</b></td><td class="r zahl sek opt">${ca(a.id)}${zahl(bestand(a.id, b.variante || undefined))}</td><td class="pfeil">${ICON.chev}</td></tr>`
+      : `<tr><td class="sek">Gelöschter Artikel</td><td class="sek">${esc(b.variante || "")}</td><td class="r zahl"><b>${menge(b)}</b></td><td class="opt"></td><td></td></tr>`).join("")}</tbody></table></div>`;
+  $("#d-inhalt").innerHTML = (P.subFrage === "storno" ? `<div class="dbestaetigen" role="alert"><span>Diesen Vorgang stornieren? Der Bestand wird zurückgerechnet.</span><button class="kt klein gefahr" data-storno-ja>Stornieren</button><button class="kt klein sekundaer" data-sub-nein>Behalten</button></div>` : "")
+    + `<section class="dbereich" aria-labelledby="dv-angaben"><header><h3 class="titel-bereich" id="dv-angaben">Angaben</h3></header><div class="dvkarte">
+      <dl class="dfelder">${felder.map(([k, w]) => `<div><dt>${k}</dt><dd>${esc(w)}</dd></div>`).join("")}</dl>
+      ${ein && S.admin ? `<div class="dvrechnung"><p class="meta">Rechnung</p><div class="themen-wahl">${[["offen", "Offen"], ["bezahlt", "Bezahlt"], ["", "Ohne"]].map(([k, l]) => `<button type="button" class="chip" data-v-rechnung="${k}" aria-pressed="${(v.rechnung || "") === k}">${l}</button>`).join("")}</div></div>` : ""}
+      ${v.notiz ? `<p class="dvnotiz">${esc(v.notiz)}</p>` : ""}</div></section>
+    <section class="dbereich" aria-labelledby="dv-artikel"><header><h3 class="titel-bereich" id="dv-artikel">Artikel</h3><span class="meta zahl">${plural(pos.length, "Position", "Positionen")}</span></header>${liste}</section>`;
+  markiereAuswahl();
+}
+
+/* --- Detailkarte rechts: Artikel als scannbare Seite --- */
 function openPanel(view, id){
+  if (view === "vorgang") return desk() ? openSub(id) : openSheet("vorgang", { open: id });
   if (!desk()) return openSheet(view, { open: id });
   const war = !$("#dpanel").hidden;
-  P.view = view; P.open = id; P.stack = []; P.frage = null; P.kEdit = null; P.kWert = null; P.kText = "";
+  P.view = view; P.open = id; P.frage = null; P.kEdit = null; P.kWert = null; P.kText = ""; P.verlaufAlle = false;
   if (!war) P.opener = document.activeElement;
-  if (!war && innerWidth < 1500 && $("#drahmen").dataset.nav !== "zu"){ $("#drahmen").dataset.nav = "zu"; P.navAuto = true; }
+  if (!war && innerWidth < 1280 && $("#drahmen").dataset.nav !== "zu"){ navSetzen(true); P.navAuto = true; }
   $("#dpanel").hidden = false; $("#dkoerper").classList.add("mit-panel"); $("#dkoerper").classList.toggle("breit", !!P.breit);
   renderPanel(); markiereAuswahl(); $("#dpanel-body").scrollTop = 0;
-  setTimeout(() => { const t = $("#p-titel"); if (t){ t.tabIndex = -1; t.focus({ preventScroll: true }); } }, 40);
+  const z = document.querySelector(`#d-inhalt tr[data-id="${CSS.escape(id)}"], #d-inhalt .dkarte[data-artikel="${CSS.escape(id)}"]`);
+  z?.scrollIntoView({ block: "nearest" });
+  setTimeout(() => $("#p-titel")?.focus({ preventScroll: true }), 40);
 }
-function panelGehe(view, id){ P.stack.push({ view: P.view, open: P.open }); P.view = view; P.open = id; P.frage = null; P.kText = ""; renderPanel(); markiereAuswahl(); $("#dpanel-body").scrollTop = 0; }
 function closePanel(){
   if ($("#dpanel").hidden) return;
-  const z = P.open; $("#dpanel").hidden = true; $("#dkoerper").classList.remove("mit-panel", "breit");
-  P.view = null; P.open = null; P.stack = []; markiereAuswahl();
-  if (P.navAuto){ $("#drahmen").dataset.nav = "offen"; P.navAuto = false; }
-  const r = z && (document.querySelector(`#d-inhalt tr[data-id="${CSS.escape(z)}"] .dzelle`) || document.querySelector(`#d-inhalt .dkarte[data-artikel="${CSS.escape(z)}"], #d-inhalt .dkarte[data-vorgang="${CSS.escape(z)}"]`));
-  (r || (P.opener && P.opener.isConnected ? P.opener : null))?.focus?.({ preventScroll: true }); P.opener = null;
+  const z = P.open, hatteFokus = $("#dpanel").contains(document.activeElement);
+  $("#dpanel").hidden = true; $("#dkoerper").classList.remove("mit-panel", "breit");
+  P.view = null; P.open = null; P.frage = null; markiereAuswahl(); $("#dpanel-fuss").innerHTML = "";
+  if (P.navAuto){ navSetzen(false); P.navAuto = false; }
+  if (hatteFokus){
+    const r = z && document.querySelector(`#d-inhalt tr[data-id="${CSS.escape(z)}"] .dzelle, #d-inhalt .dkarte[data-artikel="${CSS.escape(z)}"]`);
+    (r || (P.opener && P.opener.isConnected ? P.opener : null))?.focus?.({ preventScroll: true });
+  }
+  P.opener = null;
 }
 function renderPanel(){
   if (!P.view || $("#dpanel").hidden) return;
-  if (P.view === "artikel" && !artikelVon(P.open) || P.view === "vorgang" && !vorgangVon(P.open)){
-    $("#dpanel-body").innerHTML = `<p class="meta" id="p-titel">${P.view === "artikel" ? "Dieser Artikel ist nicht mehr da." : "Dieser Vorgang wurde storniert."}</p>`; return;
-  }
-  const html = mitP(() => P.view === "artikel" ? htmlArtikel() : htmlVorgang());
-  $("#dpanel-body").innerHTML = html.replace(/id="d-titel"/g, 'id="p-titel"');
-  $("#p-etikett").textContent = P.view === "artikel" ? "Artikel" : (ART[vorgangVon(P.open)?.art]?.label || "Vorgang");
-  $("#p-breit").setAttribute("aria-pressed", String(!!P.breit)); $("#p-breit").setAttribute("aria-label", P.breit ? "Schmaler anzeigen" : "Breiter anzeigen");
+  const a = artikelVon(P.open);
+  $("#p-breit").setAttribute("aria-pressed", String(!!P.breit)); $("#p-breit").setAttribute("aria-label", P.breit ? "Schmaler anzeigen" : "Breiter anzeigen"); $("#p-breit").title = P.breit ? "Schmaler anzeigen" : "Breiter anzeigen";
+  if (!a){ $("#p-titel").textContent = "Nicht mehr vorhanden"; $("#p-unter").textContent = ""; $("#p-aktionen").innerHTML = ""; $("#dpanel-fuss").innerHTML = "";
+    $("#dpanel-body").innerHTML = `<p class="dart-leer" style="margin-top:20px">Dieser Artikel wurde gelöscht.</p>`; return; }
+  $("#p-titel").textContent = a.name;
+  $("#p-unter").textContent = [a.kategorie, a.marke, a.artikelnr && "Art.-Nr. " + a.artikelnr, a.aktiv === false && "archiviert", a.demo && "Demo"].filter(Boolean).join(" · ");
+  $("#p-aktionen").innerHTML = `<button type="button" class="kt sekundaer klein" data-buchen="ausgabe" data-mit="${esc(a.id)}">${NICON.raus}Ausgabe</button>
+    <button type="button" class="kt sekundaer klein" data-inventur="${esc(a.id)}">${ICON.zaehlen}Zählen</button>
+    ${S.admin ? `<button type="button" class="kt icon kt-zeile" data-buchen="eingang" data-mit="${esc(a.id)}" aria-label="Eingang buchen" title="Eingang buchen">${NICON.rein}</button>
+    <button type="button" class="kt icon kt-zeile" data-artikel-edit="${esc(a.id)}" aria-label="Artikel bearbeiten" title="Bearbeiten">${NICON.stift}</button>` : ""}`;
+  $("#dpanel-body").innerHTML = artikelSeite(a);
+  if (!panelTippt()) $("#dpanel-fuss").innerHTML = kommentarFuss();
+}
+function artikelSeite(a){
+  const s = status(a), n = bestand(a.id), u = unterwegs(a.id), ein = einheit(a);
+  const fs = (a.fotos || []).filter(fotoUrl);
+  const dl = l => { l = l.filter(x => x[1]); return l.length ? `<dl class="dart-dl">${l.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""; };
+  const ab = (titel, inhalt, meta = "") => inhalt ? `<section class="dab"><header><h3>${titel}</h3>${meta ? `<span class="meta zahl">${meta}</span>` : ""}</header>${inhalt}</section>` : "";
+  const kennzahlen = `<dl class="dart-kennzahlen">
+    <div><dt>Bestand</dt><dd class="gross ${n < 0 ? "neg" : ""}">${ca(a.id)}${zahl(n)} <small>${esc(ein)}</small></dd>${geschaetzt(a.id) ? `<dd class="hinweis">geschätzt, noch nicht gezählt</dd>` : ""}</div>
+    <div><dt>Status</dt><dd><span class="badge ${s.cls}">${s.label}</span></dd>${u ? `<dd class="hinweis">${zahl(u)} ${esc(ein)} bestellt</dd>` : ""}</div>
+    <div><dt>Mindestbestand</dt><dd>${a.mindest ? `${zahl(a.mindest)} ${esc(ein)}` : "–"}</dd></div>
+    <div><dt>Lagerort</dt><dd class="umbruch" title="${esc(a.lagerort || "")}">${esc(a.lagerort || "–")}</dd></div></dl>`;
+  const medien = fs.length || a.beschreibung ? `<div class="dart-medien${fs.length ? "" : " ohne-foto"}">
+      ${fs.length ? `<div class="dart-fotos" role="list" aria-label="Fotos">${fs.slice(0, 7).map((f, i) => `<button type="button" role="listitem" data-foto="${i}" aria-label="Foto ${i + 1} von ${fs.length} groß zeigen"><img src="${esc(fotoUrl(f))}" alt="" loading="lazy" class="${f.frei === false ? "foto-voll" : ""}"></button>`).join("")}</div>` : ""}
+      <p class="dart-text${a.beschreibung ? "" : " leer"}">${a.beschreibung ? esc(a.beschreibung) : "Noch keine Beschreibung."}</p></div>` : "";
+  const groessen = (a.varianten || []).length ? `<div class="dgroessen">${a.varianten.map(v => { const m = bestand(a.id, v); return `<div><span>${esc(v)}</span><b class="${m <= 0 ? "null" : ""}">${zahl(m)}</b></div>`; }).join("")}<div class="summe"><span>Gesamt</span><b>${zahl(n)}</b></div></div>` : "";
+  const ek = ekVon(a);
+  const buch = S.admin ? dl([["Einkaufspreis netto", ek ? euro(ek) + " je " + ein : ""], ["Bestandswert netto", ek && n > 0 ? euro(ek * n) : ""], ["MwSt-Satz", a.mwst != null && a.mwst !== "" ? a.mwst + " %" : ""], ["Sachkonto", a.sachkonto], ["Kostenstelle", a.kostenstelle],
+    ["Mitarbeiter-Shop", a.shop?.aktiv ? [a.shop.preis ? euro(a.shop.preis) : "zum Einkaufspreis", a.shop.max ? `max. ${a.shop.max} je Person` : ""].filter(Boolean).join(" · ") : ""]]) : "";
+  const links = linksAnzeige(a.links) + (S.admin && sicherLink(a.ordnerUrl) ? `<a class="ordner-link" href="${esc(a.ordnerUrl)}" target="_blank" rel="noopener">${VICON.link} Ordner mit allen Dateien öffnen</a>` : "");
+  const verlauf = S.buchungen.filter(b => b.artikelId === a.id).sort((x, y) => (y.datum || "").localeCompare(x.datum || "") || (y.am || "").localeCompare(x.am || ""));
+  const zeigen = P.verlaufAlle ? verlauf.slice(0, 200) : verlauf.slice(0, 8);
+  const vtab = verlauf.length ? `<table class="dverlauf"><colgroup><col style="width:92px"><col><col style="width:64px"></colgroup><tbody>${zeigen.map(b => {
+      const v = vorgangVon(b.vorgangId) || {}, m = Number(b.menge || 0);
+      const wozu = [b.variante, v.art === "ausgabe" ? v.anlass : v.art === "eingang" ? v.bestellnr && "Bestellung " + v.bestellnr : "Inventur", v.kuerzel].filter(Boolean).join(" · ");
+      const ok = v.id && (v.art !== "eingang" || S.admin);
+      return `<tr ${ok ? `data-vorgang="${esc(b.vorgangId)}" tabindex="0"` : ""}><td>${fmt(b.datum)}</td><td>${esc(vorgangTitel(v))}<span class="meta">${esc(wozu)}</span></td><td class="${m > 0 ? "plus" : ""}">${m > 0 ? "+" : m < 0 ? "−" : "±"}${zahl(Math.abs(m))}</td></tr>`; }).join("")}</tbody></table>
+      ${verlauf.length > 8 ? `<button type="button" class="info-link dverlauf-mehr" data-verlauf-alle>${P.verlaufAlle ? "Weniger anzeigen" : `Alle ${zahl(verlauf.length)} Buchungen anzeigen`}</button>` : ""}`
+    : `<p class="dart-leer">Noch keine Bewegung. Den Startbestand am besten über „Zählen“ erfassen.</p>`;
+  const ks = S.kommentare.filter(k => k.artikelId === a.id).sort((x, y) => String(y.am).localeCompare(String(x.am))), eigen = ls.get("kuerzel", "");
+  const kom = ks.length ? `<ul class="dkommentare">${ks.map(k => `<li><span class="kz" aria-hidden="true">${esc(k.kuerzel)}</span><div><div class="kopf"><b>${esc(k.kuerzel)}</b><span>${fmt(k.am)}</span>
+      ${k.kuerzel === eigen ? (P.frage === "k-" + k.id ? `<button type="button" class="weg ja" data-kommentar-weg-ja="${esc(k.id)}">Wirklich löschen</button><button type="button" class="weg" data-frage-nein>Behalten</button>` : `<button type="button" class="weg" data-kommentar-weg="${esc(k.id)}">Löschen</button>`) : ""}</div><p>${esc(k.text)}</p></div></li>`).join("")}</ul>`
+    : `<p class="dart-leer">Noch keine Kommentare. Unten lässt sich etwas für die Doku festhalten.</p>`;
+  return kennzahlen + medien
+    + ab(`Bestand je ${a.kategorie === "Textilien" ? "Größe" : "Variante"}`, groessen)
+    + ab("Angaben", dl([["Lieferant", lieferantName(a)], ["Einheit", ein], ["Marke", a.marke], ["Artikelnummer", a.artikelnr]]))
+    + ab("Buchhaltung und Shop", buch)
+    + ab("Dateien und Links", links)
+    + ab("Interne Notiz", S.admin && a.notiz ? `<p class="dart-text">${esc(a.notiz)}</p>` : "")
+    + ab("Verlauf", vtab, verlauf.length ? plural(verlauf.length, "Buchung", "Buchungen") : "")
+    + ab("Kommentare", kom, ks.length ? zahl(ks.length) : "");
+}
+function kommentarFuss(){
+  const k = ls.get("kuerzel", "");
+  const wer = k && P.kEdit !== "kk" ? `<span>Als <span class="kuerzel-text">${esc(k)}</span></span><button type="button" class="info-link" data-kuerzel-aendern="kk">Ändern</button>`
+    : `<label for="kz-kk">Dein Kürzel</label><input id="kz-kk" data-kuerzel-feld value="${esc(P.kWert ?? k)}" maxlength="3" placeholder="NNE" autocapitalize="characters" autocomplete="off">`;
+  return `<form id="kommentar-form" class="dkform" autocomplete="off" novalidate>
+    <textarea id="k-text" rows="1" maxlength="1000" aria-label="Kommentar" placeholder="Kommentar für die Doku …">${esc(P.kText || "")}</textarea>
+    <button type="submit" class="kt sekundaer">Kommentieren</button>
+    <div class="dkform-zeile">${wer}<p class="fehler-text" id="k-fehler" hidden></p></div></form>`;
 }
 const panelTippt = () => { const a = document.activeElement; return !!(a && $("#dpanel").contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
 function inventurStarten(id){
   const a = artikelVon(id); if (!a) return;
   openSheet("inventur", { inv: { id: a.id, geschaetzt: a.kategorie === "Drucksachen", faktor: 90, cm: "", zahl: Object.fromEntries(varianten(a).map(v => [v, Math.max(0, bestand(a.id, v))])) } });
 }
+function mitP(fn){
+  const k = ["kEdit", "kWert"], alt = {};
+  for (const x of k){ alt[x] = S[x]; S[x] = P[x]; }
+  try { return fn(); } finally { for (const x of k){ P[x] = S[x]; S[x] = alt[x]; } }
+}
 async function panelKommentar(){
   const f = $("#k-fehler"), text = String(P.kText || $("#k-text")?.value || "").trim();
   if (!text){ f.textContent = "Bitte einen Kommentar schreiben."; f.hidden = false; $("#k-text").focus(); return; }
   const k = mitP(() => leseKuerzel("kk"));
-  if (k.length < 2){ f.textContent = "Bitte dein Kürzel mit 2 bis 3 Buchstaben eintragen."; f.hidden = false; $("#kz-kk")?.focus(); return; }
-  try { await Store.set("kommentare", uid(), { artikelId: P.open, kuerzel: k, text: text.slice(0, 1000), am: new Date().toISOString() }); P.kText = ""; toast("Kommentar gespeichert"); renderPanel(); }
+  if (k.length < 2){ f.textContent = "Kürzel mit 2 bis 3 Buchstaben"; f.hidden = false; $("#kz-kk")?.focus(); return; }
+  try { await Store.set("kommentare", uid(), { artikelId: P.open, kuerzel: k, text: text.slice(0, 1000), am: new Date().toISOString() }); P.kText = ""; toast("Kommentar gespeichert"); $("#k-text")?.blur(); $("#dpanel-fuss").innerHTML = kommentarFuss(); renderPanel(); }
   catch (err){ fehlerToast(err); }
 }
 $("#p-zu").addEventListener("click", closePanel);
 $("#p-breit").addEventListener("click", () => { P.breit = !P.breit; ls.set("breit", P.breit); $("#dkoerper").classList.toggle("breit", P.breit); renderPanel(); });
 $("#dpanel").addEventListener("click", e => {
-  const t = e.target.closest("button"); if (!t || !$("#dpanel-body").contains(t)) return; const d = t.dataset;
-  if (d.zurueck !== undefined){ const z = P.stack.pop(); if (!z) return closePanel(); P.view = z.view; P.open = z.open; P.frage = null; renderPanel(); markiereAuswahl(); return; }
+  const tr = e.target.closest("tr[data-vorgang]"); if (tr) return openSub(tr.dataset.vorgang);
+  const t = e.target.closest("button"); if (!t || t.id === "p-zu" || t.id === "p-breit") return; const d = t.dataset;
   if (d.foto !== undefined){ const a = artikelVon(P.open); if (a) oeffneLightbox((a.fotos || []).filter(fotoUrl), Number(d.foto)); return; }
-  if (d.vorgang) return panelGehe("vorgang", d.vorgang);
-  if (d.artikel) return panelGehe("artikel", d.artikel);
   if (d.buchen){ S.b = neueBuchung(d.buchen, d.mit); return openSheet("buchen"); }
   if (d.inventur) return inventurStarten(d.inventur);
   if (d.artikelEdit){ if (!S.admin) return; return openSheet("artikel-edit", { edit: neuerEntwurf(artikelVon(d.artikelEdit)) }); }
-  if (d.kuerzelAendern){ P.kEdit = d.kuerzelAendern; P.kWert = ""; renderPanel(); setTimeout(() => $("#kz-" + d.kuerzelAendern)?.focus(), 30); return; }
+  if (t.hasAttribute("data-verlauf-alle")){ P.verlaufAlle = !P.verlaufAlle; return renderPanel(); }
+  if (d.kuerzelAendern){ P.kEdit = "kk"; P.kWert = ""; $("#dpanel-fuss").innerHTML = kommentarFuss(); setTimeout(() => $("#kz-kk")?.focus(), 30); return; }
   if (d.kommentarWeg){ P.frage = "k-" + d.kommentarWeg; return renderPanel(); }
   if (d.kommentarWegJa){ Store.del("kommentare", d.kommentarWegJa).then(() => { P.frage = null; toast("Kommentar gelöscht"); renderPanel(); }).catch(fehlerToast); return; }
   if (d.frageNein !== undefined){ P.frage = null; return renderPanel(); }
-  if (d.vRechnung !== undefined){ Store.update("vorgaenge", P.open, { rechnung: d.vRechnung }).then(() => toast(d.vRechnung === "bezahlt" ? "Als bezahlt markiert" : "Gespeichert")).catch(fehlerToast); return; }
-  if (t.hasAttribute("data-storno")){ P.frage = "storno"; return renderPanel(); }
-  if (t.hasAttribute("data-storno-ja")){
-    const v = vorgangVon(P.open); if (!v) return; P.frage = null;
-    (async () => { try { for (const b of buchungenVon(v.id)) await Store.del("buchungen", b.id); await Store.del("vorgaenge", v.id); toast("Storniert"); const z = P.stack.pop(); if (z){ P.view = z.view; P.open = z.open; renderPanel(); } else closePanel(); } catch (err){ fehlerToast(err); } })();
-  }
 });
+$("#dpanel").addEventListener("keydown", e => { const tr = e.target.closest?.("tr[data-vorgang]"); if (tr && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); openSub(tr.dataset.vorgang); } });
 $("#dpanel").addEventListener("input", e => { const t = e.target; if (t.id === "k-text") P.kText = t.value; else if (t.hasAttribute("data-kuerzel-feld")) P.kWert = t.value; });
+$("#dpanel").addEventListener("keydown", e => { if (e.target.id === "k-text" && e.key === "Enter" && (e.metaKey || e.ctrlKey)){ e.preventDefault(); panelKommentar(); } });
 $("#dpanel").addEventListener("submit", e => { e.preventDefault(); if (e.target.id === "kommentar-form") panelKommentar(); });
 
 /* --- Seite: Ereignisse --- */
 function seiteWechseln(tab){
   if (tab === "eingang" && !S.admin) return;
-  S.tab = tab; closePanel(); $("#dscroll").scrollTop = 0; renderFilter(); render();
+  S.tab = tab; P.sub = null; P.subFrage = null; closePanel(); $("#dscroll").scrollTop = 0; renderFilter(); render();
 }
-$("#dnav").addEventListener("click", e => {
+function navSetzen(zu){
+  $("#drahmen").dataset.nav = zu ? "zu" : "offen";
+  $("#dnav-klapp").setAttribute("aria-expanded", String(!zu));
+  const l = zu ? "Navigation ausklappen" : "Navigation einklappen"; $("#dnav-klapp").setAttribute("aria-label", l); $("#dnav-klapp").dataset.tip = l; tipWeg();
+}
+function navKlick(e){
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.seite) return seiteWechseln(t.dataset.seite);
+  if (t.hasAttribute("data-abmelden")){ adminSetzen(false); toast("Abgemeldet"); return; }
   const v = t.dataset.navPop; if (!v) return;
   if (v === "login") return verwaltungOeffnen();
   if (v === "nachbestellen") S.nb = { menge: {} };
   verwaltungOeffnen(v);
-});
+}
+$("#dnav").addEventListener("click", navKlick);
+$("#dnav-unten").addEventListener("click", navKlick);
 $("#dnav-start").addEventListener("click", e => { e.preventDefault(); seiteWechseln("bestand"); });
-$("#dnav-klapp").addEventListener("click", () => {
-  const r = $("#drahmen"), zu = r.dataset.nav !== "zu"; r.dataset.nav = zu ? "zu" : "offen"; P.navAuto = false;
-  $("#dnav-klapp").setAttribute("aria-expanded", String(!zu)); $("#dnav-klapp").setAttribute("aria-label", zu ? "Navigation ausklappen" : "Navigation einklappen"); ls.set("navZu", zu);
-});
-if (ls.get("navZu", false)){ $("#drahmen").dataset.nav = "zu"; $("#dnav-klapp").setAttribute("aria-expanded", "false"); $("#dnav-klapp").setAttribute("aria-label", "Navigation ausklappen"); }
+$("#dnav-klapp").addEventListener("click", () => { const zu = $("#drahmen").dataset.nav !== "zu"; navSetzen(zu); P.navAuto = false; ls.set("navZu", zu); });
+navSetzen(ls.get("navZu", true));
+$("#dk-titelblock").addEventListener("click", e => { if (e.target.closest("[data-bc]")){ e.preventDefault(); subZurueck(); } });
 $("#dk-ausgabe").addEventListener("click", () => buchenStarten("ausgabe"));
 $("#ds-filter").addEventListener("click", () => openSheet("filter"));
 $("#ds-ansicht").addEventListener("click", e => { const b = e.target.closest("[data-ansicht]"); if (!b) return; S.ansicht = b.dataset.ansicht; ls.set("ansicht", S.ansicht); render(); });
+$("#ds-extra").addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
+  if (t.dataset.buchen) return buchenStarten(t.dataset.buchen);
+  if (t.hasAttribute("data-storno")){ P.subFrage = "storno"; render(); setTimeout(() => $("#d-inhalt [data-storno-ja]")?.focus(), 0); }
+});
 $("#ds-chips").addEventListener("click", e => {
   const c = e.target.closest("button"); if (!c) return;
   if (c.hasAttribute("data-q-weg")){ S.q = ""; $("#q").value = ""; }
@@ -2838,21 +3100,35 @@ $("#d-inhalt").addEventListener("click", e => {
   if (t){
     const d = t.dataset;
     if (d.artikel) return openPanel("artikel", d.artikel);
-    if (d.vorgang) return openPanel("vorgang", d.vorgang);
+    if (d.vorgang) return openSub(d.vorgang);
     if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
     if (d.buchen) return buchenStarten(d.buchen);
     if (t.hasAttribute("data-demo-laden")) return demoLaden();
     if (t.hasAttribute("data-knapp-zeigen")){ S.status = "knapp"; renderFilter(); return render(); }
     if (d.navPop){ S.nb = { menge: {} }; return verwaltungOeffnen(d.navPop); }
     if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.status = "alle"; renderFilter(); return render(); }
+    if (t.hasAttribute("data-sub-nein")){ P.subFrage = null; return render(); }
+    if (d.vRechnung !== undefined){ Store.update("vorgaenge", P.sub, { rechnung: d.vRechnung }).then(() => toast(d.vRechnung === "bezahlt" ? "Als bezahlt markiert" : "Gespeichert")).catch(fehlerToast); return; }
+    if (t.hasAttribute("data-storno-ja")){
+      const v = vorgangVon(P.sub); if (!v) return; P.subFrage = null;
+      (async () => { try { for (const b of buchungenVon(v.id)) await Store.del("buchungen", b.id); await Store.del("vorgaenge", v.id); toast("Storniert"); subZurueck(); } catch (err){ fehlerToast(err); render(); } })();
+    }
     return;
   }
-  const tr = e.target.closest("tr[data-zeile]"); if (tr) openPanel(tr.dataset.zeile, tr.dataset.id);
+  const tr = e.target.closest("tr[data-zeile]"); if (!tr) return;
+  if (tr.dataset.zeile === "vorgang") openSub(tr.dataset.id); else openPanel("artikel", tr.dataset.id);
 });
-$("#dscroll").addEventListener("scroll", () => { $("#dkopf").classList.toggle("an", $("#dscroll").scrollTop > 56); }, { passive: true });
+/* Klick irgendwo links neben der Karte schließt sie, außer er öffnet gleich den nächsten Artikel */
+$("#dscroll").addEventListener("click", e => {
+  if ($("#dpanel").hidden) return;
+  if (e.target.closest("[data-artikel], tr[data-zeile]")) return;
+  if (String(getSelection?.() || "").length) return;
+  closePanel();
+});
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape" || !desk() || S.view || !$("#lightbox").hidden || !$("#gs-panel").hidden || !$("#dk-einst-menue").hidden) return;
   if (!$("#dpanel").hidden) closePanel();
+  else if (P.subFrage){ P.subFrage = null; render(); }
 });
 
 /* --- Globale Suche im Kopf (Strg K) --- */
@@ -2906,7 +3182,7 @@ $("#gs-leeren").addEventListener("click", () => { gsIn.value = ""; gsSuchen(); g
 document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && desk()){ e.preventDefault(); if (S.view) closeSheet(); gsIn.focus(); gsIn.select(); } });
 
 /* --- Wechsel zwischen Telefon und Desktop --- */
-DESK.addEventListener("change", () => { if (S.view) closeSheet(); closePanel(); gsZu(); renderFilter(); render(); });
+DESK.addEventListener("change", () => { if (S.view) closeSheet(); closePanel(); P.sub = null; gsZu(); tipWeg(); renderFilter(); render(); });
 
 /* ===== Start ===== */
 renderFilter(); render(); verbinde();
