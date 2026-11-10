@@ -712,6 +712,252 @@ a.taste{text-decoration:none}
 .bestellbezug{margin:0;padding:10px 14px;border-radius:var(--radius-block);background:var(--status-info-flaeche);color:var(--foreground)}
 .pin-eingabe{letter-spacing:.3em;max-width:220px}
 .held .badge{vertical-align:middle}
+
+/* ===== GAUSS Design System v2: Werte (wie Druckvorlagen und designsystem.gauss-lvs.de) ===== */
+:root{
+  --nav-flaeche:#F1F3F8; --background:#F9FAFD; --rahmenflaeche:#F9FAFD; --leiste:#F1F3F8; --objekt:#FFFFFF; --popover:#FFFFFF;
+  --erhoeht:#E1E5EB; --tastenflaeche:#F1F3F8; --feld:#F1F3F8;
+  --linie:#E1E5EB; --rahmen-leise:#C9CED7; --rahmen:#727A8B;
+  --tinte-text:#1B2F54; --foreground:#1B2F54; --text-sekundaer:#425578; --tertiaer:#596986; --deaktiviert:#9BA2AE;
+  --primary:#1B2F54; --primary-foreground:#FFFFFF;
+  --hover:rgba(9,23,61,.06); --pressed:rgba(9,23,61,.10); --ort-aktiv:#E1E5EB;
+  --gewaehlt:#C547A5; --gewaehlt-text-flaeche:#A33789; --gewaehlt-text-farbe:#FFFFFF; --zaehler:#C547A5; --fokus:#A33789; --link:#A33789;
+  --logo:#09173D; --logo-marke:#9E1981; --logo-marke-schatten:#9E1981; --schatten-farbe:#09173D;
+  --status-warnung-text:#7A5A00; --status-warnung-flaeche:#FFF4D6; --status-erfolg-text:#1F7A4D; --status-erfolg-flaeche:#E6F4EC;
+  --nav-schatten:-10px 0 22px -12px rgba(9,23,61,.20);
+  --punkte:rgba(114,122,139,.22);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --nav-flaeche:#040813; --background:#080D19; --rahmenflaeche:#080D19; --leiste:#0F1624; --objekt:#0F1624; --popover:#0F1624;
+  --erhoeht:#192030; --tastenflaeche:#192030; --feld:#080D19;
+  --linie:#242B3B; --rahmen-leise:#242B3B; --rahmen:#9BA2AE;
+  --tinte-text:#F9FAFD; --foreground:#F9FAFD; --text-sekundaer:#C9CED7; --tertiaer:#C9CED7; --deaktiviert:#535E74;
+  --primary:#F9FAFD; --primary-foreground:#09173D;
+  --hover:rgba(255,255,255,.08); --pressed:rgba(255,255,255,.12); --ort-aktiv:#192030;
+  --gewaehlt:#E45BC1; --gewaehlt-text-flaeche:#F779D4; --gewaehlt-text-farbe:#09173D; --zaehler:#E45BC1; --fokus:#F779D4; --link:#F779D4;
+  --logo:#F9FAFD; --logo-marke:#F779D4; --logo-marke-schatten:#F779D4; --schatten-farbe:#000000;
+  --status-warnung-text:#F2D27A; --status-warnung-flaeche:#2E2710; --status-erfolg-text:#5FD39A; --status-erfolg-flaeche:#10261B;
+  --nav-schatten:-10px 0 24px -12px rgba(0,0,0,.7);
+  --punkte:rgba(201,206,215,.14);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --nav-flaeche:#040813; --background:#080D19; --rahmenflaeche:#080D19; --leiste:#0F1624; --objekt:#0F1624; --popover:#0F1624;
+  --erhoeht:#192030; --tastenflaeche:#192030; --feld:#080D19;
+  --linie:#242B3B; --rahmen-leise:#242B3B; --rahmen:#9BA2AE;
+  --tinte-text:#F9FAFD; --foreground:#F9FAFD; --text-sekundaer:#C9CED7; --tertiaer:#C9CED7; --deaktiviert:#535E74;
+  --primary:#F9FAFD; --primary-foreground:#09173D;
+  --hover:rgba(255,255,255,.08); --pressed:rgba(255,255,255,.12); --ort-aktiv:#192030;
+  --gewaehlt:#E45BC1; --gewaehlt-text-flaeche:#F779D4; --gewaehlt-text-farbe:#09173D; --zaehler:#E45BC1; --fokus:#F779D4; --link:#F779D4;
+  --logo:#F9FAFD; --logo-marke:#F779D4; --logo-marke-schatten:#F779D4; --schatten-farbe:#000000;
+  --status-warnung-text:#F2D27A; --status-warnung-flaeche:#2E2710; --status-erfolg-text:#5FD39A; --status-erfolg-flaeche:#10261B;
+  --nav-schatten:-10px 0 24px -12px rgba(0,0,0,.7);
+  --punkte:rgba(201,206,215,.14);
+  color-scheme:dark}
+
+/* Bausteine aus dem Design System: Knopf (kt), runde Symboltaste, Segment-Umschalter */
+.kt{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--foreground);font-size:14px;font-weight:500;white-space:nowrap}
+.kt svg{width:16px;height:16px;flex:none}
+.kt.primaer{background-color:var(--primary);color:var(--primary-foreground);font-weight:600}
+.kt.sekundaer{background-color:var(--objekt);border-color:var(--linie)}
+.kt.icon{width:36px;padding:0}
+.kt.icon.kt-zeile{width:32px;height:32px;color:var(--text-sekundaer)}
+.kt.icon.frei{background-color:var(--objekt);border-color:var(--linie)}
+.kt.klein{height:30px;padding:0 12px;font-size:12.5px}
+.kt:hover:not(:disabled){background-image:linear-gradient(var(--hover),var(--hover))}
+.kt.kt-zeile:hover:not(:disabled){color:var(--foreground)}
+.kt.primaer:hover:not(:disabled){background-image:linear-gradient(color-mix(in oklab,var(--primary-foreground) 14%,transparent),color-mix(in oklab,var(--primary-foreground) 14%,transparent))}
+.kt[aria-pressed="true"]{background-color:var(--ort-aktiv);color:var(--foreground)}
+.kt .punkt{top:6px;right:6px}
+.icon-rund{position:relative;width:40px;height:40px;flex:none;border-radius:999px;border:1px solid var(--linie);background:var(--objekt);color:var(--foreground);display:grid;place-items:center}
+.icon-rund.frei{border-color:transparent;background:transparent}
+.icon-rund:hover,.icon-rund[aria-expanded="true"]{background-image:linear-gradient(var(--hover),var(--hover))}
+.seg{display:flex;background:var(--leiste);border:1px solid var(--linie);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:999px;min-height:30px;padding:0 12px;font-size:13px;font-weight:500;color:var(--text-sekundaer);display:flex;align-items:center;gap:6px}
+.seg button svg{width:16px;height:16px}
+.seg button:hover{color:var(--foreground)}
+.seg button[aria-pressed="true"]{background:var(--objekt);color:var(--foreground);font-weight:600;box-shadow:inset 0 0 0 1.5px var(--rahmen)}
+.menue.menue-unten{bottom:auto;top:calc(100% + 8px);left:auto;right:0;transform:none;transform-origin:top right}
+kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6px;border:1px solid var(--linie);background:var(--leiste);color:var(--text-sekundaer)}
+
+/* ===== Desktop ab 1024 px ===== */
+.desk{display:none}
+@media (min-width:1024px){
+  html,body{height:100%}
+  body{overflow:hidden;padding:0!important;background:var(--nav-flaeche)}
+  body::before{background:var(--nav-flaeche)}
+  main.wrap,#minikopf{display:none!important}
+  .desk{display:block;position:fixed;inset:0;padding-top:env(safe-area-inset-top,0px)}
+  .drahmen{height:100%;display:grid;grid-template-columns:var(--nav-b,248px) minmax(0,1fr);transition:grid-template-columns .2s ease-out}
+  .drahmen[data-nav="zu"]{--nav-b:64px}
+
+  /* Hauptleiste */
+  .dnav{display:flex;flex-direction:column;min-height:0;padding-left:env(safe-area-inset-left,0px)}
+  .dnav-kopf,.dnav-fuss{overflow:hidden}
+  .dnav-kopf{height:64px;flex:none;display:flex;align-items:center;gap:10px;padding:0 20px;color:var(--foreground);text-decoration:none;border-bottom:1px solid var(--linie)}
+  .dnav-zeichen{width:26px;height:26px;flex:none}
+  .dnav-titel{display:grid;line-height:18px;min-width:0}
+  .dnav-name{font-size:15px;font-weight:600;letter-spacing:-.012em;white-space:nowrap}
+  .dnav-unterzeile{font-size:12px;line-height:16px;color:var(--text-sekundaer);white-space:nowrap}
+  .dnav-liste{flex:1;min-height:0;overflow-y:auto;padding:12px;display:grid;align-content:start;gap:2px}
+  .dnav-ziel{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 10px;border-radius:8px;color:var(--text-sekundaer);font-size:13.5px;line-height:20px;font-weight:500;width:100%;border:0;background:transparent;text-align:left;white-space:nowrap}
+  .dnav-ziel:hover{background:var(--hover);color:var(--foreground)}
+  .dnav-ziel[aria-current="page"]{background:var(--ort-aktiv);color:var(--foreground);font-weight:600}
+  .dnav-ziel svg{width:20px;height:20px;flex:none}
+  .dnav-ziel .text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .dnav-zahl{min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:var(--status-warnung-flaeche);color:var(--status-warnung-text);font-size:12px;font-weight:600;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+  .dnav-zahl.neutral{background:var(--ort-aktiv);color:var(--foreground)}
+  .dnav-etikett{margin:14px 0 0;padding:8px 10px 6px}
+  .dnav-fuss{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--linie)}
+  .dnav-fuss-text{font-size:12px;color:var(--tertiaer);padding-left:10px;white-space:nowrap}
+  .dnav-klapp{width:44px;height:44px;border-radius:999px;border:0;background:transparent;color:var(--tertiaer);display:grid;place-items:center;flex:none}
+  .dnav-klapp:hover{background:var(--hover);color:var(--foreground)}
+  .dnav-klapp svg{width:20px;height:20px;transition:transform .2s}
+  .drahmen[data-nav="zu"] :is(.dnav-titel,.dnav-ziel .text,.dnav-fuss-text,.dnav-etikett){display:none}
+  .drahmen[data-nav="zu"] .dnav-kopf{padding:0 19px}
+  .drahmen[data-nav="zu"] .dnav-ziel{justify-content:center;padding:0;position:relative}
+  .drahmen[data-nav="zu"] .dnav-zahl{position:absolute;top:2px;right:2px;min-width:16px;height:16px;font-size:10px;padding:0 4px}
+  .drahmen[data-nav="zu"] .dnav-fuss{justify-content:center}
+  .drahmen[data-nav="zu"] .dnav-klapp svg{transform:rotate(180deg)}
+  .drahmen[data-nav="zu"] .dnav-liste{padding:12px 10px}
+
+  /* Hauptkarte und globaler Kopf: Titel links, Suche Mitte, Primäraktion und Einstellungen rechts */
+  .dhaupt{min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--background);border-left:1px solid var(--linie);border-radius:20px 0 0 20px;overflow:hidden;position:relative;box-shadow:var(--nav-schatten)}
+  .dkopf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px) minmax(0,1fr);align-items:center;gap:16px;height:64px;padding:0 max(20px,env(safe-area-inset-right,0px)) 0 24px;border-bottom:1px solid var(--linie);position:relative;z-index:6}
+  .dkopf-titel{display:flex;align-items:center;gap:10px;min-width:0;opacity:0;transform:translateY(4px);transition:opacity 160ms,transform 160ms}
+  .dkopf.an .dkopf-titel{opacity:1;transform:none}
+  .dkopf-ic{width:32px;height:32px;border-radius:10px;flex:none;display:grid;place-items:center;background:var(--objekt);border:1px solid var(--linie);color:var(--text-sekundaer)}
+  .dkopf-ic svg{width:18px;height:18px}
+  .dkopf h1{margin:0;font-size:16px;line-height:22px;font-weight:600;letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dkopf-rechts{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+
+  /* Globale Suche */
+  .gs{position:relative;min-width:0}
+  .gs-feld{position:relative}
+  .gs-feld>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--tertiaer);pointer-events:none}
+  .gs-feld input{width:100%;min-height:38px;padding:8px 72px 8px 38px;border-radius:999px;border:1px solid var(--rahmen-leise);background:var(--objekt);color:var(--foreground);font:inherit;font-size:14px;line-height:20px;box-shadow:0 1px 2px rgba(9,23,61,.05),0 4px 12px -4px rgba(9,23,61,.10)}
+  .gs-feld input::placeholder{color:var(--tertiaer)}
+  .gs-feld input::-webkit-search-cancel-button{display:none}
+  .gs-feld input:hover{border-color:var(--rahmen)}
+  .gs-feld input:focus{outline:2px solid var(--fokus);outline-offset:0;border-color:transparent}
+  .gs-kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none}
+  .gs.hat-text .gs-kbd{display:none}
+  .gs-leeren{position:absolute;right:4px;top:50%;transform:translateY(-50%)}
+  .gs-panel{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--popover);border:1px solid var(--linie);border-radius:16px;box-shadow:var(--schatten-hoch);padding:6px;max-height:min(70vh,560px);overflow-y:auto;animation:ebene-ein 140ms ease-out both}
+  .gs-gruppe{margin:0;padding:10px 10px 4px}
+  .gs-opt{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:52px;padding:6px 10px;border-radius:10px;cursor:pointer}
+  .gs-opt[aria-selected="true"]{background:var(--ort-aktiv)}
+  .gs-opt:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+  .gs-opt .kachel{width:36px;height:36px;border-radius:10px}
+  .gs-opt .kachel svg{width:18px;height:18px}
+  .gs-t{display:grid;min-width:0}
+  .gs-t>span:first-child{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gs-t .meta{font-size:12.5px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gs-r{font-size:13px;font-weight:600;color:var(--text-sekundaer)}
+  .gs-status{margin:0;padding:10px;font-size:13px;color:var(--tertiaer)}
+  .gs-status:empty{display:none}
+  .gs-filtern{width:100%;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;margin-top:4px;border:0;border-top:1px solid var(--linie);background:transparent;color:var(--link);font-size:13.5px;font-weight:500;text-align:left}
+  .gs-filtern:hover{background-image:linear-gradient(var(--hover),var(--hover))}
+  .gs-fuss{display:flex;gap:14px;padding:8px 10px 4px;font-size:12px;color:var(--tertiaer);border-top:1px solid var(--linie)}
+
+  /* Inhalt und Seitenblatt nebeneinander */
+  .dkoerper{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1fr)}
+  .dkoerper.mit-panel{grid-template-columns:minmax(0,1fr) var(--panel-b,560px)}
+  .dkoerper.mit-panel.breit{--panel-b:860px}
+  .dscroll{min-height:0;overflow-y:auto;scrollbar-width:thin}
+  .dseite{max-width:1180px;margin:0 auto;padding:28px 32px 64px;display:grid;gap:16px;align-content:start}
+  .dseitenkopf{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .dseitenkopf .titel-seite{font-size:28px;line-height:36px}
+  .dseitenkopf .meta{margin:4px 0 0}
+  .dwerkzeuge{display:flex;align-items:center;gap:8px}
+  .dchips{display:flex;flex-wrap:wrap;gap:8px}
+  .dchips:empty{display:none}
+  .dchips .chip{min-height:32px;padding:0 12px;font-size:13.5px}
+  .chip-weg{display:inline-flex;align-items:center;gap:6px}
+  .chip-weg svg{width:12px;height:12px}
+  .dbereich{display:grid;gap:10px}
+  .dbereich+.dbereich{margin-top:12px}
+  .dbereich>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 4px}
+  .dhinweis{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px 10px 16px;border-radius:var(--radius-block);background:var(--status-warnung-flaeche);color:var(--foreground);font-size:14px}
+  .dhinweis>span{flex:1;min-width:200px}
+
+  /* Tabelle (Widget Typ A: Titel außen, weiße Karte), Zeilen einzeilig */
+  .dtab-wrap{overflow-x:auto}
+  .dtab{width:100%;border-collapse:collapse;font-size:14px;line-height:20px}
+  .dtab th{position:sticky;top:0;text-align:left;font-size:12px;line-height:16px;font-weight:500;color:var(--tertiaer);padding:10px 12px;border-bottom:1px solid var(--linie);background:var(--objekt);white-space:nowrap}
+  .dtab td{padding:0 12px;height:56px;border-bottom:1px solid var(--linie);white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis}
+  .dtab tr:last-child td{border-bottom:0}
+  .dtab th:first-child,.dtab td:first-child{padding-left:16px}
+  .dtab th:last-child,.dtab td:last-child{padding-right:16px}
+  .dtab tbody tr{cursor:pointer}
+  .dtab tbody tr:hover{background:var(--hover)}
+  .dtab tbody tr[aria-selected="true"]{background:var(--ort-aktiv)}
+  .dtab tbody tr[aria-selected="true"] td:first-child{box-shadow:inset 3px 0 0 var(--gewaehlt)}
+  .dtab .r{text-align:right}
+  .dtab .sek{color:var(--text-sekundaer)}
+  .dtab .neg{color:var(--status-fehler-text)}
+  .dtab .badge{height:22px;padding:0 8px}
+  .dzelle{display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:0;text-align:left;min-height:44px;max-width:100%;color:var(--foreground)}
+  .dzelle .kachel{width:36px;height:36px;border-radius:10px}
+  .dzelle .kachel svg{width:18px;height:18px}
+  .dname{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dkurz{max-width:240px}
+
+  /* Karten */
+  .dkarten{display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:16px}
+  .dkarte{display:grid;grid-template-rows:auto 1fr;text-align:left;padding:0;border:1px solid var(--linie);border-radius:var(--radius-karte);background:var(--objekt);overflow:hidden;color:var(--foreground);box-shadow:var(--schatten-widget)}
+  .dkarte:hover{border-color:var(--rahmen-leise);background-image:linear-gradient(var(--hover),var(--hover))}
+  .dkarte[aria-current="true"]{border-color:var(--gewaehlt);box-shadow:inset 0 0 0 1px var(--gewaehlt)}
+  .dkarte-bild{position:relative;aspect-ratio:4/3;max-width:100%;min-height:0;overflow:hidden;display:grid;place-items:center;background:var(--leiste);border-bottom:1px solid var(--linie)}
+  .dkarte-bild img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10%;filter:drop-shadow(0 10px 14px color-mix(in oklab,var(--schatten-farbe) 22%,transparent)) drop-shadow(0 2px 3px color-mix(in oklab,var(--schatten-farbe) 12%,transparent))}
+  .dkarte-bild img.foto-voll{object-fit:cover;padding:0;filter:none}
+  .dkarte-ic{color:var(--tertiaer)}
+  .dkarte-ic svg{width:40px;height:40px}
+  .dkarte-text{display:grid;gap:2px;padding:12px 14px 14px;align-content:start;min-width:0}
+  .dkarte-text .t{font-size:15px;line-height:21px;font-weight:600;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .dkarte-text .meta{font-size:12.5px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dkarte-fuss{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+  .dkarte-fuss .badge{height:22px;padding:0 8px}
+  .menge-k{font-size:13px;color:var(--text-sekundaer);white-space:nowrap}
+  .menge-k b{font-size:17px;color:var(--foreground)}
+  .dkarte-reihe{display:flex;gap:6px;padding:14px 14px 0}
+  .dkarte-reihe .kachel{width:44px;height:44px;border-radius:10px}
+  .dkarte.vorgang{grid-template-rows:auto 1fr}
+
+  /* Seitenblatt rechts: nicht modal, Liste bleibt bedienbar */
+  .dpanel{min-height:0;display:flex;flex-direction:column;background:var(--objekt);border-left:1px solid var(--linie);box-shadow:-12px 0 28px -20px rgba(9,23,61,.25);animation:panel-rein 200ms cubic-bezier(.22,1,.36,1) both}
+  @keyframes panel-rein{from{opacity:0;translate:16px 0}to{opacity:1;translate:0 0}}
+  .dpanel-kopf{display:flex;align-items:center;gap:4px;height:52px;flex:none;padding:0 10px 0 20px;border-bottom:1px solid var(--linie)}
+  .dpanel-kopf .luecke{flex:1}
+  .dpanel-body{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding:20px 24px 40px;background:var(--background);display:flex;flex-direction:column;gap:20px}
+  .dpanel-body>*{flex:none}
+  .dpanel-body [tabindex="-1"]:focus{outline:none}
+  .dkoerper.mit-panel .dtab .opt{display:none}
+  .dpanel-body .held{grid-template-columns:88px minmax(0,1fr)}
+  .dpanel-body .held .kachel{width:88px;height:88px}
+  .dpanel-body .held h2{font-size:22px;line-height:28px}
+  .dpanel-body .galerie{margin:0;padding:2px 0 6px}
+  .dpanel-body .galerie-bild{width:min(72%,300px)}
+  .dpanel.breit .dpanel-body .galerie-bild{width:300px}
+  .dpanel-body .galerie.einzeln .galerie-bild{max-width:320px}
+  .dpanel-body .aktionsleiste{margin-top:0}
+
+  /* Tiefere Ebenen: Popup-Fenster mittig */
+  .sheet{top:50%;bottom:auto;left:50%;width:720px;margin-left:-360px;max-height:min(88vh,920px);border-radius:20px;opacity:0;transform:translateY(calc(-50% + 16px)) scale(.985);transition:transform 200ms cubic-bezier(.22,1,.36,1),opacity 160ms;padding:0 28px 28px}
+  .sheet.on{opacity:1;transform:translateY(-50%)}
+  .sheet .griff{padding:12px 0 4px;justify-content:flex-end}
+  .sheet .griff i{display:none}
+  .sheet .griff .icon-taste{position:static}
+  .sheet-fuss{bottom:-28px}
+  .toast{bottom:24px}
+}
+@media (min-width:1024px) and (max-width:1279px){
+  .dkoerper.mit-panel{grid-template-columns:minmax(0,1fr) min(480px,50%)}
+  .dkoerper.mit-panel.breit{grid-template-columns:minmax(0,1fr) min(720px,62%)}
+  .dkopf{grid-template-columns:minmax(0,1fr) minmax(0,320px) auto}
+  .gs-kbd{display:none}
+  .dseite{padding:24px 24px 56px}
+}
+@media (prefers-reduced-motion:reduce){.drahmen,.dpanel,.gs-panel,.sheet{transition:none!important;animation:none!important}}
 </style>
 
 <div class="minikopf" id="minikopf" aria-hidden="true">
@@ -736,6 +982,70 @@ a.taste{text-decoration:none}
   </div>
 </div>
 
+
+<!-- Desktop ab 1024 px: Hauptleiste links, globaler Kopf, Inhalt, Seitenblatt rechts (GAUSS Design System) -->
+<div class="desk" id="desk">
+  <div class="drahmen" id="drahmen" data-nav="offen">
+    <aside class="dnav" aria-label="Hauptnavigation">
+      <a class="dnav-kopf" href="#" id="dnav-start" aria-label="Werbemittel, zum Bestand"><svg class="dnav-zeichen" viewBox="0 0 156.31 156.31" aria-hidden="true"><polygon fill="var(--logo)" points="32.56 0 32.56 156.31 0 123.74 0 32.56 32.56 0"/><path fill="var(--logo-marke)" d="M156.31,32.56H32.56V0h84.67c17.98,0,39.08,14.58,39.08,32.56Z"/><path fill="var(--logo-marke)" d="M123.74,58.61v65.13h32.56v-26.05c0-17.98-14.58-39.08-32.56-39.08Z"/><polygon fill="var(--logo)" points="156.31 123.74 58.61 123.74 58.61 156.31 123.74 156.31 156.31 123.74"/></svg><span class="dnav-titel"><span class="dnav-name">Werbemittel</span><span class="dnav-unterzeile">GAUSS LVS</span></span></a>
+      <nav class="dnav-liste" id="dnav" aria-label="Seiten"></nav>
+      <div class="dnav-fuss"><span class="dnav-fuss-text">GAUSS-LVS</span><button type="button" class="dnav-klapp" id="dnav-klapp" aria-label="Navigation einklappen" aria-expanded="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 5 7.5 10l5 5"/></svg></button></div>
+    </aside>
+    <main class="dhaupt">
+      <header class="dkopf" id="dkopf">
+        <div class="dkopf-titel"><span class="dkopf-ic" id="dk-ic" aria-hidden="true"></span><h1 id="dk-titel">Bestand</h1></div>
+        <div class="gs" id="gs">
+          <div class="gs-feld" role="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+            <input id="gs-eingabe" type="search" autocomplete="off" spellcheck="false" placeholder="Artikel, Empfänger, Lagerort, Bestellnummer …" aria-label="Werbemittel durchsuchen" role="combobox" aria-expanded="false" aria-controls="gs-liste" aria-autocomplete="list">
+            <kbd class="gs-kbd" id="gs-kbd" aria-hidden="true">Strg K</kbd>
+            <button type="button" class="kt icon kt-zeile gs-leeren" id="gs-leeren" aria-label="Suche leeren" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          </div>
+          <div class="gs-panel" id="gs-panel" hidden>
+            <div class="gs-liste" id="gs-liste" role="listbox" aria-label="Treffer"></div>
+            <p class="gs-status" id="gs-status" role="status" aria-live="polite"></p>
+            <div class="gs-fuss"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> öffnen</span><span><kbd>Esc</kbd> schließen</span></div>
+          </div>
+        </div>
+        <div class="dkopf-rechts">
+          <button type="button" class="kt primaer" id="dk-ausgabe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Ausgabe buchen</button>
+          <div class="menue-anker">
+            <button type="button" class="icon-rund frei" id="dk-einst" aria-label="Einstellungen" aria-haspopup="menu" aria-expanded="false" aria-controls="dk-einst-menue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+            <div class="menue menue-unten" id="dk-einst-menue" role="menu" aria-label="Einstellungen" hidden></div>
+          </div>
+        </div>
+      </header>
+      <div class="dkoerper" id="dkoerper">
+        <div class="dscroll" id="dscroll">
+          <div class="dseite">
+            <div class="dseitenkopf">
+              <div class="dseitenkopf-text"><h2 class="titel-seite" id="ds-titel">Bestand</h2><p class="meta zahl" id="ds-summary"></p></div>
+              <div class="dwerkzeuge">
+                <button type="button" class="kt icon frei" id="ds-filter" aria-haspopup="dialog" aria-label="Filter und Sortierung" title="Filter und Sortierung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span class="punkt" id="ds-filter-punkt" hidden></span></button>
+                <div class="seg" role="group" aria-label="Ansicht" id="ds-ansicht">
+                  <button type="button" data-ansicht="liste" aria-pressed="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10M3.5 5h.01M3.5 10h.01M3.5 15h.01"/></svg>Liste</button>
+                  <button type="button" data-ansicht="karten" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg>Karten</button>
+                </div>
+              </div>
+            </div>
+            <div class="dchips" id="ds-chips" role="group" aria-label="Nach Kategorie filtern"></div>
+            <div id="d-inhalt" aria-live="polite"></div>
+            <div class="vorschau" id="d-vorschau" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5M10 6.2v.1"/></svg><span id="d-vorschau-text"></span></div>
+          </div>
+        </div>
+        <section class="dpanel" id="dpanel" aria-labelledby="p-titel" hidden>
+          <header class="dpanel-kopf">
+            <span class="etikett" id="p-etikett">Artikel</span>
+            <span class="luecke"></span>
+            <button type="button" class="kt icon kt-zeile" id="p-breit" aria-pressed="false" aria-label="Breiter anzeigen" title="Breiter anzeigen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v4M15 5h4v4M9 19H5v-4M15 19h4v-4"/></svg></button>
+            <button type="button" class="kt icon kt-zeile" id="p-zu" aria-label="Schließen" title="Schließen (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          </header>
+          <div class="dpanel-body detail" id="dpanel-body"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
 <main class="wrap">
   <div class="kopf">
     <svg class="zeichen" viewBox="0 0 156.31 156.31" role="img" aria-label="GAUSS">
@@ -928,8 +1238,10 @@ let DB = null;
 async function api(p, ms = 30000){
   const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
   try {
-    const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p), signal: ctl.signal });
-    const j = await r.json(); if (!j.ok) throw Object.assign(new Error(j.error || "Speichern fehlgeschlagen."), { code: j.code || "api" }); return j;
+    const r = await fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(S.server ? { ...p, token: ls.get("token", "") } : p), signal: ctl.signal });
+    const j = await r.json();
+    if (!j.ok){ if (j.code === "auth" && S.admin){ ls.set("token", ""); ls.set("tokenBis", 0); adminLaden(); renderAdminUi(); render(); } throw Object.assign(new Error(j.error || "Speichern fehlgeschlagen."), { code: j.code || "api" }); }
+    return j;
   } catch (e){ if (e.name === "AbortError") throw Object.assign(new Error("Zeitüberschreitung. Bitte noch einmal versuchen."), { code: "unavailable" }); throw e; }
   finally { clearTimeout(t); }
 }
@@ -937,6 +1249,7 @@ async function ladeTabelle(still){
   try {
     const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" }); const j = await r.json(); if (!j.ok) throw new Error(j.error);
     for (const c of COLS) S[c] = j.data?.[c] || []; ls.set("cache", j.data); S.geladen = true; S.offline = false;
+    if (j.server){ S.server = true; S.pinGesetzt = !!j.pinGesetzt; }
     if (j.ki && !KI.sample){ KI.sample = { json: (prompt, opt) => api({ action: "ki", prompt, bild: opt?.images?.[0] ? opt.bildUrl : "" }, 120000).then(x => x.wert) }; KI.bilder = true; }
     nachLaden();
   } catch {
@@ -948,22 +1261,22 @@ const lokalAendern = (col, id, fn) => { const l = S[col].filter(x => x.id !== id
 const Store = {
   async set(col, id, data){
     if (DB) return DB.collection(col).doc(id).set(data);
-    if (S.modus === "tabelle"){ lokalAendern(col, id, () => data); nachLaden(); return api({ action: "set", col, id, data }); }
+    if (S.modus === "tabelle"){ lokalAendern(col, id, () => data); nachLaden(); return api({ action: "set", col, id, data }).catch(e => { ladeTabelle(true); throw e; }); }
     const l = S[col].filter(x => x.id !== id); l.push({ id, ...data }); S[col] = l; ls.set(col, l); nachLaden();
   },
   async update(col, id, data){
     if (DB) return DB.collection(col).doc(id).update(data);
-    if (S.modus === "tabelle"){ lokalAendern(col, id, alt => ({ ...stripId(alt || {}), ...data })); nachLaden(); return api({ action: "update", col, id, data }); }
+    if (S.modus === "tabelle"){ lokalAendern(col, id, alt => ({ ...stripId(alt || {}), ...data })); nachLaden(); return api({ action: "update", col, id, data }).catch(e => { ladeTabelle(true); throw e; }); }
     S[col] = S[col].map(x => x.id === id ? { ...x, ...data } : x); ls.set(col, S[col]); nachLaden();
   },
   async del(col, id){
     if (DB) return DB.collection(col).doc(id).delete();
-    if (S.modus === "tabelle"){ lokalAendern(col, id, () => null); nachLaden(); return api({ action: "del", col, id }); }
+    if (S.modus === "tabelle"){ lokalAendern(col, id, () => null); nachLaden(); return api({ action: "del", col, id }).catch(e => { ladeTabelle(true); throw e; }); }
     S[col] = S[col].filter(x => x.id !== id); ls.set(col, S[col]); nachLaden();
   }
 };
-const tippt = () => { const a = document.activeElement; return !!(S.view && a && $("#sheet").contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
-function nachLaden(){ rechne(); adminLaden(); renderAdminUi(); renderFilter(); render(); if (["artikel", "vorgang", "buchen", "verwaltung", "nachbestellen", "bestellungen", "bestellung", "lieferanten"].includes(S.view) && !tippt() && !S.busy && !S.frage) renderSheet(); }
+const tippt = () => { const a = document.activeElement; return !!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && ((S.view && $("#sheet").contains(a)) || $("#dpanel").contains(a))); };
+function nachLaden(){ rechne(); adminLaden(); renderAdminUi(); renderFilter(); render(); if (["artikel", "vorgang", "buchen", "verwaltung", "nachbestellen", "bestellungen", "bestellung", "lieferanten"].includes(S.view) && !tippt() && !S.busy && !S.frage) renderSheet(); if (typeof desk === "function" && desk() && P.view && !panelTippt() && !P.frage) renderPanel(); }
 async function capsLaden(){
   const use = n => window.claude?.use ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
   const [sample, assets] = await Promise.all([use("sample"), use("assets")]);
@@ -971,10 +1284,20 @@ async function capsLaden(){
   if (sample){ try { const l = await sample.limits(); KI.bilder = !!l?.images; } catch { KI.bilder = false; } }
   if (S.view === "artikel-edit") renderSheet();
 }
+async function serverSuchen(){
+  if (IM_ARTIFACT || CONFIG.API_URL || !/^https?:$/.test(location.protocol) || /github\.io$/.test(location.hostname)) return;
+  try { const r = await fetch("api?action=ping", { cache: "no-store" }); const j = await r.json(); if (j.ok && j.server){ CONFIG.API_URL = "api"; S.server = true; } } catch {}
+}
+function liveVerbinden(){
+  if (!S.server || !window.EventSource) return;
+  let t = 0; const es = new EventSource("api/events");
+  es.onmessage = () => { clearTimeout(t); t = setTimeout(() => { if (!S.busy) ladeTabelle(true); }, 250); };
+}
 async function verbinde(){
+  await serverSuchen();
   if (!IM_ARTIFACT && CONFIG.API_URL){
-    S.modus = "tabelle"; await ladeTabelle(true);
-    setInterval(() => { if (!document.hidden && !tippt() && !S.busy) ladeTabelle(true); }, 30000);
+    S.modus = "tabelle"; await ladeTabelle(true); liveVerbinden();
+    setInterval(() => { if (!document.hidden && !tippt() && !S.busy) ladeTabelle(true); }, S.server ? 120000 : 30000);
     document.addEventListener("visibilitychange", () => { if (!document.hidden && !S.busy) ladeTabelle(true); });
     return;
   }
@@ -1091,8 +1414,10 @@ function render(){
   const alle = aktive(), knapp = alle.filter(a => a.mindest && status(a).key !== "ok");
   const offen = S.vorgaenge.filter(v => v.art === "eingang" && v.rechnung === "offen").length;
   const wert = alle.reduce((s, a) => s + Math.max(0, bestand(a.id)) * ekVon(a), 0);
-  $("#summary").textContent = !S.geladen ? "Bestand wird geladen …"
+  const sumText = !S.geladen ? "Bestand wird geladen …"
     : [plural(alle.length, "Artikel", "Artikel"), knapp.length ? `${zahl(knapp.length)} nachbestellen` : "alles vorrätig", wert && S.admin ? `Bestandswert ${euro(Math.round(wert))}` : "", offen && S.admin ? plural(offen, "Rechnung offen", "Rechnungen offen") : ""].filter(Boolean).join(" · ");
+  $("#summary").textContent = sumText;
+  if (typeof desk === "function" && desk()) return renderDesk(sumText);
   $("#leeren").hidden = !S.q; $("#mini-punkt").hidden = !filterAktiv();
   const el = $("#inhalt");
   if (!S.geladen){ el.innerHTML = `<section class="bereich"><div class="karte"><div class="leer"><p class="meta" style="margin:0">Bestand wird geladen …</p></div></div></section>`; return; }
@@ -1351,6 +1676,7 @@ async function speichereArtikel(){
     if (i >= 0 && S.b && !e.id){ const a = { id, ...daten }; if (!artikelVon(id)) S.artikel = [...S.artikel, a];
       S.b.reihe.push(id); S.b.pos[id] = Object.fromEntries(varianten(a).map(v => [v, varianten(a).length === 1 ? 1 : 0]));
       S.stack = S.stack.slice(0, i); S.view = "buchen"; renderSheet(); $("#sheet").scrollTop = 0; return; }
+    if (desk()){ closeSheet(); return openPanel("artikel", id); }
     S.stack = []; S.open = id; S.view = null; openSheet("artikel", { open: id });
   } catch (err){ S.busy = false; fehlerToast(err); renderSheet(); }
 }
@@ -1602,8 +1928,9 @@ function htmlVorgang(){
     <section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${zeilen.map(([k, x]) => `<dt>${k}</dt><dd>${esc(x)}</dd>`).join("")}</dl></div></section>
     ${v.notiz ? `<section class="abschnitt"><h3 class="titel-bereich">Notiz</h3><div class="karte innen"><p class="text">${esc(v.notiz)}</p></div></section>` : ""}
     ${S.frage === "storno" ? `<div class="bestaetigen"><p>Diesen Vorgang stornieren? Der Bestand wird zurückgerechnet.</p><div class="aktionen"><button class="taste gefahr" data-storno-ja>Stornieren</button><button class="taste sekundaer" data-frage-nein>Behalten</button></div></div>`
-      : `<button class="entfernen" data-storno style="justify-self:start">Vorgang stornieren</button>`}`;
+      : stornoErlaubt(v) ? `<button class="entfernen" data-storno style="justify-self:start">${S.admin ? "Vorgang stornieren" : "Eigene Buchung stornieren"}</button>` : ""}`;
 }
+const stornoErlaubt = v => S.admin || (!!v.kuerzel && v.kuerzel === ls.get("kuerzel", "") && v.art !== "eingang" && Date.now() - Date.parse(v.am || 0) < 24 * 3600e3);
 async function storniere(){
   const v = vorgangVon(S.open); if (!v) return;
   try { for (const b of buchungenVon(v.id)) await Store.del("buchungen", b.id); await Store.del("vorgaenge", v.id); toast("Storniert"); zurueck(); }
@@ -1737,7 +2064,8 @@ let toastT;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
 function fehlerToast(e){
   const c = e?.code;
-  toast(c === "invalid_argument" ? "Keine Schreibrechte. Bitte um Freigabe als Mitwirkende:r bitten." : c === "quota_exceeded" ? "Speicher voll. Alte Vorgänge exportieren und löschen." : "Speichern fehlgeschlagen. Bitte noch einmal versuchen.");
+  toast(c === "invalid_argument" ? "Keine Schreibrechte. Bitte um Freigabe als Mitwirkende:r bitten." : c === "quota_exceeded" ? "Speicher voll. Alte Vorgänge exportieren und löschen."
+    : c === "auth" ? "Dafür bitte in der Verwaltung anmelden." : c === "forbidden" ? (e.message || "Das ist nur in der Verwaltung möglich.") : c === "unavailable" ? "Server nicht erreichbar. Bitte gleich noch einmal versuchen." : "Speichern fehlgeschlagen. Bitte noch einmal versuchen.");
 }
 function buchenStarten(art, mit){ S.b = neueBuchung(art, mit); openSheet("buchen"); if (!mit && aktive().length) setTimeout(() => { S.pickQ = ""; openSheet("waehlen"); setTimeout(() => $("#pick-q")?.focus(), 80); }, 0); }
 
@@ -1767,8 +2095,14 @@ async function pinHash(pin){
   const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("gauss-werbemittel:" + pin));
   return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
-function adminLaden(){ const a = ls.get("admin", 0); S.admin = !!a && Date.now() - a < ADMIN_MS && !!EINST().pinHash; }
-function adminSetzen(an){ S.admin = an; ls.set("admin", an ? Date.now() : 0); renderAdminUi(); renderFilter(); render(); }
+function adminLaden(){
+  if (S.server){ S.admin = !!ls.get("token", "") && ls.get("tokenBis", 0) > Date.now(); return; }
+  const a = ls.get("admin", 0); S.admin = !!a && Date.now() - a < ADMIN_MS && !!EINST().pinHash;
+}
+function adminSetzen(an){
+  if (!an && S.server){ const tk = ls.get("token", ""); if (tk) api({ action: "logout" }).catch(() => {}); ls.set("token", ""); ls.set("tokenBis", 0); }
+  S.admin = an; ls.set("admin", an ? Date.now() : 0); renderAdminUi(); renderFilter(); render();
+}
 function renderAdminUi(){
   $("#neu-artikel-oben").hidden = !S.admin;
   $("#verwaltung-oeffnen").hidden = !S.admin;
@@ -1778,7 +2112,7 @@ function renderAdminUi(){
   if (!S.admin && S.tab === "eingang") S.tab = "bestand";
 }
 function htmlLogin(){
-  const neu = !EINST().pinHash, sperre = ls.get("sperre", 0) > Date.now();
+  const neu = S.server ? !S.pinGesetzt : !EINST().pinHash, sperre = !S.server && ls.get("sperre", 0) > Date.now();
   return `<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2>
       <p class="meta" style="margin:0">${neu ? "Noch keine PIN festgelegt. Wer die PIN kennt, kann Artikel, Preise, Lieferanten und Bestellungen ändern." : "Mit der Verwaltungs-PIN anmelden."}</p></div>
     <form id="login-form" class="formular" autocomplete="off" novalidate>
@@ -1792,6 +2126,11 @@ async function anmelden(){
   const f = $("#login-fehler"), pin = $("#pin").value.trim(), e = EINST();
   const fehler = t => { f.textContent = t; f.hidden = false; $("#pin").select(); };
   if (!/^\d{4,8}$/.test(pin)) return fehler("Die PIN besteht aus 4 bis 8 Ziffern.");
+  if (S.server){
+    if (!S.pinGesetzt && pin !== $("#pin2").value.trim()) return fehler("Die beiden PINs stimmen nicht überein.");
+    try { const r = await api({ action: "login", pin, neu: !S.pinGesetzt }); ls.set("token", r.token); ls.set("tokenBis", r.bis); S.pinGesetzt = true; }
+    catch (err){ return fehler(err.message || "Anmeldung fehlgeschlagen."); }
+  } else {
   const h = await pinHash(pin);
   if (!e.pinHash){
     if (pin !== $("#pin2").value.trim()) return fehler("Die beiden PINs stimmen nicht überein.");
@@ -1800,6 +2139,7 @@ async function anmelden(){
     const n = ls.get("fehlversuche", 0) + 1; ls.set("fehlversuche", n);
     if (n >= 5){ ls.set("sperre", Date.now() + 5 * 60e3); ls.set("fehlversuche", 0); renderSheet(); return; }
     return fehler("PIN ist nicht richtig.");
+  }
   }
   ls.set("fehlversuche", 0); adminSetzen(true); toast("Verwaltung entsperrt"); const ziel = S.nachLogin || "verwaltung"; S.nachLogin = null; S.stack = []; S.view = null; openSheet(ziel, ziel === "artikel-edit" ? { edit: neuerEntwurf() } : {});
 }
@@ -1814,9 +2154,10 @@ function htmlPin(){
 }
 async function pinAendern(){
   const f = $("#pin-fehler"), fehler = t => { f.textContent = t; f.hidden = false; };
-  if (await pinHash($("#p-alt").value.trim()) !== EINST().pinHash) return fehler("Die bisherige PIN ist nicht richtig.");
   const n = $("#p-neu").value.trim(); if (!/^\d{4,8}$/.test(n)) return fehler("Die neue PIN besteht aus 4 bis 8 Ziffern.");
   if (n !== $("#p-neu2").value.trim()) return fehler("Die beiden neuen PINs stimmen nicht überein.");
+  if (S.server){ try { await api({ action: "pin", alt: $("#p-alt").value.trim(), neu: n }); toast("PIN geändert"); return zurueck(); } catch (err){ return fehler(err.message || "PIN konnte nicht geändert werden."); } }
+  if (await pinHash($("#p-alt").value.trim()) !== EINST().pinHash) return fehler("Die bisherige PIN ist nicht richtig.");
   try { await Store.set("einstellungen", "verwaltung", { ...stripId(EINST()), pinHash: await pinHash(n) }); toast("PIN geändert"); zurueck(); } catch (err){ fehlerToast(err); }
 }
 function neuerArtikel(){ if (S.admin) openSheet("artikel-edit", { edit: neuerEntwurf() }); else { S.nachLogin = "artikel-edit"; openSheet("login"); } }
@@ -2151,10 +2492,10 @@ D.addEventListener("click", e => {
   if (d.abbrechen !== undefined) return S.stack.length ? zurueck() : closeSheet();
   if (d.frageNein !== undefined){ S.frage = null; return renderSheet(); }
   // Artikel und Vorgänge
-  if (d.artikel && S.view !== "artikel") return openSheet("artikel", { open: d.artikel });
-  if (d.vorgang) return openSheet("vorgang", { open: d.vorgang });
+  if (d.artikel && S.view !== "artikel"){ if (desk()){ closeSheet(); return openPanel("artikel", d.artikel); } return openSheet("artikel", { open: d.artikel }); }
+  if (d.vorgang){ if (desk()){ closeSheet(); return openPanel("vorgang", d.vorgang); } return openSheet("vorgang", { open: d.vorgang }); }
   if (d.artikelEdit) return openSheet("artikel-edit", { edit: neuerEntwurf(artikelVon(d.artikelEdit)) });
-  if (d.inventur){ const a = artikelVon(d.inventur); return openSheet("inventur", { inv: { id: a.id, geschaetzt: a.kategorie === "Drucksachen", faktor: 90, cm: "", zahl: Object.fromEntries(varianten(a).map(v => [v, Math.max(0, bestand(a.id, v))])) } }); }
+  if (d.inventur) return inventurStarten(d.inventur);
   if (d.buchen){ const art = d.buchen, mit = d.mit; S.b = neueBuchung(art, mit); return openSheet("buchen"); }
   if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
   // Artikel bearbeiten
@@ -2227,11 +2568,10 @@ D.addEventListener("submit", e => {
   else if (e.target.id === "kuerzel-form"){ const k = $("#k-wert").value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "").slice(0, 3); ls.set("kuerzel", k); toast(k ? `Kürzel ${k} gespeichert` : "Kürzel entfernt"); closeSheet(); }
 });
 
-/* ===== Einstellungen: Menü nach oben ===== */
-const menueTaste = $("#einstellungen"), menueEl = $("#einstellungen-menue");
-function renderMenue(){
+/* ===== Einstellungen: Menü (Telefon nach oben, Desktop im Kopf nach unten) ===== */
+function menueHtml(){
   const m = ls.get("modus", "system"), k = ls.get("kuerzel", "");
-  menueEl.innerHTML = `<p class="etikett menue-etikett">Darstellung</p>
+  return `<p class="etikett menue-etikett">Darstellung</p>
     ${[["system", "Wie System"], ["hell", "Hell"], ["dunkel", "Dunkel"]].map(([x, l]) => `<button role="menuitemradio" aria-checked="${m === x}" data-modus="${x}"><span>${l}</span>${m === x ? ICON.haken : ""}</button>`).join("")}
     <div class="menue-linie" role="separator"></div>
     <p class="etikett menue-etikett">Als Tabelle sichern</p>
@@ -2243,28 +2583,30 @@ function renderMenue(){
     <button role="menuitem" data-menue="kuerzel"><span>Mein Kürzel</span>${k ? `<span class="meta kuerzel-text">${esc(k)}</span>` : ""}</button>
 `;
 }
-function menue(offen){
-  if (offen) renderMenue();
-  menueEl.hidden = !offen; menueTaste.setAttribute("aria-expanded", offen);
-  if (offen) (menueEl.querySelector('[aria-checked="true"]') || menueEl.querySelector("button")).focus();
+function menueVerdrahten(taste, el){
+  const auf = offen => { if (offen) el.innerHTML = menueHtml(); el.hidden = !offen; taste.setAttribute("aria-expanded", String(offen)); if (offen) (el.querySelector('[aria-checked="true"]') || el.querySelector("button")).focus(); };
+  taste.addEventListener("click", () => auf(el.hidden));
+  el.addEventListener("click", e => {
+    e.stopPropagation();
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.modus){ setzeModus(b.dataset.modus); el.innerHTML = menueHtml(); el.querySelector(`[data-modus="${b.dataset.modus}"]`).focus(); return; }
+    auf(false);
+    if (b.dataset.export) exportieren(b.dataset.export);
+    if (b.dataset.menue === "kuerzel") openSheet("kuerzel");
+    if (b.dataset.menue === "demo") openSheet("demo");
+    if (b.dataset.menue === "verwaltung") verwaltungOeffnen();
+  });
+  el.addEventListener("keydown", e => {
+    const items = [...el.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown"){ items[(i + 1) % items.length].focus(); e.preventDefault(); }
+    if (e.key === "ArrowUp"){ items[(i - 1 + items.length) % items.length].focus(); e.preventDefault(); }
+    if (e.key === "Escape"){ e.stopPropagation(); auf(false); taste.focus(); }
+    if (e.key === "Tab") auf(false);
+  });
+  document.addEventListener("click", e => { if (!el.hidden && !el.contains(e.target) && !taste.contains(e.target)) auf(false); });
 }
-menueTaste.addEventListener("click", () => menue(menueEl.hidden));
-menueEl.addEventListener("click", e => {
-  e.stopPropagation();
-  const b = e.target.closest("button"); if (!b) return;
-  if (b.dataset.modus){ setzeModus(b.dataset.modus); renderMenue(); menueEl.querySelector(`[data-modus="${b.dataset.modus}"]`).focus(); return; }
-  if (b.dataset.export){ menue(false); exportieren(b.dataset.export); }
-  if (b.dataset.menue === "kuerzel"){ menue(false); openSheet("kuerzel"); }
-  if (b.dataset.menue === "demo"){ menue(false); openSheet("demo"); }
-  if (b.dataset.menue === "verwaltung"){ menue(false); verwaltungOeffnen(); }
-});
-menueEl.addEventListener("keydown", e => {
-  const items = [...menueEl.querySelectorAll("button")], i = items.indexOf(document.activeElement);
-  if (e.key === "ArrowDown"){ items[(i + 1) % items.length].focus(); e.preventDefault(); }
-  if (e.key === "ArrowUp"){ items[(i - 1 + items.length) % items.length].focus(); e.preventDefault(); }
-  if (e.key === "Tab" || e.key === "Escape") menue(false);
-});
-document.addEventListener("click", e => { if (!menueEl.hidden && !e.target.closest("#einstellungen-menue, #einstellungen")) menue(false); });
+menueVerdrahten($("#einstellungen"), $("#einstellungen-menue"));
+menueVerdrahten($("#dk-einst"), $("#dk-einst-menue"));
 
 /* ===== Mini-Kopf: erscheint, sobald die Leiste aus dem Bild ist ===== */
 const platz = $("#leiste-platz"), leiste = $("#leiste"), mini = $("#minikopf"), miniTaste = $("#mini-filter");
@@ -2285,6 +2627,286 @@ miniTaste.addEventListener("click", () => setFilter(miniTaste.getAttribute("aria
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !S.view && leiste.classList.contains("schwebend")){ setFilter(false); miniTaste.focus(); } });
 window.addEventListener("scroll", pruefeMini, { passive: true });
 window.addEventListener("resize", pruefeMini, { passive: true });
+
+/* ===== Desktop ab 1024 px: Hauptleiste, globaler Kopf, Seitenblatt, Popup (GAUSS Design System) ===== */
+const DESK = matchMedia("(min-width:1024px)");
+const desk = () => DESK.matches;
+const P = { view: null, open: null, stack: [], frage: null, kEdit: null, kWert: null, kText: "", breit: ls.get("breit", false), opener: null };
+S.ansicht = ls.get("ansicht", "liste") === "karten" ? "karten" : "liste";
+const NICON = {
+  box: KAT_ICON.Sonstiges, raus: ICON.raus, rein: ICON.rein, korb: VICON.korb, lkw: VICON.lkw, haus: VICON.haus,
+  schloss: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
+  zahnrad: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>`
+};
+const SEITEN = { bestand: { titel: "Bestand", icon: "box" }, ausgabe: { titel: "Ausgaben", icon: "raus" }, eingang: { titel: "Eingänge", icon: "rein" } };
+
+/* --- Hauptleiste --- */
+function renderNav(){
+  const nb = S.geladen && S.admin ? nachbestellVorschlaege().length : 0, off = S.admin ? S.bestellungen.filter(b => OFFEN.includes(b.status)).length : 0;
+  const seite = (id, text) => `<button type="button" class="dnav-ziel" data-seite="${id}" ${S.tab === id ? 'aria-current="page"' : ""} title="${text}">${NICON[SEITEN[id].icon]}<span class="text">${text}</span></button>`;
+  const pop = (v, icon, text, n, neutral) => `<button type="button" class="dnav-ziel" data-nav-pop="${v}" title="${text}">${NICON[icon]}<span class="text">${text}</span>${n ? `<span class="dnav-zahl${neutral ? " neutral" : ""}">${zahl(n)}</span>` : ""}</button>`;
+  $("#dnav").innerHTML = seite("bestand", "Bestand") + seite("ausgabe", "Ausgaben")
+    + `<p class="etikett dnav-etikett">Verwaltung</p>`
+    + (S.admin ? seite("eingang", "Eingänge") + pop("nachbestellen", "korb", "Nachbestellen", nb) + pop("bestellungen", "lkw", "Bestellungen", off, true) + pop("lieferanten", "haus", "Lieferanten") + pop("verwaltung", "zahnrad", "Stammdaten und Belege")
+      : pop("login", "schloss", "Anmelden"));
+}
+
+/* --- Seite: Kopf, Chips, Liste oder Karten --- */
+function renderDesk(summe){
+  renderNav();
+  const sx = SEITEN[S.tab] || SEITEN.bestand, best = S.tab === "bestand";
+  $("#dk-ic").innerHTML = NICON[sx.icon]; $("#dk-titel").textContent = sx.titel; $("#ds-titel").textContent = sx.titel;
+  const nV = S.vorgaenge.filter(v => v.art === S.tab).length;
+  $("#ds-summary").textContent = best ? summe : !S.geladen ? "Wird geladen …" : nV ? plural(nV, S.tab === "ausgabe" ? "Ausgabe" : "Eingang", S.tab === "ausgabe" ? "Ausgaben" : "Eingänge") : "";
+  $("#ds-filter").hidden = !best; $("#ds-filter-punkt").hidden = S.status === "alle" && S.sort === "name";
+  document.querySelectorAll("#ds-ansicht [data-ansicht]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.ansicht === S.ansicht)));
+  const genutzt = new Set(aktive().map(a => a.kategorie)), kats = KATEGORIEN.map(x => x.k).filter(k => genutzt.has(k) || S.kat.includes(k));
+  $("#ds-chips").innerHTML = (S.q ? `<button class="chip chip-weg" data-q-weg aria-pressed="true">Suche „${esc(S.q)}“ ${ICON.weg}</button>` : "")
+    + (best && S.status !== "alle" ? `<button class="chip chip-weg" data-status-weg aria-pressed="true">${{ knapp: "Knapp oder leer", leer: "Leer", ok: "Vorrätig" }[S.status]} ${ICON.weg}</button>` : "")
+    + (kats.length > 1 ? kats.map(k => `<button class="chip" data-kat="${esc(k)}" aria-pressed="${S.kat.includes(k)}">${esc(k)}</button>`).join("") : "");
+  $("#d-vorschau").hidden = $("#vorschau").hidden; $("#d-vorschau-text").textContent = $("#vorschau-text").textContent;
+  const el = $("#d-inhalt"), w = woerter();
+  if (!S.geladen){ el.innerHTML = `<div class="karte"><div class="leer"><p class="meta" style="margin:0">Wird geladen …</p></div></div>`; return; }
+  if (best){
+    const alle = aktive(), items = filterArtikel(), knapp = alle.filter(a => a.mindest && status(a).key !== "ok").length;
+    const hinweis = !filterAktiv() && knapp ? `<div class="dhinweis"><span>${plural(knapp, "Artikel liegt", "Artikel liegen")} am oder unter dem Mindestbestand.</span><button class="kt klein sekundaer" data-knapp-zeigen>Anzeigen</button>${S.admin ? `<button class="kt klein sekundaer" data-nav-pop="nachbestellen">Nachbestellen</button>` : ""}</div>` : "";
+    el.innerHTML = !alle.length ? `<div class="karte">${leerKatalog()}</div>`
+      : !items.length ? hinweis + `<div class="karte">${nichtsGefunden()}</div>`
+      : hinweis + (S.ansicht === "karten" ? `<div class="dkarten">${items.map(a => artikelKarte(a, w)).join("")}</div>` : artikelTabelle(items, w));
+  } else {
+    const items = filterVorgaenge(S.tab);
+    if (!items.length){
+      const nie = !S.vorgaenge.some(v => v.art === S.tab);
+      el.innerHTML = `<div class="karte">${nie ? `<div class="leer"><p class="titel-karte">${S.tab === "ausgabe" ? "Noch nichts ausgegeben" : "Noch keine Eingänge"}</p><p class="meta" style="margin:0">${S.tab === "ausgabe" ? "Jede Ausgabe hält fest, was an wen ging und wofür." : "Jeder Eingang hält Lieferant, Bestellung und Rechnung fest."}</p>
+        <div class="leer-aktionen"><button class="taste primaer klein" data-buchen="${S.tab}">${S.tab === "ausgabe" ? "Ausgabe buchen" : "Eingang buchen"}</button></div></div>` : nichtsGefunden()}</div>`;
+    } else {
+      const gruppen = new Map();
+      for (const v of items){ const m = monat(v.datum); if (!gruppen.has(m)) gruppen.set(m, []); gruppen.get(m).push(v); }
+      el.innerHTML = [...gruppen].map(([m, l], i) => `<section class="dbereich" aria-labelledby="dm${i}"><header><h3 class="titel-bereich" id="dm${i}">${esc(m)}</h3><span class="meta zahl">${plural(l.length, S.tab === "ausgabe" ? "Ausgabe" : "Eingang", S.tab === "ausgabe" ? "Ausgaben" : "Eingänge")}</span></header>
+        ${S.ansicht === "karten" ? `<div class="dkarten">${l.map(v => vorgangKarte(v, w)).join("")}</div>` : vorgangTabelle(l, w)}</section>`).join("");
+    }
+  }
+}
+function istAuswahl(view, id){ return P.view === view && P.open === id; }
+function artikelTabelle(items, w){
+  return `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Artikel</th><th scope="col" class="opt">Kategorie</th><th scope="col" class="opt">Lagerort</th><th scope="col">Status</th><th scope="col" class="r">Bestand</th></tr></thead><tbody>${items.map(a => {
+    const s = status(a), n = bestand(a.id), u = unterwegs(a.id);
+    return `<tr data-zeile="artikel" data-id="${esc(a.id)}" aria-selected="${istAuswahl("artikel", a.id)}"><td><button type="button" class="dzelle" data-artikel="${esc(a.id)}">${kachel(a)}<span class="dname">${markiere(a.name, w)}</span></button></td>
+      <td class="sek opt">${esc(a.kategorie || "")}</td><td class="sek opt">${markiere(a.lagerort || "–", w)}</td>
+      <td><span class="badge ${s.cls}">${s.label}</span>${u ? ` <span class="badge st-info">${zahl(u)} bestellt</span>` : ""}</td>
+      <td class="r zahl"><b class="${n < 0 ? "neg" : ""}">${ca(a.id)}${zahl(n)}</b> <span class="sek">${esc(einheit(a))}</span></td></tr>`; }).join("")}</tbody></table></div>`;
+}
+function artikelKarte(a, w){
+  const s = status(a), n = bestand(a.id), f = (a.fotos || []).filter(fotoUrl)[0];
+  return `<button type="button" class="dkarte" data-artikel="${esc(a.id)}" aria-current="${istAuswahl("artikel", a.id)}">
+    <span class="dkarte-bild">${f ? `<img src="${esc(fotoUrl(f))}" alt="" loading="lazy" class="${f.frei === false ? "foto-voll" : ""}">` : `<span class="dkarte-ic">${KAT_ICON[a.kategorie] || KAT_ICON.Sonstiges}</span>`}</span>
+    <span class="dkarte-text"><span class="t">${markiere(a.name, w)}</span><span class="meta">${esc([a.kategorie, a.lagerort].filter(Boolean).join(" · "))}</span>
+      <span class="dkarte-fuss"><span class="badge ${s.cls}">${s.label}</span><span class="menge-k zahl"><b>${ca(a.id)}${zahl(n)}</b> ${esc(einheit(a))}</span></span></span></button>`;
+}
+const vorgangTitel = v => v.art === "eingang" ? (v.lieferant || "Eingang") : (v.an || "Ausgabe");
+function vorgangInfo(v){
+  const bs = buchungenVon(v.id), summe = bs.reduce((s, b) => s + Math.abs(Number(b.menge || 0)), 0);
+  const ids = [...new Set(bs.map(b => b.artikelId))], namen = ids.map(id => artikelVon(id)?.name || "Gelöschter Artikel");
+  return { summe, ids, namen, kurz: namen.slice(0, 2).join(", ") + (namen.length > 2 ? ` und ${namen.length - 2} weitere` : "") };
+}
+function vorgangTabelle(l, w){
+  const ein = S.tab === "eingang";
+  return `<div class="karte dtab-wrap"><table class="dtab"><thead><tr><th scope="col">Datum</th><th scope="col">${ein ? "Lieferant" : "An"}</th><th scope="col">${ein ? "Bestellung" : "Wofür"}</th><th scope="col" class="opt">Artikel</th><th scope="col" class="r">Menge</th><th scope="col" class="opt">Kürzel</th></tr></thead><tbody>${l.map(v => {
+    const x = vorgangInfo(v);
+    return `<tr data-zeile="vorgang" data-id="${esc(v.id)}" aria-selected="${istAuswahl("vorgang", v.id)}"><td class="zahl sek">${fmt(v.datum)}</td>
+      <td><button type="button" class="dzelle" data-vorgang="${esc(v.id)}"><span class="dname">${markiere(vorgangTitel(v), w)}</span></button></td>
+      <td class="sek">${markiere(ein ? (v.bestellnr || "–") : (v.anlass || "–"), w)}${ein && v.rechnung === "offen" ? ` <span class="badge st-warnung opt">Rechnung offen</span>` : ""}</td>
+      <td class="sek dkurz opt">${markiere(x.kurz, w)}</td><td class="r zahl"><b>${ein ? "+" : "−"}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)}</b></td><td class="sek opt">${esc(v.kuerzel || "")}</td></tr>`; }).join("")}</tbody></table></div>`;
+}
+function vorgangKarte(v, w){
+  const x = vorgangInfo(v), ein = v.art === "eingang";
+  return `<button type="button" class="dkarte vorgang" data-vorgang="${esc(v.id)}" aria-current="${istAuswahl("vorgang", v.id)}">
+    <span class="dkarte-reihe">${x.ids.slice(0, 4).map(id => kachel(artikelVon(id) || { kategorie: "Sonstiges" })).join("")}</span>
+    <span class="dkarte-text"><span class="t">${markiere(vorgangTitel(v), w)}</span><span class="meta">${esc([fmt(v.datum), ein ? v.bestellnr : v.anlass].filter(Boolean).join(" · "))}</span>
+      <span class="meta">${markiere(x.kurz, w)}</span>
+      <span class="dkarte-fuss"><span class="meta">${esc(v.kuerzel || "")}</span><span class="menge-k zahl"><b>${ein ? "+" : "−"}${v.geschaetzt ? "≈ " : ""}${zahl(x.summe)}</b></span></span></span></button>`;
+}
+function markiereAuswahl(){
+  document.querySelectorAll("#d-inhalt tr[data-zeile]").forEach(tr => tr.setAttribute("aria-selected", String(istAuswahl(tr.dataset.zeile, tr.dataset.id))));
+  document.querySelectorAll("#d-inhalt .dkarte").forEach(k => k.setAttribute("aria-current", String(k.dataset.artikel ? istAuswahl("artikel", k.dataset.artikel) : istAuswahl("vorgang", k.dataset.vorgang))));
+}
+
+/* --- Seitenblatt (Detailbereich) rechts --- */
+function mitP(fn){
+  const k = ["open", "frage", "stack", "kEdit", "kWert", "kText"], alt = {};
+  for (const x of k){ alt[x] = S[x]; S[x] = P[x]; }
+  try { return fn(); } finally { for (const x of k){ P[x] = S[x]; S[x] = alt[x]; } }
+}
+function openPanel(view, id){
+  if (!desk()) return openSheet(view, { open: id });
+  const war = !$("#dpanel").hidden;
+  P.view = view; P.open = id; P.stack = []; P.frage = null; P.kEdit = null; P.kWert = null; P.kText = "";
+  if (!war) P.opener = document.activeElement;
+  if (!war && innerWidth < 1500 && $("#drahmen").dataset.nav !== "zu"){ $("#drahmen").dataset.nav = "zu"; P.navAuto = true; }
+  $("#dpanel").hidden = false; $("#dkoerper").classList.add("mit-panel"); $("#dkoerper").classList.toggle("breit", !!P.breit);
+  renderPanel(); markiereAuswahl(); $("#dpanel-body").scrollTop = 0;
+  setTimeout(() => { const t = $("#p-titel"); if (t){ t.tabIndex = -1; t.focus({ preventScroll: true }); } }, 40);
+}
+function panelGehe(view, id){ P.stack.push({ view: P.view, open: P.open }); P.view = view; P.open = id; P.frage = null; P.kText = ""; renderPanel(); markiereAuswahl(); $("#dpanel-body").scrollTop = 0; }
+function closePanel(){
+  if ($("#dpanel").hidden) return;
+  const z = P.open; $("#dpanel").hidden = true; $("#dkoerper").classList.remove("mit-panel", "breit");
+  P.view = null; P.open = null; P.stack = []; markiereAuswahl();
+  if (P.navAuto){ $("#drahmen").dataset.nav = "offen"; P.navAuto = false; }
+  const r = z && (document.querySelector(`#d-inhalt tr[data-id="${CSS.escape(z)}"] .dzelle`) || document.querySelector(`#d-inhalt .dkarte[data-artikel="${CSS.escape(z)}"], #d-inhalt .dkarte[data-vorgang="${CSS.escape(z)}"]`));
+  (r || (P.opener && P.opener.isConnected ? P.opener : null))?.focus?.({ preventScroll: true }); P.opener = null;
+}
+function renderPanel(){
+  if (!P.view || $("#dpanel").hidden) return;
+  if (P.view === "artikel" && !artikelVon(P.open) || P.view === "vorgang" && !vorgangVon(P.open)){
+    $("#dpanel-body").innerHTML = `<p class="meta" id="p-titel">${P.view === "artikel" ? "Dieser Artikel ist nicht mehr da." : "Dieser Vorgang wurde storniert."}</p>`; return;
+  }
+  const html = mitP(() => P.view === "artikel" ? htmlArtikel() : htmlVorgang());
+  $("#dpanel-body").innerHTML = html.replace(/id="d-titel"/g, 'id="p-titel"');
+  $("#p-etikett").textContent = P.view === "artikel" ? "Artikel" : (ART[vorgangVon(P.open)?.art]?.label || "Vorgang");
+  $("#p-breit").setAttribute("aria-pressed", String(!!P.breit)); $("#p-breit").setAttribute("aria-label", P.breit ? "Schmaler anzeigen" : "Breiter anzeigen");
+}
+const panelTippt = () => { const a = document.activeElement; return !!(a && $("#dpanel").contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)); };
+function inventurStarten(id){
+  const a = artikelVon(id); if (!a) return;
+  openSheet("inventur", { inv: { id: a.id, geschaetzt: a.kategorie === "Drucksachen", faktor: 90, cm: "", zahl: Object.fromEntries(varianten(a).map(v => [v, Math.max(0, bestand(a.id, v))])) } });
+}
+async function panelKommentar(){
+  const f = $("#k-fehler"), text = String(P.kText || $("#k-text")?.value || "").trim();
+  if (!text){ f.textContent = "Bitte einen Kommentar schreiben."; f.hidden = false; $("#k-text").focus(); return; }
+  const k = mitP(() => leseKuerzel("kk"));
+  if (k.length < 2){ f.textContent = "Bitte dein Kürzel mit 2 bis 3 Buchstaben eintragen."; f.hidden = false; $("#kz-kk")?.focus(); return; }
+  try { await Store.set("kommentare", uid(), { artikelId: P.open, kuerzel: k, text: text.slice(0, 1000), am: new Date().toISOString() }); P.kText = ""; toast("Kommentar gespeichert"); renderPanel(); }
+  catch (err){ fehlerToast(err); }
+}
+$("#p-zu").addEventListener("click", closePanel);
+$("#p-breit").addEventListener("click", () => { P.breit = !P.breit; ls.set("breit", P.breit); $("#dkoerper").classList.toggle("breit", P.breit); renderPanel(); });
+$("#dpanel").addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t || !$("#dpanel-body").contains(t)) return; const d = t.dataset;
+  if (d.zurueck !== undefined){ const z = P.stack.pop(); if (!z) return closePanel(); P.view = z.view; P.open = z.open; P.frage = null; renderPanel(); markiereAuswahl(); return; }
+  if (d.foto !== undefined){ const a = artikelVon(P.open); if (a) oeffneLightbox((a.fotos || []).filter(fotoUrl), Number(d.foto)); return; }
+  if (d.vorgang) return panelGehe("vorgang", d.vorgang);
+  if (d.artikel) return panelGehe("artikel", d.artikel);
+  if (d.buchen){ S.b = neueBuchung(d.buchen, d.mit); return openSheet("buchen"); }
+  if (d.inventur) return inventurStarten(d.inventur);
+  if (d.artikelEdit){ if (!S.admin) return; return openSheet("artikel-edit", { edit: neuerEntwurf(artikelVon(d.artikelEdit)) }); }
+  if (d.kuerzelAendern){ P.kEdit = d.kuerzelAendern; P.kWert = ""; renderPanel(); setTimeout(() => $("#kz-" + d.kuerzelAendern)?.focus(), 30); return; }
+  if (d.kommentarWeg){ P.frage = "k-" + d.kommentarWeg; return renderPanel(); }
+  if (d.kommentarWegJa){ Store.del("kommentare", d.kommentarWegJa).then(() => { P.frage = null; toast("Kommentar gelöscht"); renderPanel(); }).catch(fehlerToast); return; }
+  if (d.frageNein !== undefined){ P.frage = null; return renderPanel(); }
+  if (d.vRechnung !== undefined){ Store.update("vorgaenge", P.open, { rechnung: d.vRechnung }).then(() => toast(d.vRechnung === "bezahlt" ? "Als bezahlt markiert" : "Gespeichert")).catch(fehlerToast); return; }
+  if (t.hasAttribute("data-storno")){ P.frage = "storno"; return renderPanel(); }
+  if (t.hasAttribute("data-storno-ja")){
+    const v = vorgangVon(P.open); if (!v) return; P.frage = null;
+    (async () => { try { for (const b of buchungenVon(v.id)) await Store.del("buchungen", b.id); await Store.del("vorgaenge", v.id); toast("Storniert"); const z = P.stack.pop(); if (z){ P.view = z.view; P.open = z.open; renderPanel(); } else closePanel(); } catch (err){ fehlerToast(err); } })();
+  }
+});
+$("#dpanel").addEventListener("input", e => { const t = e.target; if (t.id === "k-text") P.kText = t.value; else if (t.hasAttribute("data-kuerzel-feld")) P.kWert = t.value; });
+$("#dpanel").addEventListener("submit", e => { e.preventDefault(); if (e.target.id === "kommentar-form") panelKommentar(); });
+
+/* --- Seite: Ereignisse --- */
+function seiteWechseln(tab){
+  if (tab === "eingang" && !S.admin) return;
+  S.tab = tab; closePanel(); $("#dscroll").scrollTop = 0; renderFilter(); render();
+}
+$("#dnav").addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.seite) return seiteWechseln(t.dataset.seite);
+  const v = t.dataset.navPop; if (!v) return;
+  if (v === "login") return verwaltungOeffnen();
+  if (v === "nachbestellen") S.nb = { menge: {} };
+  verwaltungOeffnen(v);
+});
+$("#dnav-start").addEventListener("click", e => { e.preventDefault(); seiteWechseln("bestand"); });
+$("#dnav-klapp").addEventListener("click", () => {
+  const r = $("#drahmen"), zu = r.dataset.nav !== "zu"; r.dataset.nav = zu ? "zu" : "offen"; P.navAuto = false;
+  $("#dnav-klapp").setAttribute("aria-expanded", String(!zu)); $("#dnav-klapp").setAttribute("aria-label", zu ? "Navigation ausklappen" : "Navigation einklappen"); ls.set("navZu", zu);
+});
+if (ls.get("navZu", false)){ $("#drahmen").dataset.nav = "zu"; $("#dnav-klapp").setAttribute("aria-expanded", "false"); $("#dnav-klapp").setAttribute("aria-label", "Navigation ausklappen"); }
+$("#dk-ausgabe").addEventListener("click", () => buchenStarten("ausgabe"));
+$("#ds-filter").addEventListener("click", () => openSheet("filter"));
+$("#ds-ansicht").addEventListener("click", e => { const b = e.target.closest("[data-ansicht]"); if (!b) return; S.ansicht = b.dataset.ansicht; ls.set("ansicht", S.ansicht); render(); });
+$("#ds-chips").addEventListener("click", e => {
+  const c = e.target.closest("button"); if (!c) return;
+  if (c.hasAttribute("data-q-weg")){ S.q = ""; $("#q").value = ""; }
+  else if (c.hasAttribute("data-status-weg")) S.status = "alle";
+  else if (c.dataset.kat){ const k = c.dataset.kat; S.kat = S.kat.includes(k) ? S.kat.filter(x => x !== k) : [...S.kat, k]; }
+  renderFilter(); render();
+});
+$("#d-inhalt").addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (t){
+    const d = t.dataset;
+    if (d.artikel) return openPanel("artikel", d.artikel);
+    if (d.vorgang) return openPanel("vorgang", d.vorgang);
+    if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
+    if (d.buchen) return buchenStarten(d.buchen);
+    if (t.hasAttribute("data-demo-laden")) return demoLaden();
+    if (t.hasAttribute("data-knapp-zeigen")){ S.status = "knapp"; renderFilter(); return render(); }
+    if (d.navPop){ S.nb = { menge: {} }; return verwaltungOeffnen(d.navPop); }
+    if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.status = "alle"; renderFilter(); return render(); }
+    return;
+  }
+  const tr = e.target.closest("tr[data-zeile]"); if (tr) openPanel(tr.dataset.zeile, tr.dataset.id);
+});
+$("#dscroll").addEventListener("scroll", () => { $("#dkopf").classList.toggle("an", $("#dscroll").scrollTop > 56); }, { passive: true });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape" || !desk() || S.view || !$("#lightbox").hidden || !$("#gs-panel").hidden || !$("#dk-einst-menue").hidden) return;
+  if (!$("#dpanel").hidden) closePanel();
+});
+
+/* --- Globale Suche im Kopf (Strg K) --- */
+const gsIn = $("#gs-eingabe"), gsPanel = $("#gs-panel");
+let gsTreffer = [], gsI = -1;
+if (/Mac|iPhone|iPad/.test(navigator.platform || "")) $("#gs-kbd").textContent = "⌘ K";
+function gsZu(){ gsPanel.hidden = true; gsIn.setAttribute("aria-expanded", "false"); gsIn.removeAttribute("aria-activedescendant"); }
+function gsSuchen(){
+  const q = gsIn.value, w = norm(q).split(/\s+/).filter(Boolean);
+  $("#gs").classList.toggle("hat-text", !!q); $("#gs-leeren").hidden = !q;
+  if (!w.length){ gsTreffer = []; gsZu(); return; }
+  const art = aktive().filter(a => passt(artikelText(a), w)).sort((a, b) => a.name.localeCompare(b.name, "de")).slice(0, 6).map(a => ({ typ: "artikel", id: a.id,
+    html: `${kachel(a)}<span class="gs-t"><span>${markiere(a.name, w)}</span><span class="meta">${esc([a.kategorie, a.lagerort].filter(Boolean).join(" · "))}</span></span><span class="gs-r zahl">${ca(a.id)}${zahl(bestand(a.id))}</span>` }));
+  const vg = S.vorgaenge.filter(v => (v.art === "ausgabe" || (S.admin && v.art === "eingang")) && passt(vorgangText(v), w)).sort((a, b) => (b.datum || "").localeCompare(a.datum || "")).slice(0, 6).map(v => ({ typ: "vorgang", id: v.id, art: v.art,
+    html: `<span class="kachel ${ART[v.art].cls}" aria-hidden="true">${ART[v.art].icon}</span><span class="gs-t"><span>${markiere(vorgangTitel(v), w)}</span><span class="meta">${esc([ART[v.art].label, fmt(v.datum), v.art === "eingang" ? v.bestellnr : v.anlass].filter(Boolean).join(" · "))}</span></span><span class="gs-r zahl">${zahl(vorgangInfo(v).summe)}</span>` }));
+  gsTreffer = [...art, ...vg]; gsI = gsTreffer.length ? 0 : -1;
+  const opt = (t, i) => `<div class="gs-opt" role="option" id="gs-o${i}" data-i="${i}" aria-selected="${i === gsI}">${t.html}</div>`;
+  $("#gs-liste").innerHTML = (art.length ? `<p class="etikett gs-gruppe" role="presentation">Artikel</p>` + art.map((t, i) => opt(t, i)).join("") : "")
+    + (vg.length ? `<p class="etikett gs-gruppe" role="presentation">Ausgaben und Eingänge</p>` + vg.map((t, i) => opt(t, i + art.length)).join("") : "")
+    + `<button type="button" class="gs-filtern" data-gs-filtern><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg> Auf der Seite „${esc((SEITEN[S.tab] || SEITEN.bestand).titel)}“ nach „${esc(q)}“ filtern</button>`;
+  $("#gs-status").textContent = gsTreffer.length ? "" : `Keine Treffer für „${q}“.`;
+  gsPanel.hidden = false; gsIn.setAttribute("aria-expanded", "true");
+  if (gsI >= 0) gsIn.setAttribute("aria-activedescendant", "gs-o" + gsI); else gsIn.removeAttribute("aria-activedescendant");
+}
+function gsWahl(i){
+  gsI = i; document.querySelectorAll("#gs-liste .gs-opt").forEach(o => o.setAttribute("aria-selected", String(Number(o.dataset.i) === i)));
+  gsIn.setAttribute("aria-activedescendant", "gs-o" + i); $("#gs-o" + i)?.scrollIntoView({ block: "nearest" });
+}
+function gsOeffnen(i){
+  const t = gsTreffer[i]; if (!t) return; gsZu(); gsIn.blur();
+  const ziel = t.typ === "artikel" ? "bestand" : t.art;
+  if (S.tab !== ziel){ S.tab = ziel; renderFilter(); render(); }
+  openPanel(t.typ, t.id);
+}
+function gsFiltern(){ S.q = gsIn.value.trim(); $("#q").value = S.q; gsIn.value = ""; gsSuchen(); gsZu(); renderFilter(); render(); }
+gsIn.addEventListener("input", gsSuchen);
+gsIn.addEventListener("focus", () => { if (gsIn.value) gsSuchen(); });
+gsIn.addEventListener("blur", () => setTimeout(() => { if (!$("#gs").contains(document.activeElement)) gsZu(); }, 120));
+gsIn.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" && gsTreffer.length){ e.preventDefault(); gsWahl((gsI + 1) % gsTreffer.length); }
+  else if (e.key === "ArrowUp" && gsTreffer.length){ e.preventDefault(); gsWahl((gsI - 1 + gsTreffer.length) % gsTreffer.length); }
+  else if (e.key === "Enter"){ e.preventDefault(); if (gsI >= 0) gsOeffnen(gsI); else if (gsIn.value.trim()) gsFiltern(); }
+  else if (e.key === "Escape"){ e.stopPropagation(); if (!gsPanel.hidden) gsZu(); else { gsIn.value = ""; gsSuchen(); gsIn.blur(); } }
+});
+gsPanel.addEventListener("mousedown", e => e.preventDefault());
+gsPanel.addEventListener("click", e => {
+  if (e.target.closest("[data-gs-filtern]")) return gsFiltern();
+  const o = e.target.closest(".gs-opt"); if (o) gsOeffnen(Number(o.dataset.i));
+});
+$("#gs-leeren").addEventListener("click", () => { gsIn.value = ""; gsSuchen(); gsIn.focus(); });
+document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && desk()){ e.preventDefault(); if (S.view) closeSheet(); gsIn.focus(); gsIn.select(); } });
+
+/* --- Wechsel zwischen Telefon und Desktop --- */
+DESK.addEventListener("change", () => { if (S.view) closeSheet(); closePanel(); gsZu(); renderFilter(); render(); });
 
 /* ===== Start ===== */
 renderFilter(); render(); verbinde();
