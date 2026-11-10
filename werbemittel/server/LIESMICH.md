@@ -1,31 +1,63 @@
 # Werbemittel auf dem Firmenserver
 
-Die App läuft im Firmennetz. Mitarbeitende öffnen sie im Browser, ohne etwas zu installieren. Alle Daten bleiben auf dem Server.
+Die App läuft im Firmennetz. Mitarbeitende öffnen sie im Browser, ohne etwas zu installieren. Alle Daten bleiben auf dem Server, und ein normaler Ordner mit Excel-Datei bleibt laufend synchron zur App.
+
+## Ein Ordner, ein App-Symbol
+
+`Werbemittel.zip` enthält genau einen Ordner. Nach dem ersten Start sieht er so aus:
 
 ```
-Browser (alle im Firmennetz)  →  http://werbemittel.gauss.local:8080
-                                         │
-                              Firmenserver: node server.js
-                              ├─ liefert die App aus (index.html, Icons, Demo-Bilder)
-                              ├─ speichert Daten  daten/*.json
-                              ├─ speichert Fotos  daten/fotos/
-                              └─ sichert täglich  daten/sicherung/JJJJ-MM-TT/ (30 Tage)
+Werbemittel                 ← App-Symbol (Geschenk), legt „System\Einrichten“ an
+Werbemittel\
+├─ Werbemittel.xlsx          immer aktuell: Artikel, Größen, Ausgaben, Eingänge, Bestellungen, Lieferanten
+├─ Artikel\
+│   └─ Textilien\
+│       └─ Hoodie, Grau meliert\
+│           ├─ Artikel.txt   Steckbrief, darf bearbeitet werden
+│           ├─ Fotos\        Bilder hier erscheinen in der App
+│           └─ …             Druckdaten, Angebote, alles andere erscheint beim Artikel
+├─ Lieferanten\<Name>\       Verträge, Preislisten
+├─ Bestellungen\<Jahr>\<Nr Lieferant>\   Angebot, Auftragsbestätigung, Rechnung
+├─ Eingänge\<Jahr>\<Datum Lieferant>\    Rechnung, Lieferschein
+└─ System\                   App, Server, Datenbank, Sicherungen – nicht anfassen
 ```
+
+### Was synchron bleibt
+
+| Wo | Was geht | Wann |
+|---|---|---|
+| App | alles wie bisher | sofort, alle Fenster aktualisieren sich |
+| `Artikel.txt` | Name, Kategorie, Bereich, Lagerort, Meldebestand, Nachbestellregel, Lieferant, Preise, Beschreibung | nach dem Speichern, wenige Sekunden |
+| Artikelordner | neuen Ordner unter einer Kategorie anlegen = neuer Artikel; umbenennen = neuer Name; in andere Kategorie verschieben = neue Kategorie | wenige Sekunden |
+| Dateien | jede Datei im Artikel-, Bestell- oder Eingangsordner erscheint in der App und lässt sich dort öffnen | wenige Sekunden |
+| `Werbemittel.xlsx` | rosa Spalten ändern, neue Zeile ohne ID = neuer Artikel, Spalte „Gezählt“ = Inventur | nach dem Speichern |
+
+Bestand entsteht immer aus Buchungen (Ausgabe, Eingang, Inventur). Deshalb ändert man ihn in Excel über „Gezählt“, nicht über „Bestand“. Gelöschte Artikel verschwinden nicht, ihr Ordner wandert nach `Artikel\_Gelöscht`. Ist die Excel-Datei gerade geöffnet, schreibt die App sie nach dem Schließen neu.
+
+## Einrichten in drei Schritten
+
+1. **Node.js 18 oder neuer** auf dem Server installieren (https://nodejs.org, LTS). Sonst nichts: keine Datenbank, keine Pakete.
+2. `Werbemittel.zip` auf ein Laufwerk des Servers entpacken, z. B. `D:\Freigaben\Werbemittel`. Den Ordner für die Marketing-Kolleg:innen freigeben.
+3. `System\Einrichten.cmd` doppelklicken. Es legt das App-Symbol „Werbemittel“ neben dem Ordner und auf dem Desktop an und startet die App.
+
+Für alle anderen: im Browser `http://<servername>:8080` öffnen und über das Browsermenü „App installieren“ wählen. Dann liegt das Geschenk-Symbol in Taskleiste oder Startmenü (dafür braucht es `https://`, siehe unten; ohne läuft alles im Browser-Tab).
+
+Damit „Pfad kopieren“ in der App den Netzwerkpfad zeigt, beim Start `ABLAGE_ANZEIGE=\\server\Werbemittel` setzen.
 
 ## Was die IT braucht
 
 - Einen Windows- oder Linux-Server im Firmennetz mit **Node.js 18 oder neuer**. Sonst nichts: keine Datenbank, keine npm-Pakete.
-- Den Ordner `werbemittel/` aus diesem Repository (App und `server/server.js`).
+- `Werbemittel.zip` (oder den Ordner `werbemittel/` aus dem Repository; dann ist die Ablage aus, solange `ABLAGE` nicht gesetzt ist).
 - Einen freien Port, z. B. 8080, und einen DNS-Namen wie `werbemittel.gauss.local`.
 
 ## Starten
 
 ```
-cd werbemittel/server
+cd Werbemittel\System\server
 node server.js
 ```
 
-Die Ausgabe zeigt die Adresse im Firmennetz. Zum Ausprobieren mit Beispieldaten: `DEMO=1 node server.js` (nur beim allerersten Start, solange der Datenordner leer ist).
+Die Ausgabe zeigt die Adresse im Firmennetz. Beim allerersten Start legt die App einen Beispielartikel an; Kategorien und Bereiche sind immer vorhanden.
 
 Einstellungen über Umgebungsvariablen:
 
@@ -34,6 +66,9 @@ Einstellungen über Umgebungsvariablen:
 | `PORT` | 8080 | Port |
 | `DATEN` | `server/daten` | Datenordner, am besten auf einem gesicherten Laufwerk |
 | `SICHERUNG_TAGE` | 30 | Anzahl Tagessicherungen |
+| `ABLAGE` | im Paket der Ordner über `System` | synchroner Ordner; `0` schaltet ihn ab |
+| `ABLAGE_ANZEIGE` | Serverpfad | so zeigt die App den Ordner, z. B. `\\server\Werbemittel` |
+| `DEMO` | ein Beispielartikel | `1` = volle Demo, `0` = ganz leer (nur beim allerersten Start) |
 | `ANTHROPIC_API_KEY` | – | optional, für „Mit KI ausfüllen“ |
 
 ## Dauerhaft betreiben

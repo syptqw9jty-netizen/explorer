@@ -1,0 +1,73 @@
+{
+ "artikel": [
+  {
+   "id": "demo-kugelschreiber",
+   "name": "Kugelschreiber Metall, Magenta",
+   "beschreibung": "Drehkugelschreiber aus Aluminium in GAUSS-Magenta mit verchromtem Clip und Spitze. Schriftzug GAUSS weiß gelasert, blaue Mine.",
+   "fotos": [
+    {
+     "id": "",
+     "url": "demo/kugelschreiber.svg",
+     "frei": true
+    }
+   ],
+   "kategorie": "Werbeartikel",
+   "marke": "GAUSS",
+   "varianten": [],
+   "einheit": "Stück",
+   "mindest": 200,
+   "lagerort": "Marketing-Schrank, Fach 1",
+   "lieferant": "Werbemittel Weser GmbH",
+   "artikelnr": "KS-MAG-01",
+   "notiz": "",
+   "ek": 1.35,
+   "mwst": 19,
+   "sachkonto": "6600 Werbekosten",
+   "kostenstelle": "Marketing",
+   "shop": {
+    "aktiv": true,
+    "preis": 1.6,
+    "max": 10
+   },
+   "aktiv": true,
+   "demo": true,
+   "angelegt": "2026-11-10T08:00:00.000Z",
+   "geaendert": "2026-11-10T08:00:00.000Z",
+   "bestellmenge": 500,
+   "nbRegel": "fest",
+   "vpe": 250
+  }
+ ],
+ "vorgaenge": [
+  {
+   "id": "demo-start-inventur",
+   "art": "inventur",
+   "an": "Startbestand",
+   "datum": "2026-11-10",
+   "am": "2026-11-10T08:00:00.000Z",
+   "kuerzel": "NNE",
+   "notiz": "Beispiel: Startbestand gezählt. Mit „Demo entfernen“ in den Einstellungen verschwindet der Beispielartikel samt Buchung.",
+   "demo": true
+  }
+ ],
+ "buchungen": [
+  {
+   "id": "demo-start-b1",
+   "vorgangId": "demo-start-inventur",
+   "artikelId": "demo-kugelschreiber",
+   "variante": "",
+   "menge": 250,
+   "art": "inventur",
+   "datum": "2026-11-10",
+   "am": "2026-11-10T08:00:00.000Z",
+   "ek": 1.35,
+   "geschaetzt": false,
+   "kostenstelle": "Marketing",
+   "demo": true
+  }
+ ],
+ "kommentare": [],
+ "lieferanten": [],
+ "bestellungen": [],
+ "einstellungen": []
+}

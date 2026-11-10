@@ -780,6 +780,24 @@ a.taste{text-decoration:none}
 .menue.menue-unten{bottom:auto;top:calc(100% + 8px);left:auto;right:0;transform:none;transform-origin:top right}
 kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6px;border:1px solid var(--linie);background:var(--leiste);color:var(--text-sekundaer)}
 
+.chip-trenn{flex:none;width:1px;align-self:stretch;margin:4px 4px;background:var(--linie)}
+.ablage{display:grid;gap:10px}
+.ablage-liste{list-style:none;margin:0;padding:0;display:grid}
+.ablage-liste li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:40px;border-top:1px solid var(--linie)}
+.ablage-liste li:first-child{border-top:0}
+.ablage-liste a{color:var(--foreground);text-decoration:none;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ablage-liste a:hover{text-decoration:underline}
+.ablage-typ{font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--text-sekundaer);background:var(--leiste);border:1px solid var(--linie);border-radius:6px;text-align:center;padding:2px 0;overflow:hidden}
+.ablage-pfad{display:flex;align-items:center;gap:10px;margin:0;font-size:12.5px;min-width:0}
+.ablage-pfad span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.menue-hinweis{margin:0;padding:4px 12px 8px;font-size:12px;line-height:16px;max-width:260px}
+.zwei{align-items:start}
+.hilfe{display:block;font-size:12.5px;line-height:17px;margin-top:4px}
+.nb-regel{margin:2px 0 6px;font-size:12.5px}
+.vert-raster{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px;margin-top:6px}
+.vert-zelle{display:grid;gap:4px;font-size:12.5px;color:var(--text-sekundaer);font-weight:500}
+.vert-zelle .eingabe{min-height:40px;text-align:center;padding:6px}
+
 /* ===== Desktop ab 1024 px ===== */
 .desk{display:none}
 @media (min-width:1024px){
@@ -1258,7 +1276,9 @@ const KATEGORIEN = [
   { k: "Messe & Event", h: "Roll-ups, Banner, Displays, Tischdecken" },
   { k: "Sonstiges", h: "Alles, was nirgends sonst passt" }
 ];
-const MARKEN = ["GAUSS LVS", "SoPart", "Neutral"];
+/* Bereich = Marke oder Domäne, auf der das Werbemittel auftritt; filterbar wie die Kategorien */
+const MARKEN = ["GAUSS", "SoPart", "Kommunal", "Justiz", "Sozial", "Neutral"];
+const bereichVon = a => a.marke === "GAUSS LVS" ? "GAUSS" : (a.marke || "");
 const GROESSEN = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
 const EINHEITEN = ["Stück", "Pack", "Karton", "Rolle", "Satz"];
 const PFX = "mlager.";
@@ -1267,7 +1287,7 @@ const PFX = "mlager.";
 const CONFIG = { API_URL: "", SHARE_BASE: "https://syptqw9jty-netizen.github.io/explorer/werbemittel/" };
 const IM_ARTIFACT = !!window.claude;
 const STAPEL = [50, 100, 250, 500, 1000, 2500, 5000];
-const KOSTENSTELLEN = ["Marketing", "Vertrieb", "Events & Messen", "Personal", "Geschäftsführung"];
+const KOSTENSTELLEN = ["Marketing", "Vertrieb", "Events & Messen", "Personal", "Geschäftsführung", "GAUSS", "SoPart", "Kommunal", "Justiz", "Sozial"];
 
 /* ===== Helfer ===== */
 const ls = {
@@ -1316,7 +1336,7 @@ const ART = {
 /* ===== Zustand ===== */
 const S = {
   artikel: [], vorgaenge: [], buchungen: [], kommentare: [], lieferanten: [], bestellungen: [], einstellungen: [], admin: false, geladen: false, modus: "warte",
-  tab: "bestand", q: "", kat: [], sort: "name", status: "alle",
+  tab: "bestand", q: "", kat: [], ber: [], sort: "name", status: "alle",
   view: null, stack: [], open: null, b: null, edit: null, inv: null, pickQ: "", frage: null, busy: false
 };
 let BM = new Map(), SUM = new Map(), GES = new Map();
@@ -1369,7 +1389,7 @@ async function ladeTabelle(still){
   try {
     const r = await fetch(CONFIG.API_URL + "?action=list", { cache: "no-store" }); const j = await r.json(); if (!j.ok) throw new Error(j.error);
     for (const c of COLS) S[c] = j.data?.[c] || []; ls.set("cache", j.data); S.geladen = true; S.offline = false;
-    if (j.server){ S.server = true; S.pinGesetzt = !!j.pinGesetzt; }
+    if (j.server){ S.server = true; S.pinGesetzt = !!j.pinGesetzt; S.ablage = j.ablage || null; }
     if (j.ki && !KI.sample){ KI.sample = { json: (prompt, opt) => api({ action: "ki", prompt, bild: opt?.images?.[0] ? opt.bildUrl : "" }, 120000).then(x => x.wert) }; KI.bilder = true; }
     nachLaden();
   } catch {
@@ -1425,7 +1445,9 @@ async function verbinde(){
   let db = null;
   try { db = window.claude?.use ? await window.claude.use("db") : null; } catch { db = null; }
   if (!db){
+    const ersterStart = !IM_ARTIFACT && ls.get("artikel", null) === null;
     S.modus = "lokal"; for (const c of COLS) S[c] = ls.get(c, []);
+    if (ersterStart) demoLaden("start");
     S.geladen = true; $("#vorschau").hidden = false;
     $("#vorschau-text").textContent = IM_ARTIFACT ? "Vorschau: Buchungen bleiben nur auf diesem Gerät. Angemeldet im geteilten Lager sehen alle denselben Stand." : "Vorschau: Buchungen bleiben nur auf diesem Gerät, bis die gemeinsame Tabelle verbunden ist.";
     nachLaden(); return;
@@ -1452,7 +1474,7 @@ setzeModus(ls.get("modus", "system"));
 /* ===== Suche und Filter ===== */
 const woerter = () => norm(S.q).split(/\s+/).filter(Boolean);
 const passt = (text, w) => w.every(x => text.includes(x));
-const artikelText = a => norm([a.name, a.kategorie, a.marke, a.lagerort, a.lieferant, a.notiz, a.artikelnr, (a.varianten || []).join(" ")].join(" "));
+const artikelText = a => norm([a.name, a.kategorie, bereichVon(a), a.lagerort, a.lieferant, a.notiz, a.artikelnr, (a.varianten || []).join(" ")].join(" "));
 function vorgangText(v){
   const namen = buchungenVon(v.id).map(b => artikelVon(b.artikelId)?.name || "").join(" ");
   return norm([v.an, v.anlass, v.lieferant, v.bestellnr, v.rechnungsnr, v.kuerzel, v.notiz, namen].join(" "));
@@ -1467,10 +1489,10 @@ function markiere(text, w){
   for (const [s, e] of treffer){ if (s < pos) continue; out += esc(roh.slice(pos, s)) + "<mark>" + esc(roh.slice(s, e)) + "</mark>"; pos = e; }
   return out + esc(roh.slice(pos));
 }
-const filterAktiv = () => !!(S.q || S.kat.length || S.status !== "alle");
+const filterAktiv = () => !!(S.q || S.kat.length || S.ber.length || S.status !== "alle");
 function filterArtikel(){
   const w = woerter();
-  let l = aktive().filter(a => (!S.kat.length || S.kat.includes(a.kategorie)) && (!w.length || passt(artikelText(a), w)));
+  let l = aktive().filter(a => (!S.kat.length || S.kat.includes(a.kategorie)) && (!S.ber.length || S.ber.includes(bereichVon(a))) && (!w.length || passt(artikelText(a), w)));
   if (S.status !== "alle") l = l.filter(a => S.status === "knapp" ? status(a).key !== "ok" : status(a).key === S.status);
   const zuletzt = id => S.buchungen.filter(b => b.artikelId === id).reduce((m, b) => (b.datum || "") > m ? b.datum : m, "");
   if (S.sort === "bestand") l.sort((a, b) => bestand(a.id) - bestand(b.id) || a.name.localeCompare(b.name, "de"));
@@ -1481,14 +1503,16 @@ function filterArtikel(){
 function filterVorgaenge(art){
   const w = woerter();
   return S.vorgaenge.filter(v => v.art === art)
-    .filter(v => !S.kat.length || buchungenVon(v.id).some(b => S.kat.includes(artikelVon(b.artikelId)?.kategorie)))
+    .filter(v => (!S.kat.length && !S.ber.length) || buchungenVon(v.id).some(b => { const a = artikelVon(b.artikelId); return a && (!S.kat.length || S.kat.includes(a.kategorie)) && (!S.ber.length || S.ber.includes(bereichVon(a))); }))
     .filter(v => !w.length || passt(vorgangText(v), w))
     .sort((a, b) => (b.datum || "").localeCompare(a.datum || "") || (b.am || "").localeCompare(a.am || ""));
 }
+/* Kategorien und Bereiche stehen immer als Filter bereit, auch bei leerem Bestand */
+const filterChips = () => KATEGORIEN.map(x => `<button class="chip" data-kat="${esc(x.k)}" aria-pressed="${S.kat.includes(x.k)}">${esc(x.k)}</button>`).join("")
+  + `<span class="chip-trenn" aria-hidden="true"></span>` + MARKEN.map(b => `<button class="chip" data-ber="${esc(b)}" aria-pressed="${S.ber.includes(b)}">${esc(b)}</button>`).join("");
+const umschalten = (liste, x) => liste.includes(x) ? liste.filter(y => y !== x) : [...liste, x];
 function renderFilter(){
-  const genutzt = new Set(aktive().map(a => a.kategorie));
-  const kats = KATEGORIEN.map(x => x.k).filter(k => genutzt.has(k) || S.kat.includes(k));
-  $("#filter").innerHTML = kats.map(k => `<button class="chip" data-kat="${esc(k)}" aria-pressed="${S.kat.includes(k)}">${esc(k)}</button>`).join("");
+  $("#filter").innerHTML = filterChips();
   $("#filter-punkt").hidden = S.status === "alle" && S.sort === "name";
   document.querySelectorAll("#leiste .umschalter button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tab === S.tab)));
 }
@@ -1527,7 +1551,7 @@ function leerKatalog(){
 }
 function nichtsGefunden(){
   return `<div class="leer"><p class="titel-karte">Nichts gefunden</p>
-    <p class="meta" style="margin:0">${S.kat.length || S.status !== "alle" ? "Die Filter grenzen die Suche ein." : "Anderes Wort oder kürzere Schreibweise probieren."}</p>
+    <p class="meta" style="margin:0">${S.kat.length || S.ber.length || S.status !== "alle" ? "Die Filter grenzen die Suche ein." : "Anderes Wort oder kürzere Schreibweise probieren."}</p>
     <div class="leer-aktionen"><button class="taste sekundaer klein" data-zuruecksetzen>Filter zurücksetzen</button></div></div>`;
 }
 function render(){
@@ -1633,7 +1657,7 @@ function htmlArtikel(){
   const a = artikelVon(S.open); if (!a) return `<p class="meta" id="d-titel" tabindex="-1">Dieser Artikel ist nicht mehr da.</p>`;
   const s = status(a), n = bestand(a.id);
   const verlauf = S.buchungen.filter(b => b.artikelId === a.id).sort((x, y) => (y.datum || "").localeCompare(x.datum || "") || (y.am || "").localeCompare(x.am || ""));
-  const zeilen = [["Kategorie", a.kategorie], ["Marke", a.marke], ["Lagerort", a.lagerort], ["Mindestbestand", a.mindest ? `${zahl(a.mindest)} ${einheit(a)}` : ""], ["Lieferant", lieferantName(a)], ["Bestellt, unterwegs", unterwegs(a.id) ? `${zahl(unterwegs(a.id))} ${einheit(a)}` : ""], ["Artikelnummer", a.artikelnr]].filter(x => x[1]);
+  const zeilen = [["Kategorie", a.kategorie], ["Bereich", bereichVon(a)], ["Lagerort", a.lagerort], ["Meldebestand", a.mindest ? `${zahl(a.mindest)} ${einheit(a)}` : ""], ["Nachbestellung", S.admin ? nbText(a) : ""], ["Lieferant", lieferantName(a)], ["Bestellt, unterwegs", unterwegs(a.id) ? `${zahl(unterwegs(a.id))} ${einheit(a)}` : ""], ["Artikelnummer", a.artikelnr]].filter(x => x[1]);
   const ek = ekVon(a);
   const buchhaltung = [["Einkaufspreis netto", ek ? euro(ek) + " je " + einheit(a) : ""], ["Bestandswert netto", ek && n > 0 ? euro(ek * n) : ""], ["MwSt-Satz", a.mwst != null && a.mwst !== "" ? a.mwst + " %" : ""], ["Sachkonto", a.sachkonto], ["Kostenstelle", a.kostenstelle],
     ["Mitarbeiter-Shop", a.shop?.aktiv ? [a.shop.preis ? euro(a.shop.preis) : "zum Einkaufspreis", a.shop.max ? `max. ${a.shop.max} je Person` : ""].filter(Boolean).join(" · ") : ""]].filter(x => x[1]);
@@ -1646,6 +1670,7 @@ function htmlArtikel(){
       <button class="taste primaer" data-buchen="ausgabe" data-mit="${esc(a.id)}">${ICON.raus} Ausgabe</button>
       ${S.admin ? `<button class="taste sekundaer" data-buchen="eingang" data-mit="${esc(a.id)}">${ICON.rein} Eingang</button>` : `<button class="taste sekundaer" data-inventur="${esc(a.id)}">${ICON.zaehlen} Zählen</button>`}</div>
     ${linksAnzeige(a.links) || (S.admin && a.ordnerUrl) ? `<section class="abschnitt"><h3 class="titel-bereich">Dateien und Links</h3><div class="karte">${linksAnzeige(a.links)}${sicherLink(a.ordnerUrl) ? `<a class="ordner-link" href="${esc(a.ordnerUrl)}" target="_blank" rel="noopener">${VICON.link} Ordner mit allen Dateien öffnen</a>` : ""}</div></section>` : ""}
+    ${ablageHtml(a) ? `<section class="abschnitt"><h3 class="titel-bereich">Dateien im Ordner</h3><div class="karte innen">${ablageHtml(a)}</div></section>` : ""}
     ${(a.varianten || []).length ? `<section class="abschnitt"><h3 class="titel-bereich">Bestand je ${a.kategorie === "Textilien" ? "Größe" : "Variante"}</h3>
       <div class="karte"><dl class="bestand-tabelle">${a.varianten.map(v => `<dt>${esc(v)}</dt><dd><b>${zahl(bestand(a.id, v))}</b></dd>`).join("")}<dt>Gesamt</dt><dd><b>${zahl(n)}</b></dd></dl></div></section>` : ""}
     ${zeilen.length ? `<section class="abschnitt"><h3 class="titel-bereich">Angaben</h3><div class="karte"><dl>${zeilen.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></div></section>` : ""}
@@ -1708,7 +1733,7 @@ function htmlArtikelEdit(){
       <div class="gruppe"><label for="f-beschreibung">Beschreibung</label>
         <textarea id="f-beschreibung" class="kommentar" data-feld="beschreibung" maxlength="800" placeholder="Was es ist, Farbe, Material, Format, Aufdruck">${esc(e.beschreibung)}</textarea></div>
       <div class="gruppe"><p class="gruppe-titel">Kategorie</p>${chips("kategorie", KATEGORIEN.map(x => x.k), e.kategorie)}</div>
-      <div class="gruppe"><p class="gruppe-titel">Marke</p>${chips("marke", MARKEN, e.marke)}</div>
+      <div class="gruppe"><p class="gruppe-titel">Bereich</p>${chips("marke", MARKEN, bereichVon(e))}</div>
       <div class="gruppe">
         <div class="schalter-zeile"><span><span style="font-size:15px">Größen oder Varianten</span><span class="meta" style="display:block">Bestand wird je Größe, Farbe oder Sprache geführt.</span></span>
           <button type="button" class="schalter" role="switch" aria-checked="${!!hatV}" data-schalter="mitVarianten" aria-label="Größen oder Varianten"><span></span></button></div>
@@ -1717,16 +1742,24 @@ function htmlArtikelEdit(){
       </div>
       <div class="zwei">
         <div class="gruppe"><label for="f-einheit">Einheit</label><input id="f-einheit" class="eingabe" data-feld="einheit" value="${esc(e.einheit)}" list="einheiten"></div>
-        <div class="gruppe"><label for="f-mindest">Mindestbestand</label><input id="f-mindest" class="eingabe zahl" data-feld="mindest" inputmode="numeric" value="${esc(e.mindest)}" placeholder="0"></div>
+        <div class="gruppe"><label for="f-mindest">Meldebestand</label><input id="f-mindest" class="eingabe zahl" data-feld="mindest" inputmode="numeric" value="${esc(e.mindest)}" placeholder="0"></div>
       </div>
       <div class="gruppe"><label for="f-lagerort">Lagerort</label><input id="f-lagerort" class="eingabe" data-feld="lagerort" value="${esc(e.lagerort)}" list="lagerorte" placeholder="z. B. Marketing-Schrank, Fach 2"></div>
       <h3 class="titel-bereich abschnitt-titel">Nachbestellung</h3>
       <div class="gruppe"><p class="gruppe-titel">Lieferant</p>${S.lieferanten.length ? `<div class="themen-wahl">${[...S.lieferanten].sort((x, y) => x.name.localeCompare(y.name, "de")).map(l => `<button type="button" class="chip" data-wahl="lieferantId" data-wert="${esc(l.id)}" aria-pressed="${e.lieferantId === l.id}">${esc(l.name)}</button>`).join("")}</div>` : ""}
         ${!e.lieferantId ? `<input id="f-lieferant" class="eingabe" data-feld="lieferant" value="${esc(e.lieferant)}" list="lieferanten" placeholder="${S.lieferanten.length ? "oder Name eintragen" : "Name des Lieferanten"}" aria-label="Lieferant">` : ""}</div>
+      <div class="gruppe"><label for="f-artikelnr">Artikelnummer beim Lieferanten</label><input id="f-artikelnr" class="eingabe" data-feld="artikelnr" value="${esc(e.artikelnr)}"></div>
+      <div class="schalter-zeile"><span><span style="font-size:15px">Zum Nachbestellen vorschlagen</span><span class="meta" style="display:block">Aus für Einzelstücke, Messe-Displays oder auslaufende Drucksachen.</span></span>
+        <button type="button" class="schalter" role="switch" aria-checked="${e.nbModus !== "aus"}" data-schalter="nbAn" aria-label="Zum Nachbestellen vorschlagen"><span></span></button></div>
+      ${e.nbModus !== "aus" ? `<div class="gruppe"><p class="gruppe-titel">Wie viel bestellen?</p>${chips("nbRegel", ["auffuellen", "fest"], e.nbRegel || "auffuellen").replace(">auffuellen<", ">Auffüllen bis Zielbestand<").replace(">fest<", ">Immer feste Menge<")}
+        <span class="meta hilfe">Der Vorschlag erscheint, sobald der Meldebestand (oben) erreicht ist; Bestelltes wird eingerechnet.</span></div>
       <div class="zwei umbruch">
-        <div class="gruppe"><label for="f-artikelnr">Artikelnummer</label><input id="f-artikelnr" class="eingabe" data-feld="artikelnr" value="${esc(e.artikelnr)}"></div>
-        <div class="gruppe"><label for="f-bestellmenge">Übliche Bestellmenge</label><input id="f-bestellmenge" class="eingabe zahl" data-feld="bestellmenge" inputmode="numeric" value="${esc(e.bestellmenge)}" placeholder="z. B. 500"></div>
-      </div>
+        ${(e.nbRegel || "auffuellen") === "fest"
+          ? `<div class="gruppe"><label for="f-bestellmenge">Feste Bestellmenge</label><input id="f-bestellmenge" class="eingabe zahl" data-feld="bestellmenge" inputmode="numeric" value="${esc(e.bestellmenge)}" placeholder="z. B. 500"></div>`
+          : `<div class="gruppe"><label for="f-ziel">Zielbestand nach Lieferung</label><input id="f-ziel" class="eingabe zahl" data-feld="zielbestand" inputmode="numeric" value="${esc(e.zielbestand)}" placeholder="${Number(e.mindest) ? "z. B. " + Number(e.mindest) * 2 : "z. B. 300"}"></div>`}
+        <div class="gruppe"><label for="f-vpe">Bestellschritt</label><input id="f-vpe" class="eingabe zahl" data-feld="vpe" inputmode="numeric" value="${esc(e.vpe)}" placeholder="1"><span class="meta hilfe">Verpackungseinheit oder Druckstaffel; Vorschläge werden aufgerundet.</span></div></div>
+      ${hatV ? `<div class="gruppe"><p class="gruppe-titel">${(e.nbRegel || "auffuellen") === "fest" ? "Aufteilung je Größe" : "Zielbestand je Größe"}</p><span class="meta hilfe">${(e.nbRegel || "auffuellen") === "fest" ? "Anteile, z. B. S 1, M 3, L 3, XL 1. Leer = gleichmäßig." : "Leer = Gesamtziel gleichmäßig verteilt. Ist eine Größe mit Ziel leer, wird ebenfalls vorgeschlagen."}</span>
+        <div class="vert-raster">${String(e.variantenText || "").split(/[,;]/).map(x => x.trim()).filter(Boolean).map(v => `<label class="vert-zelle"><span>${esc(v)}</span><input class="eingabe zahl" inputmode="numeric" data-vert="${esc(v)}" value="${esc(e.verteilung?.[v] ?? "")}" placeholder="–" aria-label="${esc(v)}"></label>`).join("")}</div></div>` : ""}` : ""}
       <div class="gruppe"><label for="f-nachbestellurl">Direkt nachbestellen (Link zum Produkt im Shop)</label><input id="f-nachbestellurl" class="eingabe" data-feld="nachbestellUrl" inputmode="url" value="${esc(e.nachbestellUrl)}" placeholder="https://…"></div>
       <div class="gruppe"><label for="f-ordner">Ordner mit allen Dateien</label><input id="f-ordner" class="eingabe" data-feld="ordnerUrl" inputmode="url" value="${esc(e.ordnerUrl)}" placeholder="https://drive.google.com/…"></div>
       <div class="gruppe"><p class="gruppe-titel">Druckdateien und Belege</p>${linksEdit("edit", e.links || [], ["druckdatei", "angebot", "rechnung", "sonstiges"])}</div>
@@ -1765,11 +1798,11 @@ const euroText = n => Number(n) ? Number(n).toFixed(2).replace(".", ",") : "";
 const parseEuro = s => { const t = String(s ?? "").replace(/[^\d,.-]/g, ""); const n = parseFloat(t.includes(",") ? t.replace(/\./g, "").replace(",", ".") : t); return isFinite(n) ? Math.round(n * 100) / 100 : 0; };
 const ekVon = a => Number(a.ek ?? a.preis ?? 0) || 0;
 function neuerEntwurf(a){
-  if (!a) return { name: "", beschreibung: "", fotos: [], kategorie: S.kat.length === 1 ? S.kat[0] : "Werbeartikel", marke: "GAUSS LVS", mitVarianten: false, variantenText: "", einheit: "Stück", mindest: "", lagerort: "", lieferant: "", artikelnr: "", notiz: "",
-    ek: "", mwst: 19, sachkonto: "", kostenstelle: "Marketing", shopAktiv: false, shopPreis: "", shopMax: "", beruehrt: {} };
+  if (!a) return { name: "", beschreibung: "", fotos: [], kategorie: S.kat.length === 1 ? S.kat[0] : "Werbeartikel", marke: "GAUSS", mitVarianten: false, variantenText: "", einheit: "Stück", mindest: "", lagerort: "", lieferant: "", artikelnr: "", notiz: "",
+    ek: "", mwst: 19, sachkonto: "", kostenstelle: "Marketing", shopAktiv: false, shopPreis: "", shopMax: "", nbModus: "", nbRegel: "auffuellen", zielbestand: "", vpe: "", verteilung: {}, beruehrt: {} };
   return { ...a, fotos: [...(a.fotos || [])], mitVarianten: (a.varianten || []).length > 0, variantenText: (a.varianten || []).join(", "), mindest: a.mindest ? String(a.mindest) : "",
     links: [...(a.links || [])], bestellmenge: a.bestellmenge ? String(a.bestellmenge) : "", nachbestellUrl: a.nachbestellUrl || "", ordnerUrl: a.ordnerUrl || "", lieferantId: a.lieferantId || "",
-    ek: euroText(ekVon(a)), mwst: a.mwst ?? 19, shopAktiv: !!a.shop?.aktiv, shopPreis: euroText(a.shop?.preis), shopMax: a.shop?.max ? String(a.shop.max) : "", beruehrt: { kategorie: true, marke: true } };
+    ek: euroText(ekVon(a)), mwst: a.mwst ?? 19, shopAktiv: !!a.shop?.aktiv, shopPreis: euroText(a.shop?.preis), shopMax: a.shop?.max ? String(a.shop.max) : "", nbModus: a.nbModus || "", nbRegel: nbRegel(a).regel, zielbestand: a.zielbestand ? String(a.zielbestand) : "", vpe: a.vpe > 1 ? String(a.vpe) : "", verteilung: { ...(a.verteilung || {}) }, beruehrt: { kategorie: true, marke: true } };
 }
 async function speichereArtikel(){
   const e = S.edit, f = $("#edit-fehler");
@@ -1779,11 +1812,13 @@ async function speichereArtikel(){
   if ((e.nachbestellUrl && !sicherLink(e.nachbestellUrl)) || (e.ordnerUrl && !sicherLink(e.ordnerUrl))){ f.textContent = "Links müssen mit https:// beginnen."; f.hidden = false; return; }
   if (e.lieferantId) e.lieferant = lieferantVon(e.lieferantId)?.name || e.lieferant;
   const daten = { name: e.name.trim(), beschreibung: (e.beschreibung || "").trim(), fotos: (e.fotos || []).map(x => ({ id: x.id || "", url: x.url || "", frei: x.frei !== false })),
-    kategorie: e.kategorie || "Sonstiges", marke: e.marke || "", varianten, einheit: (e.einheit || "Stück").trim(),
+    kategorie: e.kategorie || "Sonstiges", marke: bereichVon(e), varianten, einheit: (e.einheit || "Stück").trim(),
     mindest: Math.max(0, parseInt(e.mindest, 10) || 0), lagerort: (e.lagerort || "").trim(), lieferant: (e.lieferant || "").trim(), artikelnr: (e.artikelnr || "").trim(), notiz: (e.notiz || "").trim(),
     ek: parseEuro(e.ek), mwst: Number(e.mwst ?? 19), sachkonto: (e.sachkonto || "").trim(), kostenstelle: (e.kostenstelle || "").trim(),
     shop: { aktiv: !!e.shopAktiv, preis: parseEuro(e.shopPreis), max: Math.max(0, parseInt(e.shopMax, 10) || 0) },
-    lieferantId: e.lieferantId || "", bestellmenge: Math.max(0, parseInt(e.bestellmenge, 10) || 0), nachbestellUrl: sicherLink(e.nachbestellUrl), ordnerUrl: sicherLink(e.ordnerUrl), links: e.links || [],
+    lieferantId: e.lieferantId || "", bestellmenge: Math.max(0, parseInt(e.bestellmenge, 10) || 0),
+    nbModus: e.nbModus === "aus" ? "aus" : "", nbRegel: e.nbRegel === "fest" ? "fest" : "auffuellen", zielbestand: Math.max(0, parseInt(e.zielbestand, 10) || 0), vpe: Math.max(0, parseInt(e.vpe, 10) || 0),
+    verteilung: Object.fromEntries(varianten.map(v => [v, Math.max(0, parseInt(e.verteilung?.[v], 10) || 0)]).filter(x => x[1] > 0)), nachbestellUrl: sicherLink(e.nachbestellUrl), ordnerUrl: sicherLink(e.ordnerUrl), links: e.links || [],
     aktiv: e.aktiv !== false, geaendert: new Date().toISOString() };
   const id = e.id || uid();
   if (!e.id) daten.angelegt = daten.geaendert;
@@ -1890,7 +1925,7 @@ Bekannte Angaben (haben Vorrang): ${JSON.stringify(bekannt)}
 Antworte nur mit einem JSON-Objekt:
 {"name": "kurze Bezeichnung wie im Katalog, z. B. 'Kugelschreiber Metall, Magenta'",
  "kategorie": eine von ${JSON.stringify(KATEGORIEN.map(x => x.k))},
- "marke": eine von ${JSON.stringify(MARKEN)} (GAUSS-Logo = "GAUSS LVS", SoPart-Schriftzug = "SoPart", ohne Logo = "Neutral"),
+ "marke": eine von ${JSON.stringify(MARKEN)} (GAUSS-Logo = "GAUSS", SoPart-Schriftzug = "SoPart", Aufdruck zu Kommunal, Justiz oder Sozial = dieser Bereich, ohne Logo = "Neutral"),
  "beschreibung": "2 bis 3 sachliche Sätze auf Deutsch: was es ist, Farbe, Material, Format oder Größe, Aufdruck. Keine Werbesprache.",
  "varianten": nur bei Kleidung typische Größen als Liste, sonst [],
  "einheit": eine von ${JSON.stringify(EINHEITEN)}}`;
@@ -2126,8 +2161,8 @@ function htmlDemo(){
   return `<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Demo-Daten entfernen</h2><p class="meta" style="margin:0">${plural(n, "Eintrag ist", "Einträge sind")} als Demo markiert: Beispielartikel, Buchungen und Kommentare. Eigene Einträge bleiben.</p></div>
     <div class="bestaetigen"><p>Alle Demo-Einträge für alle löschen?</p><div class="aktionen"><button class="taste gefahr" data-demo-weg ${S.busy ? "disabled" : ""}>${S.busy ? "Wird entfernt …" : "Entfernen"}</button><button class="taste sekundaer" data-abbrechen>Behalten</button></div></div>`;
 }
-async function demoLaden(){
-  try { const j = await (await fetch("demo/demo.json", { cache: "no-store" })).json(); for (const c of COLS){ S[c] = j[c] || []; ls.set(c, S[c]); } nachLaden(); toast("Demo-Daten geladen"); }
+async function demoLaden(datei = "demo"){
+  try { const j = await (await fetch(`demo/${datei}.json`, { cache: "no-store" })).json(); for (const c of COLS){ S[c] = j[c] || []; ls.set(c, S[c]); } nachLaden(); if (datei === "demo") toast("Demo-Daten geladen"); }
   catch { toast("Demo-Daten sind hier nicht verfügbar."); }
 }
 async function demoEntfernen(){
@@ -2143,9 +2178,9 @@ const komma2 = n => (Math.round(Number(n || 0) * 100) / 100).toFixed(2).replace(
 const csv = zeilen => "﻿" + zeilen.map(z => z.map(csvZelle).join(";")).join("\r\n");
 function exportDaten(art){
   if (art === "bestand"){
-    const z = [["Artikel", "Artikelnummer", "Kategorie", "Marke", "Variante", "Bestand", "Einheit", "EK netto", "Bestandswert netto", "MwSt %", "Sachkonto", "Kostenstelle", "Mindestbestand", "Lagerort", "Lieferant", "Im Shop", "Mitarbeiterpreis"]];
+    const z = [["Artikel", "Artikelnummer", "Kategorie", "Bereich", "Variante", "Bestand", "Einheit", "EK netto", "Bestandswert netto", "MwSt %", "Sachkonto", "Kostenstelle", "Meldebestand", "Lagerort", "Lieferant", "Im Shop", "Mitarbeiterpreis"]];
     for (const a of aktive().sort((x, y) => x.name.localeCompare(y.name, "de"))) for (const v of varianten(a)){ const n = bestand(a.id, v), ek = ekVon(a);
-      z.push([a.name, a.artikelnr, a.kategorie, a.marke, v, n, einheit(a), komma2(ek), komma2(Math.max(0, n) * ek), a.mwst ?? "", a.sachkonto, a.kostenstelle, a.mindest || "", a.lagerort, a.lieferant, a.shop?.aktiv ? "ja" : "nein", a.shop?.aktiv ? komma2(a.shop.preis || ek) : ""]); }
+      z.push([a.name, a.artikelnr, a.kategorie, bereichVon(a), v, n, einheit(a), komma2(ek), komma2(Math.max(0, n) * ek), a.mwst ?? "", a.sachkonto, a.kostenstelle, a.mindest || "", a.lagerort, a.lieferant, a.shop?.aktiv ? "ja" : "nein", a.shop?.aktiv ? komma2(a.shop.preis || ek) : ""]); }
     return { name: `Marketing-Lager-Bestand-${heute()}.csv`, data: csv(z) };
   }
   if (art === "bestellungen"){
@@ -2295,13 +2330,32 @@ function unterwegs(artikelId){
   let n = 0; for (const be of S.bestellungen) if (OFFEN.includes(be.status)) for (const p of offenePos(be)) if (p.artikelId === artikelId) n += p.offen; return n;
 }
 const offeneBestellungen = () => S.bestellungen.filter(b => b.status === "entwurf" || OFFEN.includes(b.status));
-function vorschlagMenge(a, v){
-  const vs = varianten(a), ziel = Number(a.bestellmenge || 0) || Math.max(Number(a.mindest || 0) * 2, 1);
-  if (vs.length === 1) return Math.max(0, Math.max(ziel, Number(a.mindest || 0) * 2 - bestand(a.id)));
-  const jeVar = Math.ceil(ziel / vs.length); return Math.max(0, jeVar - bestand(a.id, v));
+/* Nachbestellregel je Artikel: Meldebestand löst aus; dann feste Menge oder auffüllen bis Zielbestand; gerundet auf Bestellschritt (VPE) */
+function nbRegel(a){
+  const vert = a.verteilung || {}, hatVert = varianten(a).some(v => v && Number(vert[v]) > 0);
+  return { aktiv: a.nbModus !== "aus", regel: a.nbRegel || (a.bestellmenge ? "fest" : "auffuellen"), menge: Number(a.bestellmenge || 0),
+    ziel: Number(a.zielbestand || 0) || Math.max(Number(a.mindest || 0) * 2, 1), vpe: Math.max(1, Number(a.vpe || 0) || 1), vert, hatVert };
 }
-function nachbestellVorschlaege(){
-  return aktive().filter(a => a.mindest && bestand(a.id) + unterwegs(a.id) <= a.mindest);
+const aufVpe = (n, vpe) => n <= 0 ? 0 : Math.ceil(n / vpe) * vpe;
+function vorschlagMenge(a, v){
+  const r = nbRegel(a), vs = varianten(a), frei = id => bestand(id) + unterwegs(id);
+  if (vs.length === 1) return aufVpe(r.regel === "fest" ? (r.menge || r.ziel) : r.ziel - frei(a.id), r.vpe);
+  const summe = vs.reduce((s, x) => s + (Number(r.vert[x]) || 0), 0);
+  if (r.regel === "fest"){ const m = r.menge || r.ziel; return aufVpe(r.hatVert ? Math.round(m * (Number(r.vert[v]) || 0) / summe) : Math.ceil(m / vs.length), 1); }
+  const zielV = r.hatVert ? (Number(r.vert[v]) || 0) : Math.ceil(r.ziel / vs.length);
+  return Math.max(0, zielV - bestand(a.id, v));
+}
+function nachbestellGrund(a){
+  const r = nbRegel(a); if (!r.aktiv) return "";
+  if (a.mindest && bestand(a.id) + unterwegs(a.id) <= a.mindest) return "Meldebestand erreicht";
+  if (r.hatVert && !unterwegs(a.id)){ const leer = varianten(a).filter(v => Number(r.vert[v]) > 0 && bestand(a.id, v) <= 0); if (leer.length) return (leer.length === 1 ? "Größe " : "Größen ") + leer.join(", ") + " leer"; }
+  return "";
+}
+function nachbestellVorschlaege(){ return aktive().filter(a => nachbestellGrund(a)); }
+function nbText(a){
+  const r = nbRegel(a), e = einheit(a); if (!r.aktiv) return "Wird nicht nachbestellt";
+  if (!a.mindest && !r.hatVert) return "Kein Meldebestand eingestellt";
+  return [a.mindest ? `ab ${zahl(a.mindest)} ${e}` : "", r.regel === "fest" ? `je ${zahl(r.menge || r.ziel)} ${e}` : `auffüllen auf ${zahl(r.hatVert ? Object.values(r.vert).reduce((s, x) => s + (Number(x) || 0), 0) : r.ziel)} ${e}`, r.vpe > 1 ? `in ${zahl(r.vpe)}er-Schritten` : ""].filter(Boolean).join(" · ");
 }
 function naechsteNr(){
   const j = new Date().getFullYear(), re = new RegExp("^B-" + j + "-(\\d+)$");
@@ -2348,15 +2402,16 @@ function htmlNachbestellen(){
   for (const a of vor){ const k = a.lieferantId || ("txt:" + (a.lieferant || "")); if (!gruppen.has(k)) gruppen.set(k, []); gruppen.get(k).push(a); }
   const unterw = aktive().filter(a => unterwegs(a.id) > 0);
   return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Nachbestellen</h2>
-      <p class="meta" style="margin:0">Vorschlag aus Mindestbestand, Bestand und bereits Bestelltem. Mengen anpassen, dann je Lieferant eine Bestellung anlegen.</p></div>
-    ${!vor.length ? `<div class="karte"><div class="leer"><p class="titel-karte">Nichts nachzubestellen</p><p class="meta" style="margin:0">Alle Artikel mit Mindestbestand sind ausreichend vorrätig oder schon bestellt.</p></div></div>` : ""}
+      <p class="meta" style="margin:0">Vorschlag nach der Regel jedes Artikels: Meldebestand, Zielbestand oder feste Menge, Bestellschritt. Mengen anpassen, dann je Lieferant eine Bestellung anlegen.</p></div>
+    ${!vor.length ? `<div class="karte"><div class="leer"><p class="titel-karte">Nichts nachzubestellen</p><p class="meta" style="margin:0">Alle Artikel mit Meldebestand sind ausreichend vorrätig oder schon bestellt.</p></div></div>` : ""}
     ${[...gruppen].map(([k, l]) => { const lf = lieferantVon(k), name = lf?.name || (k.slice(4) || "Ohne Lieferant");
       return `<section class="abschnitt"><header class="bereich-kopf"><h3 class="titel-bereich">${esc(name)}</h3>${lf?.lieferzeitTage ? `<span class="meta">Lieferzeit etwa ${plural(lf.lieferzeitTage, "Tag", "Tage")}</span>` : ""}</header>
-        <div class="karte positionen">${l.map(a => `<div class="position"><div class="position-kopf">${kachel(a)}<span class="t">${esc(a.name)}</span><span class="meta zahl">${ca(a.id)}${zahl(bestand(a.id))} / min. ${zahl(a.mindest)}</span></div>
-          <div class="varianten-raster">${varianten(a).map(v => `<div class="variante-zeile"><span><span class="v">${v ? esc(v) : "Bestellmenge"}</span>${v ? `<span class="meta zahl">Bestand ${zahl(bestand(a.id, v))}</span>` : `<span class="meta">${a.bestellmenge ? `Standard ${zahl(a.bestellmenge)}` : "Vorschlag"}</span>`}</span>
+        <div class="karte positionen">${l.map(a => `<div class="position"><div class="position-kopf">${kachel(a)}<span class="t">${esc(a.name)}</span><span class="meta zahl">${ca(a.id)}${zahl(bestand(a.id))} / Meldebestand ${zahl(a.mindest || 0)}</span></div>
+          <p class="meta nb-regel">${esc(nachbestellGrund(a))} · ${esc(nbText(a))}</p>
+          <div class="varianten-raster">${varianten(a).map(v => `<div class="variante-zeile"><span><span class="v">${v ? esc(v) : "Bestellmenge"}</span>${v ? `<span class="meta zahl">Bestand ${zahl(bestand(a.id, v))}</span>` : `<span class="meta">Vorschlag ${zahl(vorschlagMenge(a, v))}</span>`}</span>
             <span class="stepper"><button type="button" data-nb-step="-1" data-id="${esc(a.id)}" data-v="${esc(v)}" aria-label="Weniger">${ICON.minus}</button>
             <input type="number" inputmode="numeric" min="0" data-nb-menge data-id="${esc(a.id)}" data-v="${esc(v)}" id="nb-${esc(a.id)}-${esc(v)}" value="${nb.menge[a.id]?.[v] || ""}" placeholder="0" aria-label="Bestellmenge ${esc(a.name)} ${esc(v)}">
-            <button type="button" data-nb-step="${a.bestellmenge && !v ? a.bestellmenge : 1}" data-id="${esc(a.id)}" data-v="${esc(v)}" aria-label="Mehr">${ICON.plusK}</button></span></div>`).join("")}</div></div>`).join("")}</div>
+            <button type="button" data-nb-step="${!v ? nbRegel(a).vpe : 1}" data-id="${esc(a.id)}" data-v="${esc(v)}" aria-label="Mehr">${ICON.plusK}</button></span></div>`).join("")}</div></div>`).join("")}</div>
         <button class="taste primaer ganz" data-bestellung-anlegen="${esc(k)}">Bestellung anlegen</button></section>`; }).join("")}
     ${unterw.length ? `<section class="abschnitt"><h3 class="titel-bereich">Schon unterwegs</h3><div class="karte">${unterw.map(a => `<button class="zeile artikel" data-artikel="${esc(a.id)}">${kachel(a)}<span class="info"><span class="t">${esc(a.name)}</span><span class="meta">${esc(lieferantName(a))}</span></span><span class="rechts"><span class="menge"><b>${zahl(unterwegs(a.id))}</b><span class="meta">unterwegs</span></span></span></button>`).join("")}</div></section>` : ""}`;
 }
@@ -2438,6 +2493,7 @@ function htmlBestellung(){
       <div class="gruppe"><p class="gruppe-titel">Rechnung</p><div class="themen-wahl">${[["offen", "Offen"], ["bezahlt", "Bezahlt"], ["", "Noch keine"]].map(([k2, l]) => `<button type="button" class="chip" data-be-rechnung="${k2}" aria-pressed="${(be.rechnung || "") === k2}">${l}</button>`).join("")}</div></div>
       <div class="gruppe"><label for="bf-notiz">Notiz</label><textarea id="bf-notiz" class="kommentar" data-bf="notiz" style="min-height:64px">${esc(be.notiz || "")}</textarea></div>
     </div></section>
+    ${ablageHtml(be) ? `<section class="abschnitt"><h3 class="titel-bereich">Belege im Ordner</h3><div class="karte innen">${ablageHtml(be)}</div></section>` : ""}
     <section class="abschnitt"><h3 class="titel-bereich">Belege und Links</h3>${linksEdit("best", be.links || [], ["angebot", "ab", "rechnung", "lieferschein", "sonstiges"])}</section>
     <div class="aktionen" style="margin-top:0">
       ${entwurf ? `<button class="taste primaer" data-be-status="bestellt">Als bestellt markieren</button>` : ""}
@@ -2537,6 +2593,21 @@ function linksAnzeige(links){
   return `<ul class="links-liste anzeige">${l.map(x => `<li><span class="link-art">${esc(LINK_ARTEN[x.art] || "Link")}</span><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titel || linkTitel(x.url))}</a>${VICON.link}</li>`).join("")}</ul>`;
 }
 
+/* --- Ablage: Dateien aus dem synchronen Ordner auf dem Server --- */
+const groesseText = n => n >= 1048576 ? (n / 1048576).toFixed(1).replace(".", ",") + " MB" : n >= 1024 ? Math.round(n / 1024) + " KB" : n + " B";
+function ablagePfad(rel){ const b = S.ablage?.anzeige || ""; const win = /\\|^[A-Z]:/i.test(b); return b ? b.replace(/[\\/]+$/, "") + (win ? "\\" : "/") + (win ? rel.replace(/\//g, "\\") : rel) : rel; }
+function ablageHtml(x){
+  if (!S.ablage || !x?.ablage?.pfad) return "";
+  const l = x.ablage.dateien || [], typ = n => (n.match(/\.([a-z0-9]{1,5})$/i)?.[1] || "").toUpperCase();
+  return `<div class="ablage">${l.length ? `<ul class="ablage-liste">${l.map(f => `<li><span class="ablage-typ" aria-hidden="true">${esc(typ(f.name) || "DATEI")}</span><a href="ablage/${f.pfad.split("/").map(encodeURIComponent).join("/")}" target="_blank" rel="noopener">${esc(f.pfad.slice(x.ablage.pfad.length + 1))}</a><span class="meta zahl">${groesseText(f.groesse)}</span></li>`).join("")}</ul>`
+      : `<p class="meta" style="margin:0">Noch keine Dateien. Druckdaten, Angebote oder Rechnungen einfach in den Ordner legen.</p>`}
+    <p class="ablage-pfad meta"><span title="${esc(ablagePfad(x.ablage.pfad))}">${esc(ablagePfad(x.ablage.pfad))}</span><button type="button" class="info-link" data-pfad-kopieren="${esc(ablagePfad(x.ablage.pfad))}">Pfad kopieren</button></p></div>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-pfad-kopieren]"); if (!b) return;
+  navigator.clipboard?.writeText(b.dataset.pfadKopieren).then(() => toast("Pfad kopiert. Im Explorer in die Adresszeile einfügen."), () => toast(b.dataset.pfadKopieren));
+});
+
 /* ===== Ereignisse: Seite ===== */
 $("#ausgabe-buchen").addEventListener("click", () => buchenStarten("ausgabe"));
 $("#mini-ausgabe").addEventListener("click", () => buchenStarten("ausgabe"));
@@ -2547,8 +2618,8 @@ document.querySelector(".umschalter").addEventListener("click", e => {
   const b = e.target.closest("[data-tab]"); if (!b) return; S.tab = b.dataset.tab; renderFilter(); render();
 });
 $("#filter").addEventListener("click", e => {
-  const c = e.target.closest("[data-kat]"); if (!c) return; const k = c.dataset.kat;
-  S.kat = S.kat.includes(k) ? S.kat.filter(x => x !== k) : [...S.kat, k]; renderFilter(); render();
+  const c = e.target.closest("[data-kat],[data-ber]"); if (!c) return;
+  if (c.dataset.kat) S.kat = umschalten(S.kat, c.dataset.kat); else S.ber = umschalten(S.ber, c.dataset.ber); renderFilter(); render();
 });
 $("#q").addEventListener("input", e => { S.q = e.target.value; render(); });
 $("#leeren").addEventListener("click", () => { S.q = ""; $("#q").value = ""; render(); $("#q").focus(); });
@@ -2559,7 +2630,7 @@ $("#inhalt").addEventListener("click", e => {
   else if (t.hasAttribute("data-neu-artikel")) neuerArtikel();
   else if (t.dataset.buchen) buchenStarten(t.dataset.buchen);
   else if (t.hasAttribute("data-demo-laden")) demoLaden();
-  else if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.status = "alle"; renderFilter(); render(); }
+  else if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.ber = []; S.status = "alle"; renderFilter(); render(); }
   setFilter(false);
 });
 
@@ -2619,8 +2690,10 @@ D.addEventListener("click", e => {
   if (d.buchen){ const art = d.buchen, mit = d.mit; S.b = neueBuchung(art, mit); return openSheet("buchen"); }
   if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
   // Artikel bearbeiten
+  if (d.wahl === "nbRegel"){ S.edit.nbRegel = d.wert; return renderSheet(); }
   if (d.wahl === "lieferantId"){ S.edit.lieferantId = S.edit.lieferantId === d.wert ? "" : d.wert; return renderSheet(); }
   if (d.wahl){ S.edit[d.wahl] = d.wahl === "mwst" ? Number(d.wert) : d.wert; (S.edit.beruehrt ||= {})[d.wahl] = true; D.querySelectorAll(`[data-wahl="${d.wahl}"]`).forEach(x => x.setAttribute("aria-pressed", String(x === t))); return; }
+  if (d.schalter === "nbAn"){ S.edit.nbModus = S.edit.nbModus === "aus" ? "" : "aus"; return renderSheet(); }
   if (d.schalter){ const k = d.schalter; S.edit[k] = k === "aktiv" ? S.edit.aktiv === false : !S.edit[k];
     if (k === "mitVarianten" && S.edit.mitVarianten && !S.edit.variantenText && S.edit.kategorie === "Textilien") S.edit.variantenText = GROESSEN.slice(1, 6).join(", ");
     renderSheet(); return; }
@@ -2655,6 +2728,7 @@ D.addEventListener("input", e => {
   else if (t.hasAttribute("data-nb-menge")){ const m = S.nb.menge[t.dataset.id] ||= {}; m[t.dataset.v] = Math.max(0, parseInt(t.value, 10) || 0); }
   else if (t.id === "k-text") S.kText = t.value;
   else if (t.dataset.ek && S.b) S.b.ek[t.dataset.ek] = t.value;
+  else if (t.dataset.vert !== undefined && S.edit) (S.edit.verteilung ||= {})[t.dataset.vert] = t.value;
   else if (t.dataset.feld && S.edit) S.edit[t.dataset.feld] = t.value;
   else if (t.dataset.b && S.b) S.b[t.dataset.b] = t.value;
   else if (t.hasAttribute("data-menge")){ const p = S.b.pos[t.dataset.id] || (S.b.pos[t.dataset.id] = {}); p[t.dataset.v] = Math.max(0, parseInt(t.value, 10) || 0); summeAktualisieren(); }
@@ -2698,6 +2772,7 @@ function menueHtml(){
     <button role="menuitem" data-export="bestand"><span>Bestand</span></button>
     <button role="menuitem" data-export="ausgabe"><span>Ausgabeliste</span></button>
     <div class="menue-linie" role="separator"></div>
+    ${S.ablage ? `<p class="etikett menue-etikett">Ordner und Excel</p><button role="menuitem" data-pfad-kopieren="${esc(ablagePfad(""))}"><span>Ablage-Pfad kopieren</span><span class="meta">${S.ablage.fehler ? "Hinweis" : S.ablage.excel === "geöffnet" ? "Excel offen" : "synchron"}</span></button>${S.ablage.fehler ? `<p class="meta menue-hinweis">${esc(S.ablage.fehler)}</p>` : ""}<div class="menue-linie" role="separator"></div>` : ""}
     <button role="menuitem" data-menue="verwaltung"><span>Verwaltung</span>${S.admin ? `<span class="meta">angemeldet</span>` : VICON.schloss}</button>
     <div class="menue-linie" role="separator"></div>
     <button role="menuitem" data-menue="kuerzel"><span>Mein Kürzel</span>${k ? `<span class="meta kuerzel-text">${esc(k)}</span>` : ""}</button>
@@ -2817,10 +2892,9 @@ function renderDesk(summe){
   $("#ds-filter").hidden = !best; $("#ds-filter-punkt").hidden = S.status === "alle" && S.sort === "name";
   $("#ds-extra").innerHTML = best && S.admin ? `<button type="button" class="kt sekundaer klein" data-neu-artikel>${ICON.plus}Neuer Artikel</button>`
     : S.tab === "eingang" ? `<button type="button" class="kt sekundaer klein" data-buchen="eingang">${ICON.plus}Eingang buchen</button>` : "";
-  const genutzt = new Set(aktive().map(a => a.kategorie)), kats = KATEGORIEN.map(x => x.k).filter(k => genutzt.has(k) || S.kat.includes(k));
   $("#ds-chips").innerHTML = (S.q ? `<button class="chip chip-weg" data-q-weg aria-pressed="true">Suche „${esc(S.q)}“ ${ICON.weg}</button>` : "")
     + (best && S.status !== "alle" ? `<button class="chip chip-weg" data-status-weg aria-pressed="true">${{ knapp: "Knapp oder leer", leer: "Leer", ok: "Vorrätig" }[S.status]} ${ICON.weg}</button>` : "")
-    + (best && kats.length > 1 ? kats.map(k => `<button class="chip" data-kat="${esc(k)}" aria-pressed="${S.kat.includes(k)}">${esc(k)}</button>`).join("") : "");
+    + filterChips();
   const el = $("#d-inhalt"), w = woerter();
   if (!S.geladen){ el.innerHTML = `<div class="karte"><div class="leer"><p class="meta" style="margin:0">Wird geladen …</p></div></div>`; return; }
   if (best){
@@ -2922,6 +2996,7 @@ function renderSub(){
       <dl class="dfelder">${felder.map(([k, w]) => `<div><dt>${k}</dt><dd>${esc(w)}</dd></div>`).join("")}</dl>
       ${ein && S.admin ? `<div class="dvrechnung"><p class="meta">Rechnung</p><div class="themen-wahl">${[["offen", "Offen"], ["bezahlt", "Bezahlt"], ["", "Ohne"]].map(([k, l]) => `<button type="button" class="chip" data-v-rechnung="${k}" aria-pressed="${(v.rechnung || "") === k}">${l}</button>`).join("")}</div></div>` : ""}
       ${v.notiz ? `<p class="dvnotiz">${esc(v.notiz)}</p>` : ""}</div></section>
+    ${ablageHtml(v) ? `<section class="dbereich"><header><h3 class="titel-bereich">Belege im Ordner</h3></header><div class="dvkarte">${ablageHtml(v)}</div></section>` : ""}
     <section class="dbereich" aria-labelledby="dv-artikel"><header><h3 class="titel-bereich" id="dv-artikel">Artikel</h3><span class="meta zahl">${plural(pos.length, "Position", "Positionen")}</span></header>${liste}</section>`;
   markiereAuswahl();
 }
@@ -2959,7 +3034,7 @@ function renderPanel(){
   if (!a){ $("#p-titel").textContent = "Nicht mehr vorhanden"; $("#p-unter").textContent = ""; $("#p-aktionen").innerHTML = ""; $("#dpanel-fuss").innerHTML = "";
     $("#dpanel-body").innerHTML = `<p class="dart-leer" style="margin-top:20px">Dieser Artikel wurde gelöscht.</p>`; return; }
   $("#p-titel").textContent = a.name;
-  $("#p-unter").textContent = [a.kategorie, a.marke, a.artikelnr && "Art.-Nr. " + a.artikelnr, a.aktiv === false && "archiviert", a.demo && "Demo"].filter(Boolean).join(" · ");
+  $("#p-unter").textContent = [a.kategorie, bereichVon(a), a.artikelnr && "Art.-Nr. " + a.artikelnr, a.aktiv === false && "archiviert", a.demo && "Demo"].filter(Boolean).join(" · ");
   $("#p-aktionen").innerHTML = `<button type="button" class="kt sekundaer klein" data-buchen="ausgabe" data-mit="${esc(a.id)}">${NICON.raus}Ausgabe</button>
     <button type="button" class="kt sekundaer klein" data-inventur="${esc(a.id)}">${ICON.zaehlen}Zählen</button>
     ${S.admin ? `<button type="button" class="kt icon kt-zeile" data-buchen="eingang" data-mit="${esc(a.id)}" aria-label="Eingang buchen" title="Eingang buchen">${NICON.rein}</button>
@@ -2975,7 +3050,7 @@ function artikelSeite(a){
   const kennzahlen = `<dl class="dart-kennzahlen">
     <div><dt>Bestand</dt><dd class="gross ${n < 0 ? "neg" : ""}">${ca(a.id)}${zahl(n)} <small>${esc(ein)}</small></dd>${geschaetzt(a.id) ? `<dd class="hinweis">geschätzt, noch nicht gezählt</dd>` : ""}</div>
     <div><dt>Status</dt><dd><span class="badge ${s.cls}">${s.label}</span></dd>${u ? `<dd class="hinweis">${zahl(u)} ${esc(ein)} bestellt</dd>` : ""}</div>
-    <div><dt>Mindestbestand</dt><dd>${a.mindest ? `${zahl(a.mindest)} ${esc(ein)}` : "–"}</dd></div>
+    <div><dt>Meldebestand</dt><dd>${a.mindest ? `${zahl(a.mindest)} ${esc(ein)}` : "–"}</dd></div>
     <div><dt>Lagerort</dt><dd class="umbruch" title="${esc(a.lagerort || "")}">${esc(a.lagerort || "–")}</dd></div></dl>`;
   const medien = fs.length || a.beschreibung ? `<div class="dart-medien${fs.length ? "" : " ohne-foto"}">
       ${fs.length ? `<div class="dart-fotos" role="list" aria-label="Fotos">${fs.slice(0, 7).map((f, i) => `<button type="button" role="listitem" data-foto="${i}" aria-label="Foto ${i + 1} von ${fs.length} groß zeigen"><img src="${esc(fotoUrl(f))}" alt="" loading="lazy" class="${f.frei === false ? "foto-voll" : ""}"></button>`).join("")}</div>` : ""}
@@ -3000,8 +3075,10 @@ function artikelSeite(a){
     : `<p class="dart-leer">Noch keine Kommentare. Unten lässt sich etwas für die Doku festhalten.</p>`;
   return kennzahlen + medien
     + ab(`Bestand je ${a.kategorie === "Textilien" ? "Größe" : "Variante"}`, groessen)
-    + ab("Angaben", dl([["Lieferant", lieferantName(a)], ["Einheit", ein], ["Marke", a.marke], ["Artikelnummer", a.artikelnr]]))
+    + ab("Angaben", dl([["Lieferant", lieferantName(a)], ["Einheit", ein], ["Artikelnummer", a.artikelnr]]))
+    + ab("Nachbestellung", S.admin ? `<p class="dart-text">${esc(nbText(a))}${nachbestellGrund(a) ? ` · <b>${esc(nachbestellGrund(a))}</b>` : ""}</p>${nbRegel(a).hatVert ? `<div class="dgroessen">${Object.entries(a.verteilung).map(([v, n]) => `<div><span>${esc(v)}</span><b>${zahl(n)}</b></div>`).join("")}</div>` : ""}${nachbestellGrund(a) ? `<button type="button" class="kt sekundaer klein" data-nav-pop="nachbestellen" style="justify-self:start">${NICON.korb}Nachbestellen</button>` : ""}` : "")
     + ab("Buchhaltung und Shop", buch)
+    + ab("Dateien im Ordner", ablageHtml(a))
     + ab("Dateien und Links", links)
     + ab("Interne Notiz", S.admin && a.notiz ? `<p class="dart-text">${esc(a.notiz)}</p>` : "")
     + ab("Verlauf", vtab, verlauf.length ? plural(verlauf.length, "Buchung", "Buchungen") : "")
@@ -3043,6 +3120,7 @@ $("#dpanel").addEventListener("click", e => {
   if (d.buchen){ S.b = neueBuchung(d.buchen, d.mit); return openSheet("buchen"); }
   if (d.inventur) return inventurStarten(d.inventur);
   if (d.artikelEdit){ if (!S.admin) return; return openSheet("artikel-edit", { edit: neuerEntwurf(artikelVon(d.artikelEdit)) }); }
+  if (d.navPop){ S.nb = { menge: {} }; return verwaltungOeffnen(d.navPop); }
   if (t.hasAttribute("data-verlauf-alle")){ P.verlaufAlle = !P.verlaufAlle; return renderPanel(); }
   if (d.kuerzelAendern){ P.kEdit = "kk"; P.kWert = ""; $("#dpanel-fuss").innerHTML = kommentarFuss(); setTimeout(() => $("#kz-kk")?.focus(), 30); return; }
   if (d.kommentarWeg){ P.frage = "k-" + d.kommentarWeg; return renderPanel(); }
@@ -3092,7 +3170,8 @@ $("#ds-chips").addEventListener("click", e => {
   const c = e.target.closest("button"); if (!c) return;
   if (c.hasAttribute("data-q-weg")){ S.q = ""; $("#q").value = ""; }
   else if (c.hasAttribute("data-status-weg")) S.status = "alle";
-  else if (c.dataset.kat){ const k = c.dataset.kat; S.kat = S.kat.includes(k) ? S.kat.filter(x => x !== k) : [...S.kat, k]; }
+  else if (c.dataset.kat) S.kat = umschalten(S.kat, c.dataset.kat);
+  else if (c.dataset.ber) S.ber = umschalten(S.ber, c.dataset.ber);
   renderFilter(); render();
 });
 $("#d-inhalt").addEventListener("click", e => {
@@ -3106,7 +3185,7 @@ $("#d-inhalt").addEventListener("click", e => {
     if (t.hasAttribute("data-demo-laden")) return demoLaden();
     if (t.hasAttribute("data-knapp-zeigen")){ S.status = "knapp"; renderFilter(); return render(); }
     if (d.navPop){ S.nb = { menge: {} }; return verwaltungOeffnen(d.navPop); }
-    if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.status = "alle"; renderFilter(); return render(); }
+    if (t.hasAttribute("data-zuruecksetzen")){ S.q = ""; $("#q").value = ""; S.kat = []; S.ber = []; S.status = "alle"; renderFilter(); return render(); }
     if (t.hasAttribute("data-sub-nein")){ P.subFrage = null; return render(); }
     if (d.vRechnung !== undefined){ Store.update("vorgaenge", P.sub, { rechnung: d.vRechnung }).then(() => toast(d.vRechnung === "bezahlt" ? "Als bezahlt markiert" : "Gespeichert")).catch(fehlerToast); return; }
     if (t.hasAttribute("data-storno-ja")){
