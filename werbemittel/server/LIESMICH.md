@@ -98,9 +98,9 @@ WantedBy=multi-user.target
 | Wer | Darf |
 |---|---|
 | Alle im Firmennetz | Bestand und Ausgaben sehen, Ausgaben buchen, zählen oder schätzen, kommentieren, eigene Buchung innerhalb von 24 Stunden stornieren |
-| Verwaltung (PIN) | zusätzlich Artikel, Preise, Fotos, Lieferanten, Bestellungen, Eingänge, Exporte |
+| Verwaltung (Passwort) | zusätzlich Artikel, Preise, Fotos, Lieferanten, Bestellungen, Eingänge, Exporte |
 
-Die PIN legt die erste Person fest, die in der App „Anmelden“ wählt. Sie wird auf dem Server nur als scrypt-Hash gespeichert (`daten/geheim.json`); nach fünf Fehlversuchen ist die Anmeldung fünf Minuten gesperrt. Die Prüfung passiert auf dem Server, nicht im Browser.
+Das Startpasswort der Verwaltung ist `sopart` (oder `VERWALTUNG_PASSWORT` beim allerersten Start). Bitte gleich in der App unter Verwaltung › Passwort ändern ersetzen. Es wird auf dem Server nur als scrypt-Hash gespeichert (`System\Daten\geheim.json`); nach fünf Fehlversuchen ist die Anmeldung fünf Minuten gesperrt. Die Prüfung passiert auf dem Server, nicht im Browser.
 
 Der Server ist für das interne Netz gedacht und hat keine Benutzerkonten. Soll er von außen erreichbar sein, gehört er hinter VPN oder einen Reverse Proxy mit Firmen-Anmeldung.
 

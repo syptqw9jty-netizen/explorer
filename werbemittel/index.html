@@ -792,6 +792,25 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
 .ablage-pfad span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
 .menue-hinweis{margin:0;padding:4px 12px 8px;font-size:12px;line-height:16px;max-width:260px}
 .zwei{align-items:start}
+/* Artikel anlegen: Pflichtteil oben, Rest aufklappbar */
+.ab-gruppe{display:grid;border:1px solid var(--linie);border-radius:var(--radius-karte, 16px);background:var(--objekt);overflow:hidden}
+.ab-klapp+.ab-klapp{border-top:1px solid var(--linie)}
+.ab-klapp>summary{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr) 16px;align-items:center;gap:12px;min-height:56px;padding:0 16px;cursor:pointer}
+.ab-klapp>summary::-webkit-details-marker{display:none}
+.ab-klapp>summary:hover{background:var(--hover)}
+.ab-klapp>summary:focus-visible{outline:2px solid var(--fokus);outline-offset:-2px}
+.ab-t{font-size:15px;font-weight:600}
+.ab-m{font-size:13px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-chev{width:16px;height:16px;color:var(--tertiaer);transition:transform .15s}
+.ab-klapp[open]>summary .ab-chev{transform:rotate(180deg)}
+.ab-klapp[open]>summary .ab-m{visibility:hidden}
+.ab-inhalt{display:grid;gap:16px;padding:4px 16px 18px}
+.schalter-zeile.kompakt{padding-top:2px;padding-bottom:2px}
+.anfang{padding:14px 16px;border-radius:var(--radius-block, 12px);background:var(--leiste)}
+.foto-zone{border-radius:var(--radius-block, 12px);transition:box-shadow .12s}
+.foto-zone.ablegen{box-shadow:0 0 0 2px var(--gewaehlt);background:color-mix(in oklab,var(--gewaehlt) 6%,transparent)}
+.dscroll.ablegen{box-shadow:inset 0 0 0 2px var(--gewaehlt);background:color-mix(in oklab,var(--gewaehlt) 5%,transparent)}
+.dscroll.ablegen::before{content:"Fotos hier ablegen: neuer Artikel";position:sticky;top:16px;z-index:5;display:block;width:max-content;margin:16px auto -40px;padding:8px 16px;border-radius:999px;background:#1B2F54;color:#fff;font-size:14px;font-weight:500}
 .hilfe{display:block;font-size:12.5px;line-height:17px;margin-top:4px}
 .nb-regel{margin:2px 0 6px;font-size:12.5px}
 .vert-raster{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px;margin-top:6px}
@@ -1072,6 +1091,7 @@ kbd{font:inherit;font-size:11px;line-height:16px;padding:1px 6px;border-radius:6
   .sheet .griff .icon-taste{position:static}
   .sheet-fuss{bottom:-28px}
   .toast{bottom:24px}
+  .sheet.on~.toast{bottom:auto;top:76px}
 }
 @media (min-width:1024px) and (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) .dpanel{box-shadow:0 1px 2px rgba(0,0,0,.3),0 16px 32px -12px rgba(0,0,0,.55),0 40px 64px -24px rgba(0,0,0,.6)}
@@ -1713,16 +1733,27 @@ function htmlArtikelEdit(){
   const loeschbar = !neu && !S.buchungen.some(b => b.artikelId === e.id);
   const fotos = e.fotos || [];
   const ki = KI.sample !== null;
+  const vs = String(e.variantenText || "").split(/[,;]/).map(x => x.trim()).filter(Boolean);
+  const regel = e.nbRegel || "auffuellen";
+  const lfName = e.lieferantId ? (lieferantVon(e.lieferantId)?.name || "") : (e.lieferant || "");
+  const offen = k => !!(ls.get("klapp", {})[k]);
+  const abschnitt = (k, titel, meta, inhalt) => `<details class="ab-klapp" data-klapp="${k}" ${offen(k) ? "open" : ""}><summary><span class="ab-t">${titel}</span><span class="meta ab-m">${esc(meta)}</span><svg class="ab-chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg></summary><div class="ab-inhalt">${inhalt}</div></details>`;
+  const anfang = neu ? `<div class="gruppe anfang"><p class="gruppe-titel">Anfangsbestand <span class="meta">(optional)</span></p>
+      ${hatV && vs.length ? `<div class="vert-raster">${vs.map(v => `<label class="vert-zelle"><span>${esc(v)}</span><input class="eingabe zahl" inputmode="numeric" data-anfang="${esc(v)}" value="${esc(e.anfang?.[v] ?? "")}" placeholder="0" aria-label="Anfangsbestand ${esc(v)}"></label>`).join("")}</div>`
+        : `<input id="f-anfang" class="eingabe zahl" inputmode="numeric" data-anfang="" value="${esc(e.anfang?.[""] ?? "")}" placeholder="Gezählt oder geschätzt, z. B. 500" aria-label="Anfangsbestand">`}
+      <div class="schalter-zeile kompakt"><span><span style="font-size:14px">Nur geschätzt</span><span class="meta" style="display:block">Für Flyer-Stapel und Kartons; später genau zählen.</span></span>
+        <button type="button" class="schalter" role="switch" aria-checked="${!!e.anfangGeschaetzt}" data-schalter="anfangGeschaetzt" aria-label="Anfangsbestand nur geschätzt"><span></span></button></div>
+      <span class="meta hilfe">Wird beim Anlegen als Inventur gebucht. Leer lassen, wenn noch nicht gezählt.</span></div>` : "";
   return `${zurueckTaste()}
     <div class="seitenkopf"><h2 class="titel-seite" id="d-titel">${neu ? "Artikel anlegen" : "Artikel bearbeiten"}</h2>
-      <p class="meta" style="margin:0">${neu ? "Am schnellsten mit Foto: Die KI füllt die Angaben vor, du prüfst." : "Änderungen gelten für alle."}</p></div>
+      <p class="meta" style="margin:0">${neu ? "Pflicht ist nur die Bezeichnung. Mit Foto füllt die KI vor; Foto aufnehmen, hineinziehen oder mit Strg+V einfügen." : "Änderungen gelten für alle."}</p></div>
     <form id="artikel-form" class="formular" autocomplete="off" novalidate>
-      <div class="gruppe"><p class="gruppe-titel">Fotos</p>
+      <div class="gruppe foto-zone" id="foto-zone"><p class="gruppe-titel">Fotos</p>
         <div class="foto-reihe">${fotos.map((f, i) => `<div class="medium-vorschau"><button type="button" class="foto-mini" data-foto-edit="${i}" aria-label="Foto ${i + 1} groß zeigen"><img src="${esc(fotoUrl(f))}" alt="" class="${f.frei === false ? "foto-voll" : ""}"></button>${i === 0 ? `<span class="foto-titel">Titelbild</span>` : `<button type="button" class="foto-erste" data-foto-vor="${i}">Als Titelbild</button>`}
             <button type="button" class="medium-weg" data-foto-weg="${i}" aria-label="Foto entfernen">${ICON.weg}</button></div>`).join("")}
           ${S.fotoLaedt ? `<div class="foto-mini laedt" aria-live="polite"><span class="lade-punkt"></span><span class="meta">${esc(S.fotoLaedt)}</span></div>` : ""}
           ${fotos.length < 8 ? `<label class="medium-hinzu foto-mini">${ICON.kamera}<span>${fotos.length ? "Weiteres Foto" : "Foto aufnehmen"}</span><input type="file" id="foto-datei" class="sr-only" accept="image/*" multiple></label>` : ""}</div>
-        <div class="schalter-zeile"><span><span style="font-size:15px">Hintergrund entfernen</span><span class="meta" style="display:block">Für saubere Produktfotos: Gegenstand auf eine ruhige, einfarbige Fläche legen.</span></span>
+        <div class="schalter-zeile kompakt"><span><span style="font-size:14px">Hintergrund entfernen</span><span class="meta" style="display:block">Gegenstand auf eine ruhige, einfarbige Fläche legen.</span></span>
           <button type="button" class="schalter" role="switch" aria-checked="${S.freistellen !== false}" data-freistellen aria-label="Hintergrund entfernen"><span></span></button></div>
         ${ki ? `<div class="ki-zeile">${KI.status ? `<p class="meta ki-status" aria-live="polite">${KI.laeuft ? `<span class="lade-punkt"></span>` : ""}${esc(KI.status)}</p>` : ""}
           <div class="aktionen" style="margin-top:0">${fotos.length ? `<button type="button" class="taste sekundaer klein" data-ki="foto" ${KI.laeuft ? "disabled" : ""}>${ICON.funken} Mit KI ausfüllen</button>` : ""}
@@ -1730,42 +1761,41 @@ function htmlArtikelEdit(){
       </div>
       <div class="gruppe"><label for="f-name">Bezeichnung <span class="pflicht" aria-hidden="true">*</span></label>
         <input id="f-name" class="eingabe" data-feld="name" value="${esc(e.name)}" placeholder="z. B. Kugelschreiber Metall, Magenta" required></div>
-      <div class="gruppe"><label for="f-beschreibung">Beschreibung</label>
-        <textarea id="f-beschreibung" class="kommentar" data-feld="beschreibung" maxlength="800" placeholder="Was es ist, Farbe, Material, Format, Aufdruck">${esc(e.beschreibung)}</textarea></div>
       <div class="gruppe"><p class="gruppe-titel">Kategorie</p>${chips("kategorie", KATEGORIEN.map(x => x.k), e.kategorie)}</div>
       <div class="gruppe"><p class="gruppe-titel">Bereich</p>${chips("marke", MARKEN, bereichVon(e))}</div>
       <div class="gruppe">
-        <div class="schalter-zeile"><span><span style="font-size:15px">Größen oder Varianten</span><span class="meta" style="display:block">Bestand wird je Größe, Farbe oder Sprache geführt.</span></span>
+        <div class="schalter-zeile kompakt"><span><span style="font-size:14px">Größen oder Varianten</span><span class="meta" style="display:block">Bestand je Größe, Farbe oder Sprache.</span></span>
           <button type="button" class="schalter" role="switch" aria-checked="${!!hatV}" data-schalter="mitVarianten" aria-label="Größen oder Varianten"><span></span></button></div>
         ${hatV ? `<input id="f-varianten" class="eingabe" data-feld="variantenText" value="${esc(e.variantenText)}" placeholder="S, M, L, XL" aria-label="Varianten, durch Komma getrennt">
           <div class="aktionen" style="margin-top:0"><button type="button" class="taste sekundaer klein" data-preset="groessen">Größen XS bis 3XL</button><button type="button" class="taste sekundaer klein" data-preset="sprachen">Deutsch, Englisch</button></div>` : ""}
       </div>
+      ${anfang}
       <div class="zwei">
         <div class="gruppe"><label for="f-einheit">Einheit</label><input id="f-einheit" class="eingabe" data-feld="einheit" value="${esc(e.einheit)}" list="einheiten"></div>
         <div class="gruppe"><label for="f-mindest">Meldebestand</label><input id="f-mindest" class="eingabe zahl" data-feld="mindest" inputmode="numeric" value="${esc(e.mindest)}" placeholder="0"></div>
       </div>
       <div class="gruppe"><label for="f-lagerort">Lagerort</label><input id="f-lagerort" class="eingabe" data-feld="lagerort" value="${esc(e.lagerort)}" list="lagerorte" placeholder="z. B. Marketing-Schrank, Fach 2"></div>
-      <h3 class="titel-bereich abschnitt-titel">Nachbestellung</h3>
+      <div class="gruppe"><label for="f-beschreibung">Beschreibung</label>
+        <textarea id="f-beschreibung" class="kommentar" data-feld="beschreibung" maxlength="800" placeholder="Was es ist, Farbe, Material, Format, Aufdruck">${esc(e.beschreibung)}</textarea></div>
+
+      <div class="ab-gruppe">
+      ${abschnitt("nb", "Nachbestellung und Lieferant", e.nbModus === "aus" ? "wird nicht nachbestellt" : [lfName, regel === "fest" ? (e.bestellmenge ? `je ${e.bestellmenge}` : "feste Menge") : (e.zielbestand ? `auffüllen auf ${e.zielbestand}` : "auffüllen")].filter(Boolean).join(" · "), `
       <div class="gruppe"><p class="gruppe-titel">Lieferant</p>${S.lieferanten.length ? `<div class="themen-wahl">${[...S.lieferanten].sort((x, y) => x.name.localeCompare(y.name, "de")).map(l => `<button type="button" class="chip" data-wahl="lieferantId" data-wert="${esc(l.id)}" aria-pressed="${e.lieferantId === l.id}">${esc(l.name)}</button>`).join("")}</div>` : ""}
         ${!e.lieferantId ? `<input id="f-lieferant" class="eingabe" data-feld="lieferant" value="${esc(e.lieferant)}" list="lieferanten" placeholder="${S.lieferanten.length ? "oder Name eintragen" : "Name des Lieferanten"}" aria-label="Lieferant">` : ""}</div>
       <div class="gruppe"><label for="f-artikelnr">Artikelnummer beim Lieferanten</label><input id="f-artikelnr" class="eingabe" data-feld="artikelnr" value="${esc(e.artikelnr)}"></div>
-      <div class="schalter-zeile"><span><span style="font-size:15px">Zum Nachbestellen vorschlagen</span><span class="meta" style="display:block">Aus für Einzelstücke, Messe-Displays oder auslaufende Drucksachen.</span></span>
+      <div class="schalter-zeile kompakt"><span><span style="font-size:14px">Zum Nachbestellen vorschlagen</span><span class="meta" style="display:block">Aus für Einzelstücke, Messe-Displays oder auslaufende Drucksachen.</span></span>
         <button type="button" class="schalter" role="switch" aria-checked="${e.nbModus !== "aus"}" data-schalter="nbAn" aria-label="Zum Nachbestellen vorschlagen"><span></span></button></div>
-      ${e.nbModus !== "aus" ? `<div class="gruppe"><p class="gruppe-titel">Wie viel bestellen?</p>${chips("nbRegel", ["auffuellen", "fest"], e.nbRegel || "auffuellen").replace(">auffuellen<", ">Auffüllen bis Zielbestand<").replace(">fest<", ">Immer feste Menge<")}
-        <span class="meta hilfe">Der Vorschlag erscheint, sobald der Meldebestand (oben) erreicht ist; Bestelltes wird eingerechnet.</span></div>
+      ${e.nbModus !== "aus" ? `<div class="gruppe"><p class="gruppe-titel">Wie viel bestellen?</p>${chips("nbRegel", ["auffuellen", "fest"], regel).replace(">auffuellen<", ">Auffüllen bis Zielbestand<").replace(">fest<", ">Immer feste Menge<")}
+        <span class="meta hilfe">Der Vorschlag erscheint, sobald der Meldebestand erreicht ist; Bestelltes wird eingerechnet.</span></div>
       <div class="zwei umbruch">
-        ${(e.nbRegel || "auffuellen") === "fest"
+        ${regel === "fest"
           ? `<div class="gruppe"><label for="f-bestellmenge">Feste Bestellmenge</label><input id="f-bestellmenge" class="eingabe zahl" data-feld="bestellmenge" inputmode="numeric" value="${esc(e.bestellmenge)}" placeholder="z. B. 500"></div>`
           : `<div class="gruppe"><label for="f-ziel">Zielbestand nach Lieferung</label><input id="f-ziel" class="eingabe zahl" data-feld="zielbestand" inputmode="numeric" value="${esc(e.zielbestand)}" placeholder="${Number(e.mindest) ? "z. B. " + Number(e.mindest) * 2 : "z. B. 300"}"></div>`}
         <div class="gruppe"><label for="f-vpe">Bestellschritt</label><input id="f-vpe" class="eingabe zahl" data-feld="vpe" inputmode="numeric" value="${esc(e.vpe)}" placeholder="1"><span class="meta hilfe">Verpackungseinheit oder Druckstaffel; Vorschläge werden aufgerundet.</span></div></div>
-      ${hatV ? `<div class="gruppe"><p class="gruppe-titel">${(e.nbRegel || "auffuellen") === "fest" ? "Aufteilung je Größe" : "Zielbestand je Größe"}</p><span class="meta hilfe">${(e.nbRegel || "auffuellen") === "fest" ? "Anteile, z. B. S 1, M 3, L 3, XL 1. Leer = gleichmäßig." : "Leer = Gesamtziel gleichmäßig verteilt. Ist eine Größe mit Ziel leer, wird ebenfalls vorgeschlagen."}</span>
-        <div class="vert-raster">${String(e.variantenText || "").split(/[,;]/).map(x => x.trim()).filter(Boolean).map(v => `<label class="vert-zelle"><span>${esc(v)}</span><input class="eingabe zahl" inputmode="numeric" data-vert="${esc(v)}" value="${esc(e.verteilung?.[v] ?? "")}" placeholder="–" aria-label="${esc(v)}"></label>`).join("")}</div></div>` : ""}` : ""}
-      <div class="gruppe"><label for="f-nachbestellurl">Direkt nachbestellen (Link zum Produkt im Shop)</label><input id="f-nachbestellurl" class="eingabe" data-feld="nachbestellUrl" inputmode="url" value="${esc(e.nachbestellUrl)}" placeholder="https://…"></div>
-      <div class="gruppe"><label for="f-ordner">Ordner mit allen Dateien</label><input id="f-ordner" class="eingabe" data-feld="ordnerUrl" inputmode="url" value="${esc(e.ordnerUrl)}" placeholder="https://drive.google.com/…"></div>
-      <div class="gruppe"><p class="gruppe-titel">Druckdateien und Belege</p>${linksEdit("edit", e.links || [], ["druckdatei", "angebot", "rechnung", "sonstiges"])}</div>
-      <div class="gruppe"><label for="f-notiz">Interne Notiz</label><textarea id="f-notiz" class="kommentar" data-feld="notiz" maxlength="800" style="min-height:72px" placeholder="Druckdaten, Ansprechpartner, Besonderheiten …">${esc(e.notiz)}</textarea></div>
-
-      <h3 class="titel-bereich abschnitt-titel">Buchhaltung</h3>
+      ${hatV ? `<div class="gruppe"><p class="gruppe-titel">${regel === "fest" ? "Aufteilung je Größe" : "Zielbestand je Größe"}</p><span class="meta hilfe">${regel === "fest" ? "Anteile, z. B. S 1, M 3, L 3, XL 1. Leer = gleichmäßig." : "Leer = Gesamtziel gleichmäßig verteilt. Ist eine Größe mit Ziel leer, wird ebenfalls vorgeschlagen."}</span>
+        <div class="vert-raster">${vs.map(v => `<label class="vert-zelle"><span>${esc(v)}</span><input class="eingabe zahl" inputmode="numeric" data-vert="${esc(v)}" value="${esc(e.verteilung?.[v] ?? "")}" placeholder="–" aria-label="${esc(v)}"></label>`).join("")}</div></div>` : ""}` : ""}
+      <div class="gruppe"><label for="f-nachbestellurl">Direkt nachbestellen (Link zum Produkt im Shop)</label><input id="f-nachbestellurl" class="eingabe" data-feld="nachbestellUrl" inputmode="url" value="${esc(e.nachbestellUrl)}" placeholder="https://…"></div>`)}
+      ${abschnitt("buch", "Buchhaltung", [e.ek ? e.ek + " € netto" : "", e.kostenstelle, e.sachkonto].filter(Boolean).join(" · "), `
       <div class="zwei">
         <div class="gruppe"><label for="f-ek">Einkaufspreis netto</label><input id="f-ek" class="eingabe zahl" data-feld="ek" inputmode="decimal" value="${esc(e.ek)}" placeholder="0,00 €"></div>
         <div class="gruppe"><p class="gruppe-titel">MwSt-Satz</p>${chips("mwst", [19, 7, 0], e.mwst)}</div>
@@ -1773,16 +1803,20 @@ function htmlArtikelEdit(){
       <div class="zwei umbruch">
         <div class="gruppe"><label for="f-sachkonto">Sachkonto</label><input id="f-sachkonto" class="eingabe zahl" data-feld="sachkonto" value="${esc(e.sachkonto)}" list="konten" placeholder="z. B. 6600 Werbekosten"></div>
         <div class="gruppe"><label for="f-kostenstelle">Kostenstelle</label><input id="f-kostenstelle" class="eingabe" data-feld="kostenstelle" value="${esc(e.kostenstelle)}" list="kostenstellen" placeholder="Marketing"></div>
-      </div>
-
-      <h3 class="titel-bereich abschnitt-titel">Mitarbeiter-Shop</h3>
-      <div class="schalter-zeile"><span><span style="font-size:15px">Im Shop anbieten</span><span class="meta" style="display:block">Vorbereitet für den kommenden Mitarbeiter-Shop.</span></span>
+      </div>`)}
+      ${abschnitt("shop", "Mitarbeiter-Shop", e.shopAktiv ? ["im Shop", e.shopPreis ? e.shopPreis + " €" : "zum EK"].join(" · ") : "nicht im Shop", `
+      <div class="schalter-zeile kompakt"><span><span style="font-size:14px">Im Shop anbieten</span><span class="meta" style="display:block">Vorbereitet für den kommenden Mitarbeiter-Shop.</span></span>
         <button type="button" class="schalter" role="switch" aria-checked="${!!e.shopAktiv}" data-schalter="shopAktiv" aria-label="Im Shop anbieten"><span></span></button></div>
       ${e.shopAktiv ? `<div class="zwei">
         <div class="gruppe"><label for="f-shoppreis">Mitarbeiterpreis brutto</label><input id="f-shoppreis" class="eingabe zahl" data-feld="shopPreis" inputmode="decimal" value="${esc(e.shopPreis)}" placeholder="leer = EK"></div>
-        <div class="gruppe"><label for="f-shopmax">Höchstens je Person</label><input id="f-shopmax" class="eingabe zahl" data-feld="shopMax" inputmode="numeric" value="${esc(e.shopMax)}" placeholder="unbegrenzt"></div></div>` : ""}
+        <div class="gruppe"><label for="f-shopmax">Höchstens je Person</label><input id="f-shopmax" class="eingabe zahl" data-feld="shopMax" inputmode="numeric" value="${esc(e.shopMax)}" placeholder="unbegrenzt"></div></div>` : ""}`)}
+      ${abschnitt("dateien", "Dateien, Links und Notiz", [(e.links || []).length ? plural((e.links || []).length, "Link", "Links") : "", e.ordnerUrl ? "Ordner" : "", e.notiz ? "Notiz" : ""].filter(Boolean).join(" · ") || "leer", `
+      <div class="gruppe"><label for="f-ordner">Ordner mit allen Dateien</label><input id="f-ordner" class="eingabe" data-feld="ordnerUrl" inputmode="url" value="${esc(e.ordnerUrl)}" placeholder="https://drive.google.com/…"></div>
+      <div class="gruppe"><p class="gruppe-titel">Druckdateien und Belege</p>${linksEdit("edit", e.links || [], ["druckdatei", "angebot", "rechnung", "sonstiges"])}</div>
+      <div class="gruppe"><label for="f-notiz">Interne Notiz</label><textarea id="f-notiz" class="kommentar" data-feld="notiz" maxlength="800" style="min-height:72px" placeholder="Druckdaten, Ansprechpartner, Besonderheiten …">${esc(e.notiz)}</textarea></div>`)}
+      </div>
 
-      ${!neu ? `<div class="schalter-zeile"><span style="font-size:15px">Im Bestand zeigen</span><button type="button" class="schalter" role="switch" aria-checked="${e.aktiv !== false}" data-schalter="aktiv" aria-label="Im Bestand zeigen"><span></span></button></div>` : ""}
+      ${!neu ? `<div class="schalter-zeile kompakt"><span style="font-size:14px">Im Bestand zeigen</span><button type="button" class="schalter" role="switch" aria-checked="${e.aktiv !== false}" data-schalter="aktiv" aria-label="Im Bestand zeigen"><span></span></button></div>` : ""}
       <datalist id="einheiten">${EINHEITEN.map(x => `<option value="${x}">`).join("")}</datalist>
       <datalist id="lagerorte">${lagerorte.map(x => `<option value="${esc(x)}">`).join("")}</datalist>
       <datalist id="lieferanten">${lieferanten.map(x => `<option value="${esc(x)}">`).join("")}</datalist>
@@ -1790,21 +1824,34 @@ function htmlArtikelEdit(){
       <datalist id="kostenstellen">${KOSTENSTELLEN.map(x => `<option value="${esc(x)}">`).join("")}</datalist>
       <p class="fehler-text" id="edit-fehler" hidden></p>
       ${S.frage === "loeschen" ? `<div class="bestaetigen"><p>„${esc(e.name)}“ endgültig löschen?</p><div class="aktionen"><button type="button" class="taste gefahr" data-artikel-loeschen-ja>Löschen</button><button type="button" class="taste sekundaer" data-frage-nein>Behalten</button></div></div>` : ""}
-      ${loeschbar && S.frage !== "loeschen" ? `<button type="button" class="entfernen" data-artikel-loeschen style="justify-self:start">Artikel löschen</button>` : ""}
-      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer" ${S.busy || S.fotoLaedt ? "disabled" : ""}>${neu ? "Anlegen" : "Speichern"}</button></div>
+      ${!neu && S.frage !== "loeschen" ? `<div class="aktionen" style="margin-top:0"><button type="button" class="taste sekundaer klein" data-artikel-kopie>Als Vorlage für neuen Artikel</button>${loeschbar ? `<button type="button" class="entfernen" data-artikel-loeschen>Artikel löschen</button>` : ""}</div>` : ""}
+      <div class="sheet-fuss">${neu ? `<button type="submit" class="taste sekundaer" data-weiter ${S.busy || S.fotoLaedt ? "disabled" : ""}>Anlegen und nächsten</button>` : `<button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button>`}<button type="submit" class="taste primaer" ${S.busy || S.fotoLaedt ? "disabled" : ""}>${neu ? "Anlegen" : "Speichern"}</button></div>
     </form>`;
+}
+/* Sinnvolle Vorgaben je Kategorie, solange nichts davon von Hand geändert wurde */
+function kategorieVorgaben(e, k){
+  const b = e.beruehrt ||= {};
+  if (!b.mitVarianten){ const t = k === "Textilien"; e.mitVarianten = t; if (t && !e.variantenText) e.variantenText = GROESSEN.slice(1, 6).join(", "); if (!t) e.variantenText = ""; }
+  if (!b.anfangGeschaetzt) e.anfangGeschaetzt = k === "Drucksachen";
+  if (!b.nbAn) e.nbModus = k === "Messe & Event" ? "aus" : "";
 }
 const euroText = n => Number(n) ? Number(n).toFixed(2).replace(".", ",") : "";
 const parseEuro = s => { const t = String(s ?? "").replace(/[^\d,.-]/g, ""); const n = parseFloat(t.includes(",") ? t.replace(/\./g, "").replace(",", ".") : t); return isFinite(n) ? Math.round(n * 100) / 100 : 0; };
 const ekVon = a => Number(a.ek ?? a.preis ?? 0) || 0;
 function neuerEntwurf(a){
-  if (!a) return { name: "", beschreibung: "", fotos: [], kategorie: S.kat.length === 1 ? S.kat[0] : "Werbeartikel", marke: "GAUSS", mitVarianten: false, variantenText: "", einheit: "Stück", mindest: "", lagerort: "", lieferant: "", artikelnr: "", notiz: "",
+  if (!a){ const e = neuerEntwurfLeer(); kategorieVorgaben(e, e.kategorie); return e; }
+  return neuerEntwurfVon(a);
+}
+function neuerEntwurfLeer(){
+  return { name: "", beschreibung: "", fotos: [], kategorie: S.kat.length === 1 ? S.kat[0] : "Werbeartikel", anfang: {}, anfangGeschaetzt: false, marke: "GAUSS", mitVarianten: false, variantenText: "", einheit: "Stück", mindest: "", lagerort: "", lieferant: "", artikelnr: "", notiz: "",
     ek: "", mwst: 19, sachkonto: "", kostenstelle: "Marketing", shopAktiv: false, shopPreis: "", shopMax: "", nbModus: "", nbRegel: "auffuellen", zielbestand: "", vpe: "", verteilung: {}, beruehrt: {} };
+}
+function neuerEntwurfVon(a){
   return { ...a, fotos: [...(a.fotos || [])], mitVarianten: (a.varianten || []).length > 0, variantenText: (a.varianten || []).join(", "), mindest: a.mindest ? String(a.mindest) : "",
     links: [...(a.links || [])], bestellmenge: a.bestellmenge ? String(a.bestellmenge) : "", nachbestellUrl: a.nachbestellUrl || "", ordnerUrl: a.ordnerUrl || "", lieferantId: a.lieferantId || "",
     ek: euroText(ekVon(a)), mwst: a.mwst ?? 19, shopAktiv: !!a.shop?.aktiv, shopPreis: euroText(a.shop?.preis), shopMax: a.shop?.max ? String(a.shop.max) : "", nbModus: a.nbModus || "", nbRegel: nbRegel(a).regel, zielbestand: a.zielbestand ? String(a.zielbestand) : "", vpe: a.vpe > 1 ? String(a.vpe) : "", verteilung: { ...(a.verteilung || {}) }, beruehrt: { kategorie: true, marke: true } };
 }
-async function speichereArtikel(){
+async function speichereArtikel(weiter){
   const e = S.edit, f = $("#edit-fehler");
   if (!String(e.name || "").trim()){ f.textContent = "Bitte eine Bezeichnung eingeben."; f.hidden = false; $("#f-name").focus(); return; }
   const varianten = e.mitVarianten ? [...new Set(String(e.variantenText || "").split(/[,;]/).map(x => x.trim()).filter(Boolean))] : [];
@@ -1825,8 +1872,23 @@ async function speichereArtikel(){
   S.busy = true;
   try {
     const alt = e.id ? stripId(artikelVon(id) || {}) : {}; delete alt.preis;
-    await Store.set("artikel", id, { ...alt, ...daten }); toast(e.id ? "Gespeichert" : "Artikel angelegt");
+    await Store.set("artikel", id, { ...alt, ...daten });
+    // Anfangsbestand als Inventur buchen
+    const start = !e.id ? (varianten.length ? varianten : [""]).map(v => ({ v, n: Math.max(0, parseInt(e.anfang?.[v], 10) || 0) })).filter(x => x.n > 0) : [];
+    if (start.length){
+      const vid = uid(), am = new Date().toISOString(), datum = heute(), k = ls.get("kuerzel", "") || "VW";
+      await Store.set("vorgaenge", vid, { art: "inventur", an: e.anfangGeschaetzt ? "Anfangsbestand, geschätzt" : "Anfangsbestand", datum, am, kuerzel: k, notiz: "", geschaetzt: !!e.anfangGeschaetzt });
+      await Promise.all(start.map(x => Store.set("buchungen", uid(), { vorgangId: vid, artikelId: id, variante: x.v, menge: x.n, art: "inventur", datum, am, ek: daten.ek, kostenstelle: daten.kostenstelle || "", geschaetzt: !!e.anfangGeschaetzt })));
+    }
+    toast(e.id ? "Gespeichert" : start.length ? `Angelegt mit ${zahl(start.reduce((s, x) => s + x.n, 0))} ${daten.einheit}` : "Artikel angelegt");
     S.busy = false; KI.status = "";
+    if (weiter && !e.id){
+      // Nächsten Artikel derselben Serie: Kategorie, Bereich, Lagerort, Lieferant und Buchhaltung bleiben stehen
+      const n = neuerEntwurfLeer();
+      for (const f of ["kategorie", "marke", "lagerort", "lieferant", "lieferantId", "einheit", "kostenstelle", "sachkonto", "mwst", "mitVarianten", "variantenText", "anfangGeschaetzt", "nbModus", "nbRegel", "vpe"]) n[f] = e[f];
+      n.beruehrt = { kategorie: true, marke: true, mitVarianten: true, anfangGeschaetzt: true, nbAn: true };
+      S.edit = n; S.frage = null; renderSheet(); $("#sheet").scrollTop = 0; setTimeout(() => $("#f-name")?.focus(), 60); return;
+    }
     const i = S.stack.findIndex(x => x.view === "buchen");
     if (i >= 0 && S.b && !e.id){ const a = { id, ...daten }; if (!artikelVon(id)) S.artikel = [...S.artikel, a];
       S.b.reihe.push(id); S.b.pos[id] = Object.fromEntries(varianten(a).map(v => [v, varianten(a).length === 1 ? 1 : 0]));
@@ -1937,7 +1999,7 @@ Antworte nur mit einem JSON-Objekt:
       if (art === "foto" && !String(e.name || "").trim() && r.name) e.name = String(r.name).slice(0, 120);
       if (r.beschreibung && (art === "text" || !String(e.beschreibung || "").trim())) e.beschreibung = String(r.beschreibung).slice(0, 800);
       if (art === "foto"){
-        if (!e.beruehrt?.kategorie && KATEGORIEN.some(x => x.k === r.kategorie)) e.kategorie = r.kategorie;
+        if (!e.beruehrt?.kategorie && KATEGORIEN.some(x => x.k === r.kategorie)){ e.kategorie = r.kategorie; if (!e.id) kategorieVorgaben(e, r.kategorie); }
         if (!e.beruehrt?.marke && MARKEN.includes(r.marke)) e.marke = r.marke;
         if (!e.mitVarianten && Array.isArray(r.varianten) && r.varianten.length){ e.mitVarianten = true; e.variantenText = r.varianten.slice(0, 12).join(", "); }
         if (EINHEITEN.includes(r.einheit) && (!e.einheit || e.einheit === "Stück")) e.einheit = r.einheit;
@@ -2269,51 +2331,51 @@ function renderAdminUi(){
 function htmlLogin(){
   const neu = S.server ? !S.pinGesetzt : !EINST().pinHash, sperre = !S.server && ls.get("sperre", 0) > Date.now();
   return `<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Verwaltung</h2>
-      <p class="meta" style="margin:0">${neu ? "Noch keine PIN festgelegt. Wer die PIN kennt, kann Artikel, Preise, Lieferanten und Bestellungen ändern." : "Mit der Verwaltungs-PIN anmelden."}</p></div>
+      <p class="meta" style="margin:0">${neu ? "Noch kein Passwort festgelegt. Wer es kennt, kann Artikel, Preise, Lieferanten und Bestellungen ändern." : "Mit dem Verwaltungspasswort anmelden."}</p></div>
     <form id="login-form" class="formular" autocomplete="off" novalidate>
-      <div class="gruppe"><label for="pin">${neu ? "Neue PIN, 4 bis 8 Ziffern" : "PIN"}</label><input id="pin" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8" autocomplete="off" ${sperre ? "disabled" : ""}></div>
-      ${neu ? `<div class="gruppe"><label for="pin2">PIN wiederholen</label><input id="pin2" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>` : ""}
+      <div class="gruppe"><label for="pin">${neu ? "Neues Passwort, mindestens 4 Zeichen" : "Passwort"}</label><input id="pin" class="eingabe" type="password" maxlength="64" autocomplete="current-password" autocapitalize="off" spellcheck="false" ${sperre ? "disabled" : ""}></div>
+      ${neu ? `<div class="gruppe"><label for="pin2">Passwort wiederholen</label><input id="pin2" class="eingabe" type="password" maxlength="64" autocomplete="new-password" autocapitalize="off" spellcheck="false"></div>` : ""}
       <p class="fehler-text" id="login-fehler" ${sperre ? "" : "hidden"}>${sperre ? "Zu viele Fehlversuche. Bitte in ein paar Minuten noch einmal." : ""}</p>
-      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer" ${sperre ? "disabled" : ""}>${neu ? "PIN festlegen" : "Anmelden"}</button></div>
+      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-abbrechen>Abbrechen</button><button type="submit" class="taste primaer" ${sperre ? "disabled" : ""}>${neu ? "Passwort festlegen" : "Anmelden"}</button></div>
     </form>`;
 }
 async function anmelden(){
-  const f = $("#login-fehler"), pin = $("#pin").value.trim(), e = EINST();
+  const f = $("#login-fehler"), pin = $("#pin").value, e = EINST();
   const fehler = t => { f.textContent = t; f.hidden = false; $("#pin").select(); };
-  if (!/^\d{4,8}$/.test(pin)) return fehler("Die PIN besteht aus 4 bis 8 Ziffern.");
+  if (pin.length < 4) return fehler("Das Passwort hat mindestens 4 Zeichen.");
   if (S.server){
-    if (!S.pinGesetzt && pin !== $("#pin2").value.trim()) return fehler("Die beiden PINs stimmen nicht überein.");
+    if (!S.pinGesetzt && pin !== $("#pin2").value) return fehler("Die beiden Passwörter stimmen nicht überein.");
     try { const r = await api({ action: "login", pin, neu: !S.pinGesetzt }); ls.set("token", r.token); ls.set("tokenBis", r.bis); S.pinGesetzt = true; }
     catch (err){ return fehler(err.message || "Anmeldung fehlgeschlagen."); }
   } else {
   const h = await pinHash(pin);
   if (!e.pinHash){
-    if (pin !== $("#pin2").value.trim()) return fehler("Die beiden PINs stimmen nicht überein.");
+    if (pin !== $("#pin2").value) return fehler("Die beiden Passwörter stimmen nicht überein.");
     try { await Store.set("einstellungen", "verwaltung", { ...stripId(e), pinHash: h }); } catch (err){ return fehlerToast(err); }
   } else if (h !== e.pinHash){
     const n = ls.get("fehlversuche", 0) + 1; ls.set("fehlversuche", n);
     if (n >= 5){ ls.set("sperre", Date.now() + 5 * 60e3); ls.set("fehlversuche", 0); renderSheet(); return; }
-    return fehler("PIN ist nicht richtig.");
+    return fehler("Das Passwort ist nicht richtig.");
   }
   }
   ls.set("fehlversuche", 0); adminSetzen(true); toast("Verwaltung entsperrt"); const ziel = S.nachLogin || "verwaltung"; S.nachLogin = null; S.stack = []; S.view = null; openSheet(ziel, ziel === "artikel-edit" ? { edit: neuerEntwurf() } : {});
 }
 function htmlPin(){
-  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">PIN ändern</h2><p class="meta" style="margin:0">Gilt für alle, die die Verwaltung nutzen.</p></div>
+  return `${zurueckTaste()}<div class="seitenkopf"><h2 class="titel-seite" id="d-titel">Passwort ändern</h2><p class="meta" style="margin:0">Gilt für alle, die die Verwaltung nutzen.</p></div>
     <form id="pin-form" class="formular" autocomplete="off" novalidate>
-      <div class="gruppe"><label for="p-alt">Bisherige PIN</label><input id="p-alt" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div>
-      <div class="zwei"><div class="gruppe"><label for="p-neu">Neue PIN</label><input id="p-neu" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div>
-        <div class="gruppe"><label for="p-neu2">Wiederholen</label><input id="p-neu2" class="eingabe zahl pin-eingabe" type="password" inputmode="numeric" maxlength="8"></div></div>
+      <div class="gruppe"><label for="p-alt">Bisheriges Passwort</label><input id="p-alt" class="eingabe" type="password" maxlength="64" autocomplete="current-password"></div>
+      <div class="zwei"><div class="gruppe"><label for="p-neu">Neues Passwort</label><input id="p-neu" class="eingabe" type="password" maxlength="64" autocomplete="new-password"></div>
+        <div class="gruppe"><label for="p-neu2">Wiederholen</label><input id="p-neu2" class="eingabe" type="password" maxlength="64" autocomplete="new-password"></div></div>
       <p class="fehler-text" id="pin-fehler" hidden></p>
-      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-zurueck>Abbrechen</button><button type="submit" class="taste primaer">PIN ändern</button></div></form>`;
+      <div class="sheet-fuss"><button type="button" class="taste sekundaer" data-zurueck>Abbrechen</button><button type="submit" class="taste primaer">Passwort ändern</button></div></form>`;
 }
 async function pinAendern(){
   const f = $("#pin-fehler"), fehler = t => { f.textContent = t; f.hidden = false; };
-  const n = $("#p-neu").value.trim(); if (!/^\d{4,8}$/.test(n)) return fehler("Die neue PIN besteht aus 4 bis 8 Ziffern.");
-  if (n !== $("#p-neu2").value.trim()) return fehler("Die beiden neuen PINs stimmen nicht überein.");
-  if (S.server){ try { await api({ action: "pin", alt: $("#p-alt").value.trim(), neu: n }); toast("PIN geändert"); return zurueck(); } catch (err){ return fehler(err.message || "PIN konnte nicht geändert werden."); } }
-  if (await pinHash($("#p-alt").value.trim()) !== EINST().pinHash) return fehler("Die bisherige PIN ist nicht richtig.");
-  try { await Store.set("einstellungen", "verwaltung", { ...stripId(EINST()), pinHash: await pinHash(n) }); toast("PIN geändert"); zurueck(); } catch (err){ fehlerToast(err); }
+  const n = $("#p-neu").value; if (n.length < 4) return fehler("Das neue Passwort hat mindestens 4 Zeichen.");
+  if (n !== $("#p-neu2").value) return fehler("Die beiden neuen Passwörter stimmen nicht überein.");
+  if (S.server){ try { await api({ action: "pin", alt: $("#p-alt").value, neu: n }); toast("Passwort geändert"); return zurueck(); } catch (err){ return fehler(err.message || "Passwort konnte nicht geändert werden."); } }
+  if (await pinHash($("#p-alt").value) !== EINST().pinHash) return fehler("Das bisherige Passwort ist nicht richtig.");
+  try { await Store.set("einstellungen", "verwaltung", { ...stripId(EINST()), pinHash: await pinHash(n) }); toast("Passwort geändert"); zurueck(); } catch (err){ fehlerToast(err); }
 }
 function neuerArtikel(){ if (S.admin) openSheet("artikel-edit", { edit: neuerEntwurf() }); else { S.nachLogin = "artikel-edit"; openSheet("login"); } }
 function verwaltungOeffnen(ziel){ if (S.admin) openSheet(ziel || "verwaltung"); else { S.nachLogin = ziel || "verwaltung"; openSheet("login"); } }
@@ -2389,7 +2451,7 @@ function htmlVerwaltung(){
     <section class="abschnitt"><h3 class="titel-bereich">Exporte</h3><div class="aktionen" style="margin-top:0">
       ${[["bestand", "Bestand"], ["ausgabe", "Ausgaben"], ["eingang", "Eingänge"], ["buchhaltung", "Buchhaltung"], ["bestellungen", "Bestellungen"]].map(([k, l]) => `<button class="taste sekundaer klein" data-export-v="${k}">${l}</button>`).join("")}</div></section>
     <div class="aktionen" style="margin-top:0">
-      <button class="taste sekundaer" data-pin-aendern>${VICON.schloss} PIN ändern</button>
+      <button class="taste sekundaer" data-pin-aendern>${VICON.schloss} Passwort ändern</button>
       <button class="taste sekundaer" data-abmelden>Abmelden</button></div>
     ${hatDemo() ? `<button class="entfernen" data-menue-demo style="justify-self:start">Demo-Daten entfernen</button>` : ""}`;
 }
@@ -2690,11 +2752,15 @@ D.addEventListener("click", e => {
   if (d.buchen){ const art = d.buchen, mit = d.mit; S.b = neueBuchung(art, mit); return openSheet("buchen"); }
   if (t.hasAttribute("data-neu-artikel")) return neuerArtikel();
   // Artikel bearbeiten
+  if (d.wahl === "kategorie" && S.edit && !S.edit.id){ S.edit.kategorie = d.wert; (S.edit.beruehrt ||= {}).kategorie = true; kategorieVorgaben(S.edit, d.wert); return renderSheet(); }
+  if (t.hasAttribute("data-artikel-kopie")){ const a = artikelVon(S.edit.id) || S.edit; const k = neuerEntwurf(a);
+    delete k.id; delete k.angelegt; delete k.ablage; delete k.demo; k.name = a.name + " (Kopie)"; k.anfang = {}; k.anfangGeschaetzt = a.kategorie === "Drucksachen"; k.beruehrt = { kategorie: true, marke: true, mitVarianten: true, nbAn: true };
+    S.edit = k; S.frage = null; renderSheet(); $("#sheet").scrollTop = 0; setTimeout(() => { const f = $("#f-name"); f?.focus(); f?.select(); }, 60); toast("Kopie: Bezeichnung anpassen, dann anlegen"); return; }
   if (d.wahl === "nbRegel"){ S.edit.nbRegel = d.wert; return renderSheet(); }
   if (d.wahl === "lieferantId"){ S.edit.lieferantId = S.edit.lieferantId === d.wert ? "" : d.wert; return renderSheet(); }
   if (d.wahl){ S.edit[d.wahl] = d.wahl === "mwst" ? Number(d.wert) : d.wert; (S.edit.beruehrt ||= {})[d.wahl] = true; D.querySelectorAll(`[data-wahl="${d.wahl}"]`).forEach(x => x.setAttribute("aria-pressed", String(x === t))); return; }
-  if (d.schalter === "nbAn"){ S.edit.nbModus = S.edit.nbModus === "aus" ? "" : "aus"; return renderSheet(); }
-  if (d.schalter){ const k = d.schalter; S.edit[k] = k === "aktiv" ? S.edit.aktiv === false : !S.edit[k];
+  if (d.schalter === "nbAn"){ S.edit.nbModus = S.edit.nbModus === "aus" ? "" : "aus"; (S.edit.beruehrt ||= {}).nbAn = true; return renderSheet(); }
+  if (d.schalter){ const k = d.schalter; S.edit[k] = k === "aktiv" ? S.edit.aktiv === false : !S.edit[k]; (S.edit.beruehrt ||= {})[k] = true;
     if (k === "mitVarianten" && S.edit.mitVarianten && !S.edit.variantenText && S.edit.kategorie === "Textilien") S.edit.variantenText = GROESSEN.slice(1, 6).join(", ");
     renderSheet(); return; }
   if (d.preset){ S.edit.variantenText = d.preset === "groessen" ? GROESSEN.join(", ") : "Deutsch, Englisch"; renderSheet(); return; }
@@ -2728,6 +2794,7 @@ D.addEventListener("input", e => {
   else if (t.hasAttribute("data-nb-menge")){ const m = S.nb.menge[t.dataset.id] ||= {}; m[t.dataset.v] = Math.max(0, parseInt(t.value, 10) || 0); }
   else if (t.id === "k-text") S.kText = t.value;
   else if (t.dataset.ek && S.b) S.b.ek[t.dataset.ek] = t.value;
+  else if (t.dataset.anfang !== undefined && S.edit) (S.edit.anfang ||= {})[t.dataset.anfang] = t.value;
   else if (t.dataset.vert !== undefined && S.edit) (S.edit.verteilung ||= {})[t.dataset.vert] = t.value;
   else if (t.dataset.feld && S.edit) S.edit[t.dataset.feld] = t.value;
   else if (t.dataset.b && S.b) S.b[t.dataset.b] = t.value;
@@ -2749,9 +2816,22 @@ D.addEventListener("change", e => {
 D.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.id === "pick-q"){ e.preventDefault(); D.querySelector("[data-pick]")?.click(); }
 });
+/* Artikel anlegen: Abschnitte merken, Fotos hineinziehen oder einfügen */
+D.addEventListener("toggle", e => { const d = e.target; if (!d.matches?.("details[data-klapp]")) return; const m = ls.get("klapp", {}); m[d.dataset.klapp] = d.open; ls.set("klapp", m); }, true);
+const bilderVon = liste => [...(liste || [])].filter(f => /^image\//.test(f.type));
+const hatDateien = e => [...(e.dataTransfer?.types || [])].includes("Files");
+D.addEventListener("dragover", e => { if (S.view === "artikel-edit" && hatDateien(e)){ e.preventDefault(); $("#foto-zone")?.classList.add("ablegen"); } });
+D.addEventListener("dragleave", e => { if (!D.contains(e.relatedTarget)) $("#foto-zone")?.classList.remove("ablegen"); });
+D.addEventListener("drop", e => { if (S.view !== "artikel-edit") return; const f = bilderVon(e.dataTransfer?.files); $("#foto-zone")?.classList.remove("ablegen"); if (!f.length) return; e.preventDefault(); fotosHinzu(f); });
+document.addEventListener("paste", e => {
+  const f = bilderVon(e.clipboardData?.files); if (!f.length) return;
+  if (S.view === "artikel-edit"){ e.preventDefault(); return fotosHinzu(f); }
+  // Bildschirmfoto oder Produktbild einfügen, während der Bestand offen ist: neuer Artikel mit diesem Foto
+  if (!S.view && S.admin && S.tab === "bestand" && !/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || "")){ e.preventDefault(); openSheet("artikel-edit", { edit: neuerEntwurf() }); fotosHinzu(f); }
+});
 D.addEventListener("submit", e => {
   e.preventDefault();
-  if (e.target.id === "artikel-form") speichereArtikel();
+  if (e.target.id === "artikel-form") speichereArtikel(!!e.submitter?.hasAttribute("data-weiter"));
   else if (e.target.id === "buchen-form") speichereBuchung();
   else if (e.target.id === "inventur-form") speichereInventur();
   else if (e.target.id === "kommentar-form") speichereKommentar();
@@ -2891,7 +2971,7 @@ function renderDesk(summe){
   const best = S.tab === "bestand", nV = S.vorgaenge.filter(v => v.art === S.tab).length;
   $("#ds-meta").textContent = best ? summe : !S.geladen ? "Wird geladen …" : nV ? plural(nV, S.tab === "ausgabe" ? "Ausgabe" : "Eingang", S.tab === "ausgabe" ? "Ausgaben" : "Eingänge") : "";
   $("#ds-filter").hidden = !best; $("#ds-filter-punkt").hidden = S.status === "alle" && S.sort === "name";
-  $("#ds-extra").innerHTML = best && S.admin ? `<button type="button" class="kt sekundaer klein" data-neu-artikel>${ICON.plus}Neuer Artikel</button>`
+  $("#ds-extra").innerHTML = best && S.admin ? `<button type="button" class="kt sekundaer klein" data-neu-artikel title="Neuer Artikel – oder Fotos auf die Seite ziehen bzw. mit Strg+V einfügen">${ICON.plus}Neuer Artikel</button>`
     : S.tab === "eingang" ? `<button type="button" class="kt sekundaer klein" data-buchen="eingang">${ICON.plus}Eingang buchen</button>` : "";
   $("#ds-chips").innerHTML = (S.q ? `<button class="chip chip-weg" data-q-weg aria-pressed="true">Suche „${esc(S.q)}“ ${ICON.weg}</button>` : "")
     + (best && S.status !== "alle" ? `<button class="chip chip-weg" data-status-weg aria-pressed="true">${{ knapp: "Knapp oder leer", leer: "Leer", ok: "Vorrätig" }[S.status]} ${ICON.weg}</button>` : "")
@@ -3198,6 +3278,11 @@ $("#d-inhalt").addEventListener("click", e => {
   const tr = e.target.closest("tr[data-zeile]"); if (!tr) return;
   if (tr.dataset.zeile === "vorgang") openSub(tr.dataset.id); else openPanel("artikel", tr.dataset.id);
 });
+/* Fotos auf die Bestandsseite ziehen: neuer Artikel mit diesen Fotos (nur Verwaltung) */
+const ablegenOk = e => S.admin && !S.view && !P.sub && S.tab === "bestand" && hatDateien(e);
+$("#dscroll").addEventListener("dragover", e => { if (!ablegenOk(e)) return; e.preventDefault(); $("#dscroll").classList.add("ablegen"); });
+$("#dscroll").addEventListener("dragleave", e => { if (!$("#dscroll").contains(e.relatedTarget)) $("#dscroll").classList.remove("ablegen"); });
+$("#dscroll").addEventListener("drop", e => { $("#dscroll").classList.remove("ablegen"); if (!ablegenOk(e)) return; const f = bilderVon(e.dataTransfer?.files); if (!f.length) return; e.preventDefault(); openSheet("artikel-edit", { edit: neuerEntwurf() }); fotosHinzu(f); });
 /* Klick irgendwo links neben der Karte schließt sie, außer er öffnet gleich den nächsten Artikel */
 $("#dscroll").addEventListener("click", e => {
   if ($("#dpanel").hidden) return;

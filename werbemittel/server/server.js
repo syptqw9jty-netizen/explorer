@@ -21,7 +21,8 @@
  *
  * Rechte:
  *   Alle im Netz: lesen, Ausgaben und Inventuren buchen, kommentieren, eigene Buchung 24 h lang stornieren.
- *   Verwaltung (PIN): Artikel, Preise, Lieferanten, Bestellungen, Eingänge, Fotos, Einstellungen.
+ *   Verwaltung (Passwort): Artikel, Preise, Lieferanten, Bestellungen, Eingänge, Fotos, Einstellungen.
+ *   VERWALTUNG_PASSWORT  Startpasswort beim allerersten Start, Standard „sopart“
  */
 "use strict";
 const http = require("http");
@@ -57,6 +58,8 @@ function laden(){
   fs.mkdirSync(FOTOS, { recursive: true }); fs.mkdirSync(SICHERUNG, { recursive: true });
   for (const c of SAMMLUNGEN) db[c] = lesen(path.join(DATEN, c + ".json"), {});
   geheim.pin = lesen(path.join(DATEN, "geheim.json"), {}).pin || null;
+  // Startpasswort der Verwaltung (änderbar in der App unter Verwaltung › Passwort ändern)
+  if (!geheim.pin){ geheim.pin = pinHash(process.env.VERWALTUNG_PASSWORT || "sopart"); geheimSchreiben(); console.log("Verwaltungspasswort gesetzt (Start: VERWALTUNG_PASSWORT oder Standard). Bitte in der App ändern."); }
   const leer = SAMMLUNGEN.every(c => !Object.keys(db[c]).length);
   // Erster Start: ein Beispielartikel (start.json). DEMO=1 spielt die volle Demo ein, DEMO=0 startet ganz leer.
   if (leer && process.env.DEMO !== "0"){
@@ -98,7 +101,7 @@ const hoerer = new Set();
 function geaendert(){ version = Date.now(); for (const res of hoerer){ try { res.write(`data: ${version}\n\n`); } catch {} } }
 setInterval(() => { for (const res of hoerer){ try { res.write(": ping\n\n"); } catch {} } }, 25000).unref();
 
-/* ---------- PIN und Anmeldung ---------- */
+/* ---------- Passwort und Anmeldung (Feldname „pin“ bleibt aus Kompatibilität) ---------- */
 function pinHash(pin, salz = crypto.randomBytes(16).toString("hex")){ return { salz, hash: crypto.scryptSync(String(pin), salz, 32).toString("hex") }; }
 function pinPasst(pin){ if (!geheim.pin) return false; const h = crypto.scryptSync(String(pin), geheim.pin.salz, 32); return crypto.timingSafeEqual(h, Buffer.from(geheim.pin.hash, "hex")); }
 function tokenNeu(){ const t = crypto.randomBytes(32).toString("hex"), bis = Date.now() + TOKEN_MS; geheim.tokens.set(t, bis); return { token: t, bis }; }
@@ -135,16 +138,16 @@ async function aktion(p, ip){
   switch (p.action){
     case "login": {
       if (gesperrt(ip)) throw new Fehler("Zu viele Fehlversuche. Bitte in ein paar Minuten noch einmal.", "gesperrt", 429);
-      if (!/^\d{4,8}$/.test(String(p.pin || ""))) throw new Fehler("Die PIN besteht aus 4 bis 8 Ziffern.");
-      if (!geheim.pin){ if (!p.neu) throw new Fehler("Es ist noch keine PIN festgelegt."); geheim.pin = pinHash(p.pin); geheimSchreiben(); geaendert(); return { ok: true, ...tokenNeu() }; }
-      if (!pinPasst(p.pin)){ fehlversuch(ip); throw new Fehler("PIN ist nicht richtig.", "pin", 403); }
+      if (String(p.pin || "").length < 4 || String(p.pin).length > 64) throw new Fehler("Das Passwort hat 4 bis 64 Zeichen.");
+      if (!geheim.pin){ if (!p.neu) throw new Fehler("Es ist noch kein Passwort festgelegt."); geheim.pin = pinHash(p.pin); geheimSchreiben(); geaendert(); return { ok: true, ...tokenNeu() }; }
+      if (!pinPasst(p.pin)){ fehlversuch(ip); throw new Fehler("Das Passwort ist nicht richtig.", "pin", 403); }
       fehlversuche.delete(ip); return { ok: true, ...tokenNeu() };
     }
     case "logout": geheim.tokens.delete(p.token); return { ok: true };
     case "pin": {
       if (!admin) throw new Fehler("Bitte in der Verwaltung anmelden.", "auth", 401);
-      if (!pinPasst(p.alt)) throw new Fehler("Die bisherige PIN ist nicht richtig.", "pin", 403);
-      if (!/^\d{4,8}$/.test(String(p.neu || ""))) throw new Fehler("Die neue PIN besteht aus 4 bis 8 Ziffern.");
+      if (!pinPasst(p.alt)) throw new Fehler("Das bisherige Passwort ist nicht richtig.", "pin", 403);
+      if (String(p.neu || "").length < 4 || String(p.neu).length > 64) throw new Fehler("Das neue Passwort hat 4 bis 64 Zeichen.");
       geheim.pin = pinHash(p.neu); geheimSchreiben(); geheim.tokens.clear(); return { ok: true, ...tokenNeu() };
     }
     case "set": case "update": case "del": {
