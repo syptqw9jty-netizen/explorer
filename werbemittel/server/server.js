@@ -33,8 +33,12 @@ const crypto = require("crypto");
 
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "0.0.0.0";
+const RECHNER = process.env.COMPUTERNAME || require("os").hostname();
 const APP = path.resolve(process.env.APP || path.join(__dirname, ".."));
-const IM_PAKET = path.basename(APP) === "System";
+const IM_PAKET = ["App", "System"].includes(path.basename(APP));
+// Mehrplatz: mehrere Rechner starten die App aus demselben (Netz-)Ordner; Schreiben nur mit Sperrdatei, Änderungen anderer werden nachgeladen
+const MEHRPLATZ = process.env.MEHRPLATZ === "1" || (IM_PAKET && process.env.MEHRPLATZ !== "0");
+const LEERLAUF_MS = Number(process.env.LEERLAUF_MIN || 0) * 60e3;
 const DATEN = path.resolve(process.env.DATEN || (IM_PAKET ? path.join(APP, "Daten") : path.join(__dirname, "daten")));
 const ORDNER = process.env.ABLAGE === "0" ? "" : process.env.ABLAGE ? path.resolve(process.env.ABLAGE) : IM_PAKET ? path.dirname(APP) : "";
 const FOTOS = path.join(DATEN, "fotos");
@@ -50,15 +54,42 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
   ".webmanifest": "application/manifest+json", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon", ".woff2": "font/woff2" };
 
 /* ---------- Speicher: alles im Arbeitsspeicher, je Sammlung eine JSON-Datei, atomar geschrieben ---------- */
-const db = {};
+const db = {}, stand = {};
+const dateiStand = c => { try { const st = fs.statSync(path.join(DATEN, c + ".json")); return st.mtimeMs + ":" + st.size; } catch { return ""; } };
+/* Änderungen anderer Rechner nachladen; gibt true zurück, wenn sich etwas geändert hat */
+function frisch(c){
+  const s = dateiStand(c); if (s === stand[c]) return false;
+  const neu = lesen(path.join(DATEN, c + ".json"), null); if (!neu) return false;
+  db[c] = neu; stand[c] = s; return true;
+}
+const frischAlle = () => SAMMLUNGEN.map(frisch).some(Boolean);
+/* Sperrdatei für Schreibvorgänge im gemeinsamen Ordner (exklusives Anlegen ist auch auf Netzlaufwerken atomar) */
+function mitSperre(fn){
+  if (!MEHRPLATZ) return fn();
+  const datei = path.join(DATEN, ".schreibsperre"), bis = Date.now() + 8000; let fd = null;
+  while (fd === null){
+    try { fd = fs.openSync(datei, "wx"); fs.writeSync(fd, RECHNER + " " + process.pid); }
+    catch (e){
+      if (e.code !== "EEXIST") throw e;
+      try { if (Date.now() - fs.statSync(datei).mtimeMs > 15000) fs.rmSync(datei, { force: true }); } catch {}
+      if (Date.now() > bis) throw new Fehler("Gerade speichert jemand anderes. Bitte gleich noch einmal versuchen.", "busy", 503);
+      const w = Date.now() + 40; while (Date.now() < w){}
+    }
+  }
+  try { return fn(); } finally { try { fs.closeSync(fd); } catch {} try { fs.rmSync(datei, { force: true }); } catch {} }
+}
 const geheim = { pin: null, tokens: new Map() };
 let version = Date.now();
 function lesen(datei, fallback){ try { return JSON.parse(fs.readFileSync(datei, "utf8")); } catch { return fallback; } }
 function laden(){
   fs.mkdirSync(FOTOS, { recursive: true }); fs.mkdirSync(SICHERUNG, { recursive: true });
-  for (const c of SAMMLUNGEN) db[c] = lesen(path.join(DATEN, c + ".json"), {});
+  fs.mkdirSync(DATEN, { recursive: true });
+  for (const c of SAMMLUNGEN){ db[c] = lesen(path.join(DATEN, c + ".json"), {}); stand[c] = dateiStand(c); }
   geheim.pin = lesen(path.join(DATEN, "geheim.json"), {}).pin || null;
-  // Startpasswort der Verwaltung (änderbar in der App unter Verwaltung › Passwort ändern)
+  // Startpasswort der Verwaltung (änderbar in der App unter Verwaltung › Passwort ändern) wird unten unter Sperre gesetzt
+  mitSperre(() => {
+  for (const c of SAMMLUNGEN){ db[c] = lesen(path.join(DATEN, c + ".json"), {}); stand[c] = dateiStand(c); }
+  geheim.pin = lesen(path.join(DATEN, "geheim.json"), {}).pin || geheim.pin;
   if (!geheim.pin){ geheim.pin = pinHash(process.env.VERWALTUNG_PASSWORT || "sopart"); geheimSchreiben(); console.log("Verwaltungspasswort gesetzt (Start: VERWALTUNG_PASSWORT oder Standard). Bitte in der App ändern."); }
   const leer = SAMMLUNGEN.every(c => !Object.keys(db[c]).length);
   // Erster Start: ein Beispielartikel (start.json). DEMO=1 spielt die volle Demo ein, DEMO=0 startet ganz leer.
@@ -68,18 +99,19 @@ function laden(){
     for (const c of SAMMLUNGEN) schreibenSofort(c);
     console.log(process.env.DEMO === "1" ? "Demo-Daten eingespielt." : "Beispielartikel angelegt.");
   }
+  });
 }
 const warteschlange = new Map();
 function schreibenSofort(c){
   const ziel = path.join(DATEN, c + ".json"), tmp = ziel + ".tmp";
-  fs.writeFileSync(tmp, JSON.stringify(db[c])); fs.renameSync(tmp, ziel);
+  fs.writeFileSync(tmp, JSON.stringify(db[c])); fs.renameSync(tmp, ziel); stand[c] = dateiStand(c);
 }
 function schreiben(c){
   // Schreibvorgänge je Sammlung kurz bündeln, nie parallel
   if (warteschlange.has(c)) return;
   warteschlange.set(c, setTimeout(async () => {
     warteschlange.delete(c);
-    try { await sichern(); const ziel = path.join(DATEN, c + ".json"), tmp = ziel + "." + process.pid + ".tmp"; await fsp.writeFile(tmp, JSON.stringify(db[c])); await fsp.rename(tmp, ziel); }
+    try { await sichern(); const ziel = path.join(DATEN, c + ".json"), tmp = ziel + "." + process.pid + ".tmp"; await fsp.writeFile(tmp, JSON.stringify(db[c])); await fsp.rename(tmp, ziel); stand[c] = dateiStand(c); }
     catch (e){ console.error("Schreiben fehlgeschlagen", c, e); }
   }, 150));
 }
@@ -125,6 +157,7 @@ function pruefeRecht(p, admin){
 
 /* ---------- API ---------- */
 function liste(){
+  if (MEHRPLATZ) frischAlle();
   const data = {};
   for (const c of SAMMLUNGEN) data[c] = Object.entries(db[c]).map(([id, d]) => {
     if (c === "einstellungen"){ const { pinHash, ...rest } = d; return { ...rest, id }; }
@@ -137,6 +170,7 @@ async function aktion(p, ip){
   const admin = istVerwaltung(p.token);
   switch (p.action){
     case "login": {
+      if (MEHRPLATZ) geheim.pin = lesen(path.join(DATEN, "geheim.json"), {}).pin || geheim.pin;
       if (gesperrt(ip)) throw new Fehler("Zu viele Fehlversuche. Bitte in ein paar Minuten noch einmal.", "gesperrt", 429);
       if (String(p.pin || "").length < 4 || String(p.pin).length > 64) throw new Fehler("Das Passwort hat 4 bis 64 Zeichen.");
       if (!geheim.pin){ if (!p.neu) throw new Fehler("Es ist noch kein Passwort festgelegt."); geheim.pin = pinHash(p.pin); geheimSchreiben(); geaendert(); return { ok: true, ...tokenNeu() }; }
@@ -145,6 +179,7 @@ async function aktion(p, ip){
     }
     case "logout": geheim.tokens.delete(p.token); return { ok: true };
     case "pin": {
+      if (MEHRPLATZ) geheim.pin = lesen(path.join(DATEN, "geheim.json"), {}).pin || geheim.pin;
       if (!admin) throw new Fehler("Bitte in der Verwaltung anmelden.", "auth", 401);
       if (!pinPasst(p.alt)) throw new Fehler("Das bisherige Passwort ist nicht richtig.", "pin", 403);
       if (String(p.neu || "").length < 4 || String(p.neu).length > 64) throw new Fehler("Das neue Passwort hat 4 bis 64 Zeichen.");
@@ -153,17 +188,22 @@ async function aktion(p, ip){
     case "set": case "update": case "del": {
       if (!SAMMLUNGEN.includes(p.col)) throw new Fehler("Unbekannte Sammlung.");
       if (!ID.test(String(p.id || ""))) throw new Fehler("Ungültige Kennung.");
-      pruefeRecht(p, admin);
-      if (p.action === "del"){ delete db[p.col][p.id]; }
-      else {
-        if (!p.data || typeof p.data !== "object" || Array.isArray(p.data)) throw new Fehler("Ungültige Daten.");
-        const { id, ...daten } = p.data; delete daten.pinHash;
-        if (p.action === "update" && !db[p.col][p.id]) throw new Fehler("Eintrag nicht gefunden.", "nicht_gefunden", 404);
-        const neu = p.action === "update" ? { ...db[p.col][p.id], ...daten } : daten;
-        if (JSON.stringify(neu).length > MAX_DOC) throw new Fehler("Eintrag zu groß.");
-        db[p.col][p.id] = neu;
-      }
-      schreiben(p.col); geaendert(); ablage?.anstossen(); return { ok: true, version };
+      if (p.action !== "del" && (!p.data || typeof p.data !== "object" || Array.isArray(p.data))) throw new Fehler("Ungültige Daten.");
+      mitSperre(() => {
+        if (MEHRPLATZ) frisch(p.col);
+        pruefeRecht(p, admin);
+        if (p.action === "del"){ delete db[p.col][p.id]; }
+        else {
+          const { id, ...daten } = p.data; delete daten.pinHash;
+          if (p.action === "update" && !db[p.col][p.id]) throw new Fehler("Eintrag nicht gefunden.", "nicht_gefunden", 404);
+          const neu = p.action === "update" ? { ...db[p.col][p.id], ...daten } : daten;
+          if (JSON.stringify(neu).length > MAX_DOC) throw new Fehler("Eintrag zu groß.");
+          db[p.col][p.id] = neu;
+        }
+        if (MEHRPLATZ) schreibenSofort(p.col); else schreiben(p.col);
+      });
+      if (MEHRPLATZ) sichern().catch(() => {});
+      geaendert(); ablage?.anstossen(); return { ok: true, version };
     }
     case "upload": {
       if (!admin) throw new Fehler("Fotos hochladen ist nur in der Verwaltung möglich.", "auth", 401);
@@ -222,7 +262,7 @@ function koerper(req){
   });
 }
 const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, "http://x"), ip = req.socket.remoteAddress || "";
+  const url = new URL(req.url, "http://x"), ip = req.socket.remoteAddress || ""; letzteAnfrage = Date.now();
   try {
     if (url.pathname === "/api/events"){
       res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive", "X-Accel-Buffering": "no" });
@@ -230,7 +270,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api"){
       res.setHeader("Cache-Control", "no-store");
-      if (req.method === "GET") return senden(res, 200, url.searchParams.get("action") === "ping" ? { ok: true, server: true, version } : liste());
+      if (req.method === "GET") return senden(res, 200, url.searchParams.get("action") === "ping" ? { ok: true, server: true, version, app: APP } : liste());
       if (req.method === "POST"){
         let p; try { p = JSON.parse(await koerper(req)); } catch (e){ throw e instanceof Fehler ? e : new Fehler("Ungültige Anfrage."); }
         return senden(res, 200, await aktion(p || {}, ip));
@@ -252,10 +292,27 @@ const server = http.createServer(async (req, res) => {
 });
 
 laden();
-let ablage = null;
+let ablage = null, letzteAnfrage = Date.now();
+/* Mehrplatz: nur ein Rechner gleicht Ordner und Excel ab (Leiter mit Lebenszeichen); fällt er aus, übernimmt der nächste */
+const ICH = RECHNER + ":" + process.pid + ":" + crypto.randomBytes(3).toString("hex");
+function ablageLeiter(){
+  const datei = path.join(DATEN, ".ablage-leiter");
+  try {
+    const st = fs.statSync(datei), wer = fs.readFileSync(datei, "utf8").trim();
+    if (wer === ICH){ fs.utimesSync(datei, new Date(), new Date()); return true; }
+    if (Date.now() - st.mtimeMs < 20000) return false;
+  } catch {}
+  try { fs.writeFileSync(datei, ICH); return fs.readFileSync(datei, "utf8").trim() === ICH; } catch { return false; }
+}
+if (MEHRPLATZ) setInterval(() => { try { if (frischAlle()) geaendert(); } catch {} }, 2000).unref();
+// Vom App-Symbol gestartet: nach längerer Ruhe (kein Fenster offen) selbst beenden
+if (LEERLAUF_MS) setInterval(() => { if (!hoerer.size && Date.now() - letzteAnfrage > LEERLAUF_MS) beenden(); }, 60000).unref();
 if (ORDNER){
   try {
-    ablage = require("./ablage")({ db, ORDNER, APP, FOTOS, DATEN, aendern(col, id, daten){ if (daten) db[col][id] = daten; else delete db[col][id]; schreiben(col); geaendert(); } });
+    ablage = require("./ablage")({ db, ORDNER, APP, FOTOS, DATEN,
+      aendern(col, id, daten){ mitSperre(() => { if (MEHRPLATZ) frisch(col); if (daten) db[col][id] = daten; else delete db[col][id]; if (MEHRPLATZ) schreibenSofort(col); else schreiben(col); }); geaendert(); },
+      vorher(){ if (MEHRPLATZ) frischAlle(); },
+      istLeiter: MEHRPLATZ ? ablageLeiter : () => true });
   } catch (e){ console.error("Ablage konnte nicht starten:", e.message); }
 }
 server.listen(PORT, HOST, () => {

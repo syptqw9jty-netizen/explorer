@@ -34,7 +34,7 @@ const bereich = a => a.marke === "GAUSS LVS" ? "GAUSS" : (a.marke || "");
 const heute = () => new Date().toISOString().slice(0, 10);
 const istVersteckt = n => /^[._~]/.test(n) || /^(desktop\.ini|thumbs\.db)$/i.test(n) || n.startsWith("~$");
 
-module.exports = function ablage({ db, ORDNER, APP, FOTOS, DATEN, aendern, log = console.log }){
+module.exports = function ablage({ db, ORDNER, APP, FOTOS, DATEN, aendern, vorher = () => {}, istLeiter = () => true, log = console.log }){
   const ZUSTAND = path.join(DATEN, "ablage.json");
   const z = Object.assign({ ordner: {}, txt: {}, xlsx: "", export: {}, fotos: {}, gesehen: {} }, (() => { try { return JSON.parse(fs.readFileSync(ZUSTAND, "utf8")); } catch { return {}; } })());
   const zSichern = () => { try { fs.writeFileSync(ZUSTAND + ".tmp", JSON.stringify(z)); fs.renameSync(ZUSTAND + ".tmp", ZUSTAND); } catch (e){ log("Ablage: Zustand nicht gespeichert", e.message); } };
@@ -342,7 +342,9 @@ module.exports = function ablage({ db, ORDNER, APP, FOTOS, DATEN, aendern, log =
   let laeuft = false, nochmal = false, timer = null;
   async function lauf(){
     if (laeuft){ nochmal = true; return; }
-    laeuft = true; status.fehler = "";
+    if (!istLeiter()){ status.leiter = false; return; }
+    if (status.leiter === false){ try { Object.assign(z, JSON.parse(fs.readFileSync(ZUSTAND, "utf8"))); } catch {} } // gerade übernommen: Stand des Vorgängers laden
+    laeuft = true; status.fehler = ""; status.leiter = true; vorher();
     try { await scannen(); await exportieren(); status.zuletzt = new Date().toISOString(); }
     catch (e){ status.fehler = e.message; log("Ablage:", e.message); }
     laeuft = false; if (nochmal){ nochmal = false; setTimeout(lauf, 200); }
