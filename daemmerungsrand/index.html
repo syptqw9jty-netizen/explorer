@@ -1501,28 +1501,28 @@ function carMatOf(id){var u={};for(var k in carU)u[k]=carU[k];u.matU={value:id};
 var carG=new THREE.Group(),carBody=new THREE.Group(),boostGlow;carG.add(carBody);
 (function(){
   var KZ=[-2.30,-2.15,-1.80,-1.30,-0.60,0.00,0.60,1.30,1.80,2.15,2.30],
-      KW=[0.66,0.88,0.97,0.99,0.955,0.95,0.955,0.99,0.96,0.86,0.60],
-      KB=[0.78,0.89,0.93,0.92,0.87,0.83,0.79,0.73,0.65,0.55,0.47],
-      KD=[0.80,0.92,0.97,0.985,0.95,0.92,0.875,0.80,0.70,0.575,0.47],
-      KY=[0.36,0.30,0.22,0.18,0.17,0.17,0.17,0.18,0.21,0.26,0.33],
-      RZ=[-2.3,-1.95,-1.35,-0.75,-0.15,0.35,0.70,1.05,2.3],RH=[0,0,0.20,0.30,0.315,0.24,0.10,0,0];
+      KW=[0.72,0.93,1.00,1.01,0.965,0.94,0.95,0.985,0.95,0.84,0.56],
+      KB=[0.72,0.84,0.89,0.89,0.85,0.80,0.79,0.82,0.76,0.56,0.40],
+      KD=[0.74,0.86,0.92,0.945,0.94,0.89,0.84,0.84,0.78,0.57,0.40],
+      KY=[0.34,0.27,0.20,0.16,0.15,0.15,0.15,0.16,0.19,0.23,0.29],
+      RZ=[-2.3,-1.50,-0.90,-0.35,0.15,0.60,1.00,1.45,2.3],RH=[0,0,0.11,0.235,0.265,0.215,0.10,0,0];
   function lin(K,V,z){for(var i=0;i<K.length-1;i++)if(z<=K[i+1]){var t=(z-K[i])/(K[i+1]-K[i]);return V[i]+(V[i+1]-V[i])*clamp(t,0,1)}return V[V.length-1]}
   var NST=64,Z=[],W=[],B=[],D=[],Y=[],X=[],i,j,k;
   for(i=0;i<=NST;i++){var z=-2.3+4.6*i/NST;Z.push(z);W.push(lin(KZ,KW,z));B.push(lin(KZ,KB,z));D.push(lin(KZ,KD,z));Y.push(lin(KZ,KY,z));X.push(lin(RZ,RH,z))}
   function smooth(A){for(var p=0;p<3;p++){var C=A.slice();for(var q=1;q<A.length-1;q++)A[q]=(C[q-1]+2*C[q]+C[q+1])/4}}
   [W,B,D,Y,X].forEach(smooth);
-  var WZ=[1.38,-1.36],AR=0.44,AY=0.355,pos=[],arch=[],cf=[];
+  var WZ=[1.42,-1.32],AR=0.45,AY=0.36,pos=[],arch=[],cf=[];
   for(i=0;i<=NST;i++){var w=W[i],y0=Y[i],b=B[i],d=D[i],roof=d+X[i],c=clamp(X[i]/0.06,0,1),mid=y0+(b-y0)*0.52;cf.push(c);
     var pts=[[0,y0],[0.72*w,y0],[0.965*w,y0+0.07],[w,mid],[0.955*w,b],
-      [lerp(0.82*w,0.86*w,c),lerp(b+(d-b)*0.7,b+0.035,c)],[lerp(0.55*w,0.57,c),lerp(d-0.012,roof-0.07,c)],[lerp(0.28*w,0.36,c),lerp(d,roof-0.012,c)],[0,lerp(d,roof,c)]];
+      [lerp(0.82*w,0.84*w,c),lerp(b+(d-b)*0.7,b+0.03,c)],[lerp(0.55*w,0.53,c),lerp(d-0.012,roof-0.06,c)],[lerp(0.28*w,0.33,c),lerp(d,roof-0.01,c)],[0,lerp(d,roof,c)]];
     var inA=false;for(k=0;k<2;k++){var dz=Z[i]-WZ[k];if(Math.abs(dz)<AR){inA=true;var ah=AY+Math.sqrt(AR*AR-dz*dz);
-      pts[1][1]=Math.max(pts[1][1],ah);pts[2][1]=Math.max(pts[2][1],ah);pts[3][1]=Math.min(b-0.03,Math.max(pts[3][1],ah+0.035))}}
+      ah=Math.min(ah,b-0.06);pts[1][1]=Math.max(pts[1][1],ah);pts[2][1]=Math.max(pts[2][1],ah);pts[3][1]=Math.min(b-0.03,Math.max(pts[3][1],ah+0.03))}}
     arch.push(inA);
     for(var r=0;r<16;r++){j=r<=8?r:16-r;pos.push(r<=8?pts[j][0]:-pts[j][0],pts[j][1],Z[i])}}
   var idx=[],fm=[];
   for(i=0;i<NST;i++)for(r=0;r<16;r++){var a=i*16+r,b2=i*16+(r+1)%16,c2=a+16,d2=b2+16,sj=r<8?r:15-r,zm=(Z[i]+Z[i+1])/2,cm=(cf[i]+cf[i+1])/2,m=0;
     if(sj===0)m=2;else if(sj===1)m=2;else if(sj===3&&zm<-2.13)m=4;else if(sj===3&&zm>2.11)m=5;
-    else if(sj===5&&cm>0.5)m=1;else if(sj>=6&&cm>0.5&&(zm>0.32||zm<-0.80))m=1;
+    else if((sj===3||sj===2)&&zm>-1.02&&zm<-0.50&&!arch[i])m=2;else if(sj===5&&cm>0.5)m=1;else if(sj>=6&&cm>0.5&&(zm>0.52||zm<-0.42))m=1;else if(sj>=6&&zm<-0.98&&zm>-1.72&&Math.round(zm*9)%2===0)m=2;
     idx.push(a,b2,c2,b2,d2,c2);fm.push(m,m)}
   var gI=new THREE.BufferGeometry();gI.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pos),3));gI.setIndex(idx);gI.computeVertexNormals();
   var nI=gI.attributes.normal.array,P2=[],N2=[],M2=[];
@@ -1532,20 +1532,23 @@ var carG=new THREE.Group(),carBody=new THREE.Group(),boostGlow;carG.add(carBody)
   var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(P2),3));g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(N2),3));g.setAttribute('mat',new THREE.BufferAttribute(new Float32Array(M2),1));
   carBody.add(new THREE.Mesh(g,carMatOf(0)));
   var mPaint=carMatOf(0),mTrim=carMatOf(2),mMetal=carMatOf(3);
-  [1,-1].forEach(function(sd){var mm=new THREE.Mesh(G.box,mPaint);mm.scale.set(0.17,0.085,0.13);mm.position.set(sd*1.0,0.93,0.62);carBody.add(mm);
-    var st=new THREE.Mesh(G.box,mTrim);st.scale.set(0.12,0.03,0.05);st.position.set(sd*0.92,0.90,0.62);carBody.add(st)});
-  var lip=new THREE.Mesh(G.box,mTrim);lip.scale.set(1.5,0.022,0.13);lip.position.set(0,0.985,-2.02);carBody.add(lip);
+  [1,-1].forEach(function(sd){var mm=new THREE.Mesh(G.box,mPaint);mm.scale.set(0.16,0.07,0.11);mm.position.set(sd*0.98,0.84,0.86);carBody.add(mm);
+    var st=new THREE.Mesh(G.box,mTrim);st.scale.set(0.12,0.025,0.05);st.position.set(sd*0.90,0.81,0.86);carBody.add(st)});
+  var wing=new THREE.Mesh(G.box,mPaint);wing.scale.set(1.78,0.028,0.30);wing.position.set(0,1.10,-2.02);wing.rotation.x=0.10;carBody.add(wing);
+  [0.56,-0.56].forEach(function(px){var py=new THREE.Mesh(G.box,mTrim);py.scale.set(0.035,0.20,0.16);py.position.set(px,1.0,-1.98);carBody.add(py)});
+  [0.9,-0.9].forEach(function(px){var ep=new THREE.Mesh(G.box,mTrim);ep.scale.set(0.02,0.11,0.34);ep.position.set(px,1.11,-2.02);carBody.add(ep)});
+  [-0.6,-0.2,0.2,0.6].forEach(function(px){var fn=new THREE.Mesh(G.box,mTrim);fn.scale.set(0.025,0.15,0.4);fn.position.set(px,0.27,-2.14);carBody.add(fn)});
   var spl=new THREE.Mesh(G.box,mTrim);spl.scale.set(1.5,0.03,0.22);spl.position.set(0,0.24,2.2);carBody.add(spl);
   var tire=new THREE.LatheGeometry([[0.22,-0.125],[0.33,-0.13],[0.352,-0.09],[0.36,0],[0.352,0.09],[0.33,0.13],[0.22,0.125]].map(function(p){return new THREE.Vector2(p[0],p[1])}),30);tire.rotateZ(Math.PI/2);
   var barrel=new THREE.CylinderGeometry(0.225,0.225,0.2,22,1,true);barrel.rotateZ(Math.PI/2);
   var hub=new THREE.CylinderGeometry(0.06,0.06,0.03,12);hub.rotateZ(Math.PI/2);
   var back=new THREE.CylinderGeometry(0.2,0.2,0.02,18);back.rotateZ(Math.PI/2);
-  [[0.86,1.38,1],[-0.86,1.38,1],[0.86,-1.36,0],[-0.86,-1.36,0]].forEach(function(w){var og=new THREE.Group(),sg=new THREE.Group(),sd=w[0]>0?1:-1;og.position.set(w[0],0.355,w[1]);og.add(sg);
+  [[0.86,1.42,1],[-0.86,1.42,1],[0.87,-1.32,0],[-0.87,-1.32,0]].forEach(function(w){var og=new THREE.Group(),sg=new THREE.Group(),sd=w[0]>0?1:-1;og.position.set(w[0],0.36,w[1]);og.add(sg);
     sg.add(new THREE.Mesh(tire,mTrim));sg.add(new THREE.Mesh(barrel,mTrim));
     var bk=new THREE.Mesh(back,mMetal);bk.position.x=-sd*0.02;sg.add(bk);
-    for(var q=0;q<5;q++){var sp=new THREE.Mesh(G.box,mMetal);sp.scale.set(0.028,0.21,0.05);var an=q/5*Math.PI*2;sp.position.set(sd*0.105,Math.cos(an)*0.118,Math.sin(an)*0.118);sp.rotation.x=an;sg.add(sp)}
+    for(var q=0;q<10;q++){var sp=new THREE.Mesh(G.box,mMetal);sp.scale.set(0.022,0.20,0.026);var an=q/10*Math.PI*2;sp.position.set(sd*0.105,Math.cos(an)*0.118,Math.sin(an)*0.118);sp.rotation.x=an;sg.add(sp)}
     var hc=new THREE.Mesh(hub,mMetal);hc.position.x=sd*0.115;sg.add(hc);carG.add(og);carWheels.push(sg);if(w[2])carFront.push(og)});
-  var tg=glow(0xff3040,3.4,0.75);tg.position.set(0,0.8,-2.42);carBody.add(tg);var hg=glow(0xfff0d0,2.8,0.6);hg.position.set(0,0.58,2.42);carBody.add(hg);
+  var tg=glow(0xff3040,3.4,0.75);tg.position.set(0,0.74,-2.42);carBody.add(tg);var hg=glow(0xfff0d0,2.8,0.6);hg.position.set(0,0.46,2.42);carBody.add(hg);
   boostGlow=glow(0x9fd0ff,3.2,0);boostGlow.position.set(0,0.42,-2.55);carBody.add(boostGlow)})();
 carG.rotation.order='YXZ';scene.add(carG);
 function roadHeading(x,z,h){var k=Math.round(x/1000),m=Math.round((z-500)/1000),th=Math.abs(x-roadX(z,k))<Math.abs(z-roadZ(x,m))?Math.atan2(roadXd(z,k),1):Math.atan2(1,roadZd(x,m));
