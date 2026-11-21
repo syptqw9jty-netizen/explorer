@@ -29,6 +29,19 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
   background:#ffe2b0;box-shadow:0 0 16px 3px rgba(255,200,130,.75);pointer-events:none;opacity:0;transition:opacity 1.5s}
 #mode{position:fixed;right:14px;bottom:calc(44px + env(safe-area-inset-bottom));padding:11px 15px;border-radius:999px;font-size:11px;letter-spacing:.16em;opacity:0;transition:opacity 1.5s;cursor:pointer}
 #spd{position:fixed;left:0;right:0;bottom:calc(38px + env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:300;letter-spacing:.2em;opacity:0;transition:opacity 1.5s;pointer-events:none;text-shadow:0 0 10px rgba(0,0,0,.7)}
+#pad{display:none;position:fixed;inset:0;pointer-events:none;z-index:2}
+#pad>*{pointer-events:auto;position:absolute;touch-action:none;cursor:pointer}
+#pStick{left:calc(26px + env(safe-area-inset-left,0px));bottom:26px;width:132px;height:132px;border-radius:50%}
+#pKnob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(255,255,255,.3);box-shadow:0 0 18px rgba(255,255,255,.35);pointer-events:none}
+.pb{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:.14em}
+.ps{padding:11px 18px;border-radius:999px;font-size:9px;letter-spacing:.16em}
+.pb.on,.ps.on{background:rgba(255,255,255,.3)}
+#pA{right:calc(86px + env(safe-area-inset-right,0px));bottom:18px}
+#pB{right:calc(18px + env(safe-area-inset-right,0px));bottom:78px}
+#pX{right:calc(154px + env(safe-area-inset-right,0px));bottom:78px}
+#pY{right:calc(86px + env(safe-area-inset-right,0px));bottom:138px}
+#pL{left:calc(30px + env(safe-area-inset-left,0px));bottom:178px}
+#pR{right:calc(30px + env(safe-area-inset-right,0px));bottom:224px}
 #title{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:radial-gradient(ellipse at 50% 62%,rgba(255,120,50,.16),rgba(2,3,10,.82) 62%);
   transition:opacity 1.2s;cursor:pointer;text-align:center}
@@ -73,12 +86,13 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 <div id="flow"></div><div id="spd"></div><div id="mode" class="glass">ZU FUSS</div>
 <div id="way"></div>
 <div id="stick" class="glass"></div><div id="knob"></div>
+<div id="pad"><div id="pStick" class="glass"><div id="pKnob"></div></div><div id="pL" class="glass ps"></div><div id="pR" class="glass ps"></div><div id="pA" class="glass pb"></div><div id="pB" class="glass pb"></div><div id="pX" class="glass pb"></div><div id="pY" class="glass pb"></div></div>
 <svg id="ring" viewBox="0 0 150 150"><circle cx="75" cy="75" r="64" stroke="rgba(255,255,255,.25)"/><circle id="arc" cx="75" cy="75" r="64" stroke="#ffe2b0" stroke-linecap="round" transform="rotate(-90 75 75)" stroke-dasharray="402" stroke-dashoffset="402"/></svg>
 <div id="hint">halten · Gas &nbsp;·&nbsp; seitlich ziehen · lenken<br>hochwischen · Schub<br>Kreis malen · Wirbel<br>Doppeltipp · Sprung, in der Luft wischen · Rolle</div>
 <div id="fade"></div>
 <div id="place"></div><div id="bal"><i id="balF"></i><i id="balW"></i></div>
 <div id="map"><canvas id="mapC"></canvas><div id="mapHead"></div><div id="mapBack" class="glass">ZURÜCK</div></div>
-<div id="title"><h1>DÄMMERUNGSRAND</h1><div id="modes"><div id="mTrip" class="glass mbtn"><b>REISE</b><span>nur fahren · versunkene Städte</span></div><div id="mFly" class="glass mbtn"><b>FLUG</b><span>Glutvogel · Ringe in der Luft · Feuer</span></div><div id="mFree" class="glass mbtn"><b>FREI</b><span>offene Welt · Wächter · zu Fuß</span></div></div><div id="els"><div id="eFire" class="glass mbtn"><b>GLUT</b><span>Feuerwesen · Städte entzünden</span></div><div id="eWater" class="glass mbtn"><b>FLUT</b><span>Wasserwesen · Städte erblühen lassen</span></div><div id="elBack">ZURÜCK</div></div><div id="links"><span id="mapBtn">KARTE</span><span id="optBtn">EINSTELLUNGEN</span></div><div id="opts"><div id="oSens" class="glass mbtn"></div><div id="oInv" class="glass mbtn"></div><div id="oQ" class="glass mbtn"></div><div id="oSnd" class="glass mbtn"></div><div id="optBack">ZURÜCK</div></div></div>
+<div id="title"><h1>DÄMMERUNGSRAND</h1><div id="modes"><div id="mTrip" class="glass mbtn"><b>REISE</b><span>nur fahren · versunkene Städte</span></div><div id="mFly" class="glass mbtn"><b>FLUG</b><span>Glutvogel · Ringe in der Luft · Feuer</span></div><div id="mFree" class="glass mbtn"><b>FREI</b><span>offene Welt · Wächter · zu Fuß</span></div></div><div id="els"><div id="eFire" class="glass mbtn"><b>GLUT</b><span>Feuerwesen · Städte entzünden</span></div><div id="eWater" class="glass mbtn"><b>FLUT</b><span>Wasserwesen · Städte erblühen lassen</span></div><div id="elBack">ZURÜCK</div></div><div id="links"><span id="mapBtn">KARTE</span><span id="optBtn">EINSTELLUNGEN</span></div><div id="opts"><div id="oSens" class="glass mbtn"></div><div id="oInv" class="glass mbtn"></div><div id="oQ" class="glass mbtn"></div><div id="oSnd" class="glass mbtn"></div><div id="oPad" class="glass mbtn"></div><div id="optBack">ZURÜCK</div></div></div>
 <div id="err"></div>
 <script src="three.min.js"></script>
 <script>
@@ -1010,7 +1024,8 @@ var V3=THREE.Vector3,V4=THREE.Vector4;
 var KEY='daemmerungsrand-6';
 var S={seed:(Math.random()*1e9)|0,px:0,pz:0,init:false,smashed:[],found:[],src:[],travels:0,bx:0,bz:0,light:0,tripZ:-10,flyZ:-10,mode:'trip',city:{},el:'fire',exp:[],expF:[]};
 try{var raw=JSON.parse(localStorage.getItem(KEY));if(raw&&typeof raw.seed==='number'){for(var k0 in raw)S[k0]=raw[k0]}}catch(e){}
-var OPT=Object.assign({sens:1,invY:false,q:2,snd:true},S.opt||{});
+var OPT=Object.assign({sens:1,invY:false,q:2,snd:true,pad:true},S.opt||{});
+var PAD={x:0,y:0,a:false,b:false},padOn=false;
 function SENS(){return[135,100,72][OPT.sens]}
 var smashed=new Set(S.smashed),found=new Set(S.found),gotSpark=new Set();
 var sources=(S.src||[]).map(function(a){return{x:a[0],z:a[1],r:70,grow:false}}),freeSources=sources;
@@ -1822,7 +1837,8 @@ function flyCourse(rdt){var i,k,ga=guideGeo.attributes.position.array;
 function birdStep(dt){var stT=0,pT=0,inv=OPT.invY?-1:1;
   if(ptr&&!locked&&started){var sdx=ptr.x-ptr.sx,sn=clamp((Math.abs(sdx)-8)/SENS(),0,1);stT=(sdx<0?-1:1)*Math.pow(sn,1.4);if(Math.abs(gest.circ)>2.2)stT*=0.3;
     var sdy=ptr.y-ptr.sy,pn=clamp((Math.abs(sdy)-10)/SENS(),0,1);pT=(sdy<0?1:-1)*inv*Math.pow(pn,1.3)}
-  if(started&&!locked){if(keys.KeyA||keys.ArrowLeft)stT=-0.8;if(keys.KeyD||keys.ArrowRight)stT=0.8;if(keys.KeyW||keys.ArrowUp)pT=0.8*inv;if(keys.KeyS||keys.ArrowDown)pT=-0.8*inv}
+  if(started&&!locked){if(keys.KeyA||keys.ArrowLeft)stT=-0.8;if(keys.KeyD||keys.ArrowRight)stT=0.8;if(keys.KeyW||keys.ArrowUp)pT=0.8*inv;if(keys.KeyS||keys.ArrowDown)pT=-0.8*inv;
+    if(padOn){if(Math.abs(PAD.x)>0.1)stT=(PAD.x<0?-1:1)*Math.pow(Math.abs(PAD.x),1.4);if(Math.abs(PAD.y)>0.1)pT=(PAD.y<0?1:-1)*inv*Math.pow(Math.abs(PAD.y),1.3)}}
   steer+=(stT-steer)*Math.min(1,dt*6);birdH-=steer*1.25*dt;
   var pTar=pT*0.8,gy=ground(P.x,P.z);if(P.y<gy+7)pTar=Math.max(pTar,(gy+7-P.y)*0.09);if(P.y>250)pTar=Math.min(pTar,(250-P.y)*0.02);
   birdP+=(pTar-birdP)*Math.min(1,dt*3.2);
@@ -1984,7 +2000,7 @@ try{if(THREE.EffectComposer&&THREE.UnrealBloomPass){
   composer.addPass(finalPass)}}catch(e){composer=null}
 function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);
   if(composer){composer.setPixelRatio(DPR);composer.setSize(w,h)}
-  camera.aspect=w/h;camera.updateProjectionMatrix();moteU.px.value=h*DPR*0.16;if(typeof fireU!=='undefined')fireU.px.value=h*DPR*0.72;if(typeof rt!=='undefined')rt.setSize(Math.max(64,(w*DPR/2)|0),Math.max(64,(h*DPR/2)|0))}
+  camera.aspect=w/h;camera.updateProjectionMatrix();padShow();moteU.px.value=h*DPR*0.16;if(typeof fireU!=='undefined')fireU.px.value=h*DPR*0.72;if(typeof rt!=='undefined')rt.setSize(Math.max(64,(w*DPR/2)|0),Math.max(64,(h*DPR/2)|0))}
 window.addEventListener('resize',resize);resize();
 
 /* ---------- Spiegel (Wasser / Boden) ---------- */
@@ -2100,8 +2116,8 @@ function startGame(m){initAudio();if(AC&&AC.state==='suspended')AC.resume();setM
   $('hud').style.opacity=1;$('flow').style.opacity=1;$('mode').style.opacity=1;$('spd').style.opacity=1;
   $('hint').innerHTML=FLY?'ziehen · lenken, steigen, sinken<br>hochwischen · Schub &nbsp;·&nbsp; Kreis · Rolle<br>tippen · '+(EK?'Wasser':'Feuer')+'<br>Bauwerke treffen · Stadt '+(EK?'erblühen lassen':'entzünden'):TRIP?'Finger auflegen · schneller<br>seitlich ziehen · lenken<br>hochwischen · Schub &nbsp;·&nbsp; Kreis · Wirbel<br>Doppeltipp · Sprung, in der Luft wischen · Rolle':'halten · Gas &nbsp;·&nbsp; seitlich ziehen · lenken<br>hochwischen · Schub &nbsp;·&nbsp; Kreis · Wirbel<br>Doppeltipp · Sprung<br>oben links tippen · Menü';
   $('hint').style.opacity=.9;setTimeout(function(){$('hint').style.opacity=0},11000);
-  P.vx=Math.sin(carH)*16;P.vz=Math.cos(carH)*16;whoosh();kick(AC?AC.currentTime:0,0.6)}
-function openMenu(){if(!started)return;save();started=false;ptr=null;$('title').style.display='flex';$('title').style.pointerEvents='auto';setTimeout(function(){$('title').style.opacity=1},30);$('hint').style.opacity=0;placeEl.style.opacity=0}
+  P.vx=Math.sin(carH)*16;P.vz=Math.cos(carH)*16;whoosh();kick(AC?AC.currentTime:0,0.6);padShow()}
+function openMenu(){if(!started)return;save();started=false;padShow();ptr=null;$('title').style.display='flex';$('title').style.pointerEvents='auto';setTimeout(function(){$('title').style.opacity=1},30);$('hint').style.opacity=0;placeEl.style.opacity=0}
 $('mTrip').addEventListener('click',function(){startGame('trip')});function showPanel(id){['modes','opts','els'].forEach(function(k){$(k).style.display=k===id?'flex':'none'});$('links').style.display=id==='modes'?'flex':'none'}
 $('mFly').addEventListener('click',function(){showPanel('els')});$('elBack').addEventListener('click',function(){showPanel('modes')});
 $('eFire').addEventListener('click',function(){setElement('fire');showPanel('modes');startGame('fly')});$('eWater').addEventListener('click',function(){setElement('water');showPanel('modes');startGame('fly')});
@@ -2135,11 +2151,26 @@ setMode(S.mode==='free'||S.mode==='fly'?S.mode:'trip');
 var OL={sens:['ruhig','normal','direkt'],q:['niedrig','mittel','hoch']};
 function applyOpt(){DPR=Math.min(window.devicePixelRatio||1,[1,1.3,1.6][OPT.q]);renderer.setPixelRatio(DPR);resize();if(bloom)bloom.enabled=OPT.q>0;watU.reflOn.value=OPT.q>0?1:0;if(masterG)masterG.gain.value=OPT.snd?0.8:0;
   $('oSens').innerHTML='<b>LENKUNG</b><span>'+OL.sens[OPT.sens]+'</span>';$('oInv').innerHTML='<b>FLUG HOCH / RUNTER</b><span>'+(OPT.invY?'umgekehrt · nach unten ziehen steigt':'direkt · nach oben ziehen steigt')+'</span>';
-  $('oQ').innerHTML='<b>GRAFIK</b><span>'+OL.q[OPT.q]+(OPT.q===0?' · ohne Spiegelung und Glühen':'')+'</span>';$('oSnd').innerHTML='<b>TON</b><span>'+(OPT.snd?'an':'aus')+'</span>';S.opt=OPT;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-$('oSens').addEventListener('click',function(){OPT.sens=(OPT.sens+1)%3;applyOpt()});$('oInv').addEventListener('click',function(){OPT.invY=!OPT.invY;applyOpt()});$('oQ').addEventListener('click',function(){OPT.q=(OPT.q+2)%3;applyOpt()});$('oSnd').addEventListener('click',function(){OPT.snd=!OPT.snd;applyOpt()});
+  $('oQ').innerHTML='<b>GRAFIK</b><span>'+OL.q[OPT.q]+(OPT.q===0?' · ohne Spiegelung und Glühen':'')+'</span>';$('oSnd').innerHTML='<b>TON</b><span>'+(OPT.snd?'an':'aus')+'</span>';$('oPad').innerHTML='<b>CONTROLLER</b><span>'+(OPT.pad?'im Querformat · Stick und Tasten':'aus · nur Gesten')+'</span>';padShow();S.opt=OPT;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+$('oSens').addEventListener('click',function(){OPT.sens=(OPT.sens+1)%3;applyOpt()});$('oInv').addEventListener('click',function(){OPT.invY=!OPT.invY;applyOpt()});$('oQ').addEventListener('click',function(){OPT.q=(OPT.q+2)%3;applyOpt()});$('oSnd').addEventListener('click',function(){OPT.snd=!OPT.snd;applyOpt()});$('oPad').addEventListener('click',function(){OPT.pad=!OPT.pad;applyOpt()});
 $('optBtn').addEventListener('click',function(){showPanel('opts')});$('optBack').addEventListener('click',function(){showPanel('modes')});
 applyOpt();
-$('mode').addEventListener('click',toggleCar);
+$('mode').addEventListener('click',function(){toggleCar();padShow()});
+function padLabels(){var L=FLY?['SCHUB',EK?'WASSER':'FEUER','ROLLE','ROLLE','','']:car?['GAS','BREMSE','SCHUB','SPRUNG','WIRBEL','STOSS']:['STOSS','AUTO','','','',''];
+  ['pA','pB','pX','pY','pL','pR'].forEach(function(id,i){var e=$(id);e.textContent=L[i];e.style.visibility=L[i]?'visible':'hidden'})}
+function padShow(){padOn=!!OPT.pad&&window.innerWidth>window.innerHeight&&!!started;$('pad').style.display=padOn?'block':'none';var md=$('mode');md.style.bottom=padOn?'auto':'';md.style.top=padOn?'14px':'';if(padOn){padLabels();$('hint').style.opacity=0}else{PAD.x=PAD.y=0;PAD.a=PAD.b=false}}
+function padPress(k){if(!started||locked)return;
+  if(FLY){if(k==='a')doBoost();else if(k==='b')doFire();else if(k==='x')doSpin(-1);else if(k==='y')doSpin(1)}
+  else if(car){if(k==='x')doBoost();else if(k==='y')doJump();else if(k==='l')doSpin(1);else if(k==='r')pulse()}
+  else{if(k==='a')pulse();else if(k==='b'){toggleCar();padShow()}}}
+[['pA','a'],['pB','b'],['pX','x'],['pY','y'],['pL','l'],['pR','r']].forEach(function(q){var e=$(q[0]);
+  e.addEventListener('pointerdown',function(ev){ev.preventDefault();PAD[q[1]]=true;e.classList.add('on');padPress(q[1])});
+  ['pointerup','pointercancel','pointerleave'].forEach(function(n){e.addEventListener(n,function(){PAD[q[1]]=false;e.classList.remove('on')})})});
+(function(){var st=$('pStick'),kn=$('pKnob'),pid=null;
+  function mv(e){var r=st.getBoundingClientRect(),dx=(e.clientX-r.left-r.width/2)/(r.width*0.42),dy=(e.clientY-r.top-r.height/2)/(r.height*0.42),l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}PAD.x=dx;PAD.y=dy;kn.style.transform='translate('+(dx*r.width*0.3)+'px,'+(dy*r.height*0.3)+'px)'}
+  st.addEventListener('pointerdown',function(e){e.preventDefault();pid=e.pointerId;try{st.setPointerCapture(pid)}catch(_){}mv(e)});
+  st.addEventListener('pointermove',function(e){if(e.pointerId===pid)mv(e)});
+  ['pointerup','pointercancel'].forEach(function(n){st.addEventListener(n,function(e){if(e.pointerId===pid){pid=null;PAD.x=PAD.y=0;kn.style.transform=''}})})})();
 document.addEventListener('visibilitychange',function(){if(document.hidden){save();if(AC)AC.suspend()}else if(AC&&started)AC.resume()});
 setInterval(function(){if(started)save()},6000);
 
@@ -2154,7 +2185,7 @@ function frame(now){requestAnimationFrame(frame);
   /* Eingabe */
   var jx=0,jy=0;
   if(ptr&&ptr.drag){jx=clamp((ptr.x-ptr.sx)/55,-1,1);jy=clamp((ptr.y-ptr.sy)/55,-1,1)}
-  if(keys.KeyW||keys.ArrowUp)jy-=1;if(keys.KeyS||keys.ArrowDown)jy+=1;if(keys.KeyA||keys.ArrowLeft)jx-=1;if(keys.KeyD||keys.ArrowRight)jx+=1;
+  if(keys.KeyW||keys.ArrowUp)jy-=1;if(keys.KeyS||keys.ArrowDown)jy+=1;if(keys.KeyA||keys.ArrowLeft)jx-=1;if(keys.KeyD||keys.ArrowRight)jx+=1;if(padOn){jx+=PAD.x;jy+=PAD.y}
   var jl=Math.hypot(jx,jy);if(jl>1){jx/=jl;jy/=jl;jl=1}
   if(locked||!started){jx=jy=jl=0}
   var fx=Math.sin(camYaw),fz=Math.cos(camYaw),rx=-fz,rz=fx;
@@ -2174,6 +2205,7 @@ function frame(now){requestAnimationFrame(frame);
     if(ptr&&!locked){gas=true;var sdx=ptr.x-ptr.sx,sn=clamp((Math.abs(sdx)-8)/SENS(),0,1);stT=(sdx<0?-1:1)*Math.pow(sn,1.5);if(Math.abs(gest.circ)>2.2)stT*=0.25;if(ptr.y-ptr.sy>75)brk=true}
     if(brakeId!==null)brk=true;
     if(keys.KeyW||keys.ArrowUp)gas=true;if(keys.KeyS||keys.ArrowDown)brk=true;if(keys.KeyA||keys.ArrowLeft)stT=-0.8;if(keys.KeyD||keys.ArrowRight)stT=0.8;
+    if(padOn){if(Math.abs(PAD.x)>0.1)stT=(PAD.x<0?-1:1)*Math.pow(Math.abs(PAD.x),1.4);if(PAD.a)gas=true;if(PAD.b)brk=true}
     if(locked){gas=false;stT=0}
     steer+=(stT-steer)*Math.min(1,dt*(Math.abs(stT)>Math.abs(steer)?6:10));
     var boosting=boostT>0,vmax=(onRoad?31:22)+gear*7+(boosting?16:0);
@@ -2365,7 +2397,7 @@ function frame(now){requestAnimationFrame(frame);
     LU.clipY.value=0;water.visible=true;blob.visible=true}
   if(composer)composer.render();else renderer.render(scene,camera)}
 requestAnimationFrame(frame);
-window.__dr={ign:igniteAt,bioOf:function(i){return bios.get(i)},openMap:openMap,rv:RV,setEl:setElement,fire:doFire,fly:function(){return[ringK,birdV,birdP,P.y,gear,fireT]},setMode:setMode,start:startGame,trip:function(){return TRIP},bios:bios,gest:gest,boost:doBoost,jump:doJump,spin:doSpin,trick:doTrick,st:function(){return[boostT,spinT,trickT,flow,steer]},carOn:function(){return car},gear:function(){return gear},roadX:roadX,plan:plan,P:P,S:S,pulse:pulse,chunks:chunks,travel:travel,spawn:spawnDrones,zoneBase:zoneBase,set:function(k,v){if(k==='yaw')camYaw=v;if(k==='head'){carH=v;camYaw=v}if(k==='flow')flow=v;camSnap=true}};
+window.__dr={pad:PAD,ign:igniteAt,bioOf:function(i){return bios.get(i)},openMap:openMap,rv:RV,setEl:setElement,fire:doFire,fly:function(){return[ringK,birdV,birdP,P.y,gear,fireT]},setMode:setMode,start:startGame,trip:function(){return TRIP},bios:bios,gest:gest,boost:doBoost,jump:doJump,spin:doSpin,trick:doTrick,st:function(){return[boostT,spinT,trickT,flow,steer]},carOn:function(){return car},gear:function(){return gear},roadX:roadX,plan:plan,P:P,S:S,pulse:pulse,chunks:chunks,travel:travel,spawn:spawnDrones,zoneBase:zoneBase,set:function(k,v){if(k==='yaw')camYaw=v;if(k==='head'){carH=v;camYaw=v}if(k==='flow')flow=v;camSnap=true}};
 })();
 </script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}</script>
