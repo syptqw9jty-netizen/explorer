@@ -23,6 +23,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 #back,#qual{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));padding:9px 14px;border-radius:999px;font-size:11px;letter-spacing:.16em;cursor:pointer;z-index:3}
 #back{left:calc(14px + env(safe-area-inset-left,0px))}
 #qual{right:calc(14px + env(safe-area-inset-right,0px));opacity:.8}
+#figB{position:fixed;top:calc(134px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));padding:9px 14px;border-radius:999px;font-size:11px;letter-spacing:.16em;cursor:pointer;z-index:3;opacity:.8}
 #lookB{position:fixed;top:calc(94px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));padding:9px 14px;border-radius:999px;font-size:11px;letter-spacing:.16em;cursor:pointer;z-index:3;opacity:.8}
 #moodB{position:fixed;top:calc(54px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));padding:9px 14px;border-radius:999px;font-size:11px;letter-spacing:.16em;cursor:pointer;z-index:3;opacity:.8}
 #act{position:fixed;right:calc(22px + env(safe-area-inset-right,0px));bottom:calc(120px + env(safe-area-inset-bottom,0px));padding:15px 22px;border-radius:999px;font-size:12px;letter-spacing:.2em;cursor:pointer;
@@ -37,7 +38,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="back" class="glass">‹ MENÜ</div><div id="qual" class="glass"></div><div id="moodB" class="glass">STIMMUNG</div><div id="lookB" class="glass">LOOK</div>
+<div id="back" class="glass">‹ MENÜ</div><div id="qual" class="glass"></div><div id="moodB" class="glass">STIMMUNG</div><div id="lookB" class="glass">LOOK</div><div id="figB" class="glass">FIGUR</div>
 <div id="act" class="glass">EINSTEIGEN</div>
 <div id="stick" class="glass"></div><div id="knob"></div>
 <div id="hint">links ziehen · gehen, weit ziehen · rennen<br>rechts ziehen · umsehen</div>
@@ -5577,6 +5578,1123 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 
 } )();
 
+( function () {
+
+	/**
+ * NVIDIA FXAA by Timothy Lottes
+ * http://timothylottes.blogspot.com/2011/06/fxaa3-source-released.html
+ * - WebGL port by @supereggbert
+ * http://www.glge.org/demos/fxaa/
+ */
+
+	const FXAAShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'resolution': {
+				value: new THREE.Vector2( 1 / 1024, 1 / 512 )
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader: // FXAA 3.11 implementation by NVIDIA, ported to WebGL by Agost Biro (biro@archilogic.com)
+		//----------------------------------------------------------------------------------
+		// File:				es3-kepler\FXAA\assets\shaders/FXAA_DefaultES.frag
+		// SDK Version: v3.00
+		// Email:			 gameworks@nvidia.com
+		// Site:				http://developer.nvidia.com/
+		//
+		// Copyright (c) 2014-2015, NVIDIA CORPORATION. All rights reserved.
+		//
+		// Redistribution and use in source and binary forms, with or without
+		// modification, are permitted provided that the following conditions
+		// are met:
+		//	* Redistributions of source code must retain the above copyright
+		//		notice, this list of conditions and the following disclaimer.
+		//	* Redistributions in binary form must reproduce the above copyright
+		//		notice, this list of conditions and the following disclaimer in the
+		//		documentation and/or other materials provided with the distribution.
+		//	* Neither the name of NVIDIA CORPORATION nor the names of its
+		//		contributors may be used to endorse or promote products derived
+		//		from this software without specific prior written permission.
+		//
+		// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS\'\' AND ANY
+		// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+		// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+		// PURPOSE ARE DISCLAIMED.	IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+		// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+		// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+		// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+		// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+		// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+		// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+		// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+		//
+		//----------------------------------------------------------------------------------
+
+  /* glsl */
+  `
+
+		precision highp float;
+
+		uniform sampler2D tDiffuse;
+
+		uniform vec2 resolution;
+
+		varying vec2 vUv;
+
+		#define FXAA_PC 1
+		#define FXAA_GLSL_100 1
+		#define FXAA_QUALITY_PRESET 12
+
+		#define FXAA_GREEN_AS_LUMA 1
+
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_PC_CONSOLE
+				//
+				// The console algorithm for PC is included
+				// for developers targeting really low spec machines.
+				// Likely better to just run FXAA_PC, and use a really low preset.
+				//
+				#define FXAA_PC_CONSOLE 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_GLSL_120
+				#define FXAA_GLSL_120 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_GLSL_130
+				#define FXAA_GLSL_130 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_HLSL_3
+				#define FXAA_HLSL_3 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_HLSL_4
+				#define FXAA_HLSL_4 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_HLSL_5
+				#define FXAA_HLSL_5 0
+		#endif
+		/*==========================================================================*/
+		#ifndef FXAA_GREEN_AS_LUMA
+				//
+				// For those using non-linear color,
+				// and either not able to get luma in alpha, or not wanting to,
+				// this enables FXAA to run using green as a proxy for luma.
+				// So with this enabled, no need to pack luma in alpha.
+				//
+				// This will turn off AA on anything which lacks some amount of green.
+				// Pure red and blue or combination of only R and B, will get no AA.
+				//
+				// Might want to lower the settings for both,
+				//		fxaaConsoleEdgeThresholdMin
+				//		fxaaQualityEdgeThresholdMin
+				// In order to insure AA does not get turned off on colors
+				// which contain a minor amount of green.
+				//
+				// 1 = On.
+				// 0 = Off.
+				//
+				#define FXAA_GREEN_AS_LUMA 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_EARLY_EXIT
+				//
+				// Controls algorithm\'s early exit path.
+				// On PS3 turning this ON adds 2 cycles to the shader.
+				// On 360 turning this OFF adds 10ths of a millisecond to the shader.
+				// Turning this off on console will result in a more blurry image.
+				// So this defaults to on.
+				//
+				// 1 = On.
+				// 0 = Off.
+				//
+				#define FXAA_EARLY_EXIT 1
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_DISCARD
+				//
+				// Only valid for PC OpenGL currently.
+				// Probably will not work when FXAA_GREEN_AS_LUMA = 1.
+				//
+				// 1 = Use discard on pixels which don\'t need AA.
+				//		 For APIs which enable concurrent TEX+ROP from same surface.
+				// 0 = Return unchanged color on pixels which don\'t need AA.
+				//
+				#define FXAA_DISCARD 0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_FAST_PIXEL_OFFSET
+				//
+				// Used for GLSL 120 only.
+				//
+				// 1 = GL API supports fast pixel offsets
+				// 0 = do not use fast pixel offsets
+				//
+				#ifdef GL_EXT_gpu_shader4
+						#define FXAA_FAST_PIXEL_OFFSET 1
+				#endif
+				#ifdef GL_NV_gpu_shader5
+						#define FXAA_FAST_PIXEL_OFFSET 1
+				#endif
+				#ifdef GL_ARB_gpu_shader5
+						#define FXAA_FAST_PIXEL_OFFSET 1
+				#endif
+				#ifndef FXAA_FAST_PIXEL_OFFSET
+						#define FXAA_FAST_PIXEL_OFFSET 0
+				#endif
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#ifndef FXAA_GATHER4_ALPHA
+				//
+				// 1 = API supports gather4 on alpha channel.
+				// 0 = API does not support gather4 on alpha channel.
+				//
+				#if (FXAA_HLSL_5 == 1)
+						#define FXAA_GATHER4_ALPHA 1
+				#endif
+				#ifdef GL_ARB_gpu_shader5
+						#define FXAA_GATHER4_ALPHA 1
+				#endif
+				#ifdef GL_NV_gpu_shader5
+						#define FXAA_GATHER4_ALPHA 1
+				#endif
+				#ifndef FXAA_GATHER4_ALPHA
+						#define FXAA_GATHER4_ALPHA 0
+				#endif
+		#endif
+
+
+		/*============================================================================
+														FXAA QUALITY - TUNING KNOBS
+		------------------------------------------------------------------------------
+		NOTE the other tuning knobs are now in the shader function inputs!
+		============================================================================*/
+		#ifndef FXAA_QUALITY_PRESET
+				//
+				// Choose the quality preset.
+				// This needs to be compiled into the shader as it effects code.
+				// Best option to include multiple presets is to
+				// in each shader define the preset, then include this file.
+				//
+				// OPTIONS
+				// -----------------------------------------------------------------------
+				// 10 to 15 - default medium dither (10=fastest, 15=highest quality)
+				// 20 to 29 - less dither, more expensive (20=fastest, 29=highest quality)
+				// 39			 - no dither, very expensive
+				//
+				// NOTES
+				// -----------------------------------------------------------------------
+				// 12 = slightly faster then FXAA 3.9 and higher edge quality (default)
+				// 13 = about same speed as FXAA 3.9 and better than 12
+				// 23 = closest to FXAA 3.9 visually and performance wise
+				//	_ = the lowest digit is directly related to performance
+				// _	= the highest digit is directly related to style
+				//
+				#define FXAA_QUALITY_PRESET 12
+		#endif
+
+
+		/*============================================================================
+
+															 FXAA QUALITY - PRESETS
+
+		============================================================================*/
+
+		/*============================================================================
+												 FXAA QUALITY - MEDIUM DITHER PRESETS
+		============================================================================*/
+		#if (FXAA_QUALITY_PRESET == 10)
+				#define FXAA_QUALITY_PS 3
+				#define FXAA_QUALITY_P0 1.5
+				#define FXAA_QUALITY_P1 3.0
+				#define FXAA_QUALITY_P2 12.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 11)
+				#define FXAA_QUALITY_PS 4
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 3.0
+				#define FXAA_QUALITY_P3 12.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 12)
+				#define FXAA_QUALITY_PS 5
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 4.0
+				#define FXAA_QUALITY_P4 12.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 13)
+				#define FXAA_QUALITY_PS 6
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 4.0
+				#define FXAA_QUALITY_P5 12.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 14)
+				#define FXAA_QUALITY_PS 7
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 4.0
+				#define FXAA_QUALITY_P6 12.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 15)
+				#define FXAA_QUALITY_PS 8
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 4.0
+				#define FXAA_QUALITY_P7 12.0
+		#endif
+
+		/*============================================================================
+												 FXAA QUALITY - LOW DITHER PRESETS
+		============================================================================*/
+		#if (FXAA_QUALITY_PRESET == 20)
+				#define FXAA_QUALITY_PS 3
+				#define FXAA_QUALITY_P0 1.5
+				#define FXAA_QUALITY_P1 2.0
+				#define FXAA_QUALITY_P2 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 21)
+				#define FXAA_QUALITY_PS 4
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 22)
+				#define FXAA_QUALITY_PS 5
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 23)
+				#define FXAA_QUALITY_PS 6
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 24)
+				#define FXAA_QUALITY_PS 7
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 3.0
+				#define FXAA_QUALITY_P6 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 25)
+				#define FXAA_QUALITY_PS 8
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 4.0
+				#define FXAA_QUALITY_P7 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 26)
+				#define FXAA_QUALITY_PS 9
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 2.0
+				#define FXAA_QUALITY_P7 4.0
+				#define FXAA_QUALITY_P8 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 27)
+				#define FXAA_QUALITY_PS 10
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 2.0
+				#define FXAA_QUALITY_P7 2.0
+				#define FXAA_QUALITY_P8 4.0
+				#define FXAA_QUALITY_P9 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 28)
+				#define FXAA_QUALITY_PS 11
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 2.0
+				#define FXAA_QUALITY_P7 2.0
+				#define FXAA_QUALITY_P8 2.0
+				#define FXAA_QUALITY_P9 4.0
+				#define FXAA_QUALITY_P10 8.0
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_QUALITY_PRESET == 29)
+				#define FXAA_QUALITY_PS 12
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.5
+				#define FXAA_QUALITY_P2 2.0
+				#define FXAA_QUALITY_P3 2.0
+				#define FXAA_QUALITY_P4 2.0
+				#define FXAA_QUALITY_P5 2.0
+				#define FXAA_QUALITY_P6 2.0
+				#define FXAA_QUALITY_P7 2.0
+				#define FXAA_QUALITY_P8 2.0
+				#define FXAA_QUALITY_P9 2.0
+				#define FXAA_QUALITY_P10 4.0
+				#define FXAA_QUALITY_P11 8.0
+		#endif
+
+		/*============================================================================
+												 FXAA QUALITY - EXTREME QUALITY
+		============================================================================*/
+		#if (FXAA_QUALITY_PRESET == 39)
+				#define FXAA_QUALITY_PS 12
+				#define FXAA_QUALITY_P0 1.0
+				#define FXAA_QUALITY_P1 1.0
+				#define FXAA_QUALITY_P2 1.0
+				#define FXAA_QUALITY_P3 1.0
+				#define FXAA_QUALITY_P4 1.0
+				#define FXAA_QUALITY_P5 1.5
+				#define FXAA_QUALITY_P6 2.0
+				#define FXAA_QUALITY_P7 2.0
+				#define FXAA_QUALITY_P8 2.0
+				#define FXAA_QUALITY_P9 2.0
+				#define FXAA_QUALITY_P10 4.0
+				#define FXAA_QUALITY_P11 8.0
+		#endif
+
+
+
+		/*============================================================================
+
+																		API PORTING
+
+		============================================================================*/
+		#if (FXAA_GLSL_100 == 1) || (FXAA_GLSL_120 == 1) || (FXAA_GLSL_130 == 1)
+				#define FxaaBool bool
+				#define FxaaDiscard discard
+				#define FxaaFloat float
+				#define FxaaFloat2 vec2
+				#define FxaaFloat3 vec3
+				#define FxaaFloat4 vec4
+				#define FxaaHalf float
+				#define FxaaHalf2 vec2
+				#define FxaaHalf3 vec3
+				#define FxaaHalf4 vec4
+				#define FxaaInt2 ivec2
+				#define FxaaSat(x) clamp(x, 0.0, 1.0)
+				#define FxaaTex sampler2D
+		#else
+				#define FxaaBool bool
+				#define FxaaDiscard clip(-1)
+				#define FxaaFloat float
+				#define FxaaFloat2 float2
+				#define FxaaFloat3 float3
+				#define FxaaFloat4 float4
+				#define FxaaHalf half
+				#define FxaaHalf2 half2
+				#define FxaaHalf3 half3
+				#define FxaaHalf4 half4
+				#define FxaaSat(x) saturate(x)
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_GLSL_100 == 1)
+			#define FxaaTexTop(t, p) texture2D(t, p, 0.0)
+			#define FxaaTexOff(t, p, o, r) texture2D(t, p + (o * r), 0.0)
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_GLSL_120 == 1)
+				// Requires,
+				//	#version 120
+				// And at least,
+				//	#extension GL_EXT_gpu_shader4 : enable
+				//	(or set FXAA_FAST_PIXEL_OFFSET 1 to work like DX9)
+				#define FxaaTexTop(t, p) texture2DLod(t, p, 0.0)
+				#if (FXAA_FAST_PIXEL_OFFSET == 1)
+						#define FxaaTexOff(t, p, o, r) texture2DLodOffset(t, p, 0.0, o)
+				#else
+						#define FxaaTexOff(t, p, o, r) texture2DLod(t, p + (o * r), 0.0)
+				#endif
+				#if (FXAA_GATHER4_ALPHA == 1)
+						// use #extension GL_ARB_gpu_shader5 : enable
+						#define FxaaTexAlpha4(t, p) textureGather(t, p, 3)
+						#define FxaaTexOffAlpha4(t, p, o) textureGatherOffset(t, p, o, 3)
+						#define FxaaTexGreen4(t, p) textureGather(t, p, 1)
+						#define FxaaTexOffGreen4(t, p, o) textureGatherOffset(t, p, o, 1)
+				#endif
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_GLSL_130 == 1)
+				// Requires "#version 130" or better
+				#define FxaaTexTop(t, p) textureLod(t, p, 0.0)
+				#define FxaaTexOff(t, p, o, r) textureLodOffset(t, p, 0.0, o)
+				#if (FXAA_GATHER4_ALPHA == 1)
+						// use #extension GL_ARB_gpu_shader5 : enable
+						#define FxaaTexAlpha4(t, p) textureGather(t, p, 3)
+						#define FxaaTexOffAlpha4(t, p, o) textureGatherOffset(t, p, o, 3)
+						#define FxaaTexGreen4(t, p) textureGather(t, p, 1)
+						#define FxaaTexOffGreen4(t, p, o) textureGatherOffset(t, p, o, 1)
+				#endif
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_HLSL_3 == 1)
+				#define FxaaInt2 float2
+				#define FxaaTex sampler2D
+				#define FxaaTexTop(t, p) tex2Dlod(t, float4(p, 0.0, 0.0))
+				#define FxaaTexOff(t, p, o, r) tex2Dlod(t, float4(p + (o * r), 0, 0))
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_HLSL_4 == 1)
+				#define FxaaInt2 int2
+				struct FxaaTex { SamplerState smpl; Texture2D tex; };
+				#define FxaaTexTop(t, p) t.tex.SampleLevel(t.smpl, p, 0.0)
+				#define FxaaTexOff(t, p, o, r) t.tex.SampleLevel(t.smpl, p, 0.0, o)
+		#endif
+		/*--------------------------------------------------------------------------*/
+		#if (FXAA_HLSL_5 == 1)
+				#define FxaaInt2 int2
+				struct FxaaTex { SamplerState smpl; Texture2D tex; };
+				#define FxaaTexTop(t, p) t.tex.SampleLevel(t.smpl, p, 0.0)
+				#define FxaaTexOff(t, p, o, r) t.tex.SampleLevel(t.smpl, p, 0.0, o)
+				#define FxaaTexAlpha4(t, p) t.tex.GatherAlpha(t.smpl, p)
+				#define FxaaTexOffAlpha4(t, p, o) t.tex.GatherAlpha(t.smpl, p, o)
+				#define FxaaTexGreen4(t, p) t.tex.GatherGreen(t.smpl, p)
+				#define FxaaTexOffGreen4(t, p, o) t.tex.GatherGreen(t.smpl, p, o)
+		#endif
+
+
+		/*============================================================================
+											 GREEN AS LUMA OPTION SUPPORT FUNCTION
+		============================================================================*/
+		#if (FXAA_GREEN_AS_LUMA == 0)
+				FxaaFloat FxaaLuma(FxaaFloat4 rgba) { return rgba.w; }
+		#else
+				FxaaFloat FxaaLuma(FxaaFloat4 rgba) { return rgba.y; }
+		#endif
+
+
+
+
+		/*============================================================================
+
+																 FXAA3 QUALITY - PC
+
+		============================================================================*/
+		#if (FXAA_PC == 1)
+		/*--------------------------------------------------------------------------*/
+		FxaaFloat4 FxaaPixelShader(
+				//
+				// Use noperspective interpolation here (turn off perspective interpolation).
+				// {xy} = center of pixel
+				FxaaFloat2 pos,
+				//
+				// Used only for FXAA Console, and not used on the 360 version.
+				// Use noperspective interpolation here (turn off perspective interpolation).
+				// {xy_} = upper left of pixel
+				// {_zw} = lower right of pixel
+				FxaaFloat4 fxaaConsolePosPos,
+				//
+				// Input color texture.
+				// {rgb_} = color in linear or perceptual color space
+				// if (FXAA_GREEN_AS_LUMA == 0)
+				//		 {__a} = luma in perceptual color space (not linear)
+				FxaaTex tex,
+				//
+				// Only used on the optimized 360 version of FXAA Console.
+				// For everything but 360, just use the same input here as for "tex".
+				// For 360, same texture, just alias with a 2nd sampler.
+				// This sampler needs to have an exponent bias of -1.
+				FxaaTex fxaaConsole360TexExpBiasNegOne,
+				//
+				// Only used on the optimized 360 version of FXAA Console.
+				// For everything but 360, just use the same input here as for "tex".
+				// For 360, same texture, just alias with a 3nd sampler.
+				// This sampler needs to have an exponent bias of -2.
+				FxaaTex fxaaConsole360TexExpBiasNegTwo,
+				//
+				// Only used on FXAA Quality.
+				// This must be from a constant/uniform.
+				// {x_} = 1.0/screenWidthInPixels
+				// {_y} = 1.0/screenHeightInPixels
+				FxaaFloat2 fxaaQualityRcpFrame,
+				//
+				// Only used on FXAA Console.
+				// This must be from a constant/uniform.
+				// This effects sub-pixel AA quality and inversely sharpness.
+				//	 Where N ranges between,
+				//		 N = 0.50 (default)
+				//		 N = 0.33 (sharper)
+				// {x__} = -N/screenWidthInPixels
+				// {_y_} = -N/screenHeightInPixels
+				// {_z_} =	N/screenWidthInPixels
+				// {__w} =	N/screenHeightInPixels
+				FxaaFloat4 fxaaConsoleRcpFrameOpt,
+				//
+				// Only used on FXAA Console.
+				// Not used on 360, but used on PS3 and PC.
+				// This must be from a constant/uniform.
+				// {x__} = -2.0/screenWidthInPixels
+				// {_y_} = -2.0/screenHeightInPixels
+				// {_z_} =	2.0/screenWidthInPixels
+				// {__w} =	2.0/screenHeightInPixels
+				FxaaFloat4 fxaaConsoleRcpFrameOpt2,
+				//
+				// Only used on FXAA Console.
+				// Only used on 360 in place of fxaaConsoleRcpFrameOpt2.
+				// This must be from a constant/uniform.
+				// {x__} =	8.0/screenWidthInPixels
+				// {_y_} =	8.0/screenHeightInPixels
+				// {_z_} = -4.0/screenWidthInPixels
+				// {__w} = -4.0/screenHeightInPixels
+				FxaaFloat4 fxaaConsole360RcpFrameOpt2,
+				//
+				// Only used on FXAA Quality.
+				// This used to be the FXAA_QUALITY_SUBPIX define.
+				// It is here now to allow easier tuning.
+				// Choose the amount of sub-pixel aliasing removal.
+				// This can effect sharpness.
+				//	 1.00 - upper limit (softer)
+				//	 0.75 - default amount of filtering
+				//	 0.50 - lower limit (sharper, less sub-pixel aliasing removal)
+				//	 0.25 - almost off
+				//	 0.00 - completely off
+				FxaaFloat fxaaQualitySubpix,
+				//
+				// Only used on FXAA Quality.
+				// This used to be the FXAA_QUALITY_EDGE_THRESHOLD define.
+				// It is here now to allow easier tuning.
+				// The minimum amount of local contrast required to apply algorithm.
+				//	 0.333 - too little (faster)
+				//	 0.250 - low quality
+				//	 0.166 - default
+				//	 0.125 - high quality
+				//	 0.063 - overkill (slower)
+				FxaaFloat fxaaQualityEdgeThreshold,
+				//
+				// Only used on FXAA Quality.
+				// This used to be the FXAA_QUALITY_EDGE_THRESHOLD_MIN define.
+				// It is here now to allow easier tuning.
+				// Trims the algorithm from processing darks.
+				//	 0.0833 - upper limit (default, the start of visible unfiltered edges)
+				//	 0.0625 - high quality (faster)
+				//	 0.0312 - visible limit (slower)
+				// Special notes when using FXAA_GREEN_AS_LUMA,
+				//	 Likely want to set this to zero.
+				//	 As colors that are mostly not-green
+				//	 will appear very dark in the green channel!
+				//	 Tune by looking at mostly non-green content,
+				//	 then start at zero and increase until aliasing is a problem.
+				FxaaFloat fxaaQualityEdgeThresholdMin,
+				//
+				// Only used on FXAA Console.
+				// This used to be the FXAA_CONSOLE_EDGE_SHARPNESS define.
+				// It is here now to allow easier tuning.
+				// This does not effect PS3, as this needs to be compiled in.
+				//	 Use FXAA_CONSOLE_PS3_EDGE_SHARPNESS for PS3.
+				//	 Due to the PS3 being ALU bound,
+				//	 there are only three safe values here: 2 and 4 and 8.
+				//	 These options use the shaders ability to a free *|/ by 2|4|8.
+				// For all other platforms can be a non-power of two.
+				//	 8.0 is sharper (default!!!)
+				//	 4.0 is softer
+				//	 2.0 is really soft (good only for vector graphics inputs)
+				FxaaFloat fxaaConsoleEdgeSharpness,
+				//
+				// Only used on FXAA Console.
+				// This used to be the FXAA_CONSOLE_EDGE_THRESHOLD define.
+				// It is here now to allow easier tuning.
+				// This does not effect PS3, as this needs to be compiled in.
+				//	 Use FXAA_CONSOLE_PS3_EDGE_THRESHOLD for PS3.
+				//	 Due to the PS3 being ALU bound,
+				//	 there are only two safe values here: 1/4 and 1/8.
+				//	 These options use the shaders ability to a free *|/ by 2|4|8.
+				// The console setting has a different mapping than the quality setting.
+				// Other platforms can use other values.
+				//	 0.125 leaves less aliasing, but is softer (default!!!)
+				//	 0.25 leaves more aliasing, and is sharper
+				FxaaFloat fxaaConsoleEdgeThreshold,
+				//
+				// Only used on FXAA Console.
+				// This used to be the FXAA_CONSOLE_EDGE_THRESHOLD_MIN define.
+				// It is here now to allow easier tuning.
+				// Trims the algorithm from processing darks.
+				// The console setting has a different mapping than the quality setting.
+				// This only applies when FXAA_EARLY_EXIT is 1.
+				// This does not apply to PS3,
+				// PS3 was simplified to avoid more shader instructions.
+				//	 0.06 - faster but more aliasing in darks
+				//	 0.05 - default
+				//	 0.04 - slower and less aliasing in darks
+				// Special notes when using FXAA_GREEN_AS_LUMA,
+				//	 Likely want to set this to zero.
+				//	 As colors that are mostly not-green
+				//	 will appear very dark in the green channel!
+				//	 Tune by looking at mostly non-green content,
+				//	 then start at zero and increase until aliasing is a problem.
+				FxaaFloat fxaaConsoleEdgeThresholdMin,
+				//
+				// Extra constants for 360 FXAA Console only.
+				// Use zeros or anything else for other platforms.
+				// These must be in physical constant registers and NOT immediates.
+				// Immediates will result in compiler un-optimizing.
+				// {xyzw} = float4(1.0, -1.0, 0.25, -0.25)
+				FxaaFloat4 fxaaConsole360ConstDir
+		) {
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat2 posM;
+				posM.x = pos.x;
+				posM.y = pos.y;
+				#if (FXAA_GATHER4_ALPHA == 1)
+						#if (FXAA_DISCARD == 0)
+								FxaaFloat4 rgbyM = FxaaTexTop(tex, posM);
+								#if (FXAA_GREEN_AS_LUMA == 0)
+										#define lumaM rgbyM.w
+								#else
+										#define lumaM rgbyM.y
+								#endif
+						#endif
+						#if (FXAA_GREEN_AS_LUMA == 0)
+								FxaaFloat4 luma4A = FxaaTexAlpha4(tex, posM);
+								FxaaFloat4 luma4B = FxaaTexOffAlpha4(tex, posM, FxaaInt2(-1, -1));
+						#else
+								FxaaFloat4 luma4A = FxaaTexGreen4(tex, posM);
+								FxaaFloat4 luma4B = FxaaTexOffGreen4(tex, posM, FxaaInt2(-1, -1));
+						#endif
+						#if (FXAA_DISCARD == 1)
+								#define lumaM luma4A.w
+						#endif
+						#define lumaE luma4A.z
+						#define lumaS luma4A.x
+						#define lumaSE luma4A.y
+						#define lumaNW luma4B.w
+						#define lumaN luma4B.z
+						#define lumaW luma4B.x
+				#else
+						FxaaFloat4 rgbyM = FxaaTexTop(tex, posM);
+						#if (FXAA_GREEN_AS_LUMA == 0)
+								#define lumaM rgbyM.w
+						#else
+								#define lumaM rgbyM.y
+						#endif
+						#if (FXAA_GLSL_100 == 1)
+							FxaaFloat lumaS = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2( 0.0, 1.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaE = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2( 1.0, 0.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaN = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2( 0.0,-1.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaW = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2(-1.0, 0.0), fxaaQualityRcpFrame.xy));
+						#else
+							FxaaFloat lumaS = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2( 0, 1), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaE = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2( 1, 0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaN = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2( 0,-1), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaW = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2(-1, 0), fxaaQualityRcpFrame.xy));
+						#endif
+				#endif
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat maxSM = max(lumaS, lumaM);
+				FxaaFloat minSM = min(lumaS, lumaM);
+				FxaaFloat maxESM = max(lumaE, maxSM);
+				FxaaFloat minESM = min(lumaE, minSM);
+				FxaaFloat maxWN = max(lumaN, lumaW);
+				FxaaFloat minWN = min(lumaN, lumaW);
+				FxaaFloat rangeMax = max(maxWN, maxESM);
+				FxaaFloat rangeMin = min(minWN, minESM);
+				FxaaFloat rangeMaxScaled = rangeMax * fxaaQualityEdgeThreshold;
+				FxaaFloat range = rangeMax - rangeMin;
+				FxaaFloat rangeMaxClamped = max(fxaaQualityEdgeThresholdMin, rangeMaxScaled);
+				FxaaBool earlyExit = range < rangeMaxClamped;
+		/*--------------------------------------------------------------------------*/
+				if(earlyExit)
+						#if (FXAA_DISCARD == 1)
+								FxaaDiscard;
+						#else
+								return rgbyM;
+						#endif
+		/*--------------------------------------------------------------------------*/
+				#if (FXAA_GATHER4_ALPHA == 0)
+						#if (FXAA_GLSL_100 == 1)
+							FxaaFloat lumaNW = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2(-1.0,-1.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaSE = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2( 1.0, 1.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaNE = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2( 1.0,-1.0), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaSW = FxaaLuma(FxaaTexOff(tex, posM, FxaaFloat2(-1.0, 1.0), fxaaQualityRcpFrame.xy));
+						#else
+							FxaaFloat lumaNW = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2(-1,-1), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaSE = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2( 1, 1), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaNE = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2( 1,-1), fxaaQualityRcpFrame.xy));
+							FxaaFloat lumaSW = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2(-1, 1), fxaaQualityRcpFrame.xy));
+						#endif
+				#else
+						FxaaFloat lumaNE = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2(1, -1), fxaaQualityRcpFrame.xy));
+						FxaaFloat lumaSW = FxaaLuma(FxaaTexOff(tex, posM, FxaaInt2(-1, 1), fxaaQualityRcpFrame.xy));
+				#endif
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat lumaNS = lumaN + lumaS;
+				FxaaFloat lumaWE = lumaW + lumaE;
+				FxaaFloat subpixRcpRange = 1.0/range;
+				FxaaFloat subpixNSWE = lumaNS + lumaWE;
+				FxaaFloat edgeHorz1 = (-2.0 * lumaM) + lumaNS;
+				FxaaFloat edgeVert1 = (-2.0 * lumaM) + lumaWE;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat lumaNESE = lumaNE + lumaSE;
+				FxaaFloat lumaNWNE = lumaNW + lumaNE;
+				FxaaFloat edgeHorz2 = (-2.0 * lumaE) + lumaNESE;
+				FxaaFloat edgeVert2 = (-2.0 * lumaN) + lumaNWNE;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat lumaNWSW = lumaNW + lumaSW;
+				FxaaFloat lumaSWSE = lumaSW + lumaSE;
+				FxaaFloat edgeHorz4 = (abs(edgeHorz1) * 2.0) + abs(edgeHorz2);
+				FxaaFloat edgeVert4 = (abs(edgeVert1) * 2.0) + abs(edgeVert2);
+				FxaaFloat edgeHorz3 = (-2.0 * lumaW) + lumaNWSW;
+				FxaaFloat edgeVert3 = (-2.0 * lumaS) + lumaSWSE;
+				FxaaFloat edgeHorz = abs(edgeHorz3) + edgeHorz4;
+				FxaaFloat edgeVert = abs(edgeVert3) + edgeVert4;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat subpixNWSWNESE = lumaNWSW + lumaNESE;
+				FxaaFloat lengthSign = fxaaQualityRcpFrame.x;
+				FxaaBool horzSpan = edgeHorz >= edgeVert;
+				FxaaFloat subpixA = subpixNSWE * 2.0 + subpixNWSWNESE;
+		/*--------------------------------------------------------------------------*/
+				if(!horzSpan) lumaN = lumaW;
+				if(!horzSpan) lumaS = lumaE;
+				if(horzSpan) lengthSign = fxaaQualityRcpFrame.y;
+				FxaaFloat subpixB = (subpixA * (1.0/12.0)) - lumaM;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat gradientN = lumaN - lumaM;
+				FxaaFloat gradientS = lumaS - lumaM;
+				FxaaFloat lumaNN = lumaN + lumaM;
+				FxaaFloat lumaSS = lumaS + lumaM;
+				FxaaBool pairN = abs(gradientN) >= abs(gradientS);
+				FxaaFloat gradient = max(abs(gradientN), abs(gradientS));
+				if(pairN) lengthSign = -lengthSign;
+				FxaaFloat subpixC = FxaaSat(abs(subpixB) * subpixRcpRange);
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat2 posB;
+				posB.x = posM.x;
+				posB.y = posM.y;
+				FxaaFloat2 offNP;
+				offNP.x = (!horzSpan) ? 0.0 : fxaaQualityRcpFrame.x;
+				offNP.y = ( horzSpan) ? 0.0 : fxaaQualityRcpFrame.y;
+				if(!horzSpan) posB.x += lengthSign * 0.5;
+				if( horzSpan) posB.y += lengthSign * 0.5;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat2 posN;
+				posN.x = posB.x - offNP.x * FXAA_QUALITY_P0;
+				posN.y = posB.y - offNP.y * FXAA_QUALITY_P0;
+				FxaaFloat2 posP;
+				posP.x = posB.x + offNP.x * FXAA_QUALITY_P0;
+				posP.y = posB.y + offNP.y * FXAA_QUALITY_P0;
+				FxaaFloat subpixD = ((-2.0)*subpixC) + 3.0;
+				FxaaFloat lumaEndN = FxaaLuma(FxaaTexTop(tex, posN));
+				FxaaFloat subpixE = subpixC * subpixC;
+				FxaaFloat lumaEndP = FxaaLuma(FxaaTexTop(tex, posP));
+		/*--------------------------------------------------------------------------*/
+				if(!pairN) lumaNN = lumaSS;
+				FxaaFloat gradientScaled = gradient * 1.0/4.0;
+				FxaaFloat lumaMM = lumaM - lumaNN * 0.5;
+				FxaaFloat subpixF = subpixD * subpixE;
+				FxaaBool lumaMLTZero = lumaMM < 0.0;
+		/*--------------------------------------------------------------------------*/
+				lumaEndN -= lumaNN * 0.5;
+				lumaEndP -= lumaNN * 0.5;
+				FxaaBool doneN = abs(lumaEndN) >= gradientScaled;
+				FxaaBool doneP = abs(lumaEndP) >= gradientScaled;
+				if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P1;
+				if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P1;
+				FxaaBool doneNP = (!doneN) || (!doneP);
+				if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P1;
+				if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P1;
+		/*--------------------------------------------------------------------------*/
+				if(doneNP) {
+						if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+						if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+						if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+						if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+						doneN = abs(lumaEndN) >= gradientScaled;
+						doneP = abs(lumaEndP) >= gradientScaled;
+						if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P2;
+						if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P2;
+						doneNP = (!doneN) || (!doneP);
+						if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P2;
+						if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P2;
+		/*--------------------------------------------------------------------------*/
+						#if (FXAA_QUALITY_PS > 3)
+						if(doneNP) {
+								if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+								if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+								if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+								if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+								doneN = abs(lumaEndN) >= gradientScaled;
+								doneP = abs(lumaEndP) >= gradientScaled;
+								if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P3;
+								if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P3;
+								doneNP = (!doneN) || (!doneP);
+								if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P3;
+								if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P3;
+		/*--------------------------------------------------------------------------*/
+								#if (FXAA_QUALITY_PS > 4)
+								if(doneNP) {
+										if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+										if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+										if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+										if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+										doneN = abs(lumaEndN) >= gradientScaled;
+										doneP = abs(lumaEndP) >= gradientScaled;
+										if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P4;
+										if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P4;
+										doneNP = (!doneN) || (!doneP);
+										if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P4;
+										if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P4;
+		/*--------------------------------------------------------------------------*/
+										#if (FXAA_QUALITY_PS > 5)
+										if(doneNP) {
+												if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+												if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+												if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+												if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+												doneN = abs(lumaEndN) >= gradientScaled;
+												doneP = abs(lumaEndP) >= gradientScaled;
+												if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P5;
+												if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P5;
+												doneNP = (!doneN) || (!doneP);
+												if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P5;
+												if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P5;
+		/*--------------------------------------------------------------------------*/
+												#if (FXAA_QUALITY_PS > 6)
+												if(doneNP) {
+														if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+														if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+														if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+														if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+														doneN = abs(lumaEndN) >= gradientScaled;
+														doneP = abs(lumaEndP) >= gradientScaled;
+														if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P6;
+														if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P6;
+														doneNP = (!doneN) || (!doneP);
+														if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P6;
+														if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P6;
+		/*--------------------------------------------------------------------------*/
+														#if (FXAA_QUALITY_PS > 7)
+														if(doneNP) {
+																if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+																if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+																if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+																if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+																doneN = abs(lumaEndN) >= gradientScaled;
+																doneP = abs(lumaEndP) >= gradientScaled;
+																if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P7;
+																if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P7;
+																doneNP = (!doneN) || (!doneP);
+																if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P7;
+																if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P7;
+		/*--------------------------------------------------------------------------*/
+				#if (FXAA_QUALITY_PS > 8)
+				if(doneNP) {
+						if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+						if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+						if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+						if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+						doneN = abs(lumaEndN) >= gradientScaled;
+						doneP = abs(lumaEndP) >= gradientScaled;
+						if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P8;
+						if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P8;
+						doneNP = (!doneN) || (!doneP);
+						if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P8;
+						if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P8;
+		/*--------------------------------------------------------------------------*/
+						#if (FXAA_QUALITY_PS > 9)
+						if(doneNP) {
+								if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+								if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+								if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+								if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+								doneN = abs(lumaEndN) >= gradientScaled;
+								doneP = abs(lumaEndP) >= gradientScaled;
+								if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P9;
+								if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P9;
+								doneNP = (!doneN) || (!doneP);
+								if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P9;
+								if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P9;
+		/*--------------------------------------------------------------------------*/
+								#if (FXAA_QUALITY_PS > 10)
+								if(doneNP) {
+										if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+										if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+										if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+										if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+										doneN = abs(lumaEndN) >= gradientScaled;
+										doneP = abs(lumaEndP) >= gradientScaled;
+										if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P10;
+										if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P10;
+										doneNP = (!doneN) || (!doneP);
+										if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P10;
+										if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P10;
+		/*--------------------------------------------------------------------------*/
+										#if (FXAA_QUALITY_PS > 11)
+										if(doneNP) {
+												if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+												if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+												if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+												if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+												doneN = abs(lumaEndN) >= gradientScaled;
+												doneP = abs(lumaEndP) >= gradientScaled;
+												if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P11;
+												if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P11;
+												doneNP = (!doneN) || (!doneP);
+												if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P11;
+												if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P11;
+		/*--------------------------------------------------------------------------*/
+												#if (FXAA_QUALITY_PS > 12)
+												if(doneNP) {
+														if(!doneN) lumaEndN = FxaaLuma(FxaaTexTop(tex, posN.xy));
+														if(!doneP) lumaEndP = FxaaLuma(FxaaTexTop(tex, posP.xy));
+														if(!doneN) lumaEndN = lumaEndN - lumaNN * 0.5;
+														if(!doneP) lumaEndP = lumaEndP - lumaNN * 0.5;
+														doneN = abs(lumaEndN) >= gradientScaled;
+														doneP = abs(lumaEndP) >= gradientScaled;
+														if(!doneN) posN.x -= offNP.x * FXAA_QUALITY_P12;
+														if(!doneN) posN.y -= offNP.y * FXAA_QUALITY_P12;
+														doneNP = (!doneN) || (!doneP);
+														if(!doneP) posP.x += offNP.x * FXAA_QUALITY_P12;
+														if(!doneP) posP.y += offNP.y * FXAA_QUALITY_P12;
+		/*--------------------------------------------------------------------------*/
+												}
+												#endif
+		/*--------------------------------------------------------------------------*/
+										}
+										#endif
+		/*--------------------------------------------------------------------------*/
+								}
+								#endif
+		/*--------------------------------------------------------------------------*/
+						}
+						#endif
+		/*--------------------------------------------------------------------------*/
+				}
+				#endif
+		/*--------------------------------------------------------------------------*/
+														}
+														#endif
+		/*--------------------------------------------------------------------------*/
+												}
+												#endif
+		/*--------------------------------------------------------------------------*/
+										}
+										#endif
+		/*--------------------------------------------------------------------------*/
+								}
+								#endif
+		/*--------------------------------------------------------------------------*/
+						}
+						#endif
+		/*--------------------------------------------------------------------------*/
+				}
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat dstN = posM.x - posN.x;
+				FxaaFloat dstP = posP.x - posM.x;
+				if(!horzSpan) dstN = posM.y - posN.y;
+				if(!horzSpan) dstP = posP.y - posM.y;
+		/*--------------------------------------------------------------------------*/
+				FxaaBool goodSpanN = (lumaEndN < 0.0) != lumaMLTZero;
+				FxaaFloat spanLength = (dstP + dstN);
+				FxaaBool goodSpanP = (lumaEndP < 0.0) != lumaMLTZero;
+				FxaaFloat spanLengthRcp = 1.0/spanLength;
+		/*--------------------------------------------------------------------------*/
+				FxaaBool directionN = dstN < dstP;
+				FxaaFloat dst = min(dstN, dstP);
+				FxaaBool goodSpan = directionN ? goodSpanN : goodSpanP;
+				FxaaFloat subpixG = subpixF * subpixF;
+				FxaaFloat pixelOffset = (dst * (-spanLengthRcp)) + 0.5;
+				FxaaFloat subpixH = subpixG * fxaaQualitySubpix;
+		/*--------------------------------------------------------------------------*/
+				FxaaFloat pixelOffsetGood = goodSpan ? pixelOffset : 0.0;
+				FxaaFloat pixelOffsetSubpix = max(pixelOffsetGood, subpixH);
+				if(!horzSpan) posM.x += pixelOffsetSubpix * lengthSign;
+				if( horzSpan) posM.y += pixelOffsetSubpix * lengthSign;
+				#if (FXAA_DISCARD == 1)
+						return FxaaTexTop(tex, posM);
+				#else
+						return FxaaFloat4(FxaaTexTop(tex, posM).xyz, lumaM);
+				#endif
+		}
+		/*==========================================================================*/
+		#endif
+
+		void main() {
+			gl_FragColor = FxaaPixelShader(
+				vUv,
+				vec4(0.0),
+				tDiffuse,
+				tDiffuse,
+				tDiffuse,
+				resolution,
+				vec4(0.0),
+				vec4(0.0),
+				vec4(0.0),
+				0.75,
+				0.166,
+				0.0833,
+				0.0,
+				0.0,
+				0.0,
+				vec4(0.0)
+			);
+
+			// TODO avoid querying texture twice for same texel
+			gl_FragColor.a = texture2D(tDiffuse, vUv).a;
+		}`
+	};
+
+	THREE.FXAAShader = FXAAShader;
+
+} )();
+
 </script>
 <script>
 (function(){
@@ -5590,7 +6708,7 @@ var Q=1;try{var q0=parseInt(localStorage.getItem('dr-vq'),10);if(q0>=0&&q0<=2)Q=
 $('qual').textContent='GRAFIK · '+['NIEDRIG','MITTEL','HOCH'][Q];
 $('qual').addEventListener('click',function(){try{localStorage.setItem('dr-vq',String((Q+1)%3))}catch(e){}location.reload()});
 $('back').addEventListener('click',function(){location.href='./'});
-$('moodB').addEventListener('click',function(){if(window.__vmood)window.__vmood()});$('lookB').addEventListener('click',function(){if(window.__vlook)window.__vlook()});
+$('moodB').addEventListener('click',function(){if(window.__vmood)window.__vmood()});$('lookB').addEventListener('click',function(){if(window.__vlook)window.__vlook()});$('figB').addEventListener('click',function(){if(window.__vfig)window.__vfig()});
 
 /* ---------- Renderer ---------- */
 var cv=$('cv'),renderer,composer=null;
@@ -5598,8 +6716,8 @@ try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:Q>0,powerPreference:'h
 var DPR=Math.min(window.devicePixelRatio||1,[1,1.5,2][Q]);renderer.setPixelRatio(DPR);
 renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.62;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=Q>0?THREE.PCFSoftShadowMap:THREE.PCFShadowMap;
-var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(58,1,0.15,900);
-function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);if(composer){var pr=renderer.getPixelRatio();if(W.depth){W.depth.image.width=Math.floor(w*pr);W.depth.image.height=Math.floor(h*pr);W.depth.needsUpdate=true}composer.setSize(w,h);if(window.__vlook)window.__vlook(0)}camera.aspect=w/h;camera.fov=w<h?66:52;camera.updateProjectionMatrix()}
+var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(58,1,0.2,700);
+function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);if(composer){var pr=renderer.getPixelRatio();if(W.depth){W.depth.image.width=Math.floor(w*pr);W.depth.image.height=Math.floor(h*pr);W.depth.needsUpdate=true}composer.setSize(w,h);if(W.rtL){W.rtL.setSize(Math.floor(w*pr),Math.floor(h*pr));W.fx.uniforms.resolution.value.set(1/Math.floor(w*pr),1/Math.floor(h*pr))}if(window.__vlook)window.__vlook(0)}camera.aspect=w/h;camera.fov=w<h?66:52;camera.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();
 
 /* ---------- Rauschen und erzeugte Texturen ---------- */
@@ -5621,15 +6739,16 @@ function crack(u,v){var a=Math.abs(fbm(u*7,v*7,7,4)-0.5);return (1-sstep(0.0,0.0
 function patch(u,v){var k=0;[[0.12,0.2,0.16,0.07],[0.55,0.62,0.09,0.2],[0.78,0.15,0.12,0.1]].forEach(function(r){if(u>r[0]&&u<r[0]+r[2]&&v>r[1]&&v<r[1]+r[3])k=1});return k}
 var T={
  asA:mkTex(TS,function(u,v){var n=TS,ag=hsh(Math.floor(u*n*0.5)+11,Math.floor(v*n*0.5)+5),ag2=hsh(Math.floor(u*n)+3,Math.floor(v*n)+17),m=fbm(u*9,v*9,9,3),w=wet(u,v),p=puddle(u,v),c=crack(u,v),
-   b=46+(ag-0.5)*26+(ag2-0.5)*12+(m-0.5)*22-patch(u,v)*13;if(ag>0.93)b+=28;b=lerp(b,b*0.55,w);b=lerp(b,b*0.6,p);b=lerp(b,10,c*0.6);return[b*1.01,b,b*0.985]},true),
- asR:mkTex(TS,function(u,v){var w=wet(u,v),p=puddle(u,v),r=0.93-fbm(u*40,v*40,40,2)*0.16;r=lerp(r,0.42,w);r=lerp(r,0.025,p);return[255,r*255,0]},false),
- asN:mkNormal(TS,function(u,v){var n=TS;return ((hsh(Math.floor(u*n*0.5)+11,Math.floor(v*n*0.5)+5)*0.7+fbm(u*60,v*60,60,2)*0.6)-crack(u,v)*0.8)*(1-puddle(u,v))*(1-wet(u,v)*0.5)},0.6),
+   b=44+(ag-0.5)*14+(ag2-0.5)*8+(m-0.5)*20-patch(u,v)*12;if(ag>0.95)b+=12;b=lerp(b,b*0.55,w);b=lerp(b,b*0.6,p);b=lerp(b,10,c*0.6);return[b*1.01,b,b*0.985]},true),
+ asR:mkTex(TS,function(u,v){var w=wet(u,v),p=puddle(u,v),r=0.93-fbm(u*40,v*40,40,2)*0.16;r=lerp(r,0.45,w);r=lerp(r,0.07,p);return[255,r*255,0]},false),
+ asN:mkNormal(TS,function(u,v){var n=TS;return ((hsh(Math.floor(u*n*0.5)+11,Math.floor(v*n*0.5)+5)*0.7+fbm(u*60,v*60,60,2)*0.6)-crack(u,v)*0.8)*(1-puddle(u,v))*(1-wet(u,v)*0.5)},0.35),
  swA:mkTex(TS,function(u,v){var s=4,fx=(u*s)%1,fy=(v*s)%1,seam=Math.min(fx,1-fx,fy,1-fy)<0.012?1:0,id=hsh(Math.floor(u*s)+3,Math.floor(v*s)+9),b=92+id*26+fbm(u*60,v*60,60,2)*20;b=lerp(b,34,seam);b=lerp(b,b*0.7,puddle(u*0.7+0.3,v*0.7)*0.6);return[b,b*0.97,b*0.92]},true),
  swR:mkTex(TS,function(u,v){var p=puddle(u*0.7+0.3,v*0.7),r=lerp(0.95-fbm(u*40,v*40,40,2)*0.15,0.22,p*0.7);return[255,r*255,0]},false),
  swN:mkNormal(TS,function(u,v){var s=4,fx=(u*s)%1,fy=(v*s)%1,seam=Math.min(fx,1-fx,fy,1-fy);return sstep(0,0.02,seam)*1.2+fbm(u*80,v*80,80,2)*0.25},1.0),
- plA:mkTex(TS,function(u,v){var streak=fbm(u*14,v*1.2,14,3),st=fbm(u*3,v*3,3,3),b=150+st*40-streak*38-Math.pow(1-v,6)*60;var m=sstep(0.62,0.7,fbm(u*4+9,v*4+2,4,3));b=lerp(b,70+st*30,m*0.7);return[b,b*0.95,b*0.86]},true),
- plR:mkTex(TS,function(u,v){var r=0.82+fbm(u*20,v*20,20,2)*0.15;return[255,r*255,0]},false),
- plN:mkNormal(TS,function(u,v){return fbm(u*50,v*50,50,3)+sstep(0.62,0.7,fbm(u*4+9,v*4+2,4,3))*0.8},1.4)};
+ plA:mkTex(TS,function(u,v){var cr=Math.floor(v*12),jh=((v*12)%1)<0.045?1:0,jv=(((u*6+(cr%2)*0.5)%1)<0.014)?1:0,j=Math.max(jh,jv),id=hsh(Math.floor(u*6+(cr%2)*0.5)+7,cr+3),streak=fbm(u*16,v*1.3,16,3),st=fbm(u*3,v*3,3,3),b=196+(id-0.5)*18+st*26-streak*30;
+   var m=sstep(0.64,0.72,fbm(u*4+9,v*4+2,4,3));b=lerp(b,120+st*30,m*0.3);b=lerp(b,b*0.72,j);return[b,b*0.965,b*0.9]},true),
+ plR:mkTex(TS,function(u,v){var r=0.84+fbm(u*20,v*20,20,2)*0.14;return[255,r*255,0]},false),
+ plN:mkNormal(TS,function(u,v){var cr=Math.floor(v*12),jh=sstep(0.0,0.06,(v*12)%1),jv=sstep(0.0,0.02,(u*6+(cr%2)*0.5)%1);return fbm(u*50,v*50,50,3)*0.5+Math.min(jh,jv)*1.6},1.5)};
 
 /* ---------- Laden ---------- */
 var mgr=new THREE.LoadingManager(),loaded={};
@@ -5662,12 +6781,12 @@ function applyMood(k){var m=MOODS[k];loadSky(m.sky,null,function(r){mood=k;try{l
   W.rain.visible=m.rain>0;var nk=m.lamp/Math.max(ex,0.22);M.pool.color.setRGB(1.0,0.66,0.34).multiplyScalar(m.lamp>0?0.36*nk*m.win:0);M.cone.uniforms.k.value=m.lamp*(0.10+m.fogD*14)*nk*1.3;W.lampK=m.lamp;if(car.hl)car.hl.intensity=m.lamp>0.5?1.1/Math.max(ex,0.22):0;if(car.hlm)car.hlm.forEach(function(q){q.emissiveIntensity=m.lamp>0.5?3:0.6});
   $('moodB').textContent='STIMMUNG · '+m.n})}
 var gl=new THREE.GLTFLoader(mgr),AV=['m1','m2','f1','f2'],CL=['idle_neutral','walk_neutral','run_neutral','idle_look_around','cell_phone_textmessage','cell_phone_talk'];loaded.av={};loaded.cl={m:{},f:{}};
-function ptex(u,srgb){var t=texL.load(u);t.flipY=false;if(srgb)t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t}
-AV.slice(0,Q>0?4:2).forEach(function(k){gl.load('v/p_'+k+'.glb',function(g){var b=new THREE.MeshStandardMaterial({map:ptex('v/p_'+k+'_body_color.webp',true),normalMap:ptex('v/p_'+k+'_body_normal.webp'),roughness:0.82,metalness:0,skinning:true,envMapIntensity:0.55}),
-    h=new THREE.MeshStandardMaterial({map:ptex('v/p_'+k+'_head_color.webp',true),normalMap:ptex('v/p_'+k+'_head_normal.webp'),roughness:0.62,metalness:0,skinning:true,envMapIntensity:0.55}),
+function ptex(u,srgb){var t=texL.load(u);t.flipY=false;if(srgb)t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t}
+AV.slice(0,Q>0?4:2).forEach(function(k){gl.load('v/p_'+k+'.glb',function(g){var b=new THREE.MeshStandardMaterial({map:ptex('v/p_'+k+'_body_color'+(Q>0?'_2k':'')+'.webp',true),normalMap:ptex('v/p_'+k+'_body_normal.webp'),roughness:0.82,metalness:0,skinning:true,envMapIntensity:0.55}),
+    h=new THREE.MeshStandardMaterial({map:ptex('v/p_'+k+'_head_color'+(Q>0?'_2k':'')+'.webp',true),normalMap:ptex('v/p_'+k+'_head_normal.webp'),roughness:0.62,metalness:0,skinning:true,envMapIntensity:0.55}),
     o=new THREE.MeshStandardMaterial({map:ptex('v/p_'+k+'_opacity_color.webp',true),roughness:0.7,metalness:0,skinning:true,transparent:false,alphaTest:0.45,side:THREE.DoubleSide,envMapIntensity:0.4});
   g.scene.traverse(function(m){if(m.isMesh){var n=m.material.name||'';m.material=/opacity/.test(n)?o:/head/.test(n)?h:b;m.castShadow=true;m.frustumCulled=false}});loaded.av[k]=g.scene})});
-gl.load('v/car/CarConcept.gltf',function(g){loaded.car=g});gl.load('v/a_m_sit.glb',function(g){loaded.cl.m.sit=g.animations[0]});
+gl.load('v/car/CarConcept.gltf',function(g){loaded.car=g});gl.load('v/a_m_sit.glb',function(g){loaded.cl.m.sit=g.animations[0]});gl.load('v/a_f_sit.glb',function(g){loaded.cl.f.sit=g.animations[0]});
 ['m','f'].forEach(function(sx){CL.forEach(function(c){gl.load('v/a_'+sx+'_'+c+'.glb',function(g){var cl=g.animations[0];if(cl)loaded.cl[sx][c]=cl})})});
 mgr.onLoad=function(){try{build()}catch(e){$('lp').textContent='Fehler: '+e.message;throw e}};
 
@@ -5693,13 +6812,16 @@ var M={};
 function build(){
   scene.fog=new THREE.FogExp2(0x666666,0.006);W.pl=[];
   var sun=new THREE.DirectionalLight(0xffc79a,2.6);sun.castShadow=true;var sz=Q>0?2048:1024;sun.shadow.mapSize.set(sz,sz);
-  var sc=sun.shadow.camera;sc.left=-34;sc.right=34;sc.top=34;sc.bottom=-34;sc.near=1;sc.far=170;sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.03;scene.add(sun);scene.add(sun.target);W.sun=sun;
+  var sc=sun.shadow.camera;sc.left=-37;sc.right=37;sc.top=37;sc.bottom=-37;sc.near=1;sc.far=170;sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.03;scene.add(sun);scene.add(sun.target);W.sun=sun;
   W.hemi=new THREE.HemisphereLight(0x8fa0c8,0x3a3028,0.35);scene.add(W.hemi);
   M.asph=new THREE.MeshStandardMaterial({map:T.asA,roughnessMap:T.asR,normalMap:T.asN,metalness:0,roughness:1,envMapIntensity:1.0});
   M.walk=new THREE.MeshStandardMaterial({map:T.swA,roughnessMap:T.swR,normalMap:T.swN,metalness:0,roughness:1,envMapIntensity:0.9});
   M.plaster=new THREE.MeshStandardMaterial({map:T.plA,roughnessMap:T.plR,normalMap:T.plN,metalness:0,roughness:1,envMapIntensity:0.55});
-  M.plaster2=M.plaster.clone();M.plaster2.color.set(0xb9a79a);M.plaster3=M.plaster.clone();M.plaster3.color.set(0x8f969e);
-  M.brick=new THREE.MeshStandardMaterial({map:brD,bumpMap:brB,bumpScale:0.035,roughnessMap:brR,metalness:0,roughness:1,envMapIntensity:0.5,color:0xc8b0a4});
+  M.plaster.color.set(0xe2d6bc);M.plaster2=M.plaster.clone();M.plaster2.color.set(0xd0c3a8);M.plaster3=M.plaster.clone();M.plaster3.color.set(0xeae2d0);M.lime=M.plaster.clone();M.lime.color.set(0xf0e8d6);
+  M.front=[0x0f1a16,0x240b0b,0x0c141e,0x0c0c0c,0x5a5548,0x1d1a15].map(function(c){return new THREE.MeshStandardMaterial({color:c,roughness:0.5,metalness:0.05,envMapIntensity:0.55})});
+  M.shut=(function(){var c=document.createElement('canvas');c.width=32;c.height=128;var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,32,128);g.fillStyle='rgba(0,0,0,.45)';for(var i=6;i<122;i+=5)g.fillRect(4,i,24,2);g.strokeStyle='rgba(0,0,0,.5)';g.lineWidth=3;g.strokeRect(1.5,1.5,29,125);
+    var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return[0x5d6c76,0x47584a,0x6a5a48].map(function(col){return new THREE.MeshStandardMaterial({color:col,map:t,roughness:0.6,metalness:0,envMapIntensity:0.5})})})();
+  M.brick2=null;M.brick=new THREE.MeshStandardMaterial({map:brD,bumpMap:brB,bumpScale:0.035,roughnessMap:brR,metalness:0,roughness:1,envMapIntensity:0.5,color:0xc8b0a4});
   M.stone=new THREE.MeshStandardMaterial({color:0x6e6862,roughness:0.85,metalness:0,envMapIntensity:0.6});
   M.dark=new THREE.MeshStandardMaterial({color:0x1b1c1f,roughness:0.6,metalness:0.2,envMapIntensity:0.8});
   M.glass=new THREE.MeshStandardMaterial({color:0x06080b,roughness:0.04,metalness:0.0,envMapIntensity:1.5});
@@ -5730,24 +6852,32 @@ function build(){
     var k1=new THREE.Mesh(new THREE.BoxGeometry(0.16,KH+0.02,L),M.stone);k1.position.set(s[0]*(SW+0.08),KH/2,s[1]*(SW+L/2));k1.receiveShadow=true;scene.add(k1);
     var k2=new THREE.Mesh(new THREE.BoxGeometry(L,KH+0.02,0.16),M.stone);k2.position.set(s[0]*(SW+L/2),KH/2,s[1]*(SW+0.08));k2.receiveShadow=true;scene.add(k2)});
   /* Fahrbahnmarkierung, verblasst */
-  var mk=new THREE.MeshStandardMaterial({color:0xb9b4a6,roughness:0.7,transparent:true,opacity:0.5,depthWrite:false});
+  var mk=new THREE.MeshStandardMaterial({color:0xb9b4a6,roughness:0.7,transparent:true,opacity:0.5,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-6});
   for(var i=-14;i<=14;i++){if(Math.abs(i)<2)continue;var d1=new THREE.Mesh(new THREE.PlaneGeometry(0.14,2.2),mk);d1.rotation.x=-Math.PI/2;d1.position.set(0,0.012,i*4.6);scene.add(d1);
     var d2=new THREE.Mesh(new THREE.PlaneGeometry(2.2,0.14),mk);d2.rotation.x=-Math.PI/2;d2.position.set(i*4.6,0.012,0);scene.add(d2)}
   /* Häuser */
-  var aoP=[],winP=[],sillP=[],litP=[],doorP=[],shopP=[],balS=[],balR=[],rnd=(function(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}})(7411);
-  var wallM=[M.plaster,M.brick,M.plaster2,M.plaster3,M.brick,M.plaster];
+  M.brick2=M.brick.clone();M.brick2.color.set(0x9a8074);var bandP=[],pilP=[],frameP=[],shutP=[[],[],[]],dormP=[],chimP=[],aoP=[],winP=[],sillP=[],litP=[],doorP=[],shopP=[],balS=[],balR=[],rnd=(function(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}})(7411);
+  var wallM=[M.plaster,M.plaster2,M.plaster3,M.brick,M.plaster,M.plaster2,M.brick2,M.plaster3];
+  function mergeB(L){var P=[],N=[],U=[];L.forEach(function(b){var g=new THREE.BoxGeometry(b[0],b[1],b[2]).toNonIndexed();g.translate(b[3]||0,b[4]||0,b[5]||0);var i,a=g.attributes;for(i=0;i<a.position.array.length;i++){P.push(a.position.array[i]);N.push(a.normal.array[i])}for(i=0;i<a.uv.array.length;i++)U.push(a.uv.array[i])});
+    var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));return g}
   function house(cx,cz,w,d,h,face){ // face: 'x+','x-','z+','z-' Seite zur Straße
-    var mat=wallM[(rnd()*wallM.length)|0],b=new THREE.Mesh(uvBox(w,h,d,mat===M.brick?2.4:6),mat);b.position.set(cx,KH+h/2,cz);b.castShadow=true;b.receiveShadow=true;scene.add(b);boxes.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2,h:h});
+    var mat=wallM[(rnd()*wallM.length)|0],isB=(mat===M.brick||mat===M.brick2),b=new THREE.Mesh(uvBox(w,h,d,isB?2.4:6),mat);b.position.set(cx,KH+h/2,cz);b.castShadow=true;b.receiveShadow=true;scene.add(b);boxes.push({x0:cx-w/2,x1:cx+w/2,z0:cz-d/2,z1:cz+d/2,h:h});
     var fx=face==='x+'?1:face==='x-'?-1:0,fz=face==='z+'?1:face==='z-'?-1:0,len=fx?d:w,px=cx+fx*(w/2),pz=cz+fz*(d/2),ry=fx?(fx>0?Math.PI/2:-Math.PI/2):(fz>0?0:Math.PI),tx=fx?0:1,tz=fx?1:0;
     aoP.push([px+fx*0.75,KH+0.011,pz+fz*0.75,ry,len+0.4]);
-    var base=new THREE.Mesh(new THREE.BoxGeometry(fx?0.24:len+0.1,3.7,fx?len+0.1:0.24),M.stone);base.position.set(px+fx*0.1,KH+1.85,pz+fz*0.1);base.castShadow=true;base.receiveShadow=true;scene.add(base);
-    var cor=new THREE.Mesh(new THREE.BoxGeometry(fx?0.7:len+0.5,0.5,fx?len+0.5:0.7),M.stone);cor.position.set(px+fx*0.3,KH+h-0.1,pz+fz*0.3);cor.castShadow=true;scene.add(cor);
-    var led=new THREE.Mesh(new THREE.BoxGeometry(fx?0.36:len+0.2,0.22,fx?len+0.2:0.36),M.stone);led.position.set(px+fx*0.16,KH+3.85,pz+fz*0.16);led.castShadow=true;scene.add(led);
-    var n=Math.max(2,Math.floor((len-1.4)/2.7)),st=len/n,rows=Math.floor((h-5.2)/3.25),r,c,hasB=rnd()<0.6,hasB2=rnd()<0.35,dc=n>>1,shopLit=rnd()<0.4;
+    var base=new THREE.Mesh(new THREE.BoxGeometry(fx?0.24:len+0.1,3.7,fx?len+0.1:0.24),M.front[(rnd()*M.front.length)|0]);base.position.set(px+fx*0.1,KH+1.85,pz+fz*0.1);base.castShadow=true;base.receiveShadow=true;scene.add(base);
+    var cor=new THREE.Mesh(new THREE.BoxGeometry(fx?0.8:len+0.6,0.42,fx?len+0.6:0.8),M.lime);cor.position.set(px+fx*0.32,KH+h-0.12,pz+fz*0.32);cor.castShadow=true;scene.add(cor);
+    var cor2=new THREE.Mesh(new THREE.BoxGeometry(fx?0.5:len+0.3,0.3,fx?len+0.3:0.5),M.lime);cor2.position.set(px+fx*0.2,KH+h-0.46,pz+fz*0.2);scene.add(cor2);
+    var led=new THREE.Mesh(new THREE.BoxGeometry(fx?0.44:len+0.26,0.26,fx?len+0.26:0.44),M.lime);led.position.set(px+fx*0.19,KH+3.86,pz+fz*0.19);led.castShadow=true;scene.add(led);
+    var n=Math.max(2,Math.floor((len-1.4)/2.7)),st=len/n,rows=Math.floor((h-5.2)/3.25),r,c,hasB=rnd()<0.6,hasB2=rnd()<0.35,dc=n>>1,shopLit=rnd()<0.4,shut=rnd()<0.38?((rnd()*3)|0):-1,pil=shut<0&&rnd()<0.75,yb=KH+3.99,yt=KH+h-0.6;
+    for(r=0;r<rows-1;r++)bandP.push([px+fx*0.08,KH+5.9+r*3.25+1.62,pz+fz*0.08,ry,len]);
+    for(c=0;c<=n;c++){if(!pil&&c>0&&c<n)continue;var po=clamp(-len/2+st*c,-len/2+0.2,len/2-0.2);pilP.push([px+tx*po+fx*0.08,(yb+yt)/2,pz+tz*po+fz*0.08,ry,1,yt-yb])}
     for(c=0;c<n;c++){var o=-len/2+st*(c+0.5),wx=px+tx*o+fx*0.26,wz=pz+tz*o+fz*0.26;
       if(c===dc)doorP.push([px+tx*o+fx*0.3,KH+1.24,pz+tz*o+fz*0.3,ry]);else(shopLit&&rnd()<0.8?shopP:winP).push([wx,KH+2.0,wz,ry,st*0.78,2.7]);
-      for(r=0;r<rows;r++){var y=KH+5.9+r*3.25,ww=px+tx*o+fx*0.045,wzz=pz+tz*o+fz*0.045;(rnd()<0.09?litP:winP).push([ww,y,wzz,ry,1.25,2.0]);sillP.push([px+tx*o+fx*0.12,y-1.12,pz+tz*o+fz*0.12,ry]);
-        if((hasB&&r===0)||(hasB2&&r===rows-2)){balS.push([px+tx*o+fx*0.27,y-1.07,pz+tz*o+fz*0.27,ry]);balR.push([px+tx*o+fx*0.5,y-0.57,pz+tz*o+fz*0.5,ry])}}}
+      for(r=0;r<rows;r++){var y=KH+5.9+r*3.25,ww=px+tx*o+fx*0.045,wzz=pz+tz*o+fz*0.045;(rnd()<0.09?litP:winP).push([ww,y,wzz,ry,1.25,2.0]);sillP.push([px+tx*o+fx*0.12,y-1.12,pz+tz*o+fz*0.12,ry]);frameP.push([px+tx*o+fx*0.05,y,pz+tz*o+fz*0.05,ry]);
+        if(shut>=0){shutP[shut].push([px+tx*(o-0.99)+fx*0.07,y,pz+tz*(o-0.99)+fz*0.07,ry]);shutP[shut].push([px+tx*(o+0.99)+fx*0.07,y,pz+tz*(o+0.99)+fz*0.07,ry])}
+        if((hasB&&r===0)||(hasB2&&r===rows-2)){balS.push([px+tx*o+fx*0.27,y-1.07,pz+tz*o+fz*0.27,ry]);balR.push([px+tx*o+fx*0.5,y-0.57,pz+tz*o+fz*0.5,ry])}}
+      if(c%2===0||n<4){dormP.push([px+tx*o-fx*0.78,KH+h+1.0,pz+tz*o-fz*0.78,ry]);winP.push([px+tx*o-fx*0.165,KH+h+0.98,pz+tz*o-fz*0.165,ry,0.78,0.92])}}
+    chimP.push([cx+(fx?0:w*0.3),KH+h+3.2,cz+(fx?d*0.3:0),fx?Math.PI/2:0]);chimP.push([cx-(fx?0:w*0.28),KH+h+3.2,cz-(fx?d*0.28:0),fx?Math.PI/2:0]);
     var rg=new THREE.BoxGeometry(w+0.2,2.5,d+0.2),rp=rg.attributes.position;for(c=0;c<rp.count;c++)if(rp.getY(c)>0){rp.setX(c,rp.getX(c)*(1-1.7/w));rp.setZ(c,rp.getZ(c)*(1-1.7/d))}rg.computeVertexNormals();
     var rf=new THREE.Mesh(rg,M.slate);rf.position.set(cx,KH+h+1.25,cz);rf.castShadow=true;rf.receiveShadow=true;scene.add(rf);
     var k=rnd();if(k<0.5){var sw=Math.min(len*0.5,5.2),sg=new THREE.Mesh(new THREE.PlaneGeometry(sw,sw*0.125),signMat((rnd()*8)|0));sg.position.set(px+fx*0.3,KH+3.36,pz+fz*0.3);sg.rotation.y=ry;scene.add(sg)}
@@ -5759,15 +6889,19 @@ function build(){
   function inst(list,geo,mat,dz){if(!list.length)return;var im=new THREE.InstancedMesh(geo,mat,list.length),o=new THREE.Object3D();
     list.forEach(function(p,i){o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3],0);o.scale.set(p[4]||1,p[5]||1,1);o.updateMatrix();im.setMatrixAt(i,o.matrix)});im.receiveShadow=true;scene.add(im)}
   (function(){var c=document.createElement('canvas');c.width=4;c.height=64;var g=c.getContext('2d'),gr=g.createLinearGradient(0,0,0,64);gr.addColorStop(0,'rgba(0,0,0,0.85)');gr.addColorStop(0.35,'rgba(0,0,0,0.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,4,64);
-    var t=new THREE.CanvasTexture(c),am=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0.7,fog:false}),pg=new THREE.PlaneGeometry(1,1.5);pg.rotateX(-Math.PI/2);
+    var t=new THREE.CanvasTexture(c),am=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,opacity:0.7,fog:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-6}),pg=new THREE.PlaneGeometry(1,1.5);pg.rotateX(-Math.PI/2);
     var im=new THREE.InstancedMesh(pg,am,aoP.length),o=new THREE.Object3D();aoP.forEach(function(p,i){o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3],0);o.scale.set(p[4],1,1);o.updateMatrix();im.setMatrixAt(i,o.matrix)});im.renderOrder=1;scene.add(im);
     [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(q){var L=150,g1=new THREE.PlaneGeometry(L,1.1);g1.rotateX(-Math.PI/2);var a=new THREE.Mesh(g1,am);a.position.set(q[0]*(SW+L/2),0.011,q[1]*(SW-0.55));a.rotation.y=q[1]>0?0:Math.PI;a.renderOrder=1;scene.add(a);
       var b=new THREE.Mesh(g1,am);b.position.set(q[0]*(SW-0.55),0.011,q[1]*(SW+L/2));b.rotation.y=q[0]>0?Math.PI/2:-Math.PI/2;b.renderOrder=1;scene.add(b)})})();
   (function(){var c=document.createElement('canvas');c.width=c.height=64;var g=c.getContext('2d'),im=g.createImageData(64,64),x,y;for(y=0;y<64;y++)for(x=0;x<64;x++){var u=(x-31.5)/32,v=y/63,a=Math.max(0,1-u*u)*Math.pow(1-v,1.6)*sstep(0,0.08,v+0.05);im.data.set([255,255,255,a*255],(y*64+x)*4)}g.putImageData(im,0,0);
-    var t=new THREE.CanvasTexture(c);M.pool=new THREE.MeshBasicMaterial({map:t,color:0x000000,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
+    var t=new THREE.CanvasTexture(c);M.pool=new THREE.MeshBasicMaterial({map:t,color:0x000000,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-6});
     var pg=new THREE.PlaneGeometry(1,1);pg.rotateX(-Math.PI/2);pg.translate(0,0,0.5);var mI=new THREE.InstancedMesh(pg,M.pool,shopP.length),o=new THREE.Object3D();
     shopP.forEach(function(p,i){o.position.set(p[0]+Math.sin(p[3])*0.1,KH+0.022,p[2]+Math.cos(p[3])*0.1);o.rotation.set(0,p[3],0);o.scale.set(p[4]*1.9,1,3.6);o.updateMatrix();mI.setMatrixAt(i,o.matrix)});mI.renderOrder=2;scene.add(mI)})();
   inst(doorP,new THREE.BoxGeometry(1.2,2.48,0.12),M.door);inst(shopP,new THREE.PlaneGeometry(1,1),M.shop);inst(balS,new THREE.BoxGeometry(1.75,0.08,0.52),M.stone);inst(balR,new THREE.PlaneGeometry(1.75,0.95),M.rail);
+  inst(bandP,new THREE.BoxGeometry(1,0.17,0.2),M.lime);inst(pilP,new THREE.BoxGeometry(0.38,1,0.2),M.lime);
+  inst(frameP,mergeB([[0.14,2.3,0.17,-0.7,0,0],[0.14,2.3,0.17,0.7,0,0],[1.62,0.18,0.22,0,1.1,0.01],[0.26,0.3,0.26,0,1.14,0.02],[0.05,2.02,0.06,0,0,0.03],[1.26,0.05,0.06,0,0.36,0.03]]),M.lime);
+  shutP.forEach(function(L,i){inst(L,new THREE.BoxGeometry(0.44,2.04,0.05),M.shut[i])});
+  inst(dormP,mergeB([[1.2,1.3,1.25,0,0,0],[1.44,0.1,1.4,0,0.7,0.02]]),M.slate);inst(chimP,mergeB([[1.3,1.9,0.62,0,0,0],[1.44,0.14,0.76,0,0.98,0],[0.22,0.4,0.22,-0.35,1.2,0],[0.22,0.4,0.22,0.35,1.2,0]]),M.brick2);
   inst(winP,new THREE.PlaneGeometry(1,1),M.glass);inst(litP,new THREE.PlaneGeometry(1,1),M.lit);inst(sillP,new THREE.BoxGeometry(1.5,0.12,0.3),M.stone);
   /* Laternen */
   W.lamps=[];
@@ -5795,7 +6929,7 @@ function build(){
   [1,-1].forEach(function(sd){for(var q=0;q<(Q>0?6:3);q++)[1,-1].forEach(function(e){var t=e*(24.5+q*14.5);tp.push([sd*(SW+0.8),t]);tp.push([t,sd*(SW+0.8)])})});
   tp.forEach(function(p,i){for(var j=0;j<circles.length;j++)if(Math.hypot(circles[j].x-p[0],circles[j].z-p[1])<2.2)return;tl[i%3].push([p[0],KH,p[1],hsh(i,7)*6.28,0.85+hsh(i,3)*0.4,0.85+hsh(i,5)*0.45]);pit.push([p[0],KH+0.012,p[1],0]);circles.push({x:p[0],z:p[1],r:0.24})});
   tl.forEach(function(L,i){if(!L.length)return;var im=new THREE.InstancedMesh(tg[i],M.bark,L.length),o=new THREE.Object3D();L.forEach(function(p,j){o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3],0);o.scale.set(p[4],p[5],p[4]);o.updateMatrix();im.setMatrixAt(j,o.matrix)});im.castShadow=true;im.receiveShadow=true;scene.add(im)});
-  (function(){var g=new THREE.PlaneGeometry(1.3,1.3);g.rotateX(-Math.PI/2);var im=new THREE.InstancedMesh(g,new THREE.MeshStandardMaterial({color:0x17130f,roughness:1}),pit.length),o=new THREE.Object3D();pit.forEach(function(p,j){o.position.set(p[0],p[1],p[2]);o.updateMatrix();im.setMatrixAt(j,o.matrix)});im.receiveShadow=true;scene.add(im)})();
+  (function(){var g=new THREE.PlaneGeometry(1.3,1.3);g.rotateX(-Math.PI/2);var im=new THREE.InstancedMesh(g,new THREE.MeshStandardMaterial({color:0x17130f,roughness:1,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-6}),pit.length),o=new THREE.Object3D();pit.forEach(function(p,j){o.position.set(p[0],p[1],p[2]);o.updateMatrix();im.setMatrixAt(j,o.matrix)});im.receiveShadow=true;scene.add(im)})();
   /* Mülleimer */
   [[SW+0.75,10.5],[-(SW+0.75),-20],[14.5,-(SW+0.75)],[-26,SW+0.75]].forEach(function(p){var b=new THREE.Mesh(new THREE.CylinderGeometry(0.27,0.24,0.92,14),M.door);b.position.set(p[0],KH+0.46,p[1]);b.castShadow=true;b.receiveShadow=true;scene.add(b);circles.push({x:p[0],z:p[1],r:0.3})});
   buildCar();
@@ -5820,31 +6954,34 @@ function setupPost(){if(Q<1||!THREE.EffectComposer||!renderer.capabilities.isWeb
   var sz=renderer.getDrawingBufferSize(new THREE.Vector2()),rt=new THREE.WebGLRenderTarget(sz.x,sz.y,{type:THREE.HalfFloatType,format:THREE.RGBAFormat,minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter});
   rt.depthTexture=new THREE.DepthTexture(sz.x,sz.y);rt.depthTexture.type=THREE.UnsignedIntType;W.depth=rt.depthTexture;
   composer=new THREE.EffectComposer(renderer,rt);composer.addPass(new THREE.RenderPass(scene,camera));
+  var cl=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null}},vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'precision highp float;uniform sampler2D tDiffuse;varying vec2 vUv;void main(){gl_FragColor=vec4(min(max(texture2D(tDiffuse,vUv).rgb,0.),vec3(6.)),1.);}'});cl.material.depthTest=false;cl.material.depthWrite=false;composer.addPass(cl);
   bloomP=new THREE.UnrealBloomPass(new THREE.Vector2(sz.x/2,sz.y/2),0.42,0.75,1.9);composer.addPass(bloomP);
-  finP=new THREE.ShaderPass({uniforms:{tDiffuse:{value:null},tDepth:{value:W.depth},focus:{value:3.5},dof:{value:0},asp:{value:1},expo:{value:0.6},time:{value:0},sh:{value:new V3(1,1,1)},hi:{value:new V3(1,1,1)},sat:{value:1},con:{value:1},fade:{value:0},grain:{value:0.02},vig:{value:0.6},ca:{value:0},bars:{value:0},bw:{value:0}},
+  finP=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,uniforms:{tDiffuse:{value:null},tDepth:{value:W.depth},focus:{value:3.5},dof:{value:0},asp:{value:1},expo:{value:0.6},time:{value:0},sh:{value:new V3(1,1,1)},hi:{value:new V3(1,1,1)},sat:{value:1},con:{value:1},fade:{value:0},grain:{value:0.02},vig:{value:0.6},ca:{value:0},bars:{value:0},bw:{value:0}},
     vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader:['precision highp float;uniform sampler2D tDiffuse,tDepth;uniform float focus,dof,asp,expo,time,sat,con,fade,grain,vig,ca,bars,bw;uniform vec3 sh,hi;varying vec2 vUv;',
     'vec3 aces(vec3 x){return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.,1.);}',
-    'float vz(vec2 u){float z=texture2D(tDepth,u).x*2.-1.;return 270./(900.15-z*899.85);}',
+    'float vz(vec2 u){float z=texture2D(tDepth,u).x*2.-1.;return 280./(700.2-z*699.8);}',
     'float coc(float z){return clamp((z-focus*1.7)/(focus*9.),0.,1.)+clamp((focus*0.4-z)/(focus*0.4),0.,1.)*0.7;}',
     'void main(){vec2 d=vUv-.5;float r2=dot(d,d);vec3 c=texture2D(tDiffuse,vUv).rgb;float k=0.;',
     'if(dof>0.){float z0=vz(vUv);k=coc(z0);if(k>0.02){float w=1.;vec2 rr=vec2(1.,asp)*k*dof*0.0052;for(int i=0;i<14;i++){float fi=float(i),an=fi*2.39996+time*0.0,ra=sqrt((fi+.5)/14.);vec2 u=vUv+vec2(cos(an),sin(an))*ra*rr;',
-    'float zs=vz(u),ws=max(step(z0*0.85,zs),coc(zs));vec3 cs=texture2D(tDiffuse,u).rgb;ws*=1.+dot(cs,vec3(.33))*0.6;c+=cs*ws;w+=ws;}c/=w;}}',
+    'float zs=vz(u),ws=max(step(z0*0.85,zs),coc(zs));vec3 cs=texture2D(tDiffuse,u).rgb;c+=cs*ws;w+=ws;}c/=w;}}',
     'if(ca>0.){vec2 o=d*r2*ca*0.012;float m=1.-min(k*2.,1.);c.r=mix(c.r,texture2D(tDiffuse,vUv+o).r,m);c.b=mix(c.b,texture2D(tDiffuse,vUv-o).b,m);}',
     'c=aces(max(c,0.)*expo);float l=dot(c,vec3(.2126,.7152,.0722));',
     'c*=mix(sh,vec3(1.),smoothstep(0.,.45,l));c*=mix(vec3(1.),hi,smoothstep(.3,.95,l));',
     'l=dot(c,vec3(.2126,.7152,.0722));c=mix(vec3(l),c,sat);c=mix(c,vec3(l)*vec3(1.02,1.0,0.96),bw);',
     'c=pow(max(c,0.),vec3(1./2.2));c=(c-.5)*con+.5;c=c*(1.-fade)+fade*vec3(0.50,0.47,0.44)*0.5+fade*0.03;',
     'c*=1.-r2*vig;float n=fract(sin(dot(vUv*vec2(1387.,911.)+time,vec2(12.9898,78.233)))*43758.5453);c+=(n-.5)*grain*(1.2-l);',
-    'c*=step(bars,vUv.y)*step(vUv.y,1.-bars);gl_FragColor=vec4(c,1.);}'].join('\n')});composer.addPass(finP);
+    'c*=step(bars,vUv.y)*step(vUv.y,1.-bars);gl_FragColor=vec4(c,1.);}'].join('\n')});composer.renderToScreen=false;W.q1=new THREE.Pass.FullScreenQuad(finP);W.rtL=new THREE.WebGLRenderTarget(sz.x,sz.y,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,depthBuffer:false});
+  W.fx=new THREE.ShaderMaterial({uniforms:THREE.UniformsUtils.clone(THREE.FXAAShader.uniforms),vertexShader:THREE.FXAAShader.vertexShader,fragmentShader:THREE.FXAAShader.fragmentShader,depthTest:false,depthWrite:false});W.fx.uniforms.resolution.value.set(1/sz.x,1/sz.y);W.q2=new THREE.Pass.FullScreenQuad(W.fx);
   renderer.toneMapping=THREE.NoToneMapping;scene.traverse(function(o){if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){m.needsUpdate=true})}})}
 /* ---------- Looks: eigene Farbschicht über jeder Stimmung ---------- */
 var LOOKS={natur:{n:'NATUR',dof:0.45,sh:[1,1,1],hi:[1,1,1],sat:1.0,con:1.0,fade:0,grain:0.008,vig:0.25,ca:0,bars:0,bw:0,bl:0.30},
+  aus:{n:'AUS',dof:0,sh:[1,1,1],hi:[1,1,1],sat:1.0,con:1.0,fade:0,grain:0,vig:0,ca:0,bars:0,bw:0,bl:0.22},
   kino:{n:'KINO',dof:1.0,sh:[0.86,1.0,1.12],hi:[1.09,1.0,0.88],sat:1.12,con:1.10,fade:0,grain:0.024,vig:0.75,ca:0.5,bars:1,bw:0,bl:0.48},
   analog:{n:'ANALOG',dof:0.85,sh:[1.05,0.99,0.90],hi:[1.06,1.01,0.90],sat:0.86,con:0.94,fade:0.10,grain:0.05,vig:0.6,ca:0.35,bars:0,bw:0,bl:0.55},
   neon:{n:'NEON',dof:1.0,sh:[0.82,0.92,1.25],hi:[1.14,0.94,1.10],sat:1.35,con:1.14,fade:0,grain:0.02,vig:0.85,ca:0.9,bars:1,bw:0,bl:0.85},
   stahl:{n:'STAHL',dof:0.75,sh:[0.90,1.0,1.10],hi:[0.97,1.0,1.03],sat:0.55,con:1.20,fade:0,grain:0.03,vig:0.8,ca:0.3,bars:1,bw:0,bl:0.38},
-  noir:{n:'NOIR',dof:0.9,sh:[1,1,1],hi:[1,1,1],sat:1,con:1.28,fade:0,grain:0.07,vig:1.0,ca:0.2,bars:1,bw:1,bl:0.5}},LORD=['kino','natur','analog','neon','stahl','noir'],look='kino',bloomP=null;
+  noir:{n:'NOIR',dof:0.9,sh:[1,1,1],hi:[1,1,1],sat:1,con:1.28,fade:0,grain:0.07,vig:1.0,ca:0.2,bars:1,bw:1,bl:0.5}},LORD=['kino','natur','analog','neon','stahl','noir','aus'],look='kino',bloomP=null;
 try{var l0=localStorage.getItem('dr-vl');if(LOOKS[l0])look=l0}catch(e){}
 function applyLook(k){var L=LOOKS[k],u;look=k;try{localStorage.setItem('dr-vl',k)}catch(e){}$('lookB').textContent='LOOK · '+L.n;if(!finP)return;u=finP.uniforms;
   u.sh.value.set(L.sh[0],L.sh[1],L.sh[2]);u.hi.value.set(L.hi[0],L.hi[1],L.hi[2]);u.sat.value=L.sat;u.con.value=L.con;u.fade.value=L.fade;u.grain.value=L.grain;u.vig.value=L.vig;u.ca.value=L.ca;u.bw.value=L.bw;
@@ -5866,7 +7003,7 @@ function carPt(lx,lz){var s=Math.sin(car.h),c=Math.cos(car.h);return[car.x+lx*c+
 
 /* ---------- Kontaktschatten ---------- */
 var blobT=(function(){var c=document.createElement('canvas');c.width=c.height=64;var g=c.getContext('2d'),r=g.createRadialGradient(32,32,2,32,32,32);r.addColorStop(0,'rgba(0,0,0,1)');r.addColorStop(0.55,'rgba(0,0,0,0.55)');r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
-function blob(w,d,op){var m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({map:blobT,transparent:true,opacity:op,depthWrite:false,fog:false}));m.rotation.x=-Math.PI/2;m.renderOrder=2;scene.add(m);return m}
+function blob(w,d,op){var m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({map:blobT,transparent:true,opacity:op,depthWrite:false,fog:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-6}));m.rotation.x=-Math.PI/2;m.renderOrder=2;scene.add(m);return m}
 /* ---------- Figuren ---------- */
 var ppl=[],me=null;
 function mkPerson(key,extra){var root=THREE.SkeletonUtils.clone(loaded.av[key]),sx=key[0],mx=new THREE.AnimationMixer(root),A={};
@@ -5880,7 +7017,7 @@ function animate(p,dt){var s=p.sp,wr=sstep(2.3,3.4,s),ww=sstep(0.12,0.8,s)*(1-wr
   p.A.idle.setEffectiveWeight(wi);p.A.walk.setEffectiveWeight(ww);p.A.run.setEffectiveWeight(wr);p.A.walk.setEffectiveTimeScale(clamp(s/WSP,0.6,1.5));p.A.run.setEffectiveTimeScale(clamp(s/RSP,0.75,1.3));
   p.mx.update(dt);p.o.position.set(p.x,p.y,p.z);p.o.rotation.y=p.yaw+YOFF;p.bl.position.set(p.x,groundY(p.x,p.z)+0.015,p.z);p.bl.visible=p.o.visible}
 var WSP=1.4,RSP=3.8,YOFF=0,DSG=-1,WSG=1;
-function buildPeople(){me=mkPerson('m1','sit');me.x=5.6;me.z=-8.5;me.yaw=Math.PI;me.y=KH;
+function buildPeople(){var fk='m1';try{var f0=localStorage.getItem('dr-vf');if(loaded.av[f0])fk=f0}catch(e){}W.fig=fk;me=mkPerson(fk,'sit');me.x=5.6;me.z=-8.5;me.yaw=Math.PI;me.y=KH;
   var ks=Object.keys(loaded.av),n=Q>1?9:Q>0?7:4,i,p;
   for(i=0;i<n;i++){p=mkPerson(ks[(i+1)%ks.length]);var side=i%2?1:-1,ax=i%3===2;p.ax=ax;p.side=side;p.lat=SW+1.1+((i*37)%20)/10;p.t=-46+((i*53)%92);p.dir=i%4<2?1:-1;p.v=1.2+((i*17)%10)/28;p.sp=p.v;ppl.push(p)}
   [[7.6,-21,1.3,'cell_phone_talk'],[-7.4,9,-1.5,'cell_phone_textmessage'],[11,7.3,3.0,'idle_look_around'],[-7.2,-30,1.8,'cell_phone_textmessage']].slice(0,Q>0?4:2).forEach(function(d,i){
@@ -5990,18 +7127,18 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min((now-last)/1000
   W.cd=W.cd===undefined?t:W.cd+(t-W.cd)*Math.min(1,dt*(t<W.cd?20:3));
   camera.position.set(camTgt.x+ddx*W.cd,Math.max(0.25,camTgt.y+ddy*W.cd),camTgt.z+ddz*W.cd);camera.lookAt(camTgt);
   /* Schattenlicht folgt */
-  var fxp=mode==='drive'?car.x:me.x,fzp=mode==='drive'?car.z:me.z;W.sun.target.position.set(fxp,0,fzp);W.sun.position.set(fxp+sunDir.x*80,sunDir.y*80,fzp+sunDir.z*80);
+  var fxp=Math.round((mode==='drive'?car.x:me.x)/3)*3,fzp=Math.round((mode==='drive'?car.z:me.z)/3)*3;W.sun.target.position.set(fxp,0,fzp);W.sun.position.set(fxp+sunDir.x*80,sunDir.y*80,fzp+sunDir.z*80);
   /* Bedienhinweise */
   var can=!seq&&((mode==='foot'&&nearDoor()<3.2)||(mode==='drive'&&Math.abs(car.v)<1.2));actEl.textContent=mode==='drive'?'AUSSTEIGEN':'EINSTEIGEN';actEl.classList.toggle('on',started&&can);
   $('spd').textContent=mode==='drive'&&!seq?Math.round(Math.abs(car.v)*3.6)+' km/h':'';
   if(AC){var av=Math.abs(car.v),gr=Math.min(3,Math.floor(av/7)),rpm=(av-gr*7)/7,ef=40+gr*5+rpm*46,dr=mode==='drive',ld=dr?clamp(-sy,0,1):0;engG.gain.setTargetAtTime(dr?0.035+ld*0.03+av*0.0008:0,AC.currentTime,0.12);engO.frequency.setTargetAtTime(ef,AC.currentTime,0.06);engO2.frequency.setTargetAtTime(ef*0.5,AC.currentTime,0.06);engF.frequency.setTargetAtTime(170+ef*3+ld*380,AC.currentTime,0.08);tireG.gain.setTargetAtTime(dr?Math.min(av,26)*0.0022:0,AC.currentTime,0.2)}
   if(W.rain.visible){W.rainU.t.value=(now*0.001)%1000;W.rainU.c.value.copy(camera.position)}
-  if(composer){finP.uniforms.focus.value+=((mode==='drive'&&!seq?W.cd+1.5:W.cd+0.3)-finP.uniforms.focus.value)*Math.min(1,dt*4);finP.uniforms.time.value=(now*0.001)%10;composer.render()}else renderer.render(scene,camera)}
+  if(composer){finP.uniforms.focus.value+=((mode==='drive'&&!seq?W.cd+1.5:W.cd+0.3)-finP.uniforms.focus.value)*Math.min(1,dt*4);finP.uniforms.time.value=(now*0.001)%10;composer.render();finP.uniforms.tDiffuse.value=composer.readBuffer.texture;renderer.setRenderTarget(W.rtL);W.q1.render(renderer);renderer.setRenderTarget(null);W.fx.uniforms.tDiffuse.value=W.rtL.texture;W.q2.render(renderer)}else renderer.render(scene,camera)}
 requestAnimationFrame(frame);
 $('go').addEventListener('click',function(){audio();if(AC&&AC.state==='suspended')AC.resume();started=true;camYaw=me.yaw+Math.PI;$('load').style.opacity=0;setTimeout(function(){$('load').style.display='none'},1000);
   $('hint').style.opacity=.9;setTimeout(function(){$('hint').style.opacity=0},9000)});
 document.addEventListener('visibilitychange',function(){if(AC){if(document.hidden)AC.suspend();else if(started)AC.resume()}});
-window.__vlook=function(k){if(!me)return;applyLook(k===0?look:(k||LORD[(LORD.indexOf(look)+1)%LORD.length]))};window.__dbg=function(){return [mood,finP?finP.uniforms.expo.value:null,!!composer,renderer.toneMapping,W.sun.intensity,W.hemi.intensity,SKY[MOODS[mood].sky].mean,scene.fog.density]};window.__vmood=function(k){applyMood(k||MORD[(MORD.indexOf(mood)+1)%MORD.length])};window.__sg=function(a,b,c){if(a!==undefined)DSG=a;if(b!==undefined)WSG=b;if(c)SEAT=c};window.__v={me:function(){return me},car:car,act:act,set:function(o){for(var k in o){if(k==='yaw')camYaw=o[k];else if(k==='pitch')camPitch=o[k];else if(k[0]==='c')car[k.slice(1)]=o[k];else me[k]=o[k]}},mode:function(){return mode},sun:sunDir,boxes:boxes};
+window.__vfig=function(){if(!me||seq)return;var ks=Object.keys(loaded.av),k=ks[(ks.indexOf(W.fig)+1)%ks.length],o=me,n=mkPerson(k,'sit');n.x=o.x;n.z=o.z;n.y=o.y;n.yaw=o.yaw;n.sp=o.sp;n.poseW=o.poseW;scene.remove(o.o);scene.remove(o.bl);me=n;W.fig=k;try{localStorage.setItem('dr-vf',k)}catch(e){}};window.__vlook=function(k){if(!me)return;applyLook(k===0?look:(k||LORD[(LORD.indexOf(look)+1)%LORD.length]))};window.__dbg=function(){return [mood,finP?finP.uniforms.expo.value:null,!!composer,renderer.toneMapping,W.sun.intensity,W.hemi.intensity,SKY[MOODS[mood].sky].mean,scene.fog.density]};window.__vmood=function(k){applyMood(k||MORD[(MORD.indexOf(mood)+1)%MORD.length])};window.__sg=function(a,b,c){if(a!==undefined)DSG=a;if(b!==undefined)WSG=b;if(c)SEAT=c};window.__v={me:function(){return me},car:car,act:act,set:function(o){for(var k in o){if(k==='yaw')camYaw=o[k];else if(k==='pitch')camPitch=o[k];else if(k[0]==='c')car[k.slice(1)]=o[k];else me[k]=o[k]}},mode:function(){return mode},sun:sunDir,boxes:boxes};
 })();
 </script>
 </body>
