@@ -7244,16 +7244,16 @@ function build(){
       one(40,-26,-1,22,13,13,0,0,1);one(40,26,1,22,13,13,0,0,1);one(6,-34,-1,44,13,12,0,0,1);one(6,34,1,44,13,12,0,0,1)});
     /* --- Bahnhofstraße: Villen mit Vorgärten, Herz-Jesu-Kirche vor dem Westerntor --- */
     var LA=lA-34-26,tA=seg(B0[0]+dA[0]/lA*34,B0[1]+dA[1]/lA*34,dA[0],dA[1],function(){var V={g:0.25,f:0.1,gr:1,h0:9.5,h1:13,w0:11,w1:15,gap:2},wn=[];
-      sw(30,LA,-9.5,-7);sw(30,LA,7,9.5);pl(30,LA,-13.5,-9.5,GRS,KH+0.012,4);pl(30,LA,9.5,13.5,GRS,KH+0.012,4);
-      for(i=30;i<LA-12;i+=13.5)[-9.75,9.75].forEach(function(z){if(z<0&&i>LA-100)return;bx(10.2,0.45,0.28,i+5.1,KH+0.22,z,STN);bx(10.2,0.75,0.5,i+5.1,KH+0.82,z,HG);[0,10.2].forEach(function(q){bx(0.36,1.3,0.36,i+q,KH+0.65,z,STN)})});
-      row(62,LA-80,-13.5,-1,V);row(62,LA-4,13.5,1,V);for(i=36;i<LA-10;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
-      var cx=LA-52;bx(44,13,17,cx,KH+6.5,-27,BRK);tri(17,9,44,cx,KH+13,-27,M.slate,Math.PI/2);bx(8,31,8,cx+26,KH+15.5,-27,BRK);var sp=new THREE.Mesh(new THREE.ConeGeometry(5.4,21,4),M.slate);sp.rotation.y=Math.PI/4;sp.position.set(cx+26,KH+41.5,-27);sp.castShadow=true;scene.add(sp);
+      sw(30,LA-33,-9.5,-7);sw(30,LA-33,7,9.5);pl(30,LA-33,-13.5,-9.5,GRS,KH+0.012,4);pl(30,LA-33,9.5,13.5,GRS,KH+0.012,4);
+      for(i=30;i<LA-46;i+=13.5)[-9.75,9.75].forEach(function(z){if(z<0&&i>LA-100)return;bx(10.2,0.45,0.28,i+5.1,KH+0.22,z,STN);bx(10.2,0.75,0.5,i+5.1,KH+0.82,z,HG);[0,10.2].forEach(function(q){bx(0.36,1.3,0.36,i+q,KH+0.65,z,STN)})});
+      row(62,LA-80,-13.5,-1,V);row(62,LA-48,13.5,1,V);for(i=36;i<LA-40;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
+      var cx=LA-58;bx(44,13,17,cx,KH+6.5,-27,BRK);tri(17,9,44,cx,KH+13,-27,M.slate,Math.PI/2);bx(8,31,8,cx+26,KH+15.5,-27,BRK);var sp=new THREE.Mesh(new THREE.ConeGeometry(5.4,21,4),M.slate);sp.rotation.y=Math.PI/4;sp.position.set(cx+26,KH+41.5,-27);sp.castShadow=true;scene.add(sp);
       [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(c){var t=new THREE.Mesh(new THREE.ConeGeometry(0.7,4,6),M.slate);t.position.set(cx+26+c[0]*3.6,KH+33,-27+c[1]*3.6);scene.add(t)});
       for(i=-18;i<=18;i+=6){wn.push([1.3,7.2,0.12,cx+i,KH+7.2,-18.45]);bx(0.9,12,1.0,cx+i+3,KH+6,-18.2,BRK)}wn.push([0.12,8,2.2,cx+30.03,KH+12,-27]);wn.push([2.2,4,0.12,cx+26,KH+24,-22.97]);wn.push([0.12,4,2.2,cx+30.03,KH+24,-27]);
       boxes.push({x0:cx-22,x1:cx+30,z0:-35.5,z1:-18.5,h:13});addW(wn)});
     /* --- Westernstraße: geschlossene Zeilen; Post, Westfälischer Hof, Barockhaus und Kaufhaus Klingenthal nach Fotos (Lage entlang der Straße angenommen) --- */
     var lW=Math.hypot(dW[0],dW[1]),LW=lW-22-6,tW=seg(WT[0]+dW[0]/lW*22,WT[1]+dW[1]/lW*22,dW[0],dW[1],function(){var S={g:0.3,f:0.25,gr:0.3,h0:11,h1:16,w0:7,w1:12,s:0.85},wn=[];
-      sw(24,LW,-6,-4);sw(24,LW,4,6);row(24,128,-6,-1,S);row(207,LW,-6,-1,S);row(24,150,6,1,S);row(216,LW,6,1,S);
+      sw(37,LW,-6,-4);sw(37,LW,4,6);row(50,128,-6,-1,S);row(207,LW,-6,-1,S);row(50,150,6,1,S);row(216,LW,6,1,S);
       /* Barockhaus mit Freitreppe */
       bx(26,10,12,145,KH+5,-16,SND);hip(27,5,13,145,KH+10,-16,M.tile);bx(8,0.5,3.2,145,KH+0.25,-8.6,STN);bx(6,0.25,4.2,145,KH+0.12,-8.1,STN);for(i=-10.4;i<=10.4;i+=3.47){if(Math.abs(i)>1)wn.push([1.2,2.2,0.12,145+i,KH+2.6,-9.95]);wn.push([1.2,2.2,0.12,145+i,KH+6.6,-9.95])}wn.push([1.5,2.8,0.12,145,KH+1.9,-9.95]);boxes.push({x0:132,x1:158,z0:-22,z1:-10,h:10});
       /* Kaufhaus Klingenthal */
@@ -7319,9 +7319,31 @@ function build(){
     /* --- Schildern: gebogene Gasse zum Markt; Westseite des Markts --- */
     var s0=tC(160,-25),dS=[124-s0[0],6-s0[1]],LS=Math.hypot(dS[0],dS[1]),tD=seg(s0[0],s0[1],dS[0],dS[1],function(){var G={g:0.9,f:0.5,h0:9,h1:12.5,w0:6,w1:9,s:0.75};row(4,LS-3,-3.3,-1,G);row(2,LS-14,3.3,1,G)});
     seg(122,-80,0,1,function(){row(0,72,0,1,{g:0.8,f:0.45,h0:9.5,h1:13,w0:7,w1:10,s:0.5})});
-    (function(){var e=new THREE.Mesh(new THREE.CircleGeometry(25,56),GRS);e.rotation.x=-Math.PI/2;e.position.set(WT[0],KH+0.022,WT[1]);e.receiveShadow=true;scene.add(e);e=new THREE.Mesh(new THREE.TorusGeometry(25,0.13,5,72),STN);e.rotation.x=Math.PI/2;e.position.set(WT[0],KH+0.05,WT[1]);scene.add(e);
-      var aA=Math.atan2(-dA[1],-dA[0]),aW=Math.atan2(dW[1],dW[0]),a,R=47;function df(x,y){return Math.abs(wrapA(x-y))}
-      for(a=0;a<6.28;a+=0.262){if(df(a,aA)<0.5||df(a,aW)<0.36)continue;(function(a){seg(WT[0]+Math.cos(a)*R,WT[1]+Math.sin(a)*R,-Math.sin(a),Math.cos(a),function(){one(0,0,-1,12.6,12,11+rnd()*5,rnd()<0.3,false,rnd()<0.6)})})(a)}})();
+    /* ===== Westerntor nach Luftbildern: Insel r=30, sechs Straßenarme, Häuserkranz r=58 =====
+       Arme (Karte heute): Bahnhofstraße SW, Westernstraße ONO, Le-Mans-Wall SO, Borchener Straße S, Riemekestraße NW, Friedrichstraße N */
+    (function(){var cx=WT[0],cz=WT[1],RI=30,R=58,e,k;
+      e=new THREE.Mesh(new THREE.CircleGeometry(RI,72),GRS);e.rotation.x=-Math.PI/2;e.position.set(cx,KH+0.022,cz);e.receiveShadow=true;scene.add(e);e=new THREE.Mesh(new THREE.TorusGeometry(RI,0.14,5,90),STN);e.rotation.x=Math.PI/2;e.position.set(cx,KH+0.05,cz);scene.add(e);
+      var aA=Math.atan2(-dA[1],-dA[0]),aW=Math.atan2(dW[1],dW[0]),D=Math.PI/180,
+        ARM=[{a:aW,hw:7,n:'W'},{a:45*D,hw:7.5},{a:90*D,hw:7.5},{a:aA,hw:10,n:'A'},{a:210*D,hw:7.5},{a:260*D,hw:7.5}],A2={g:0.3,f:0.1,gr:0.5,h0:10,h1:14,w0:9,w1:13,s:0.5};
+      function ring(a,fn){seg(cx+Math.cos(a)*R,cz+Math.sin(a)*R,-Math.sin(a),Math.cos(a),fn)}
+      function walk(a1,a2){var g=new THREE.RingGeometry(R-5.5,R,Math.max(4,Math.round((a2-a1)*14)),1,-a2,a2-a1),m=new THREE.Mesh(g,GW);m.rotation.x=-Math.PI/2;m.position.set(cx,KH+0.07,cz);m.receiveShadow=true;scene.add(m)}
+      /* Straßenstummel: beidseitig Häuser, hinten quer geschlossen */
+      ARM.forEach(function(q){if(q.n)return;seg(cx+Math.cos(q.a)*R,cz+Math.sin(q.a)*R,Math.cos(q.a),Math.sin(q.a),function(){row(13,56,-7,-1,A2);row(13,56,7,1,A2);sw(13,56,-7,-5);sw(13,56,5,7);GR=true;house(63,0,13,40,13,'x-');GR=false})});
+      /* Kranz: je Sektor zwischen zwei Armen */
+      for(k=0;k<ARM.length;k++){(function(p,q,k){var a1=p.a+p.hw/R,a2=q.a-q.hw/R;if(a2<a1)a2+=2*Math.PI;
+        if(k===3){a1=172*D}                                   /* Sektor Bahnhofstraße–Riemeke: davor steht die Herz-Jesu-Kirche */
+        var L=(a2-a1)*R,n,w,j,am;walk(a1,a2);
+        if(k===2){ring((a1+a2)/2,function(){one(0,0,-1,L-0.6,15,13.5,false,false,true)});return}   /* Bankhaus: breiter Block mit Walmdach (Foto 1950er/70er) */
+        if(k===0){                                              /* rechts der Westernstraße: Erkerhaus an der Ecke, Baumgruppe, Haus */
+          am=a1+9/R;ring(am,function(){one(0,0,-1,17,13,15,false,false,true);bx(3,6.5,1.4,-4.5,KH+8,0.7,SND);hip(3.4,1.6,1.8,-4.5,KH+11.25,0.7,M.slate)});
+          for(j=0;j<4;j++){var at=a1+(22+j*4.2)/R,rt=R+3+(j%2)*5;tp.push([cx+Math.cos(at)*rt,cz+Math.sin(at)*rt])}
+          am=a2-7.5/R;ring(am,function(){one(0,0,-1,14,12,12.5,true,false,false)});return}
+        if(k===5){                                              /* links der Westernstraße: Eckhaus mit Turm (Vorkriegsfoto), Giebelhaus mit Bierstube, alter Mansardbau */
+          am=a2-10.5/R;ring(am,function(){one(0,0,-1,20,14,15.5,false,false,true);var t=new THREE.Mesh(new THREE.CylinderGeometry(1.9,1.9,19,12),SND);t.position.set(10,KH+9.5,-0.4);t.castShadow=true;scene.add(t);t=new THREE.Mesh(new THREE.ConeGeometry(2.3,6.5,12),M.slate);t.position.set(10,KH+22.2,-0.4);t.castShadow=true;scene.add(t);
+            bx(20.4,0.25,1.3,0,KH+4.3,0.65,SND);bx(20.4,0.9,0.08,0,KH+4.85,1.26,M.metal,0,false);bx(9,0.22,1.1,-4,KH+8.2,0.55,SND);bx(9,0.9,0.08,-4,KH+8.75,1.06,M.metal,0,false)});
+          am=a2-(21+5)/R;ring(am,function(){one(0,0,-1,9.5,12,10,true,false,false);sign(0,0,-1,9.5)});
+          L=(a2-32/R-a1)*R;n=Math.max(1,Math.round(L/20));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.5,13,12.5+j,false,false,true)})})(j);return}
+        n=Math.max(1,Math.round(L/13));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.4,12,11+rnd()*4,rnd()<0.3,false,rnd()<0.6)})})(j)})(ARM[k],ARM[(k+1)%ARM.length],k)}})();
     /* --- Gleis, Fahrdraht, Masten, Gaslaternen --- */
     var CP=[tS(9,0),tS(26,0),tA(60,0),tA(LA*0.5,0),tA(LA-6,0),tW(4,0),tW(LW*0.33,0),tW(LW*0.66,0),tW(LW-2,0),tC(8,2.6),tC(60,2.6),tC(108,2.8),tC(126,5),tC(135,14),tC(138,27),tC(138,42)].map(function(p){return new V3(p[0],0,p[1])}),cu=new THREE.CatmullRomCurve3(CP,false,'catmullrom',0.5);cu.arcLengthDivisions=1200;var CL=cu.getLength(),SR=mat(0x2a2a2c,0.35,{metalness:0.8,envMapIntensity:1.0});
     function off(c,d,y,n){var P=[],k;for(k=0;k<=n;k++){var u=k/n,p=c.getPointAt(u),t=c.getTangentAt(u);P.push(new V3(p.x-t.z*d,y,p.z+t.x*d))}return new THREE.CatmullRomCurve3(P)}
@@ -7378,7 +7400,7 @@ function build(){
       var bw=new THREE.Mesh(new THREE.TorusGeometry(0.9,0.022,5,14,0.9),IRN);bw.rotation.z=Math.PI/2-0.45;bw.position.set(0,4.5,-0.7);TG.add(bw)})();
     scene.add(TG);
     function sAt(q){var k,b=0,bd=1e9;for(k=0;k<=4000;k++){var p=cu.getPointAt(k/4000),d=Math.hypot(p.x-q[0],p.z-q[1]);if(d<bd){bd=d;b=k}}return b/4000*CL}
-    var T={g:TG,s:0,v:0,st:0,dw:6,L:CL,pax:[],yaw:0,x:0,z:0,ck:0,stops:[{n:'Hauptbahnhof',p:tS(9.5,0)},{n:'Herz-Jesu-Kirche',p:tA(LA-62,0)},{n:'Westernstraße',p:tW(176,0)},{n:'Marienplatz',p:tC(30,2.6)},{n:'Rathausplatz',p:tC(123,4.2)}]};T.stops.forEach(function(s){s.s=sAt(s.p)});T.s=sAt(WT)-34;
+    var T={g:TG,s:0,v:0,st:0,dw:6,L:CL,pax:[],yaw:0,x:0,z:0,ck:0,stops:[{n:'Hauptbahnhof',p:tS(9.5,0)},{n:'Herz-Jesu-Kirche',p:tA(LA-62,0)},{n:'Westernstraße',p:tW(176,0)},{n:'Marienplatz',p:tC(30,2.6)},{n:'Rathausplatz',p:tC(123,4.2)}]};T.stops.forEach(function(s){s.s=sAt(s.p)});T.s=sAt(WT)-70;
     T.view=0;T.near='';
     T.upd=function(dt){var th=0;if(mode==='tram'&&started){th=-stickIn()[1];if(Math.abs(th)<0.12)th=0}
       var tv=th>0?th*9.5:th*3,ac=(tv===0||tv*T.v<0||Math.abs(tv)<Math.abs(T.v))?2.2:0.9;T.v+=clamp(tv-T.v,-ac*dt,ac*dt);T.s+=T.v*dt;if(T.s<2){T.s=2;T.v=0}if(T.s>T.L-3){T.s=T.L-3;T.v=0}
