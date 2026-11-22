@@ -7216,8 +7216,8 @@ function build(){
     function sgTex(txt,dk,ser){var c=document.createElement('canvas');c.width=512;c.height=64;var g=c.getContext('2d');g.fillStyle=dk?'#1a1512':'#e6dcc2';g.fillRect(0,0,512,64);g.strokeStyle=dk?'#b9963c':'#2a2018';g.lineWidth=3;g.strokeRect(4,4,504,56);g.fillStyle=dk?'#d2b05a':'#1e1812';g.font='bold 30px '+(ser===false?'Arial,sans-serif':'Georgia,serif');g.textAlign='center';g.textBaseline='middle';g.fillText(txt.toUpperCase(),256,34,480);var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return new THREE.MeshStandardMaterial({map:t,roughness:0.7,envMapIntensity:0.3})}
     for(i=0;i<24;i++)SGT.push(sgTex(NM[i%NM.length]+'  ·  '+FN[(i*7)%FN.length],i%3===0));
     function sign(x,zf,side,w,m,y){var wd=Math.min(w-1.2,5.2),e=new THREE.Mesh(new THREE.PlaneGeometry(wd,wd/8),m||SGT[(sgn++)%24]);e.position.set(x,KH+(y||3.42),zf-side*0.42);e.rotation.y=side<0?0:Math.PI;scene.add(e)}
-    function row(x0,x1,zf,side,o){var p=x0;while(p<x1-0.5){var gb=rnd()<o.g,w=o.w0+rnd()*(o.w1-o.w0),d=11+rnd()*3,h=o.h0+rnd()*(o.h1-o.h0);if(x1-p-w<o.w0*0.8)w=x1-p;DE=gb;FW=gb&&rnd()<(o.f||0);house(p+w/2,zf+side*d/2,w,d,h,side<0?'z+':'z-');if(o.s&&rnd()<o.s)sign(p+w/2,zf,side,w);p+=w+(o.gap?o.gap*(0.7+rnd()*0.6):0)}DE=false;FW=false}
-    function one(x,zf,side,w,d,h,gb,fw){DE=!!gb;FW=!!fw;house(x,zf+side*d/2,w,d,h,side<0?'z+':'z-');DE=false;FW=false}
+    function row(x0,x1,zf,side,o){var p=x0;while(p<x1-0.5){var gb=rnd()<o.g,w=o.w0+rnd()*(o.w1-o.w0),d=11+rnd()*3,h=o.h0+rnd()*(o.h1-o.h0);if(x1-p-w<o.w0*0.8)w=x1-p;DE=gb;FW=gb&&rnd()<(o.f||0);GR=!gb&&rnd()<(o.gr||0);house(p+w/2,zf+side*d/2,w,d,h,side<0?'z+':'z-');if(!GR&&o.s&&rnd()<o.s)sign(p+w/2,zf,side,w);p+=w+(o.gap?o.gap*(0.7+rnd()*0.6):0)}DE=false;FW=false;GR=false}
+    function one(x,zf,side,w,d,h,gb,fw,gr){DE=!!gb;FW=!!fw;GR=!!gr;house(x,zf+side*d/2,w,d,h,side<0?'z+':'z-');DE=false;FW=false;GR=false}
     function stGab(wd,ht,x,y,z,ry,m1,m2,n){tri(wd,ht,0.6,x,y,z,m1,ry);var c=Math.cos(ry||0),s=Math.sin(ry||0),k;for(k=0;k<n;k++)[-1,1].forEach(function(sg){var o=sg*(wd/2-0.4-k*(wd/2-0.6)/n),e=bx(1.0,ht/n*0.75,0.8,x+o*c,y+ht/n*(k+0.42),z-o*s,m2,ry);var cn=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.9,6),m2);cn.position.set(e.position.x,y+ht/n*(k+0.8)+0.45,e.position.z);scene.add(cn)});bx(0.5,1.8,0.5,x,y+ht+0.6,z,m2,ry)}
     var B0=[-850,556],WT=[-545,200],MP=[-105,74],RH=[40,118],dA=[WT[0]-B0[0],WT[1]-B0[1]],lA=Math.hypot(dA[0],dA[1]),dW=[MP[0]-WT[0],MP[1]-WT[1]],dC=[RH[0]-MP[0],RH[1]-MP[1]];
     /* --- Hauptbahnhof (Form nach Foto: gelber Backstein, Flachdach mit Zinnenkranz) --- */
@@ -7227,9 +7227,9 @@ function build(){
       bx(5,0.14,44,1.6,KH+3.95,0,mat(0x34332f,0.6));for(i=-20;i<=20;i+=8)bx(0.14,3.9,0.14,3.8,KH+1.95,i,M.metal);
       var ck=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.0,0.1,28),mat(0xf0ead8,0.5));ck.rotation.z=Math.PI/2;ck.position.set(-0.38,KH+15.6,0);scene.add(ck);
       var e=new THREE.Mesh(new THREE.PlaneGeometry(9.6,1.2),sgTex('Paderborn Hbf',false));e.position.set(-0.4,KH+8.4,0);e.rotation.y=Math.PI/2;scene.add(e);addW(wn);
-      one(40,-26,-1,22,13,13);one(40,26,1,22,13,13)});
+      one(40,-26,-1,22,13,13,0,0,1);one(40,26,1,22,13,13,0,0,1)});
     /* --- Bahnhofstraße: Villen mit Vorgärten, Herz-Jesu-Kirche vor dem Westerntor --- */
-    var LA=lA-34-26,tA=seg(B0[0]+dA[0]/lA*34,B0[1]+dA[1]/lA*34,dA[0],dA[1],function(){var V={g:0.4,f:0.1,h0:9.5,h1:13,w0:11,w1:15,gap:5},wn=[];
+    var LA=lA-34-26,tA=seg(B0[0]+dA[0]/lA*34,B0[1]+dA[1]/lA*34,dA[0],dA[1],function(){var V={g:0.25,f:0.1,gr:1,h0:9.5,h1:13,w0:11,w1:15,gap:5},wn=[];
       sw(30,LA,-9.5,-7);sw(30,LA,7,9.5);pl(30,LA,-13.5,-9.5,GRS,KH+0.012,4);pl(30,LA,9.5,13.5,GRS,KH+0.012,4);
       for(i=30;i<LA-12;i+=13.5)[-9.75,9.75].forEach(function(z){if(z<0&&i>LA-100)return;bx(10.2,0.45,0.28,i+5.1,KH+0.22,z,STN);bx(10.2,0.75,0.5,i+5.1,KH+0.82,z,HG);[0,10.2].forEach(function(q){bx(0.36,1.3,0.36,i+q,KH+0.65,z,STN)})});
       row(62,LA-98,-13.5,-1,V);row(62,LA-4,13.5,1,V);for(i=36;i<LA-10;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
@@ -7238,8 +7238,8 @@ function build(){
       for(i=-18;i<=18;i+=6){wn.push([1.3,7.2,0.12,cx+i,KH+7.2,-18.45]);bx(0.9,12,1.0,cx+i+3,KH+6,-18.2,BRK)}wn.push([0.12,8,2.2,cx+30.03,KH+12,-27]);wn.push([2.2,4,0.12,cx+26,KH+24,-22.97]);wn.push([0.12,4,2.2,cx+30.03,KH+24,-27]);
       boxes.push({x0:cx-22,x1:cx+30,z0:-35.5,z1:-18.5,h:13});addW(wn)});
     /* --- Westernstraße: geschlossene Zeilen; Post, Westfälischer Hof, Barockhaus und Kaufhaus Klingenthal nach Fotos (Lage entlang der Straße angenommen) --- */
-    var lW=Math.hypot(dW[0],dW[1]),LW=lW-22-6,tW=seg(WT[0]+dW[0]/lW*22,WT[1]+dW[1]/lW*22,dW[0],dW[1],function(){var S={g:0.3,f:0.25,h0:11,h1:16,w0:7,w1:12,s:0.85},wn=[];
-      sw(0,LW,-6,-4);sw(0,LW,4,6);row(0,128,-6,-1,S);row(207,LW,-6,-1,S);row(0,150,6,1,S);row(216,LW,6,1,S);
+    var lW=Math.hypot(dW[0],dW[1]),LW=lW-22-6,tW=seg(WT[0]+dW[0]/lW*22,WT[1]+dW[1]/lW*22,dW[0],dW[1],function(){var S={g:0.3,f:0.25,gr:0.3,h0:11,h1:16,w0:7,w1:12,s:0.85},wn=[];
+      sw(0,LW,-6,-4);sw(0,LW,4,6);row(-36,128,-6,-1,S);row(207,LW,-6,-1,S);row(0,150,6,1,S);row(216,LW,6,1,S);
       /* Barockhaus mit Freitreppe */
       bx(26,10,12,145,KH+5,-16,SND);hip(27,5,13,145,KH+10,-16,M.tile);bx(8,0.5,3.2,145,KH+0.25,-8.6,STN);bx(6,0.25,4.2,145,KH+0.12,-8.1,STN);for(i=-10.4;i<=10.4;i+=3.47){if(Math.abs(i)>1)wn.push([1.2,2.2,0.12,145+i,KH+2.6,-9.95]);wn.push([1.2,2.2,0.12,145+i,KH+6.6,-9.95])}wn.push([1.5,2.8,0.12,145,KH+1.9,-9.95]);boxes.push({x0:132,x1:158,z0:-22,z1:-10,h:10});
       /* Kaufhaus Klingenthal */
@@ -7255,7 +7255,7 @@ function build(){
       for(i=154;i<=188;i+=3.4)if(Math.abs(i-171)>3.6){wn.push([1.3,3,0.12,i,KH+3.2,5.95]);wn.push([1.3,3,0.12,i,KH+9.6,5.95])}wn.push([2.4,4,0.12,171,KH+2.6,4.28]);boxes.push({x0:152,x1:190,z0:6,z1:20,h:14});
       one(203,6,1,22,13,14);sign(203,6,1,9,sgTex('Westfälischer Hof',true),4.4);addW(wn)});
     /* --- Marienplatz (Gartenanlage mit Mariensäule) und Rathausplatz --- */
-    var LC=Math.hypot(dC[0],dC[1]),tC=seg(MP[0],MP[1],dC[0],dC[1],function(){var G={g:0.65,f:0.35,h0:10,h1:14,w0:6.5,w1:10,s:0.8},HI={g:0.5,f:0,h0:14,h1:18,w0:8,w1:11,s:0.7},wn0=[],gx=36,gz=-19,R=15,e;
+    var LC=Math.hypot(dC[0],dC[1]),tC=seg(MP[0],MP[1],dC[0],dC[1],function(){var G={g:0.65,f:0.35,h0:10,h1:14,w0:6.5,w1:10,s:0.8},HI={g:0.25,f:0,gr:0.7,h0:14,h1:18,w0:8,w1:11,s:0.7},wn0=[],gx=36,gz=-19,R=15,e;
       sw(0,116,5.2,7);row(0,112,7,1,G);
       e=new THREE.Mesh(new THREE.CircleGeometry(R,40),GRS);e.rotation.x=-Math.PI/2;e.position.set(gx,KH+0.03,gz);e.receiveShadow=true;scene.add(e);
       e=new THREE.Mesh(new THREE.RingGeometry(5.2,6.8,40),mat(0xb8ad94,0.95));e.rotation.x=-Math.PI/2;e.position.set(gx,KH+0.04,gz);scene.add(e);[[0,1],[1,0]].forEach(function(a){var p=bx(a[0]?1.5:2*R-1,0.02,a[0]?2*R-1:1.5,gx,KH+0.04,gz,mat(0xb8ad94,0.95),0,false)});
@@ -7298,6 +7298,9 @@ function build(){
     [4.3,9.1,12.35].forEach(function(y){bx(0.35,0.28,28.5,RX-0.05,KH+y,RZ,RD)});[16.6,20.0].forEach(function(y,k){bx(0.3,0.22,28-(y-12.5)*2.45,RX-0.2,KH+y,RZ,RD)});
     bx(1.6,0.16,13,RX-4.2,KH+0.09,RZ,RD,0,false);
 
+      scene.add(new THREE.Mesh(mergeB(wn.map(function(w){return[0.12,w[1]+0.3,w[2]+0.3,w[3]+0.025,w[4],w[5]]})),mat(0xb9ad92,0.8)));
+      for(i=0;i<6;i++)[-1,1].forEach(function(sg){var q=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.0,0.7,14),RS);q.rotation.z=Math.PI/2;q.position.set(RX+0.2,KH+12.5+i*1.93,RZ+sg*(13.4-i*2.36-1.15));q.castShadow=true;scene.add(q)});
+      [-9.3,9.3].forEach(function(dz){for(i=0;i<4;i++)[-1,1].forEach(function(sg){var q=new THREE.Mesh(new THREE.CylinderGeometry(0.8,0.8,0.6,12),RS);q.rotation.z=Math.PI/2;q.position.set(RX-3.05,KH+10.6+i*1.7,RZ+dz+sg*(4.5-i*1.2-0.95));scene.add(q)})});
       scene.add(new THREE.Mesh(mergeB(wn),WN))});
     /* --- Schildern: gebogene Gasse zum Markt; Westseite des Markts --- */
     var s0=tC(160,-25),dS=[124-s0[0],6-s0[1]],LS=Math.hypot(dS[0],dS[1]),tD=seg(s0[0],s0[1],dS[0],dS[1],function(){var G={g:0.9,f:0.5,h0:9,h1:12.5,w0:6,w1:9,s:0.75};row(4,LS-3,-3.3,-1,G);row(12,LS-14,3.3,1,G)});
