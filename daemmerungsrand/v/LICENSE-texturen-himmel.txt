@@ -1,2 +1,3 @@
 Poly Haven (CC0): roof_slates_02, roof_07, grey_stone_path, rock_wall_17, wood_planks_dirt, plaster_stone_wall_01, plaster_stone_wall_02, medieval_wall_01, patterned_concrete_wall, bark_brown_02, wooden_gate, dark_wooden_planks; Erdboden aus Poly-Haven-Vorschaubild.
 ambientCG (CC0): MorningSkyHDRI011B, DaySkyHDRI063B, NightSkyHDRI003.
+Poly Haven Modelle (CC0): wooden_barrels_01, wooden_crate_01, wooden_bucket_01, wooden_bucket_02, ceramic_pot, planter_pot_clay, picke_dirty_01, street_rat, treasure_chest.
