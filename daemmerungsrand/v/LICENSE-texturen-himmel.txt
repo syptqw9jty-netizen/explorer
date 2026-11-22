@@ -1,2 +1,2 @@
-Poly Haven (CC0): roof_slates_02, roof_07, grey_stone_path, rock_wall_17, wood_planks_dirt, plaster_stone_wall_01, plaster_stone_wall_02, medieval_wall_01, patterned_concrete_wall; Erdboden aus Poly-Haven-Vorschaubild.
+Poly Haven (CC0): roof_slates_02, roof_07, grey_stone_path, rock_wall_17, wood_planks_dirt, plaster_stone_wall_01, plaster_stone_wall_02, medieval_wall_01, patterned_concrete_wall, bark_brown_02, wooden_gate, dark_wooden_planks; Erdboden aus Poly-Haven-Vorschaubild.
 ambientCG (CC0): MorningSkyHDRI011B, DaySkyHDRI063B, NightSkyHDRI003.
