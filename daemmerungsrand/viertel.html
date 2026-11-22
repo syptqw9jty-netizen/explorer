@@ -7373,10 +7373,12 @@ function build(){
           for(j=0;j<4;j++){var at=a1+(22+j*4.2)/R,rt=R+3+(j%2)*5;tp.push([cx+Math.cos(at)*rt,cz+Math.sin(at)*rt])}
           am=a2-7.5/R;ring(am,function(){one(0,0,-1,14,12,12.5,true,false,false)});return}
         if(k===5){                                              /* links der Westernstraße: Eckhaus mit Turm (Vorkriegsfoto), Giebelhaus mit Bierstube, alter Mansardbau */
-          am=a2-10.5/R;ring(am,function(){one(0,0,-1,20,14,15.5,false,false,true);var t=new THREE.Mesh(new THREE.CylinderGeometry(1.9,1.9,19,12),SND);t.position.set(10,KH+9.5,-0.4);t.castShadow=true;scene.add(t);t=new THREE.Mesh(new THREE.ConeGeometry(2.3,6.5,12),M.slate);t.position.set(10,KH+22.2,-0.4);t.castShadow=true;scene.add(t);
-            bx(20.4,0.25,1.3,0,KH+4.3,0.65,SND);bx(20.4,0.9,0.08,0,KH+4.85,1.26,M.metal,0,false);bx(9,0.22,1.1,-4,KH+8.2,0.55,SND);bx(9,0.9,0.08,-4,KH+8.75,1.06,M.metal,0,false)});
-          am=a2-(21+5)/R;ring(am,function(){one(0,0,-1,9.5,12,10,true,false,false);sign(0,0,-1,9.5)});
-          L=(a2-32/R-a1)*R;n=Math.max(1,Math.round(L/20));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.5,13,12.5+j,false,false,true)})})(j);return}
+          am=a2-12/R;ring(am,function(){/* PROVISORISCH: Eckhaus-Modell des Nutzers (eckhaus32.glb), Lage nicht historisch bestätigt. Ein einzelnes Objekt: window.__eck (Gruppe) bzw. __eckMove(dx,dz,drehung) verschiebt es. */
+            var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.07,-6.6);G.rotation.y=Math.PI;scene.add(G);var bxc={x0:-11.6,x1:11.6,z0:-13.2,z1:0,h:18};boxes.push(bxc);W.eck=G;window.__eck=G;
+            window.__eckMove=function(dx,dz,ry){G.position.x+=dx||0;G.position.z+=dz||0;G.rotation.y+=ry||0;if(bxc.r){bxc.r[0]+=dx||0;bxc.r[1]+=dz||0}return[G.position.x,G.position.z,G.rotation.y]};
+            new THREE.GLTFLoader().load('v/m/eckhaus32.glb',function(g){var r=g.scene,bb=new THREE.Box3().setFromObject(r),s=23.2/(bb.max.x-bb.min.x);r.position.set(-(bb.min.x+bb.max.x)/2*s,-bb.min.y*s,-(bb.min.z+bb.max.z)/2*s);r.scale.setScalar(s);r.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material)o.material.envMapIntensity=0.5}});G.add(r)})});
+          am=a2-(24+5)/R;ring(am,function(){one(0,0,-1,9.5,12,10,true,false,false);sign(0,0,-1,9.5)});
+          L=(a2-35/R-a1)*R;n=Math.max(1,Math.round(L/20));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.5,13,12.5+j,false,false,true)})})(j);return}
         n=Math.max(1,Math.round(L/13));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.4,12,11+rnd()*4,rnd()<0.3,false,rnd()<0.6)})})(j)})(ARM[k],ARM[(k+1)%ARM.length],k)}})();
     /* --- Gleis, Fahrdraht, Masten, Gaslaternen --- */
     var CP=[tS(9,0),tS(26,0),tA(60,0),tA(LA*0.5,0),tA(LA-6,0),tW(4,0),tW(LW*0.33,0),tW(LW*0.66,0),tW(LW-2,0),tC(8,2.6),tC(60,2.6),tC(108,2.8),tC(126,5),tC(135,14),tC(138,27),tC(138,42)].map(function(p){return new V3(p[0],0,p[1])}),cu=new THREE.CatmullRomCurve3(CP,false,'catmullrom',0.5);cu.arcLengthDivisions=1200;var CL=cu.getLength(),SR=mat(0x2a2a2c,0.35,{metalness:0.8,envMapIntensity:1.0});
