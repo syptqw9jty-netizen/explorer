@@ -7207,9 +7207,9 @@ function build(){
       for(j=t0;j<tp.length;j++){w=tr(tp[j][0],tp[j][1]);tp[j][0]=w[0];tp[j][1]=w[1]}
       for(j=s0;j<scene.children.length;j++){var o=scene.children[j];w=tr(o.position.x,o.position.z);o.position.x=w[0];o.position.z=w[1];o.quaternion.premultiply(q)}
       tr.th=th;return tr}
-    [M.plaster,M.plaster2,M.plaster3,M.plaster4,M.plaster5].forEach(function(m,k){wsMul(m,k%2?'putz2_d':'putz1_d',0.27)});M.brick.map=phT('ziegel_d');M.brick.normalMap=phT('ziegel_n',true);M.brick.color.set(0xd8c8bc);
-    var SE=new THREE.MeshStandardMaterial({map:phT('setts_d'),normalMap:phT('setts_n',true),roughness:0.6,metalness:0,envMapIntensity:0.9,color:0xbdb6aa}),GW=mat(0xb9b2a4,0.85,{map:phT('gehweg_d')}),WNm=mat(0x10161e,0.18,{envMapIntensity:1.1}),STN=mat(0x8a8474,0.85),HG=mat(0x26381c,0.95),GRS=mat(0x3c4a26,1),
-      BRK=wsMul(mat(0x9a5a44,0.85),'ziegel_d',0.25,2.6),BRY=wsMul(mat(0xc4a460,0.85),'ziegel_d',0.25,2.8),SND=wsMul(mat(0x9a8e74,0.85),'putz1_d',0.2,4.6);
+    [M.plaster,M.plaster2,M.plaster3,M.plaster4,M.plaster5].forEach(function(m,k){wsMul(m,k===2||k===4?'putzz_d':k%2?'putz2_d':'putz1_d',k===2||k===4?0.22:0.27)});wsMul(M.lime,'sand_d',0.3);M.front.forEach(function(m){wsMul(m,'lack_d',0.7)});M.door.color.set(0x5a4630);M.door.roughness=0.8;M.door.metalness=0;wsMul(M.door,'tor_d',0.55);M.brick.map=phT('ziegel_d');M.brick.normalMap=phT('ziegel_n',true);M.brick.color.set(0xd8c8bc);
+    var SE=new THREE.MeshStandardMaterial({map:phT('setts_d'),normalMap:phT('setts_n',true),roughness:0.6,metalness:0,envMapIntensity:0.9,color:0xbdb6aa}),GW=mat(0xb9b2a4,0.85,{map:phT('gehweg_d')}),WNm=mat(0x10161e,0.18,{envMapIntensity:1.1}),STN=wsMul(mat(0x8a8474,0.85),'innen_d',0.4),HG=mat(0x26381c,0.95),GRS=mat(0x3c4a26,1),
+      BRK=wsMul(mat(0x9a5a44,0.85),'ziegel_d',0.25,2.6),BRY=wsMul(mat(0xc4a460,0.85),'ziegel_d',0.25,2.8),SND=wsMul(mat(0x9a8e74,0.85),'sand_d',0.3,4.6);
     pl(-960,131,-170,690,SE,KH+0.004,3.2);
     /* Ladenschilder (Namen erfunden, außer belegten) */
     var NM=['Kolonialwaren','Tabak · Cigarren','Buchhandlung','Conditorei · Café','Schuhwaren','Drogerie','Uhren · Goldwaren','Fleischerei','Bäckerei','Eisenwaren','Manufakturwaren','Photograph','Weinhandlung','Papier · Schreibwaren','Möbel','Friseur','Gasthof','Kurzwaren','Glas · Porzellan','Herrenmoden'],FN=['H. Schulte','J. Brinkmann','Gebr. Meyer','A. Kleine','W. Hartmann','F. Becker','Th. Vogt','C. Niggemann','L. Rose','Wwe. Peters'],SGT=[],sgn=0;
@@ -7280,7 +7280,7 @@ function build(){
       bx(9,27,9,170,KH+13.5,104,SND);var dm=new THREE.Mesh(new THREE.SphereGeometry(5.4,20,12,0,6.3,0,1.6),M.slate);dm.scale.y=1.15;dm.position.set(170,KH+27,104);dm.castShadow=true;scene.add(dm);e=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.7,4,10),SND);e.position.set(170,KH+34.5,104);scene.add(e);e=new THREE.Mesh(new THREE.SphereGeometry(1.8,12,8,0,6.3,0,1.6),M.slate);e.scale.y=1.4;e.position.set(170,KH+36.5,104);scene.add(e);
       addW(wn0);
     /* Rathaus: drei Giebel nach Westen (vereinfachte Weserrenaissance) */
-    var RS=mat(0x7d725c,0.85),RD=mat(0x4a4234,0.85),RG=mat(0x6e6451,0.85),WN=mat(0x10161e,0.18,{envMapIntensity:1.1}),RX=148,RZ=0,wn=[];
+    var RS=wsMul(mat(0x86795f,0.85),'quader_d',0.42,4.6),RD=wsMul(mat(0x4a4234,0.85),'innen_d',0.4),RG=wsMul(mat(0x73684f,0.85),'quader_d',0.42,4.6),WN=mat(0x10161e,0.18,{envMapIntensity:1.1}),RX=148,RZ=0,wn=[];
     bx(20,12.5,28,RX+10,KH+6.25,RZ,RS);boxes.push({x0:RX-3.2,x1:RX+20,z0:RZ-14,z1:RZ+14,h:12.5});
     function gab(w,h,len,x,y,z,m){var e=new THREE.Mesh(gTri(w,h,len),m);e.rotation.y=Math.PI/2;e.position.set(x,y,z);e.castShadow=true;e.receiveShadow=true;scene.add(e);return e}
     gab(28,11,19.6,RX+10.2,KH+12.5,RZ,M.tile);gab(29,11.8,0.7,RX+0.2,KH+12.5,RZ,RS);

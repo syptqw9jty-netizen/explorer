@@ -1,5 +1,5 @@
 Poly Haven (CC0): roof_slates_02, roof_07, grey_stone_path, rock_wall_17, wood_planks_dirt, plaster_stone_wall_01, plaster_stone_wall_02, medieval_wall_01, patterned_concrete_wall, bark_brown_02, wooden_gate, dark_wooden_planks; Erdboden aus Poly-Haven-Vorschaubild.
 ambientCG (CC0): MorningSkyHDRI011B, DaySkyHDRI063B, NightSkyHDRI003.
-Poly Haven Modelle (CC0): wooden_barrels_01, wooden_crate_01, wooden_bucket_01, wooden_bucket_02, ceramic_pot, planter_pot_clay, picke_dirty_01, street_rat, treasure_chest, wooden_candlestick, rock_09. Texturen: wood_cabinet_worn_long, cobblestone_floor_02, grey_cartago_02, rough_plaster_03, grey_plaster_03, brick_wall_02.
+Poly Haven Modelle (CC0): wooden_barrels_01, wooden_crate_01, wooden_bucket_01, wooden_bucket_02, ceramic_pot, planter_pot_clay, picke_dirty_01, street_rat, treasure_chest, wooden_candlestick, rock_09. Texturen: wood_cabinet_worn_long, cobblestone_floor_02, grey_cartago_02, rough_plaster_03, grey_plaster_03, brick_wall_02, sandstone_cracks, rough_plaster_brick_02, concrete_block_wall_03, weathered_peeling_timber.
 Pferd: Horse.glb aus den three.js-Beispielen, Modell von mirada (ro.me / "3 Dreams of Black"); Lizenz vor weiterer Verbreitung pruefen.
 Klang 1622 (Atmosphaere, Glocken, Musik): im Spiel synthetisch erzeugt, keine Fremddateien.
