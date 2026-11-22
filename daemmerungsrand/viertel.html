@@ -7255,14 +7255,43 @@ function build(){
     var lW=Math.hypot(dW[0],dW[1]),LW=lW-22-6,tW=seg(WT[0]+dW[0]/lW*22,WT[1]+dW[1]/lW*22,dW[0],dW[1],function(){var S={g:0.3,f:0.25,gr:0.3,h0:11,h1:16,w0:7,w1:12,s:0.85},wn=[];
       sw(37,LW,-6,-4);sw(37,LW,4,6);row(50,128,-6,-1,S);row(207,LW,-6,-1,S);row(50,150,6,1,S);row(216,LW,6,1,S);
       /* Barockhaus mit Freitreppe */
-      bx(26,10,12,145,KH+5,-16,SND);hip(27,5,13,145,KH+10,-16,M.tile);bx(8,0.5,3.2,145,KH+0.25,-8.6,STN);bx(6,0.25,4.2,145,KH+0.12,-8.1,STN);for(i=-10.4;i<=10.4;i+=3.47){if(Math.abs(i)>1)wn.push([1.2,2.2,0.12,145+i,KH+2.6,-9.95]);wn.push([1.2,2.2,0.12,145+i,KH+6.6,-9.95])}wn.push([1.5,2.8,0.12,145,KH+1.9,-9.95]);boxes.push({x0:132,x1:158,z0:-22,z1:-10,h:10});
+      bx(28,10,12,146,KH+5,-24,SND);hip(29,5,13,146,KH+10,-24,M.tile);bx(8,0.5,3.2,146,KH+0.25,-16.6,STN);bx(6,0.25,4.2,146,KH+0.12,-16.1,STN);for(i=-11.2;i<=11.2;i+=3.73){if(Math.abs(i)>1)wn.push([1.2,2.2,0.12,146+i,KH+2.6,-17.95]);wn.push([1.2,2.2,0.12,146+i,KH+6.6,-17.95])}wn.push([1.5,2.8,0.12,146,KH+1.9,-17.95]);boxes.push({x0:132,x1:160,z0:-30,z1:-18,h:10});sw(131,160,-18,-6);
       /* Kaufhaus Klingenthal */
-      (function(){var H=18,c=document.createElement('canvas');c.width=256;c.height=1024;var g=c.getContext('2d'),Y=function(y){return 1024-y/H*1024};g.fillStyle='#bdb39e';g.fillRect(0,0,256,1024);g.fillStyle='#14161a';g.fillRect(10,Y(3.2),236,Y(0.4)-Y(3.2));g.fillStyle='#e9e4d6';g.beginPath();g.moveTo(6,Y(3.2));g.lineTo(250,Y(3.2));g.lineTo(256,Y(2.5));g.lineTo(0,Y(2.5));g.fill();
-        [5.4,8.5,11.6].forEach(function(y0){g.fillStyle='#978d78';g.fillRect(0,Y(y0-0.35),256,5);g.fillRect(0,Y(y0+1.95),256,5);for(var q=0;q<3;q++){g.fillStyle='#1c2026';g.fillRect(22+q*76,Y(y0+1.6),60,Y(y0)-Y(y0+1.6));g.strokeStyle='#ece7d8';g.lineWidth=4;g.strokeRect(22+q*76,Y(y0+1.6),60,Y(y0)-Y(y0+1.6));g.beginPath();g.moveTo(52+q*76,Y(y0+1.6));g.lineTo(52+q*76,Y(y0));g.moveTo(22+q*76,Y(y0+0.8));g.lineTo(82+q*76,Y(y0+0.8));g.stroke()}});
-        function tx(rx){var t=new THREE.CanvasTexture(c);t.wrapS=THREE.RepeatWrapping;t.repeat.set(rx,1);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return new THREE.MeshStandardMaterial({map:t,roughness:0.75,envMapIntensity:0.5})}
-        var top=mat(0x4a4842,0.9),b1=new THREE.Mesh(new THREE.BoxGeometry(31,H,17),[tx(4),tx(4),top,top,tx(7.5),tx(7.5)]);b1.position.set(190.5,KH+H/2,-14.5);b1.castShadow=true;b1.receiveShadow=true;scene.add(b1);
-        var cy=new THREE.Mesh(new THREE.CylinderGeometry(12,12,H,48,1,false,Math.PI*0.5,Math.PI),[tx(9),top,top]);cy.scale.set(1,1,0.72);cy.position.set(175.5,KH+H/2,-14.6);cy.castShadow=true;scene.add(cy);boxes.push({x0:163.5,x1:206,z0:-23,z1:-6,h:H});
-        var lm=sgTex('Klingenthal',false,false);[3.75,16.5].forEach(function(y){var e=new THREE.Mesh(new THREE.PlaneGeometry(8.5,1.06),lm);e.position.set(188,KH+y,-5.94);scene.add(e)})})();
+      /* Nach drei Fotos: Eckhaus des Neuen Bauens, Stirnseite zum Vorplatz des Barockhauses, runde Ecke (r=6 m), lange Front an der Westernstraße.
+         EG zurückgesetzt mit Pfeilern, Schaufenstern, Markisen; 3 OG mit Fensterbändern zwischen durchlaufenden Gesimsen; hohe Attika mit Einzelbuchstaben.
+         Aufbau als Bänder entlang der Grundrisslinie: echte Laibungen, Gesimse und Rahmen statt aufgemalter Fassade. Farben angenommen (Fotos schwarzweiß). */
+      (function(){var XW=160,ZS=-6,r=6,ZB=-18,L1=ZS-r-ZB,L2=Math.PI*r/2,L3=38,LT=L1+L2+L3,H=17.3,Q={},DS=THREE.DoubleSide,k,f;
+        function M2(m){m.side=DS;return m}
+        var PL=M2(wsMul(mat(0xb3a98f,0.92),'putz2_d',0.3,4.6)),GES=M2(mat(0xc4bba2,0.85)),FR=M2(mat(0xe2ddcd,0.55)),GL=M2(mat(0x0e1318,0.1,{envMapIntensity:1.35})),DK=M2(mat(0x1c1b19,0.3,{envMapIntensity:0.9})),SH=M2(mat(0x14120f,0.08,{envMapIntensity:1.4,emissive:0x3a2a16,emissiveIntensity:0.1})),AW=M2(mat(0xd6cdb6,0.92)),MS=[PL,GES,FR,GL,DK,SH,AW];
+        function P(s,o){if(s<=L1)return[XW-o,ZB+s,-1,0];if(s<=L1+L2){var a=Math.PI-(s-L1)/r;return[XW+r+Math.cos(a)*(r+o),ZS-r+Math.sin(a)*(r+o),Math.cos(a),Math.sin(a)]}return[XW+r+(s-L1-L2),ZS+o,0,1]}
+        function cuts(s0,s1){var l=[s0],q,b2;for(q=0;q<=18;q++){b2=L1+L2*q/18;if(b2>s0+1e-4&&b2<s1-1e-4)l.push(b2)}l.push(s1);return l}
+        function quad(m,a,b2,c,d,n){var q=Q[m.uuid]=Q[m.uuid]||{m:m,p:[],n:[],u:[]};[a,b2,c,a,c,d].forEach(function(v,ix){q.p.push(v[0],KH+v[1],v[2]);var nn=n.length===4?n[[0,1,2,0,2,3][ix]]:n;q.n.push(nn[0],nn[1],nn[2]);q.u.push(v[3]/4,v[1]/4)})}
+        function slab(s0,s1,y0,y1,oo,oi,m){var c=cuts(s0,s1),q;for(q=0;q<c.length-1;q++){var A=P(c[q],oo),B=P(c[q+1],oo);quad(m,[A[0],y0,A[1],c[q]],[B[0],y0,B[1],c[q+1]],[B[0],y1,B[1],c[q+1]],[A[0],y1,A[1],c[q]],[[A[2],0,A[3]],[B[2],0,B[3]],[B[2],0,B[3]],[A[2],0,A[3]]]);
+            if(oi!==undefined){var a=P(c[q],oi),b2=P(c[q+1],oi);quad(m,[A[0],y1,A[1],c[q]],[B[0],y1,B[1],c[q+1]],[b2[0],y1,b2[1],c[q+1]],[a[0],y1,a[1],c[q]],[0,1,0]);quad(m,[A[0],y0,A[1],c[q]],[B[0],y0,B[1],c[q+1]],[b2[0],y0,b2[1],c[q+1]],[a[0],y0,a[1],c[q]],[0,-1,0])}}
+          if(oi!==undefined)[s0,s1].forEach(function(s,ix){var A=P(s,oo),a=P(s,oi),sg=ix?1:-1;quad(m,[A[0],y0,A[1],s],[a[0],y0,a[1],s],[a[0],y1,a[1],s],[A[0],y1,A[1],s],[A[3]*sg,0,-A[2]*sg])})}
+        /* Öffnungen je Geschoss: Stirnseite 2 Fensterpaare, Rundung 5 schmale Fenster, Straßenfront 12 Fensterpaare */
+        var OP=[[0.5,2.8],[3.3,5.6]];for(k=0;k<5;k++)OP.push([L1+0.35+k*1.84,L1+0.35+k*1.84+1.3]);for(k=0;k<12;k++)OP.push([L1+L2+0.5+k*3.15,L1+L2+0.5+k*3.15+2.3]);
+        var FL=[[5.0,6.9],[8.3,10.2],[11.6,13.5]],yp=4.12;
+        FL.forEach(function(fl){var y0=fl[0],y1=fl[1],s=0;slab(0,LT,yp,y0,0,-0.25,PL);                                  /* Brüstungsband */
+          OP.forEach(function(o){if(o[0]>s)slab(s,o[0],y0,y1,0,-0.25,PL);s=o[1];                                       /* Pfeiler */
+            slab(o[0],o[1],y0,y1,-0.22,undefined,GL);var w=o[1]-o[0],ym=y0+(y1-y0)*0.64;
+            slab(o[0],o[0]+0.07,y0,y1,-0.1,-0.22,FR);slab(o[1]-0.07,o[1],y0,y1,-0.1,-0.22,FR);slab(o[0],o[1],y0,y0+0.07,-0.1,-0.22,FR);slab(o[0],o[1],y1-0.07,y1,-0.1,-0.22,FR);slab(o[0],o[1],ym-0.03,ym+0.03,-0.12,-0.22,FR);
+            (w>2?[0.25,0.5,0.75]:[0.5]).forEach(function(t){var hw=t===0.5&&w>2?0.06:0.025;slab(o[0]+w*t-hw,o[0]+w*t+hw,y0,y1,-0.12,-0.22,FR)})});
+          if(s<LT)slab(s,LT,y0,y1,0,-0.25,PL);
+          slab(0,LT,y0-0.16,y0,0.16,0,GES);slab(0,LT,y1,y1+0.14,0.16,0,GES);yp=y1});
+        slab(0,LT,yp,H,0,-0.25,PL);slab(0,LT,H,H+0.2,0.12,-0.3,GES);                                                     /* Attika mit Abdeckung */
+        /* Erdgeschoss: Sturzband, Vordach-Kante, zurückgesetzte Schaufenster, dunkle Pfeiler, Sockel, Markisen */
+        slab(0,LT,3.3,3.95,0,-0.25,DK);slab(0,LT,3.95,4.12,0.5,0,GES);slab(0,LT,0.45,3.3,-0.9,undefined,SH);slab(0,LT,0,0.45,-0.85,-0.9,DK);slab(0,LT,3.25,3.3,0,-0.9,DK);
+        for(f=0;f<LT-0.4;f+=(LT-0.5)/13)slab(f,f+0.5,0,3.3,-0.02,-0.9,DK);
+        [[0.5,5.6],[6.5,10.6],[11,15.1],[15.9,20.4],[20.9,25.4],[25.9,30.4]].forEach(function(o){var c=cuts(o[0],o[1]),q;for(q=0;q<c.length-1;q++){var A=P(c[q],0.04),B=P(c[q+1],0.04),a=P(c[q],1.5),b2=P(c[q+1],1.5);
+            quad(AW,[A[0],3.22,A[1],c[q]],[B[0],3.22,B[1],c[q+1]],[b2[0],2.5,b2[1],c[q+1]],[a[0],2.5,a[1],c[q]],[[A[2]*0.45,0.9,A[3]*0.45],[B[2]*0.45,0.9,B[3]*0.45],[B[2]*0.45,0.9,B[3]*0.45],[A[2]*0.45,0.9,A[3]*0.45]]);
+            quad(AW,[a[0],2.5,a[1],c[q]],[b2[0],2.5,b2[1],c[q+1]],[b2[0],2.24,b2[1],c[q+1]],[a[0],2.24,a[1],c[q]],[[A[2],0,A[3]],[B[2],0,B[3]],[B[2],0,B[3]],[A[2],0,A[3]]])}});
+        for(k in Q){var bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.Float32BufferAttribute(Q[k].p,3));bg.setAttribute('normal',new THREE.Float32BufferAttribute(Q[k].n,3));bg.setAttribute('uv',new THREE.Float32BufferAttribute(Q[k].u,2));var ms=new THREE.Mesh(bg,Q[k].m);ms.castShadow=Q[k].m!==GL&&Q[k].m!==SH;ms.receiveShadow=true;scene.add(ms)}
+        bx(43.4,H-0.4,13.5,XW+0.3+21.7,KH+(H-0.4)/2,-19.6,PL);boxes.push({x0:XW,x1:XW+r+L3,z0:-26,z1:ZS,h:H});
+        /* Schrift: Einzelbuchstaben auf der Attika (Stirnseite bis in die Rundung), Schriftband über den Läden */
+        var LTX={};function letter(ch,col){var id=ch+col;if(LTX[id])return LTX[id];var c=document.createElement('canvas');c.width=128;c.height=192;var g=c.getContext('2d');g.fillStyle=col;g.font='bold 176px "Arial Narrow","Helvetica Neue",Arial,sans-serif';g.textAlign='center';g.textBaseline='middle';g.save();g.translate(64,100);g.scale(ch==='I'?0.8:0.72,1);g.fillText(ch,0,0);g.restore();var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return LTX[id]=new THREE.MeshStandardMaterial({map:t,transparent:true,alphaTest:0.4,roughness:0.6,side:DS})}
+        function word(s0,pitch,y,h,col,off){'KLINGENTHAL'.split('').forEach(function(ch,ix){var p=P(s0+ix*pitch,off),m=new THREE.Mesh(new THREE.PlaneGeometry(h*0.67,h),letter(ch,col));m.position.set(p[0],KH+y,p[1]);m.rotation.y=Math.atan2(p[2],p[3]);scene.add(m)})}
+        word(1.6,1.12,15.4,1.75,'#e9e4d4',0.05);word(1.0,0.46,3.62,0.5,'#e9e4d4',0.03);word(L1+L2+3,0.46,3.62,0.5,'#e9e4d4',0.03)})();
       /* Kaiserliches Postamt und Westfälischer Hof */
       bx(38,14,14,171,KH+7,13,BRK);bx(38.6,0.7,0.9,171,KH+14.2,5.9,STN);bx(38.4,0.4,0.5,171,KH+5.6,5.9,STN);bx(38.4,1.1,0.5,171,KH+0.55,5.85,STN);bx(6.5,7,1.8,171,KH+3.5,5.2,STN);bx(8,0.5,2.6,171,KH+0.25,3.6,STN);tri(7.4,1.8,1.8,171,KH+7,5.2,STN);
       for(i=0;i<5;i++){var dq=new THREE.Mesh(new THREE.ConeGeometry(0.9,2.2,8),M.slate);dq.position.set(155+i*8,KH+15.9,7);scene.add(dq);bx(1.3,1.2,1.3,155+i*8,KH+14.8,7,STN)}
@@ -7428,6 +7457,7 @@ function build(){
         var bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.Float32BufferAttribute(ps,3));bg.setAttribute('normal',new THREE.Float32BufferAttribute(ns,3));if(q.u)bg.setAttribute('uv',new THREE.Float32BufferAttribute(us,2));var me2=new THREE.Mesh(bg,q.m);me2.castShadow=q.c;me2.receiveShadow=q.r;me2.userData.mg=1;P.add(me2)}
       top.forEach(function(o){P.remove(o);if(o.geometry)o.geometry.dispose()})}
     TG.userData.dyn=true;try{mergeKids(TG,0);mergeKids(scene,N0)}catch(x){console.warn('merge',x)}
+    window.__t32=function(k,x,z){return W.t32[k](x,z)};
     W.tram=T;W.t32={S:tS,A:tA,W:tW,C:tC,D:tD}})();
 
   function inst(list,geo,mat,dz){if(!list.length)return;var im=new THREE.InstancedMesh(geo,mat,list.length),o=new THREE.Object3D();
