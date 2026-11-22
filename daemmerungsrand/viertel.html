@@ -7189,7 +7189,7 @@ function build(){
     var gg=new THREE.PlaneGeometry(28,28);gg.rotateX(-Math.PI/2);add(gg,new THREE.MeshStandardMaterial({color:0x3f5a2a,roughness:1,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-8}),228,KH+0.01,84,Math.PI,true);})();
   /* ===== Paderborn 1932: Straßenbahnfahrt Hauptbahnhof – Bahnhofstraße – Westerntor – Westernstraße – Rathausplatz ===== */
   if(E32)(function(){
-    var i,j,FWn=0;
+    var i,j,FWn=0,OX=140,OZ=-130,LL=[aoW,bisP,bandP,pilP,frameP,dormP,chimP,aoP,winP,sillP,litP,doorP,shopP,balS,balR].concat(shutP,sfP),n0=LL.map(function(l){return l.length}),b0=boxes.length,c0=circles.length,s0=scene.children.length,t0=tp.length;
     function mat(c,r,o){var q={color:c,roughness:r===undefined?0.85:r,metalness:0,envMapIntensity:0.4},k;if(o)for(k in o)q[k]=o[k];return new THREE.MeshStandardMaterial(q)}
     function bx(w,h,d,x,y,z,m,ry,sh){var e=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);e.position.set(x,y,z);if(ry)e.rotation.y=ry;e.castShadow=sh!==false;e.receiveShadow=true;scene.add(e);return e}
     function pl(x0,x1,z0,z1,m,y,ts){var g=new THREE.PlaneGeometry(x1-x0,z1-z0);g.rotateX(-Math.PI/2);var u=g.attributes.uv,q;for(q=0;q<u.count;q++)u.setXY(q,u.getX(q)*(x1-x0)/ts,u.getY(q)*(z1-z0)/ts);var e=new THREE.Mesh(g,m);e.position.set((x0+x1)/2,y,(z0+z1)/2);e.receiveShadow=true;scene.add(e);return e}
@@ -7206,7 +7206,7 @@ function build(){
     rowX(-116,40,289,-1,true,9,14);rowX(-118,40,299,1,true,9,14);                      /* Westernstraße */
     rowZ(236,277,-130,-1,false,12,16);rowZ(236,275,-116,1,true,10,14);house(-123,228,34,14,14,'z+'); /* Friedrichstraße (Abzweig Linie 1) */
     rowZ(323,362,-130,-1,false,12,16);rowZ(314,362,-118,1,true,10,14);house(-124,370,34,14,13,'z-');
-    rowX(40,100,264,-1,true,10,15);rowX(40,100,322,1,true,10,15);rowZ(250,277,100,1,true,10,14);rowZ(307,336,100,1,true,10,14); /* Rathausplatz */
+    rowX(40,92,264,-1,true,10,15);rowZ(156,250,100,1,true,9,13);rowZ(156,249,92,-1,true,9,13);pl(86,106,150,192,SE,KH+0.004,3.2);rowX(40,100,322,1,true,10,15);rowZ(250,277,100,1,true,10,14);rowZ(307,336,100,1,true,10,14); /* Rathausplatz */
     rowX(-450,-400,270,-1,false,12,16);rowX(-450,-400,330,1,false,12,16);                /* Bahnhofsvorplatz */
     for(i=-388;i<-140;i+=17){tp.push([i,293.7]);tp.push([i+8.5,306.3])}[[52,272],[66,272],[80,272],[52,314],[66,314]].forEach(function(p){tp.push(p)});
     /* Ladenschilder in alter Schreibweise (Namen erfunden) */
@@ -7215,16 +7215,17 @@ function build(){
       var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;var wd=Math.min(s[3]-1.2,5.2),m=new THREE.Mesh(new THREE.PlaneGeometry(wd,wd/8),new THREE.MeshStandardMaterial({map:t,roughness:0.7,envMapIntensity:0.3}));
       if(s[4]){m.position.set(s[0]-s[2]*0.42,KH+3.42,s[1]);m.rotation.y=s[2]<0?Math.PI/2:-Math.PI/2}else{m.position.set(s[0],KH+3.42,s[1]-s[2]*0.42);m.rotation.y=s[2]<0?0:Math.PI}scene.add(m)});
     /* Rathaus: drei Giebel nach Westen (vereinfachte Weserrenaissance) */
-    var RS=mat(0x6f6450,0.85),RD=mat(0x4e4636,0.85),WN=mat(0x10161e,0.18,{envMapIntensity:1.1}),RX=100,RZ=292,wn=[];
+    var RS=mat(0xa9a498,0.8),RD=mat(0x3a3936,0.85),RG=mat(0x66645e,0.85),WN=mat(0x10161e,0.18,{envMapIntensity:1.1}),RX=100,RZ=292,wn=[];
     bx(20,12.5,28,RX+10,KH+6.25,RZ,RS);boxes.push({x0:RX-3.2,x1:RX+20,z0:RZ-14,z1:RZ+14,h:12.5});
     function gab(w,h,len,x,y,z,m){var e=new THREE.Mesh(gTri(w,h,len),m);e.rotation.y=Math.PI/2;e.position.set(x,y,z);e.castShadow=true;e.receiveShadow=true;scene.add(e);return e}
     gab(28,11,19.6,RX+10.2,KH+12.5,RZ,M.tile);gab(29,11.8,0.7,RX+0.2,KH+12.5,RZ,RS);
     for(i=0;i<6;i++)[-1,1].forEach(function(sg){bx(0.95,1.5,1.7,RX+0.2,KH+12.9+i*1.93,RZ+sg*(13.4-i*2.36),RD)});bx(0.6,2.6,0.6,RX+0.2,KH+25.2,RZ,RD);bx(1.5,0.5,1.5,RX+0.2,KH+24.1,RZ,RD);
     function archW(w,h,cs,r,hh){var sh=new THREE.Shape();sh.moveTo(-w/2,0);sh.lineTo(w/2,0);sh.lineTo(w/2,h);sh.lineTo(-w/2,h);sh.lineTo(-w/2,0);cs.forEach(function(c){var p=new THREE.Path();p.moveTo(c-r,0);p.lineTo(c-r,hh);p.absarc(c,hh,r,Math.PI,0,true);p.lineTo(c+r,0);p.lineTo(c-r,0);sh.holes.push(p)});return new THREE.ExtrudeGeometry(sh,{depth:0.5,bevelEnabled:false,curveSegments:10})}
-    [-9.3,9.3].forEach(function(dz){bx(3.2,6.3,9.4,RX-1.6,KH+7.35,RZ+dz,RS);var aw=new THREE.Mesh(archW(9.4,4.2,[-2.3,2.3],1.7,1.9),RS);aw.rotation.y=-Math.PI/2;aw.position.set(RX-2.7,KH,RZ+dz);aw.castShadow=true;aw.receiveShadow=true;scene.add(aw);[-4.45,4.45].forEach(function(q){bx(3.2,4.2,0.5,RX-1.6,KH+2.1,RZ+dz+q,RS)});bx(0.1,4.1,9.3,RX-0.06,KH+2.05,RZ+dz,mat(0x1a1612,0.9),0,false);
+    [-9.3,9.3].forEach(function(dz){bx(3.2,6.3,9.4,RX-1.6,KH+7.35,RZ+dz,RS);var aw=new THREE.Mesh(archW(9.4,4.2,[-2.3,2.3],1.7,1.9),RG);aw.rotation.y=-Math.PI/2;aw.position.set(RX-2.7,KH,RZ+dz);aw.castShadow=true;aw.receiveShadow=true;scene.add(aw);[-4.45,4.45].forEach(function(q){bx(3.2,4.2,0.5,RX-1.6,KH+2.1,RZ+dz+q,RG)});bx(0.14,3.1,8.9,RX-3.16,KH+7.2,RZ+dz,RD,0,false);[4.3,5.5,8.9,10.4].forEach(function(y){bx(0.3,0.24,9.7,RX-3.2,KH+y,RZ+dz,RD,0,false)});[12.9,14.6,16.3].forEach(function(y,k){bx(0.25,0.18,7.6-k*2.4,RX-3.3,KH+y,RZ+dz,RD,0,false)});for(i=0;i<4;i++)[-1,1].forEach(function(sg){var cn=new THREE.Mesh(new THREE.ConeGeometry(0.22,1.1,6),RD);cn.position.set(RX-3.05,KH+12.15+i*1.7,RZ+dz+sg*(4.5-i*1.2));scene.add(cn)});bx(0.1,4.1,9.3,RX-0.06,KH+2.05,RZ+dz,mat(0x1a1612,0.9),0,false);
       gab(9.4,6.6,3.0,RX-1.5,KH+10.5,RZ+dz,M.tile);gab(9.9,7.1,0.6,RX-3.05,KH+10.5,RZ+dz,RS);for(i=0;i<4;i++)[-1,1].forEach(function(sg){bx(0.8,1.3,1.3,RX-3.05,KH+10.95+i*1.7,RZ+dz+sg*(4.5-i*1.2),RD)});bx(0.45,2.2,0.45,RX-3.05,KH+18.4,RZ+dz,RD);
       for(i=0;i<7;i++)wn.push([0.12,2.5,0.86,RX-3.22,KH+7.2,RZ+dz-3.66+i*1.22]);[-1.1,1.1].forEach(function(q){wn.push([0.12,1.6,0.95,RX-3.37,KH+12.1,RZ+dz+q])});wn.push([0.12,1.3,0.9,RX-3.37,KH+14.7,RZ+dz])});
-    wn.push([0.12,3.3,2.3,RX-0.04,KH+1.65,RZ]);for(i=0;i<6;i++)wn.push([0.12,2.5,0.86,RX-0.04,KH+7.2,RZ-3.05+i*1.22]);
+    bx(0.14,3.1,8.4,RX-0.02,KH+7.2,RZ,RD,0,false);bx(0.3,4.2,9.2,RX-0.1,KH+2.1,RZ,RG,0,false);for(i=1;i<6;i++){bx(0.3,0.2,28-i*4.7,RX-0.25,KH+12.5+i*1.93,RZ,RD,0,false);[-1,1].forEach(function(sg){var cn=new THREE.Mesh(new THREE.ConeGeometry(0.26,1.3,6),RD);cn.position.set(RX+0.2,KH+14.3+(i-1)*1.93,RZ+sg*(13.4-(i-1)*2.36));scene.add(cn)})}
+    wn.push([0.12,3.3,2.3,RX-0.24,KH+1.65,RZ]);for(i=0;i<6;i++)wn.push([0.12,2.5,0.86,RX-0.04,KH+7.2,RZ-3.05+i*1.22]);
     [[14.6,-4.6],[14.6,-1.55],[14.6,1.55],[14.6,4.6],[17.9,-3.1],[17.9,0],[17.9,3.1],[20.9,-1.3],[20.9,1.3],[23.2,0]].forEach(function(q){wn.push([0.12,1.7,1.05,RX-0.2,KH+q[0],RZ+q[1]])});
     var ck2=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,0.12,24),mat(0xe8e0c8,0.5));ck2.rotation.z=Math.PI/2;ck2.position.set(RX-0.1,KH+10.4,RZ);scene.add(ck2);var fin=new THREE.Mesh(new THREE.ConeGeometry(0.28,4.2,8),RD);fin.position.set(RX+0.2,KH+28.4,RZ);scene.add(fin);
     /* Brunnen vor dem Rathaus */
@@ -7273,14 +7274,15 @@ function build(){
     T.upd=function(dt){if(!T.init){T.init=1;mode='tram';me.o.visible=false;camPitch=0.03;T.yaw=Math.PI/2;camYaw=T.yaw+Math.PI}
       var nx=T.stops[T.st+1];if(T.dw>0){if(started)T.dw-=dt;T.v=0;if(T.dw<=0&&nx&&AC&&W.a16){var t0=AC.currentTime;a16n(1560,t0,0.09,0.5,'sine',W.a16.amb);a16n(1560,t0+0.38,0.09,0.7,'sine',W.a16.amb)}}
       else if(nx){var ds=nx.s-T.s,tv=Math.min(5.6,Math.sqrt(Math.max(0,1.2*ds))+0.12);T.v+=clamp(tv-T.v,-1.3*dt,0.5*dt);T.s+=T.v*dt;if(ds<0.06||T.s>=nx.s){T.s=nx.s;T.v=0;T.st++;T.dw=T.st===T.stops.length-1?1e9:8;say(T.st===T.stops.length-1?'Rathausplatz. Endstation – bitte aussteigen.':nx.n+'.',4200)}}
-      var u=clamp(T.s/T.L,0,0.9999),p=cu.getPointAt(u),tg=cu.getTangentAt(u),yaw=Math.atan2(tg.x,tg.z),dy=wrapA(yaw-T.yaw);T.yaw=yaw;if(mode==='tram')camYaw+=dy;T.x=p.x;T.z=p.z;
+      var u=clamp(T.s/T.L,0,0.9999),p=cu.getPointAt(u);p.x+=OX;p.z+=OZ;var tg=cu.getTangentAt(u),yaw=Math.atan2(tg.x,tg.z),dy=wrapA(yaw-T.yaw);T.yaw=yaw;if(mode==='tram')camYaw+=dy;T.x=p.x;T.z=p.z;
       TG.position.set(p.x,KH+0.02,p.z);TG.rotation.set(0,yaw,Math.sin(T.s*0.9)*0.007*T.v/5);
       var cs=Math.cos(yaw),sn=Math.sin(yaw);T.pax.forEach(function(q){q.x=p.x+q.loc[0]*cs+q.loc[1]*sn;q.z=p.z-q.loc[0]*sn+q.loc[1]*cs;q.yaw=yaw+q.loc[2]});
       if(mode==='tram'){me.x=p.x;me.z=p.z;me.y=KH;me.sp=0;me.yaw=yaw}
       T.ck+=T.v*dt;if(T.ck>9.5){T.ck=0;if(mode==='tram'||Math.hypot(me.x-p.x,me.z-p.z)<30){tick(0.13,700,120,0.05);setTimeout(function(){tick(0.11,640,110,0.05)},120)}}
       if(started)$('gobj').textContent=T.dw>0&&T.dw<1e8?('Haltestelle '+T.stops[T.st].n):nx?('Nächster Halt: '+nx.n):'Rathausplatz · Endstation'};
     T.cam=function(cy,cp){var cs=Math.cos(T.yaw),sn=Math.sin(T.yaw),lx=0.32,lz=3.45,px=T.x+lx*cs+lz*sn,pz=T.z-lx*sn+lz*cs,py=KH+2.42+Math.sin(T.s*2.1)*0.008*T.v,dx=Math.sin(cy)*Math.cos(cp),dy=Math.sin(cp),dz=Math.cos(cy)*Math.cos(cp);camera.position.set(px,py,pz);camera.lookAt(px-dx,py-dy,pz-dz);camTgt.set(px,py,pz)};
-    W.tram=T})();
+    LL.forEach(function(l,k){for(var q=n0[k];q<l.length;q++){l[q][0]+=OX;l[q][2]+=OZ}});for(i=b0;i<boxes.length;i++){boxes[i].x0+=OX;boxes[i].x1+=OX;boxes[i].z0+=OZ;boxes[i].z1+=OZ}for(i=c0;i<circles.length;i++){circles[i].x+=OX;circles[i].z+=OZ}for(i=t0;i<tp.length;i++){tp[i][0]+=OX;tp[i][1]+=OZ}for(i=s0;i<scene.children.length;i++){scene.children[i].position.x+=OX;scene.children[i].position.z+=OZ}
+    T.x+=OX;T.z+=OZ;W.o32=[OX,OZ];W.tram=T})();
 
   function inst(list,geo,mat,dz){if(!list.length)return;var im=new THREE.InstancedMesh(geo,mat,list.length),o=new THREE.Object3D();
     list.forEach(function(p,i){o.position.set(p[0],p[1],p[2]);o.rotation.set(0,p[3],0);o.scale.set(p[4]||1,p[5]||1,1);o.updateMatrix();im.setMatrixAt(i,o.matrix)});im.castShadow=(mat===M.door||mat===M.metal);im.receiveShadow=(mat!==M.glass&&mat!==M.shopG);scene.add(im)}
@@ -7493,8 +7495,8 @@ function buildPeople(){var fk='m1';try{var f0=localStorage.getItem('dr-vf');if(l
   (ERA?[[160,-19,1.2,'idle_look_around'],[176,-22,-2.0],[186,-15,2.6,'idle_look_around'],[204,-19,0.5],[169,-47,3.0,'idle_look_around'],[222,-30,-1.0]]:[[7.6,-21,1.3,'cell_phone_talk'],[-7.4,9,-1.5,'cell_phone_textmessage'],[11,7.3,3.0,'idle_look_around'],[-7.2,-30,1.8,'cell_phone_textmessage']]).slice(0,ERA?6:(Q>0?4:2)).forEach(function(d,i){
     p=mkPerson(ks[(i+2)%ks.length],d[3]);p.still=true;p.x=d[0];p.z=d[1];p.y=KH;p.yaw=d[2];p.sp=0;ppl.push(p)});
   if(ERA)[[[152,-9],[212,-9],[212,-43],[152,-43]],[[212,-44],[152,-44],[152,-10],[212,-10]],[[205,-12],[250,-12],[250,-41],[205,-41]],[[166,-48],[170,-31],[192,-31],[190,-48]],[[240,-10],[160,-8],[146,-30]],[[250,-42],[210,-30],[180,-44]],[[139,-60],[139,-20],[150,-6]],[[230,-14],[230,-40],[254,-44],[254,-14]]].slice(0,Q>0?8:4).forEach(function(r,i){p=mkPerson(ks[i%ks.length]);p.wp=r;p.wi=1;p.wt=0;p.x=r[0][0];p.z=r[0][1];p.y=KH;p.v=1.0+(i%4)*0.13;p.sp=p.v;ppl.push(p)});
-  if(E32&&W.tram){[[[-390,294],[-140,294]],[[-140,306.2],[-395,306.2]],[[-80,290.1],[30,290.1]],[[34,297.9],[-84,297.9]],[[50,270],[92,270],[92,316],[50,316]],[[60,300],[20,297.9],[-60,297.9]],[[-300,294],[-140,294],[-140,306.2],[-300,306.2]],[[-420,285],[-420,318],[-405,306.2],[-200,306.2]]].slice(0,Q>0?7:4).forEach(function(r,i){p=mkPerson(ks[i%ks.length]);p.wp=r;p.wi=1;p.wt=0;p.x=r[0][0];p.z=r[0][1];p.y=KH;p.v=1.0+(i%4)*0.13;p.sp=p.v;ppl.push(p)});
-    [[-423,296.6,1.6],[-262,296.2,1.57,'idle_look_around'],[-112,292.3,0.3],[70,296.3,-0.4,'idle_look_around']].forEach(function(d,i){p=mkPerson(ks[(i+1)%ks.length],d[3]);p.still=true;p.x=d[0];p.z=d[1];p.y=KH;p.yaw=d[2];p.sp=0;ppl.push(p)});
+  if(E32&&W.tram){[[[-390,294],[-140,294]],[[-140,306.2],[-395,306.2]],[[-80,290.1],[30,290.1]],[[34,297.9],[-84,297.9]],[[50,270],[92,270],[92,316],[50,316]],[[96,270],[96,160],[96,270]],[[-300,294],[-140,294],[-140,306.2],[-300,306.2]],[[-420,285],[-420,318],[-405,306.2],[-200,306.2]]].slice(0,Q>0?7:4).forEach(function(r,i){p=mkPerson(ks[i%ks.length]);r=r.map(function(q){return[q[0]+W.o32[0],q[1]+W.o32[1]]});p.wp=r;p.wi=1;p.wt=0;p.x=r[0][0];p.z=r[0][1];p.y=KH;p.v=1.0+(i%4)*0.13;p.sp=p.v;ppl.push(p)});
+    [[-423,296.6,1.6],[-262,296.2,1.57,'idle_look_around'],[-112,292.3,0.3],[70,296.3,-0.4,'idle_look_around']].forEach(function(d,i){p=mkPerson(ks[(i+1)%ks.length],d[3]);p.still=true;p.x=d[0]+W.o32[0];p.z=d[1]+W.o32[1];p.y=KH;p.yaw=d[2];p.sp=0;ppl.push(p)});
     [[-0.76,1.3,1.5708],[0.76,-0.5,-1.5708],[-0.76,-1.7,1.5708]].forEach(function(d,i){p=mkPerson(ks[(i+2)%ks.length],'sit');p.still=true;p.poseW=1;p.y=KH+0.74;p.sp=0;p.loc=d;ppl.push(p);W.tram.pax.push(p)});
     var dv=mkPerson(ks[0]);dv.still=true;dv.sp=0;dv.loc=[-0.38,3.72,0];dv.y=KH+0.79;ppl.push(dv);W.tram.pax.push(dv)}}
 function hat32(root,k,key){var fem=key&&key[0]==='f';root.updateMatrixWorld(true);var hb=null;root.traverse(function(o){if(o.isBone&&/Head$/.test(o.name)&&!hb)hb=o});if(!hb)return;var P=hb.getWorldPosition(new V3()),cm=new THREE.MeshStandardMaterial({color:[0x0e0c0a,0x1a1610,0x10140f,0x221a12][k%4],roughness:0.95,envMapIntensity:0.3}),h=new THREE.Group(),a,b;
@@ -7568,7 +7570,7 @@ function a16bell(t,vol,d){[[0.5,1,9],[1,0.8,7],[1.19,0.55,5.5],[1.5,0.4,4.5],[2,
 function a16tick(dt){var d=W.a16;if(!d||!me)return;var t=AC.currentTime,m=MOODS[mood],inn=W.inDom?1:0,day=m.amb>0.4,nt=m.lamp>0.8;
   d.o+=((inn?0:1)-d.o)*Math.min(1,dt*2.2);d.sg.gain.value=0.04+0.5*(1-d.o);
   if(W.tram){var tv0=W.tram.v,nr=mode==='tram'?1:clamp(1-Math.hypot(me.x-W.tram.x,me.z-W.tram.z)/40,0,1);d.to.frequency.value=55+tv0*24;d.tg.gain.value+=((0.05*nr*Math.min(1,tv0/1.5))-d.tg.gain.value)*Math.min(1,dt*4)}
-  var mk=clamp(1-Math.hypot(me.x-(E32?60:185),me.z+(E32?-292:25))/(E32?140:75),E32?0.3:0.12,1)*d.o*(nt?0.22:1)*(m.rain?0.5:1),i;
+  var mk=clamp(1-Math.hypot(me.x-(E32?200:185),me.z+(E32?-162:25))/(E32?140:75),E32?0.3:0.12,1)*d.o*(nt?0.22:1)*(m.rain?0.5:1),i;
   for(i=0;i<3;i++){d.lf[i]+=((Math.random()-0.5)*2-d.lf[i]*0.6)*dt*2.4;d.m[i].gain.value=Math.max(0,[0.05,0.035,0.016][i]*mk*(0.75+0.5*d.lf[i]))}
   d.dr.gain.value+=((E32?0:d.o*(nt?0.03:0.045))-d.dr.gain.value)*Math.min(1,dt*1.5);
   d.bird-=dt;if(d.bird<0&&d.o>0.6&&!m.rain){if(day){d.bird=1.2+Math.random()*5;var n=2+(Math.random()*4|0),f0=2400+Math.random()*2200,pn=Math.random()*1.6-0.8;for(i=0;i<n;i++){var os=a16n(f0,t+i*0.11,0.018,0.09,'sine',d.amb,pn);os.frequency.setValueAtTime(f0*(0.9+Math.random()*0.25),t+i*0.11);os.frequency.exponentialRampToValueAtTime(f0*(1.1+Math.random()*0.5),t+i*0.11+0.07)}}
