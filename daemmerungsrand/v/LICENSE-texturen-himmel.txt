@@ -1,0 +1,2 @@
+Poly Haven (CC0): roof_slates_02, roof_07, grey_stone_path; Erdboden aus Poly-Haven-Vorschaubild.
+ambientCG (CC0): MorningSkyHDRI011B, DaySkyHDRI063B, NightSkyHDRI003.
