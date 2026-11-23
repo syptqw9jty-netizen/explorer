@@ -7217,7 +7217,7 @@ function build(){
       for(j=s0;j<scene.children.length;j++){var o=scene.children[j];w=tr(o.position.x,o.position.z);o.position.x=w[0];o.position.z=w[1];o.quaternion.premultiply(q)}
       tr.th=th;return tr}
     [M.plaster,M.plaster2,M.plaster3,M.plaster4,M.plaster5].forEach(function(m,k){wsMul(m,k===2||k===4?'putzz_d':k%2?'putz2_d':'putz1_d',k===2||k===4?0.22:0.27)});wsMul(M.lime,'sand_d',0.3);M.front.forEach(function(m){wsMul(m,'lack_d',0.7)});M.door.color.set(0x5a4630);M.door.roughness=0.8;M.door.metalness=0;wsMul(M.door,'tor_d',0.55);M.brick.map=phT('ziegel_d');M.brick.normalMap=phT('ziegel_n',true);M.brick.color.set(0xd8c8bc);
-    var SE=new THREE.MeshStandardMaterial({map:phT('setts_d'),normalMap:phT('setts_n',true),roughness:0.6,metalness:0,envMapIntensity:0.9,color:0xbdb6aa,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}),GW=mat(0xb9b2a4,0.85,{map:phT('gehweg_d')}),WNm=mat(0x10161e,0.18,{envMapIntensity:1.1}),STN=wsMul(mat(0x8a8474,0.85),'innen_d',0.4),HG=mat(0x26381c,0.95),GRS=mat(0x3c4a26,1,{polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4}),
+    var SE=new THREE.MeshStandardMaterial({map:phT('setts_d'),normalMap:phT('setts_n',true),roughness:0.6,metalness:0,envMapIntensity:0.9,color:0xbdb6aa,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}),GW=mat(0xb9b2a4,0.85,{map:phT('gehweg_d')}),WNm=mat(0x10161e,0.18,{envMapIntensity:1.1}),STN=wsMul(mat(0x8a8474,0.85),'innen_d',0.4),HG=mat(0x26381c,0.95),GRS=wsMul(mat(0x26331a,1,{polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4}),'rasen_d',0.33,3.4),
       BRK=wsMul(mat(0x9a5a44,0.85),'ziegel_d',0.25,2.6),BRY=wsMul(mat(0xc4a460,0.85),'ziegel_d',0.25,2.8),SND=wsMul(mat(0x9a8e74,0.85),'sand_d',0.3,4.6);
     pl(-960,131,-170,690,SE,KH+0.004,3.2);
     /* Ultra: echte Spiegelung der Stadt im nassen Pflaster (gespiegelte Kamera -> Textur) */
@@ -7375,7 +7375,7 @@ function build(){
       var aA=Math.atan2(-dA[1],-dA[0]),aW=Math.atan2(dW[1],dW[0]),D=Math.PI/180,
         ARM=[{a:aW,hw:7,n:'W'},{a:45*D,hw:7.5},{a:90*D,hw:7.5},{a:aA,hw:10,n:'A'},{a:210*D,hw:7.5},{a:260*D,hw:7.5}],A2={g:0.3,f:0.1,gr:0.5,h0:10,h1:14,w0:9,w1:13,s:0.5};
       function ring(a,fn){seg(cx+Math.cos(a)*R,cz+Math.sin(a)*R,-Math.sin(a),Math.cos(a),fn)}
-      function walk(a1,a2){var g=new THREE.RingGeometry(R-5.5,R,Math.max(4,Math.round((a2-a1)*14)),1,-a2,a2-a1),m=new THREE.Mesh(g,GW);m.rotation.x=-Math.PI/2;m.position.set(cx,KH+0.07,cz);m.receiveShadow=true;scene.add(m)}
+      function walk(a1,a2){var g=new THREE.RingGeometry(R-5.5,R,Math.max(4,Math.round((a2-a1)*14)),1,-a2,a2-a1),u2=g.attributes.uv,p2=g.attributes.position,q2;for(q2=0;q2<u2.count;q2++)u2.setXY(q2,p2.getX(q2)/2.4,p2.getY(q2)/2.4);var m=new THREE.Mesh(g,GW);m.rotation.x=-Math.PI/2;m.position.set(cx,KH+0.07,cz);m.receiveShadow=true;scene.add(m)}
       /* Straßenstummel: beidseitig Häuser, hinten quer geschlossen */
       ARM.forEach(function(q){if(q.n)return;seg(cx+Math.cos(q.a)*R,cz+Math.sin(q.a)*R,Math.cos(q.a),Math.sin(q.a),function(){row(13,56,-7,-1,A2);row(13,56,7,1,A2);sw(13,56,-7,-5);sw(13,56,5,7);GR=true;house(63,0,13,40,13,'x-');GR=false})});
       /* Kranz: je Sektor zwischen zwei Armen */
