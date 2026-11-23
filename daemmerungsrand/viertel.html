@@ -7510,6 +7510,14 @@ function build(){
        Modellursprung = Schnittpunkt der beiden Schaufronten auf Gehweghöhe; lokal -Z stadteinwärts, +X weg von der Straße. Ein Objekt: window.__atelier */
     (function(){var o=tW(38,6.4);seg(o[0],o[1],dW[0],dW[1],function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.1,0);G.rotation.y=-Math.PI/2;scene.add(G);window.__atelier=G;boxes.push({x0:-0.4,x1:16.1,z0:-0.4,z1:15.8,h:15});
         new THREE.GLTFLoader().load('v/m/atelier32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});G.add(g.scene)})})})();
+    /* Grasbüschel (Poly Haven grass_medium_01, CC0): drei Büschel-Formen, instanziert auf Verkehrsinsel und Marienplatz-Garten */
+    (function(){var N=MOB?[0,150,300][Q]:[0,400,900,1800][Q];if(!N)return;var P=[],k,gc=tC(36,-19),la=Math.hypot(dA[0],dA[1]),lw=Math.hypot(dW[0],dW[1]);
+      function dl(x,z,dx,dz){var t=Math.max(0,x*dx+z*dz);return Math.hypot(x-dx*t,z-dz*t)}
+      for(k=0;k<N*3&&P.length<N;k++){var isl=rnd()<0.72,a=rnd()*6.283,r=isl?(rnd()<0.8?28.7-rnd()*rnd()*5:28.6*Math.sqrt(rnd())):(rnd()<0.7?14.6-rnd()*rnd()*3:14*Math.sqrt(rnd())),x=Math.cos(a)*r,z=Math.sin(a)*r;
+        if(isl){if(dl(x,z,dW[0]/lw,dW[1]/lw)<2.6||dl(x,z,-dA[0]/la,-dA[1]/la)<2.6)continue;P.push([WT[0]+x,WT[1]+z])}else{if(r<3.2)continue;P.push([gc[0]+x,gc[1]+z])}}
+      new THREE.TextureLoader().load('v/grasb.png',function(t){t.encoding=THREE.sRGBEncoding;t.flipY=false;new THREE.GLTFLoader().load('v/m/grasb32.glb',function(g){var ms=[],d=new THREE.Object3D(),M0=new THREE.MeshStandardMaterial({map:t,alphaTest:0.45,side:THREE.DoubleSide,roughness:0.9,metalness:0,envMapIntensity:0.3});M0.color.setRGB(1.7,1.75,1.25);
+          g.scene.updateMatrixWorld(true);g.scene.traverse(function(o){if(o.isMesh&&/^g[456]$/.test(o.name)){var q=o.geometry.clone().applyMatrix4(o.matrixWorld);q.computeBoundingBox();var c=q.boundingBox;q.translate(-(c.min.x+c.max.x)/2,-c.min.y,-(c.min.z+c.max.z)/2);ms.push(q)}});
+          ms.forEach(function(q,i){var L=P.filter(function(p,j){return j%ms.length===i}),im=new THREE.InstancedMesh(q,M0,L.length);L.forEach(function(p,j){var s=1.5+rnd()*1.6;d.position.set(p[0],KH+0.02,p[1]);d.rotation.y=rnd()*6.283;d.scale.set(s,s*(0.8+rnd()*0.5),s);d.updateMatrix();im.setMatrixAt(j,d.matrix)});im.frustumCulled=false;im.receiveShadow=true;im.castShadow=false;scene.add(im)})})})})();
     window.__t32=function(k,x,z){return W.t32[k](x,z)};
     W.tram=T;W.t32={S:tS,A:tA,W:tW,C:tC,D:tD}})();
 
