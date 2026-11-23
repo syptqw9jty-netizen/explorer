@@ -28,6 +28,20 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #card{position:absolute;left:0;right:0;bottom:0;z-index:10;max-height:62%;overflow:auto;-webkit-overflow-scrolling:touch;background:#f5f1e6;color:#2a251f;border-radius:16px 16px 0 0;box-shadow:0 -6px 30px rgba(0,0,0,.35);padding:18px 20px calc(22px + env(safe-area-inset-bottom));display:none;touch-action:pan-y;-webkit-user-select:text;user-select:text}
 #card h2{font-family:Georgia,serif;font-weight:400;font-size:22px;margin:4px 0 10px;line-height:1.2}#card .d{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a5a3a}
 #card p{font-size:14px;line-height:1.55;margin:0 0 10px}#card .s{font-size:12px;color:#6a6258}#card a{color:#1b2f3f}#card button{float:right;border:0;background:#1b2f3f;color:#f5f1e6;border-radius:999px;padding:8px 14px;font-size:11px;letter-spacing:.14em;font-family:inherit}
+#kam{position:fixed;inset:0;z-index:5;display:none;pointer-events:none}
+#kf{position:absolute;box-shadow:0 0 0 2000px rgba(8,8,10,.62);outline:1px solid rgba(245,241,230,.75)}
+#kf:before,#kf:after{content:"";position:absolute;left:50%;top:50%;background:rgba(245,241,230,.7)}#kf:before{width:22px;height:1px;margin:0 -11px}#kf:after{width:1px;height:22px;margin:-11px 0}
+#kbar{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:26px;pointer-events:auto}
+#kbar .g{position:static;font-family:inherit;text-transform:uppercase}
+#ks{width:68px;height:68px;border-radius:50%;border:3px solid #f5f1e6;background:rgba(245,241,230,.25);padding:0}#ks:active{background:#f5f1e6}
+#kfl{position:fixed;inset:0;z-index:6;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s}
+#alb{position:fixed;inset:0;z-index:11;background:#16181b;display:none;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:calc(58px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom))}
+#alb .hd{position:fixed;top:0;left:0;right:0;padding:calc(12px + env(safe-area-inset-top)) 14px 10px;background:rgba(22,24,27,.92);display:flex;justify-content:space-between;align-items:center;z-index:2}
+#alb .hd .g{position:static;font-family:inherit;text-transform:uppercase}#alb .hd b{font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:20px}
+#albg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}#albg img{width:100%;display:block;box-shadow:0 3px 14px rgba(0,0,0,.5)}
+#albv{position:fixed;inset:0;z-index:12;background:rgba(10,10,12,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
+#albv img{max-width:100%;max-height:74%;box-shadow:0 6px 30px rgba(0,0,0,.6)}#albv div{display:flex;gap:12px}#albv .g{position:static;font-family:inherit;text-transform:uppercase}
+#alb .leer{color:#8d877a;font-size:13px;line-height:1.6;max-width:30em}
 #iv{position:fixed;inset:0;z-index:12;background:#f5f3e8;display:flex;align-items:center;justify-content:center;transition:opacity .7s}
 #iv video{width:100%;height:100%;object-fit:contain;background:#f5f3e8}
 #logo{display:block;width:auto;height:auto;max-width:min(74vw,400px);max-height:24vh;margin:0 0 2px -4px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55))}
@@ -51,7 +65,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <select class="g" id="ort"></select>
 <div id="lbl">AM BOGEN 32</div>
 <div id="st"><i></i></div>
-<div id="ui"><button class="g" id="act"></button><button class="g" id="view">Ansicht</button><canvas id="mm" width="208" height="208"></canvas></div>
+<div id="ui"><button class="g" id="act"></button><button class="g" id="kamb">Kamera</button><button class="g" id="view">Ansicht</button><canvas id="mm" width="208" height="208"></canvas></div>
+<div id="kam"><div id="kf"></div><div id="kbar"><button class="g" id="kalb">Album</button><button id="ks" aria-label="Auslösen"></button><button class="g" id="kx">Fertig</button></div></div><div id="kfl"></div>
+<div id="alb"><div class="hd"><b>Album</b><button class="g" id="albx">Zurück</button></div><div id="albg"></div></div><div id="albv"><img id="albi" alt=""><div><button class="g" id="albs">Speichern</button><button class="g" id="albd">Löschen</button><button class="g" id="albc">Schließen</button></div></div>
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
 <div id="lp"><div id="sl"></div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
@@ -68,7 +84,7 @@ renderer.setPixelRatio(PR);renderer.outputEncoding=THREE.sRGBEncoding;renderer.t
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
 var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,1,0.15,1400),SUN=new V3(-0.860,0.316,0.401).normalize();   /* März 16:30: Sonne 18° hoch, Azimut 245° */
 scene.fog=new THREE.FogExp2(0x9fb2c8,0.0026);
-function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?72:58;camera.updateProjectionMatrix()}
+function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=kam?(w<h?58:44):(w<h?72:58);camera.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();
 /* Himmel: Verlauf, Sonne, Dunst, ziehende Wolken; daraus auch das Umgebungslicht */
 var nd=new Uint8Array(64*64*4),k,sr=7;function rnd(){sr=(sr*16807)%2147483647;return sr/2147483647}
@@ -231,6 +247,28 @@ function mapUp(e){var p=mpt[e.pointerId];if(!p)return;delete mpt[e.pointerId];if
     if(best>=0){if(ride){ride.wait=6;ride.v=0;ride=null;view='schulter';label()}$('ort').value=best;place(nav.orte[best]);mapShow(false)}}}
 mapC.addEventListener('pointerup',mapUp);mapC.addEventListener('pointercancel',mapUp);
 mapC.addEventListener('wheel',function(e){e.preventDefault();MV.z*=e.deltaY<0?1.15:0.87;mclamp();mapDraw()},{passive:false});
+/* ---------- Kamera: Sucher, Auslöser, Abzug auf Papier, Album ---------- */
+var kam=false,snap=false,kPrev='schulter',ALB=[],AC=null;
+try{ALB=JSON.parse(localStorage.getItem('ab32-album')||'[]')}catch(e){ALB=[]}
+function kRect(){var w=window.innerWidth,h=window.innerHeight,fw=Math.min(w*0.94,(h*0.66)*1.5),fh=fw/1.5;return{x:(w-fw)/2,y:Math.max(54,(h-fh)/2-30),w:fw,h:fh}}
+function kLay(){var r=kRect(),f=$('kf').style;f.left=r.x+'px';f.top=r.y+'px';f.width=r.w+'px';f.height=r.h+'px'}
+function kamSet(on){kam=on;$('kam').style.display=on?'block':'none';$('ui').style.display=on?'none':'flex';$('ort').style.display=$('back').style.display=$('lbl').style.display=on?'none':'';if(on){kPrev=view;if(!ride)view='ich';else view='innen';kLay()}else{view=ride?'innen':kPrev;label()}camera.fov=on?(window.innerWidth<window.innerHeight?58:44):(window.innerWidth<window.innerHeight?72:58);camera.updateProjectionMatrix()}
+$('kamb').addEventListener('click',function(){kamSet(true)});$('kx').addEventListener('click',function(){kamSet(false)});window.addEventListener('resize',function(){if(kam){kLay();kamSet(true)}});
+function klick(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var n=AC.sampleRate*0.09,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0),i;for(i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3)*(i<n*0.12||i>n*0.5&&i<n*0.62?1:0.15);var s=AC.createBufferSource(),g=AC.createGain();g.gain.value=0.5;s.buffer=b;s.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+$('ks').addEventListener('click',function(){snap=true});
+function ortName(){var n='Paderborn',bd=170;if(nav)nav.orte.forEach(function(o){var d=Math.hypot(o.ost-me.x,-o.nord-me.z);if(d<bd){bd=d;n=o.name}});return n}
+/* nach dem Zeichnen des Bildes: Sucherausschnitt übernehmen, in Grauwerte wandeln, auf Papier mit Randvermerk setzen */
+function develop(){var cv=renderer.domElement,r=kRect(),k=cv.width/window.innerWidth,W=1500,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');g.drawImage(cv,r.x*k,r.y*k,r.w*k,r.h*k,0,0,W,H);
+  var im=g.getImageData(0,0,W,H),d=im.data,i,v;for(i=0;i<d.length;i+=4){v=(d[i]*0.30+d[i+1]*0.59+d[i+2]*0.11)/255;v=v<0.5?2*v*v:1-2*(1-v)*(1-v);v=0.06+v*0.9;v=v*255+(Math.random()-0.5)*9;d[i]=v*1.0;d[i+1]=v*0.985;d[i+2]=v*0.95}g.putImageData(im,0,0);
+  var p=document.createElement('canvas'),M=48,B=92;p.width=W+M*2;p.height=H+M+B;var q=p.getContext('2d');q.fillStyle='#efeae0';q.fillRect(0,0,p.width,p.height);q.drawImage(c,M,M);q.fillStyle='#4a443c';q.font='italic 30px Georgia,"Times New Roman",serif';q.textBaseline='middle';q.fillText('Am Bogen ’32  ·  '+ortName()+'  ·  Spielaufnahme',M,M+H+B/2);
+  var full=p.toDataURL('image/jpeg',0.9),t=document.createElement('canvas');t.width=520;t.height=Math.round(520*p.height/p.width);t.getContext('2d').drawImage(p,0,0,t.width,t.height);ALB.unshift({t:t.toDataURL('image/jpeg',0.8),f:full,o:ortName()});albSave();c.width=p.width=1;
+  var fl=$('kfl');fl.style.transition='none';fl.style.opacity='0.9';setTimeout(function(){fl.style.transition='opacity .35s';fl.style.opacity='0'},40);klick();$('kalb').textContent='Album · '+ALB.length}
+/* gespeichert werden nur die kleinen Vorschauen; die großen Abzüge gelten für diese Sitzung und lassen sich einzeln sichern */
+function albSave(){try{localStorage.setItem('ab32-album',JSON.stringify(ALB.slice(0,24).map(function(a){return{t:a.t,o:a.o}})))}catch(e){}}
+function albShow(){var g=$('albg');g.innerHTML=ALB.length?'':'<div class="leer">Noch keine Aufnahmen. Im Spiel auf „Kamera“ tippen, Ausschnitt wählen und auslösen.</div>';ALB.forEach(function(a,i){var im=new Image();im.src=a.t;im.addEventListener('click',function(){albCur=i;$('albi').src=a.f||a.t;$('albv').style.display='flex'});g.appendChild(im)});$('alb').style.display='block'}
+var albCur=-1;$('kalb').textContent='Album · '+ALB.length;$('kalb').addEventListener('click',albShow);$('albx').addEventListener('click',function(){$('alb').style.display='none'});$('albc').addEventListener('click',function(){$('albv').style.display='none'});
+$('albd').addEventListener('click',function(){if(albCur>=0){ALB.splice(albCur,1);albSave();$('albv').style.display='none';albShow();$('kalb').textContent='Album · '+ALB.length}});
+$('albs').addEventListener('click',function(){var a=ALB[albCur];if(!a)return;var l=document.createElement('a');l.href=a.f||a.t;l.download='Am-Bogen-32_'+a.o.replace(/[^A-Za-z0-9äöüÄÖÜß]+/g,'-')+'.jpg';document.body.appendChild(l);l.click();l.remove()});
 /* Bildschleife mit selbstregelnder Auflösung */
 var last=performance.now(),fAcc=0,fN=0,bob=0,hsp=0,hyaw=0,uiT=0;
 function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/1000);last=now;if(window.__dt)dt=window.__dt;
@@ -247,7 +285,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
       /* Kamera schwenkt von selbst hinter die Figur, wenn man eine Weile nicht umgesehen hat */
       lookIdle+=dt;if(view==='schulter'&&hsp>0.6&&lookIdle>0.7&&!tL&&!drag){var dy=Math.atan2(Math.sin(hyaw+Math.PI-me.yaw),Math.cos(hyaw+Math.PI-me.yaw));me.yaw+=dy*Math.min(1,dt*1.5)*Math.min(1,Math.abs(fx)*1.5+0.2);me.pitch+=(-0.2-me.pitch)*Math.min(1,dt*0.8)}}
     hsp+=((dt>0?moved/dt:0)-hsp)*Math.min(1,dt*8);
-    if(hero){hero.o.visible=!ride&&view==='schulter';if(hero.o.visible){hero.x=me.x;hero.z=me.z;hero.y=0;hero.sp=hsp;hero.yaw+=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw))*Math.min(1,dt*7);hero.poseW=0;Fig.animate(hero,dt)}else hero.bl.visible=false}
+    if(hero){hero.o.visible=!ride&&view==='schulter'&&!kam;if(hero.o.visible){hero.x=me.x;hero.z=me.z;hero.y=0;hero.sp=hsp;hero.yaw+=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw))*Math.min(1,dt*7);hero.poseW=0;Fig.animate(hero,dt)}else hero.bl.visible=false}
     for(i=0;i<ppl.length;i++)npcStep(ppl[i],dt);zeitStep(dt);
     uiT+=dt;if(uiT>0.25){uiT=0;actBtn();miniMap();zeitTick();if(mapOpen)mapDraw();if(!ride&&!canWalk(me.x,me.z)){for(var q=1;q<80;q++){var qr=0.5+q*0.4,qa=q*2.4;if(canWalk(me.x+Math.cos(qa)*qr,me.z+Math.sin(qa)*qr)){me.x+=Math.cos(qa)*qr;me.z+=Math.sin(qa)*qr;break}}}}
     fAcc+=dt;fN++;if(fN>=45){var fps=fN/fAcc;fAcc=fN=0;var p2=PR;if(fps<43)p2=Math.max(PRMIN,PR-0.15);else if(fps>56)p2=Math.min(PRMAX,PR+0.08);if(p2!==PR){PR=p2;renderer.setPixelRatio(PR);resize()}window.__fps=fps}}
@@ -260,13 +298,13 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
     camera.position.set(cT.x-fwd.x*cD,Math.max(0.25,cT.y-fwd.y*cD),cT.z-fwd.z*cD)}
   else camera.position.set(me.x,1.72+Math.sin(bob)*0.022,me.z);
   camera.rotation.set(me.pitch,me.yaw,0,'YXZ');SU.uT.value=(now*0.001)%4000;shadowAt(me.x,me.z);if(TR.length&&Math.hypot(TR[0].x-me.x,TR[0].z-me.z)<120||ride)renderer.shadowMap.needsUpdate=(fN%3===0)||renderer.shadowMap.needsUpdate;
-  if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}renderer.render(scene,camera)}
+  if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}renderer.render(scene,camera);if(snap){snap=false;try{develop()}catch(e){window.__err=(window.__err||[]);window.__err.push('foto: '+e.message)}}}
 /* Vorspann: Schriftzug, je nach Hoch- oder Querformat */
 (function(){var iv=$('iv'),v=$('ivv'),done=false;function end(){if(done)return;done=true;iv.style.opacity='0';setTimeout(function(){iv.style.display='none';v.removeAttribute('src');try{v.load()}catch(e){}},750)}
   v.src=window.innerHeight>window.innerWidth?'s/intro_h.mp4':'s/intro_q.mp4';v.addEventListener('ended',function(){setTimeout(end,500)});v.addEventListener('error',end);iv.addEventListener('click',end);setTimeout(end,7500);
   var p=v.play();if(p&&p.catch)p.catch(end)})();
 requestAnimationFrame(frame);
-window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){$('go').click()},walk:canWalk};
+window.__ALB=function(){return ALB};window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){$('go').click()},walk:canWalk};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script></body></html>
