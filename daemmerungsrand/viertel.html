@@ -7262,7 +7262,7 @@ function build(){
     var LA=lA-34-26,tA=seg(B0[0]+dA[0]/lA*34,B0[1]+dA[1]/lA*34,dA[0],dA[1],function(){var V={g:0.25,f:0.1,gr:1,h0:9.5,h1:13,w0:11,w1:15,gap:2},wn=[];
       sw(30,LA-33,-9.5,-7);sw(30,LA-33,7,9.5);pl(30,LA-33,-13.5,-9.5,GRS,KH+0.012,4);pl(30,LA-33,9.5,13.5,GRS,KH+0.012,4);
       for(i=30;i<LA-46;i+=13.5)[-9.75,9.75].forEach(function(z){if(z<0&&i>LA-100)return;bx(10.2,0.45,0.28,i+5.1,KH+0.22,z,STN);bx(10.2,0.75,0.5,i+5.1,KH+0.82,z,HG);[0,10.2].forEach(function(q){bx(0.36,1.3,0.36,i+q,KH+0.65,z,STN)})});
-      row(62,LA-80,-13.5,-1,V);row(62,LA-25,13.5,1,V);for(i=36;i<LA-40;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
+      row(62,LA-80,-13.5,-1,V);row(62,LA-35,13.5,1,V);for(i=36;i<LA-40;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
       var cx=LA-58;/* Herz-Jesu-Kirche: Modell des Nutzers (kirche32.glb), Turm zum Westerntor; ein Objekt: window.__kirche */
       (function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(cx+4,KH,-28);scene.add(G);window.__kirche=G;new THREE.GLTFLoader().load('v/m/kirche32.glb',function(g){shrink(g.scene);var r=g.scene,bb=new THREE.Box3().setFromObject(r),s=54/(bb.max.x-bb.min.x);r.position.set(-(bb.min.x+bb.max.x)/2*s,-bb.min.y*s,-(bb.min.z+bb.max.z)/2*s);r.scale.setScalar(s);r.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material)o.material.envMapIntensity=0.5}});G.add(r)})})();
       boxes.push({x0:cx-23,x1:cx+31,z0:-41,z1:-15,h:14});addW(wn)});
@@ -7537,7 +7537,10 @@ function build(){
     /* Bankhaus, Bahnhofstraße 1 (Modell des Nutzers, bank32.glb): vom Westerntor zum Bahnhof links, Kirche gegenüber. Ursprung an der abgeschrägten Ecke;
        Modell +X stadtauswärts zum Bahnhof, +Z aus der langen Fassade auf die Straße. Ein Objekt: window.__bank */
     (function(){var o=tA(LA+5,10);seg(o[0],o[1],dA[0],dA[1],function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.1,0);G.rotation.y=Math.PI;scene.add(G);window.__bank=G;boxes.push({x0:-25.6,x1:0.3,z0:-0.3,z1:15.4,h:13});
-        new THREE.GLTFLoader().load('v/m/bank32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});G.add(g.scene)})})})();
+        new THREE.GLTFLoader().load('v/m/bank32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});G.add(g.scene)});
+        /* Bäckerei Clemens Zarnitz, Bahnhofstraße 3 (zarn32.glb): schließt in der Bankachse 25,2 m stadtauswärts an. Ein Objekt: window.__zarnitz */
+        var Z=new THREE.Group();Z.userData.dyn=true;Z.position.set(-25.2,KH+0.1,0);Z.rotation.y=Math.PI;scene.add(Z);window.__zarnitz=Z;boxes.push({x0:-37.1,x1:-25.2,z0:-0.3,z1:13.8,h:9});
+        new THREE.GLTFLoader().load('v/m/zarn32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});Z.add(g.scene)})})})();
     /* Verkehrsinsel: zwei runde Blumenbeete beiderseits der Gleise, Einfassung, niedrige Sträucher */
     (function(){var la=Math.hypot(dA[0],dA[1]),lw=Math.hypot(dW[0],dW[1]),ax=dA[0]/la+dW[0]/lw,az=dA[1]/la+dW[1]/lw,al=Math.hypot(ax,az),nx=-az/al,nz=ax/al,ER=mat(0x2a1f16,1),ED=mat(0x6e4a38,0.9),LF=mat(0x14240c,1,{envMapIntensity:0.15}),FC=[0x8c1410,0xb8b29c,0xa87a10],d=new THREE.Object3D(),NF=MOB?200:Q>1?900:500;
       [-1,1].forEach(function(sg){var bx0=WT[0]+nx*13.5*sg,bz0=WT[1]+nz*13.5*sg,m=new THREE.Mesh(new THREE.SphereGeometry(5,28,8,0,6.283,0,1.2),ER),k,c;m.scale.y=0.09;m.position.set(bx0,KH-0.08,bz0);m.receiveShadow=true;m.userData.dyn=true;scene.add(m);
