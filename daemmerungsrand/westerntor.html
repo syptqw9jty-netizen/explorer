@@ -49,6 +49,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #fwahl{position:absolute;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom));display:none;flex-direction:column;align-items:center;gap:10px;padding:0 20px}
 #fwahl button{position:static;font-family:inherit;text-transform:uppercase;background:rgba(233,228,216,.94);color:#0c0d0f;font-weight:600;padding:15px 22px;min-width:240px}
 #fwahl .n{font-size:11px;color:#cfc9bb;letter-spacing:.06em;text-align:center;max-width:30em;text-shadow:0 1px 4px #000}
+#sub{position:fixed;z-index:4;left:7%;right:7%;bottom:calc(150px + env(safe-area-inset-bottom));text-align:center;font-size:16px;line-height:1.4;color:#fff;text-shadow:0 1px 4px #000,0 0 14px rgba(0,0,0,.85);pointer-events:none;opacity:0;transition:opacity .4s}
+#sub small{display:block;font-size:11px;letter-spacing:.08em;color:#e3d9bf;margin-top:4px}
 #iv{position:fixed;inset:0;z-index:12;background:#f5f3e8;display:flex;align-items:center;justify-content:center;transition:opacity .7s}
 #iv video{width:100%;height:100%;object-fit:contain;background:#f5f3e8}
 #logo{display:block;width:auto;height:auto;max-width:min(74vw,400px);max-height:24vh;margin:0 0 2px -4px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55))}
@@ -75,8 +77,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <div id="ui"><button class="g" id="act"></button><button class="g" id="kamb">Kamera</button><button class="g" id="view">Ansicht</button><canvas id="mm" width="208" height="208"></canvas></div>
 <div id="kam"><div id="kf"></div><div id="kbar"><button class="g" id="kalb">Album</button><button id="ks" aria-label="Auslösen"></button><button class="g" id="kx">Fertig</button></div></div><div id="kfl"></div>
 <div id="alb"><div class="hd"><b>Album</b><button class="g" id="albx">Zurück</button></div><div id="albg"></div></div><div id="albv"><img id="albi" alt=""><div><button class="g" id="albs">Speichern</button><button class="g" id="albd">Löschen</button><button class="g" id="albc">Schließen</button></div></div>
+<div id="sub"></div>
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
-<div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Mitfahren zum Westerntor</button><button class="g" id="fw2">Am Bahnhof bleiben</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Die Fahrt selbst ist noch nicht spielbar – „Mitfahren“ setzt dich am Westerntor ab.</div></div></div>
+<div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Einsteigen · Fahrt zum Westerntor</button><button class="g" id="fw2">Am Bahnhof bleiben</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Auch die Fahrt ist Spielszene; belegte Angaben sind als solche gekennzeichnet.</div></div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
 <div id="lp"><div id="sl"></div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
@@ -167,11 +170,12 @@ var T01F=null;
 var t0=Date.now();setInterval(function(){if(!started&&!ready&&Date.now()-t0>45000)$('hint').textContent='Das Laden dauert ungewöhnlich lange. Bitte Verbindung prüfen oder die Seite neu laden.'},5000);
 /* Ankunftsfilm: beim ersten Betreten (oder mit ?film), mit Untertiteln; danach Wahl des Startorts. Überspringen, Ende und Fehler führen einmalig zum selben Zustand. */
 var CUE=[[7.24,9.56,'Guten Morgen. Ich hatte telegrafiert.'],[9.56,11.28,'Wegen des Wagens.'],[11.55,13.03,'Ah, der Fotograf!'],[13.03,16.06,'Ich dachte schon, Sie hätten den Zug verpasst.'],[16.39,18.9,'Wo krieg ich um die Zeit schon Leute aufs Bild?'],[19.58,20.82,'Am Westerntor.'],[20.82,23.05,'Da hält gleich die Straßenbahn.'],[23.05,24.34,'Steigen Sie ein.']];
+function spielOrt(o){if(nav){$('ort').value=o;place(nav.orte[o])}}
 function spielStart(ort){$('film').style.display='none';$('lp').style.display='none';started=true;splashOff();$('ui').style.display='flex';if(ort!==undefined&&nav){$('ort').value=ort;place(nav.orte[ort])}life()}
 function filmStart(){var F=$('film'),v=$('fv'),fin=false;function ende(){if(fin)return;fin=true;try{v.pause()}catch(e){}$('fsub').textContent='';$('fskip').style.display='none';$('fwahl').style.display='flex';try{localStorage.setItem('ab32-ankunft','1')}catch(e){}}
   F.style.display='block';$('lp').style.display='none';splashOff();v.src=window.innerHeight>window.innerWidth?'s/ankunft_h.mp4':'s/ankunft_q.mp4';
   v.addEventListener('timeupdate',function(){if(fin)return;var t=v.currentTime,x='';for(var i=0;i<CUE.length;i++)if(t>=CUE[i][0]&&t<CUE[i][1])x=CUE[i][2];$('fsub').textContent=x});v.addEventListener('ended',ende);v.addEventListener('error',ende);$('fskip').addEventListener('click',ende);
-  $('fw1').addEventListener('click',function(){spielStart(1)});$('fw2').addEventListener('click',function(){spielStart(0)});var p=v.play();if(p&&p.catch)p.catch(ende)}
+  $('fw1').addEventListener('click',function(){spielStart(0);fahrtStart()});$('fw2').addEventListener('click',function(){spielStart(0)});var p=v.play();if(p&&p.catch)p.catch(ende)}
 $('go').addEventListener('click',function(){var seen=false;try{seen=localStorage.getItem('ab32-ankunft')==='1'}catch(e){}if(!seen||/[?&]film/.test(location.search))filmStart();else spielStart()});
 /* Ladebilder: vollflächig, langsam wandernd, überblendend */
 var SP=[['s1','Westernstraße'],['s4','Am Westerntor'],['s3','Rathausplatz'],['s6','Linie 1'],['s2','Marienplatz'],['s7','Herz-Jesu-Kirche'],['s9','Im Wagen'],['s8','Über den Dächern'],['s5','Am Westerntor']],spi=-1,spT=0,spCur=null,spOff=false;
@@ -247,15 +251,26 @@ function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.posit
     var q=pAt(p.path,p.d,p.lat*p.dir);if(!canWalk(q.x,q.z))p.lat*=0.94;p.x=q.x;p.z=q.z;p.y+=(hAt(q.x,q.z)-p.y)*Math.min(1,dt*10);p.sp=p.v;
     var ty=Math.atan2(q.dx*p.dir,q.dz*p.dir),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=Math.sign(da)*Math.min(Math.abs(da),dt*(1.4+Math.abs(da)*2.2))}
   p.o.visible=!far;if(far){p.bl.visible=false;return}if(p.still)p.y=hAt(p.x,p.z);Fig.animate(p,dt);var nd=Math.hypot(me.x-p.x,me.z-p.z);Fig.kopf(p,nd<6&&!ride?Math.atan2(me.x-p.x,me.z-p.z):p.yaw,dt)}
-$('view').addEventListener('click',function(){view=ride?(view==='innen'?'aussen':'innen'):(view==='ich'?'schulter':'ich');label()});
+$('view').addEventListener('click',function(){if(ride&&ride.car)return;view=ride?(view==='innen'?'aussen':'innen'):(view==='ich'?'schulter':'ich');label()});
 function label(){$('view').textContent='Ansicht · '+({ich:'Ich',schulter:'Schulter',innen:'Innen',aussen:'Außen'})[view]}label();
-$('act').addEventListener('click',function(){if(ride){var t=ride,k,sd;ride=null;vel.x=vel.z=0;for(k=0;k<24;k++){sd=(k%2?1:-1)*(t.wid+1.2+Math.floor(k/2)*0.6);var ex=t.x-t.dz*sd,ez=t.z+t.dx*sd;if(canWalk(ex,ez)){me.x=ex;me.z=ez;break}}t.wait=6;t.v=0;view='schulter';me.pitch=-0.2;label()}
+$('act').addEventListener('click',function(){if(ride){var t=ride,k,sd;ride=null;vel.x=vel.z=0;for(k=0;k<24;k++){sd=(k%2?1:-1)*(t.wid+1.2+Math.floor(k/2)*0.6);var ex=t.x-t.dz*sd,ez=t.z+t.dx*sd;if(canWalk(ex,ez)){me.x=ex;me.z=ez;break}}t.wait=6;t.v=0;view='schulter';me.pitch=-0.2;hyaw=me.yaw+Math.PI;label();if(t.car)sub('')}
   else if(near){ride=near;ride.v=ride.v*ride.dir;view='innen';me.pitch=0;label()}});
 var near=null,actT='';
-function actBtn(){var b=$('act'),tx='';near=null;if(ride)tx=ride.name+' · Aussteigen';else for(var i=0;i<TR.length;i++){var t=TR[i],ax=me.x-t.x,az=me.z-t.z,al=Math.abs(ax*t.dx+az*t.dz),sd=Math.abs(-ax*t.dz+az*t.dx);if(al<t.half+2.5&&sd<t.wid+3.5){near=t;tx=t.name+' · Einsteigen'}}
+function actBtn(){var b=$('act'),tx='';near=null;if(ride)tx=ride.car&&!ride.done?'':ride.name+' · Aussteigen';else for(var i=0;i<TR.length;i++){var t=TR[i],ax=me.x-t.x,az=me.z-t.z,al=Math.abs(ax*t.dx+az*t.dz),sd=Math.abs(-ax*t.dz+az*t.dx);if(al<t.half+2.5&&sd<t.wid+3.5){near=t;tx=t.name+' · Einsteigen'}}
   if(tx!==actT){actT=tx;b.textContent=tx;b.style.display=tx?'block':'none'}}
 function tramBlock(x,z){for(var i=0;i<TR.length;i++){var t=TR[i],ax=x-t.x,az=z-t.z;if(Math.abs(ax*t.dx+az*t.dz)<t.half+0.25&&Math.abs(-ax*t.dz+az*t.dx)<t.wid+0.25)return true}return false}
 function ok(x,z){return canWalk(x,z)&&!tramBlock(x,z)}
+/* ---------- Erste Spielszene: Fahrt im Wagen vom Bahnhof zum Westerntor ---------- */
+var FA=null,subT=0;
+function sub(t,klein,dauer){var e=$('sub');e.innerHTML=t?esc(t)+(klein?'<small>'+esc(klein)+'</small>':''):'';e.style.opacity=t?'1':'0';subT=t?(dauer||5):0}
+var FL=[[0.015,'Fahrer: „Bahnhofstraße. Immer geradeaus, dann sind wir am Westerntor.“','Spielszene · Dialog erfunden'],[0.11,'Fahrer: „Hier an der Bahnhofstraße sitzt Rosenbaum. Mützen. Die halbe Stadt trägt welche von ihm.“','Belegt: Robert Rosenbaums Mützenfabrik, Bahnhofstraße 32 · 1933 laut Stadt Paderborn 90 Beschäftigte'],[0.42,'Fahrer: „Sie wollen Leute aufs Bild? Dann nicht zu früh abdrücken. Erst gucken.“',''],[0.66,'Fahrer: „Da vorn der Turm, das ist Herz-Jesu. Dahinter wird es voll.“',''],[0.9,'Fahrer: „Die Elektrische hat Vorfahrt. Ich halte hier.“','']];
+function fahrtStart(){if(FA)return;if(!LINE){setTimeout(fahrtStart,600);return}FA={car:1,load:1};LD.load('l/limousine.glb',function(g){stat(g.scene);scene.add(g.scene);var bx=new THREE.Box3().setFromObject(g.scene),sz=bx.getSize(new V3());
+    FA={o:g.scene,car:1,p:LINE,s:6,s1:LINE.L[8]-24,v:0,lat:2.3,x:0,z:0,dx:1,dz:0,half:sz.z/2,wid:sz.x/2,eye:1.45,cd:7.5,name:'Wagen',li:0,done:false,wait:0};fahrtPose();ride=FA;view='aussen';me.pitch=-0.12;label();me.yaw=Math.atan2(-FA.dx,-FA.dz)})}
+function fahrtPose(){var q=pAt(FA.p,FA.s,FA.lat);FA.x=q.x;FA.z=q.z;FA.dx=q.dx;FA.dz=q.dz;FA.o.position.set(q.x,hAt(q.x,q.z)+0.02,q.z);FA.o.rotation.y=Math.atan2(q.dx,q.dz)}
+function fahrtStep(dt){if(!FA||!FA.o||FA.done||ride!==FA)return;var rest=FA.s1-FA.s,vm=Math.min(8.5,Math.sqrt(Math.max(0,2*1.3*rest))),py=Math.atan2(FA.dx,FA.dz);FA.v+=Math.max(-3*dt,Math.min(1.4*dt,vm-FA.v));if(FA.v<0)FA.v=0;FA.s+=FA.v*dt;fahrtPose();
+  /* Blick dreht mit dem Wagen mit */
+  var ny=Math.atan2(FA.dx,FA.dz);me.yaw+=Math.atan2(Math.sin(ny-py),Math.cos(ny-py));var f=(FA.s-6)/(FA.s1-6);while(FA.li<FL.length&&f>=FL[FA.li][0]){sub(FL[FA.li][1],FL[FA.li][2],6.5);FA.li++}
+  if(rest<0.3&&FA.v<0.2){FA.done=true;FA.v=0;sub('Fahrer: „Westerntor. Den Apparat behalten Sie wohl lieber selbst.“','Aussteigen: Knopf unten rechts',9)}}
 /* ---------- Karte: kleine Karte unten rechts, antippen öffnet die große Übersicht ---------- */
 var MAP=new Image(),mapOK=false,mmC=$('mm').getContext('2d'),mapEl=$('map'),mapC=$('mapc'),mapG=mapC.getContext('2d'),MV={x:1250,y:1350,z:1},mapOpen=false,mpt={},mpMoved=0;MAP.onload=function(){mapOK=true};MAP.src='w/karte.jpg';
 function heading(){return ride?Math.atan2(ride.dx*(ride.v<0?-1:1),ride.dz*(ride.v<0?-1:1)):view==='schulter'?hyaw:me.yaw+Math.PI}
@@ -314,7 +329,7 @@ var last=performance.now(),fAcc=0,fN=0,bob=0,hsp=0,hyaw=0,uiT=0;
 function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/1000);last=now;if(window.__dt)dt=window.__dt;
   var cp=Math.cos(me.pitch);fwd.set(-Math.sin(me.yaw)*cp,Math.sin(me.pitch),-Math.cos(me.yaw)*cp);
   if(started){var fx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+mv.x,fz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0)+mv.y,l=Math.hypot(fx,fz),moved=0,i;
-    for(i=0;i<TR.length;i++)tramStep(TR[i],dt,ride===TR[i]?-fz:0);
+    for(i=0;i<TR.length;i++)tramStep(TR[i],dt,ride===TR[i]?-fz:0);fahrtStep(dt);if(subT>0){subT-=dt;if(subT<=0)$('sub').style.opacity='0'}
     if(ride){me.x=ride.x;me.z=ride.z}
     else{if(l>1){fx/=l;fz/=l;l=1}
       /* Tempo nach Stickausschlag: Schlendern bis Gehen, ganz durchgedrückt (oder Umschalt) Laufen; weich anfahren und abbremsen */
@@ -332,7 +347,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
     fAcc+=dt;fN++;if(fN>=45){var fps=fN/fAcc;fAcc=fN=0;var p2=PR;if(fps<43)p2=Math.max(PRMIN,PR-0.15);else if(fps>56)p2=Math.min(PRMAX,PR+0.08);if(p2!==PR){PR=p2;renderer.setPixelRatio(PR);resize()}window.__fps=fps}}
   /* Kamera: Ich-Ansicht, Schulterblick, im Wagen, hinter dem Wagen */
   if(ride&&view==='innen')camera.position.set(ride.x+ride.dx*ride.half*0.45,ride.eye,ride.z+ride.dz*ride.half*0.45);
-  else if(ride){var dC=13;camera.position.set(ride.x-fwd.x*dC,Math.max(2.2,3.4-fwd.y*dC),ride.z-fwd.z*dC)}
+  else if(ride){var dC=ride.cd||13;camera.position.set(ride.x-fwd.x*dC,Math.max(2.2,3.4-fwd.y*dC),ride.z-fwd.z*dC)}
   else if(view==='schulter'){var rx=Math.cos(me.yaw),rz=-Math.sin(me.yaw),kk=Math.min(1,dt*14),tx=me.x+rx*0.42,tz=me.z+rz*0.42;if(Math.hypot(tx-cT.x,tz-cT.z)>8)cT.set(tx,1.5,tz);cT.x+=(tx-cT.x)*kk;cT.y=1.55+me.y;cT.z+=(tz-cT.z)*kk;
     /* Abstand kürzen, wenn ein Haus zwischen Kamera und Figur läge */
     var CDM=window.innerWidth<window.innerHeight?9.5:8,t=CDM,q;for(q=0.6;q<=CDM;q+=0.35){if(!canWalk(cT.x-fwd.x*q,cT.z-fwd.z*q)){t=Math.max(0.6,q-0.45);break}}cD+=(t-cD)*Math.min(1,dt*(t<cD?20:3));
@@ -346,7 +361,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
   v.src=window.innerHeight>window.innerWidth?'s/intro_h.mp4':'s/intro_q.mp4';v.addEventListener('ended',function(){setTimeout(end,500)});v.addEventListener('error',end);iv.addEventListener('click',end);setTimeout(end,7500);
   var p=v.play();if(p&&p.catch)p.catch(end)})();
 requestAnimationFrame(frame);
-window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){try{localStorage.setItem('ab32-ankunft','1')}catch(e){}$('go').click()},walk:canWalk};
+window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__fahrt=function(){spielOrt(0);fahrtStart()};window.__FA=function(){return FA&&FA.o?[Math.round(FA.s),Math.round(FA.s1),FA.done,Math.round(FA.x),Math.round(FA.z)]:null};window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){try{localStorage.setItem('ab32-ankunft','1')}catch(e){}$('go').click()},walk:canWalk};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script></body></html>
