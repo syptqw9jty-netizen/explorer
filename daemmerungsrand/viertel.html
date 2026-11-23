@@ -7262,13 +7262,13 @@ function build(){
     var LA=lA-34-26,tA=seg(B0[0]+dA[0]/lA*34,B0[1]+dA[1]/lA*34,dA[0],dA[1],function(){var V={g:0.25,f:0.1,gr:1,h0:9.5,h1:13,w0:11,w1:15,gap:2},wn=[];
       sw(30,LA-33,-9.5,-7);sw(30,LA-33,7,9.5);pl(30,LA-33,-13.5,-9.5,GRS,KH+0.012,4);pl(30,LA-33,9.5,13.5,GRS,KH+0.012,4);
       for(i=30;i<LA-46;i+=13.5)[-9.75,9.75].forEach(function(z){if(z<0&&i>LA-100)return;bx(10.2,0.45,0.28,i+5.1,KH+0.22,z,STN);bx(10.2,0.75,0.5,i+5.1,KH+0.82,z,HG);[0,10.2].forEach(function(q){bx(0.36,1.3,0.36,i+q,KH+0.65,z,STN)})});
-      row(62,LA-80,-13.5,-1,V);row(62,LA-48,13.5,1,V);for(i=36;i<LA-40;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
+      row(62,LA-80,-13.5,-1,V);row(62,LA-25,13.5,1,V);for(i=36;i<LA-40;i+=17){tp.push([i,-8.2]);tp.push([i+8.5,8.2])}
       var cx=LA-58;/* Herz-Jesu-Kirche: Modell des Nutzers (kirche32.glb), Turm zum Westerntor; ein Objekt: window.__kirche */
       (function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(cx+4,KH,-28);scene.add(G);window.__kirche=G;new THREE.GLTFLoader().load('v/m/kirche32.glb',function(g){shrink(g.scene);var r=g.scene,bb=new THREE.Box3().setFromObject(r),s=54/(bb.max.x-bb.min.x);r.position.set(-(bb.min.x+bb.max.x)/2*s,-bb.min.y*s,-(bb.min.z+bb.max.z)/2*s);r.scale.setScalar(s);r.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material)o.material.envMapIntensity=0.5}});G.add(r)})})();
       boxes.push({x0:cx-23,x1:cx+31,z0:-41,z1:-15,h:14});addW(wn)});
     /* --- Westernstraße: geschlossene Zeilen; Post, Westfälischer Hof, Barockhaus und Kaufhaus Klingenthal nach Fotos (Lage entlang der Straße angenommen) --- */
     var lW=Math.hypot(dW[0],dW[1]),LW=lW-22-6,tW=seg(WT[0]+dW[0]/lW*22,WT[1]+dW[1]/lW*22,dW[0],dW[1],function(){var S={g:0.3,f:0.25,gr:0.3,h0:11,h1:16,w0:7,w1:12,s:0.85},wn=[];
-      sw(37,LW,-6,-4);sw(37,LW,4,6);row(50,128,-6,-1,S);row(207,LW,-6,-1,S);row(55,150,6,1,S);row(216,LW,6,1,S);
+      sw(37,LW,-6,-4);sw(37,LW,4,6);row(54.5,128,-6,-1,S);row(207,LW,-6,-1,S);row(55,150,6,1,S);row(216,LW,6,1,S);
       /* Barockhaus mit Freitreppe */
       bx(28,10,12,146,KH+5,-24,SND);hip(29,5,13,146,KH+10,-24,M.tile);bx(8,0.5,3.2,146,KH+0.25,-16.6,STN);bx(6,0.25,4.2,146,KH+0.12,-16.1,STN);for(i=-11.2;i<=11.2;i+=3.73){if(Math.abs(i)>1)wn.push([1.2,2.2,0.12,146+i,KH+2.6,-17.95]);wn.push([1.2,2.2,0.12,146+i,KH+6.6,-17.95])}wn.push([1.5,2.8,0.12,146,KH+1.9,-17.95]);boxes.push({x0:132,x1:160,z0:-30,z1:-18,h:10});sw(131,160,-18,-6);
       /* Kaufhaus Klingenthal */
@@ -7382,19 +7382,19 @@ function build(){
       for(k=0;k<ARM.length;k++){(function(p,q,k){var a1=p.a+p.hw/R,a2=q.a-q.hw/R;if(a2<a1)a2+=2*Math.PI;
         if(k===3){a1=172*D}                                   /* Sektor Bahnhofstraße–Riemeke: davor steht die Herz-Jesu-Kirche */
         var L=(a2-a1)*R,n,w,j,am;walk(a1,a2);
-        if(k===2){ring((a1+a2)/2,function(){one(0,0,-1,L-0.6,15,13.5,false,false,true)});return}   /* Bankhaus: breiter Block mit Walmdach (Foto 1950er/70er) */
+        if(k===2){ring(a1+4.6/R,function(){one(0,0,-1,8.6,13,12.5,true,false,true)});return}   /* daneben: Bankhaus als Modell (siehe unten) */   /* Bankhaus: breiter Block mit Walmdach (Foto 1950er/70er) */
         if(k===0){                                              /* rechts der Westernstraße: Erkerhaus an der Ecke, Baumgruppe, Haus */
           /* Ecke rechts der Westernstraße: Fotoatelier Köppelmann (Modell, siehe unten) */
           for(j=0;j<3;j++)(function(j){var ag=a1+(27+j*13.2)/R,Rg=R+15;seg(cx+Math.cos(ag)*Rg,cz+Math.sin(ag)*Rg,-Math.sin(ag),Math.cos(ag),function(){one(0,0,-1,16.5,12,12+j*1.5,j===1,false,true)})})(j);
           for(j=0;j<4;j++){var at=a1+(22+j*4.2)/R,rt=R+3+(j%2)*5;tp.push([cx+Math.cos(at)*rt,cz+Math.sin(at)*rt])}
           am=a2-7.5/R;ring(am,function(){one(0,0,-1,14,12,12.5,true,false,false)});return}
         if(k===5){                                              /* links der Westernstraße: Eckhaus mit Turm (Vorkriegsfoto), Giebelhaus mit Bierstube, alter Mansardbau */
-          am=a2-12/R;ring(am,function(){/* PROVISORISCH: Eckhaus-Modell des Nutzers (eckhaus32.glb), Lage nicht historisch bestätigt. Ein einzelnes Objekt: window.__eck (Gruppe) bzw. __eckMove(dx,dz,drehung) verschiebt es. */
+          am=a2-24.5/R;ring(am,function(){/* PROVISORISCH: Eckhaus-Modell des Nutzers (eckhaus32.glb), Lage nicht historisch bestätigt. Ein einzelnes Objekt: window.__eck (Gruppe) bzw. __eckMove(dx,dz,drehung) verschiebt es. */
             var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.07,-6.6);G.rotation.y=Math.PI;scene.add(G);var bxc={x0:-11.6,x1:11.6,z0:-13.2,z1:0,h:18};boxes.push(bxc);W.eck=G;window.__eck=G;
             window.__eckMove=function(dx,dz,ry){G.position.x+=dx||0;G.position.z+=dz||0;G.rotation.y+=ry||0;if(bxc.r){bxc.r[0]+=dx||0;bxc.r[1]+=dz||0}return[G.position.x,G.position.z,G.rotation.y]};
             new THREE.GLTFLoader().load('v/m/eckhaus32.glb',function(g){shrink(g.scene);var r=g.scene,bb=new THREE.Box3().setFromObject(r),s=23.2/(bb.max.x-bb.min.x);r.position.set(-(bb.min.x+bb.max.x)/2*s,-bb.min.y*s,-(bb.min.z+bb.max.z)/2*s);r.scale.setScalar(s);r.traverse(function(o){if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material)o.material.envMapIntensity=0.5}});G.add(r)})});
-          am=a2-(24+5)/R;ring(am,function(){one(0,0,-1,9.5,12,10,true,false,false);sign(0,0,-1,9.5)});
-          L=(a2-35/R-a1)*R;n=Math.max(1,Math.round(L/20));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.5,13,12.5+j,false,false,true)})})(j);return}
+          am=a2-(36.5+5)/R;ring(am,function(){one(0,0,-1,9.5,12,10,true,false,false);sign(0,0,-1,9.5)});
+          L=(a2-47/R-a1)*R;n=Math.max(1,Math.round(L/20));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.5,13,12.5+j,false,false,true)})})(j);return}
         n=Math.max(1,Math.round(L/13));w=L/n;for(j=0;j<n;j++)(function(j){ring(a1+(j+0.5)*w/R,function(){one(0,0,-1,w-0.4,12,11+rnd()*4,rnd()<0.3,false,rnd()<0.6)})})(j)})(ARM[k],ARM[(k+1)%ARM.length],k)}})();
     /* --- Gleis, Fahrdraht, Masten, Gaslaternen --- */
     var CP=[tS(9,0),tS(26,0),tA(60,0),tA(LA*0.5,0),tA(LA-6,0),tW(4,0),tW(LW*0.33,0),tW(LW*0.66,0),tW(LW-2,0),tC(8,2.6),tC(60,2.6),tC(108,2.8),tC(126,5),tC(135,14),tC(138,27),tC(138,42)].map(function(p){return new V3(p[0],0,p[1])}),cu=new THREE.CatmullRomCurve3(CP,false,'catmullrom',0.5);cu.arcLengthDivisions=1200;var CL=cu.getLength(),SR=mat(0x2a2a2c,0.35,{metalness:0.8,envMapIntensity:1.0});
@@ -7525,11 +7525,26 @@ function build(){
     /* Grasbüschel (Poly Haven grass_medium_01, CC0): drei Büschel-Formen, instanziert auf Verkehrsinsel und Marienplatz-Garten */
     (function(){var N=MOB?[0,150,300][Q]:[0,400,900,1800][Q];if(!N)return;var P=[],k,gc=tC(36,-19),la=Math.hypot(dA[0],dA[1]),lw=Math.hypot(dW[0],dW[1]);
       function dl(x,z,dx,dz){var t=Math.max(0,x*dx+z*dz);return Math.hypot(x-dx*t,z-dz*t)}
-      for(k=0;k<N*3&&P.length<N;k++){var isl=rnd()<0.72,a=rnd()*6.283,r=isl?(rnd()<0.8?28.7-rnd()*rnd()*5:28.6*Math.sqrt(rnd())):(rnd()<0.7?14.6-rnd()*rnd()*3:14*Math.sqrt(rnd())),x=Math.cos(a)*r,z=Math.sin(a)*r;
+      for(k=0;k<N*3&&P.length<N;k++){var isl=rnd()<0.72,a=rnd()*6.283,r=isl?28.9-rnd()*rnd()*1.6:(rnd()<0.8?14.7-rnd()*rnd()*1.5:14*Math.sqrt(rnd())),x=Math.cos(a)*r,z=Math.sin(a)*r;
         if(isl){if(dl(x,z,dW[0]/lw,dW[1]/lw)<2.6||dl(x,z,-dA[0]/la,-dA[1]/la)<2.6)continue;P.push([WT[0]+x,WT[1]+z])}else{if(r<3.2)continue;P.push([gc[0]+x,gc[1]+z])}}
       new THREE.TextureLoader().load('v/grasb.png',function(t){t.encoding=THREE.sRGBEncoding;t.flipY=false;new THREE.GLTFLoader().load('v/m/grasb32.glb',function(g){var ms=[],d=new THREE.Object3D(),M0=new THREE.MeshStandardMaterial({map:t,alphaTest:0.45,side:THREE.DoubleSide,roughness:0.9,metalness:0,envMapIntensity:0.3});M0.color.setRGB(1.7,1.75,1.25);
           g.scene.updateMatrixWorld(true);g.scene.traverse(function(o){if(o.isMesh&&/^g[456]$/.test(o.name)){var q=o.geometry.clone().applyMatrix4(o.matrixWorld);q.computeBoundingBox();var c=q.boundingBox;q.translate(-(c.min.x+c.max.x)/2,-c.min.y,-(c.min.z+c.max.z)/2);ms.push(q)}});
           ms.forEach(function(q,i){var L=P.filter(function(p,j){return j%ms.length===i}),im=new THREE.InstancedMesh(q,M0,L.length);L.forEach(function(p,j){var s=1.5+rnd()*1.6;d.position.set(p[0],KH+0.02,p[1]);d.rotation.y=rnd()*6.283;d.scale.set(s,s*(0.8+rnd()*0.5),s);d.updateMatrix();im.setMatrixAt(j,d.matrix)});im.frustumCulled=false;im.receiveShadow=true;im.castShadow=false;scene.add(im)})})})})();
+    /* Haus Steinrücken, Westernstraße 44 (Modell des Nutzers, steinr32.glb): linke Ecke der Einmündung, gegenüber dem Atelier. Ursprung = vordere rechte Mauerecke auf Gehweghöhe;
+       Modell +Z zum Platz, -Z stadteinwärts, -X ins Haus. Ein Objekt: window.__steinr */
+    (function(){var o=tW(38,-6.4);seg(o[0],o[1],dW[0],dW[1],function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.1,0);G.rotation.y=-Math.PI/2;scene.add(G);window.__steinr=G;boxes.push({x0:-0.3,x1:15.5,z0:-11.2,z1:0,h:9});
+        new THREE.GLTFLoader().load('v/m/steinr32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});G.add(g.scene)})})})();
+    /* Bankhaus, Bahnhofstraße 1 (Modell des Nutzers, bank32.glb): vom Westerntor zum Bahnhof links, Kirche gegenüber. Ursprung an der abgeschrägten Ecke;
+       Modell +X stadtauswärts zum Bahnhof, +Z aus der langen Fassade auf die Straße. Ein Objekt: window.__bank */
+    (function(){var o=tA(LA+5,10);seg(o[0],o[1],dA[0],dA[1],function(){var G=new THREE.Group();G.userData.dyn=true;G.position.set(0,KH+0.1,0);G.rotation.y=Math.PI;scene.add(G);window.__bank=G;boxes.push({x0:-25.6,x1:0.3,z0:-0.3,z1:15.4,h:13});
+        new THREE.GLTFLoader().load('v/m/bank32.glb',function(g){shrink(g.scene);g.scene.traverse(function(q){if(q.isMesh){var gl=q.material&&q.material.transparent;q.castShadow=!gl;q.receiveShadow=!gl;if(q.material){q.material.envMapIntensity=gl?1.3:0.5;if(gl)q.material.depthWrite=false}}});G.add(g.scene)})})})();
+    /* Verkehrsinsel: zwei runde Blumenbeete beiderseits der Gleise, Einfassung, niedrige Sträucher */
+    (function(){var la=Math.hypot(dA[0],dA[1]),lw=Math.hypot(dW[0],dW[1]),ax=dA[0]/la+dW[0]/lw,az=dA[1]/la+dW[1]/lw,al=Math.hypot(ax,az),nx=-az/al,nz=ax/al,ER=mat(0x2a1f16,1),ED=mat(0x6e4a38,0.9),LF=mat(0x14240c,1,{envMapIntensity:0.15}),FC=[0x8c1410,0xb8b29c,0xa87a10],d=new THREE.Object3D(),NF=MOB?200:Q>1?900:500;
+      [-1,1].forEach(function(sg){var bx0=WT[0]+nx*13.5*sg,bz0=WT[1]+nz*13.5*sg,m=new THREE.Mesh(new THREE.SphereGeometry(5,28,8,0,6.283,0,1.2),ER),k,c;m.scale.y=0.09;m.position.set(bx0,KH-0.08,bz0);m.receiveShadow=true;m.userData.dyn=true;scene.add(m);
+        m=new THREE.Mesh(new THREE.TorusGeometry(4.75,0.12,6,48),ED);m.rotation.x=Math.PI/2;m.position.set(bx0,KH+0.09,bz0);m.castShadow=true;m.userData.dyn=true;scene.add(m);
+        var lf=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.2,0),LF,NF);for(k=0;k<NF;k++){var a=rnd()*6.283,r=4.4*Math.sqrt(rnd());d.position.set(bx0+Math.cos(a)*r,KH+0.2+0.3*(1-r*r/25),bz0+Math.sin(a)*r);d.rotation.set(0,rnd()*6,0);d.scale.set(0.8+rnd()*0.8,0.5+rnd()*0.4,0.8+rnd()*0.8);d.updateMatrix();lf.setMatrixAt(k,d.matrix)}lf.receiveShadow=true;lf.userData.dyn=true;scene.add(lf);
+        for(c=0;c<3;c++){var n3=Math.floor(NF/3),fl=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.06,0),mat(FC[c],0.8,{envMapIntensity:0.2}),n3);for(k=0;k<n3;k++){var rr=c===0?(1.6+rnd()*1.4):c===1?(3.1+rnd()*1.2):rnd()*1.5,a2=rnd()*6.283;d.position.set(bx0+Math.cos(a2)*rr,KH+0.36+0.3*(1-rr*rr/25)+rnd()*0.08,bz0+Math.sin(a2)*rr);d.rotation.set(0,0,0);d.scale.setScalar(0.8+rnd()*0.7);d.updateMatrix();fl.setMatrixAt(k,d.matrix)}fl.userData.dyn=true;scene.add(fl)}
+        for(k=0;k<6;k++){var a3=k*1.047+0.5,s=new THREE.Mesh(new THREE.IcosahedronGeometry(0.75,1),LF);s.scale.set(1,0.8,1);s.position.set(bx0+Math.cos(a3)*7.4,KH+0.5,bz0+Math.sin(a3)*7.4);s.castShadow=true;s.userData.dyn=true;scene.add(s)}})})();
     window.__t32=function(k,x,z){return W.t32[k](x,z)};
     W.tram=T;W.t32={S:tS,A:tA,W:tW,C:tC,D:tD}})();
 
