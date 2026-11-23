@@ -186,6 +186,12 @@ function pAt(p,d,lat){d=Math.max(0,Math.min(p.len,d));var i=1;while(i<p.L.length
   var n=Math.hypot(dx,dz)||1;dx/=n;dz/=n;lat=lat||0;return{x:a[0]+(b[0]-a[0])*t-dz*lat,z:a[1]+(b[1]-a[1])*t+dx*lat,dx:dx,dz:dz}}
 function mkTram(obj,path,s0,s1,name,eyeY){var bx=new THREE.Box3().setFromObject(obj),c=bx.getCenter(new V3()),sz=bx.getSize(new V3()),g=new THREE.Group(),lx=sz.x>=sz.z;obj.position.x-=c.x;obj.position.z-=c.z;obj.position.y-=bx.min.y;g.add(obj);scene.add(g);
   var t={o:g,p:path,s:s0,s0:s0,s1:s1,v:0,dir:1,wait:3,lx:lx,name:name,half:(lx?sz.x:sz.z)/2,wid:(lx?sz.z:sz.x)/2,eye:eyeY,x:0,z:0,dx:1,dz:0};TR.push(t);tramPose(t);return t}
+/* Schienen entlang der ganzen Linie (Meterspur): zwei Stahlbänder mit dunkler Rille, knapp über dem Pflaster. Am Westerntor liegen schon Schienen im Modell, dort wird ausgespart. */
+function rails(p){var P=[],I=[],N=[],d,k,n=0,st=1.5,prev=false;function strip(off,w,y){var last=-1;for(d=0;d<=p.len;d+=st){var q=pAt(p,d);if(Math.hypot(q.x,q.z)<118){last=-1;continue}var a=n;P.push(q.x-q.dz*(off-w),y,q.z+q.dx*(off-w),q.x-q.dz*(off+w),y,q.z+q.dx*(off+w));N.push(0,1,0,0,1,0);n+=2;if(last>=0)I.push(last,last+1,a,last+1,a+1,a);last=a}}
+  strip(-0.5,0.035,0.045);strip(0.5,0.035,0.045);var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));g.setIndex(I);
+  var m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0x8d8f90,roughness:0.28,metalness:0.9,envMapIntensity:1.2,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-30}));m.receiveShadow=true;scene.add(m);
+  P=[];I=[];N=[];n=0;strip(-0.5,0.085,0.03);strip(0.5,0.085,0.03);g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));g.setIndex(I);
+  m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0x2a2724,roughness:0.9,metalness:0,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-20}));m.receiveShadow=true;scene.add(m)}
 function tramPose(t){var q=pAt(t.p,t.s);t.x=q.x;t.z=q.z;t.dx=q.dx;t.dz=q.dz;t.o.position.set(q.x,0.02,q.z);t.o.rotation.y=t.lx?Math.atan2(-q.dz,q.dx):Math.atan2(q.dx,q.dz)}
 function tramStep(t,dt,thr){if(ride===t){var acc=thr>0.1?0.9*thr:thr<-0.1?1.6*thr:0;if(Math.abs(thr)<=0.1)t.v-=Math.sign(t.v)*Math.min(Math.abs(t.v),0.25*dt);t.v=Math.max(-4,Math.min(9,t.v+acc*dt));t.s+=t.v*dt;if(t.s<t.s0){t.s=t.s0;t.v=0}if(t.s>t.s1){t.s=t.s1;t.v=0}}
   else{if(t.wait>0){t.wait-=dt;t.v=0}else{var rest=t.dir>0?t.s1-t.s:t.s-t.s0,vm=Math.min(7,Math.sqrt(Math.max(0.02,2*0.7*rest)));t.v+=Math.max(-1.2*dt,Math.min(0.6*dt,vm-t.v));t.s+=t.dir*t.v*dt;if(rest<0.15){t.wait=14;t.dir=-t.dir;t.v=0}}}
@@ -193,7 +199,9 @@ function tramStep(t,dt,thr){if(ride===t){var acc=thr>0.1?0.9*thr:thr<-0.1?1.6*th
 function life(){if(Fig||!window.Figuren)return;Fig=window.Figuren(THREE,scene,MOB);
   fetch('w/leben.json').then(function(r){return r.json()}).then(function(L){LB=L;var A=L.achsen,pw=mkPath(A['Westernstraße'].points),pb=mkPath(A['Bahnhofstraße'].points);
     /* Die Elektrische (Wagen A aus der Stadtgrundlage) fährt die ganze Linie: Bahnhofstraße – Westerntor – Westernstraße – Marienplatz – Rathausplatz – Schildern – Markt/Dom */
-    var pl=mkPath(L.linie);LINE=pl;if(T01F)LD.load('w/t/'+T01F,function(g){g.scene.traverse(function(o){if(o.isMesh){o.material=mat(o.material);o.castShadow=!o.material.transparent;bsph(o.geometry);o.frustumCulled=false}});var t=mkTram(g.scene,pl,8,pl.len-6,'Straßenbahn',2.35);t.s=pl.L[9]+14;tramPose(t)});
+    var pl=mkPath(L.linie);LINE=pl;rails(pl);
+    /* gewählter Wagen: dein PESAG-Wagen mit Glas und Innenraum */
+    LD.load('v/m/pesag_j.glb',function(g){g.scene.traverse(function(o){if(o.isMesh){var m=o.material;if(m.transparent){m.depthWrite=false;m.envMapIntensity=1.3}else m.envMapIntensity=0.6;o.castShadow=!m.transparent;o.frustumCulled=false}});var t=mkTram(g.scene,pl,8,pl.len-6,'Straßenbahn',2.5);t.s=pl.L[9]+14;tramPose(t)});
     zeitInit();
     Fig.load(function(){var ks=Fig.keys();if(!ks.length)return;hero=Fig.mk(ks[0],'idle_look_around',true);hero.o.visible=false;hero.yaw=hyaw;
       var names=['Westernstraße','Bahnhofstraße','Riemekestraße','Friedrichstraße','Wilhelmstraße'],n=MOB?7:14,i;
