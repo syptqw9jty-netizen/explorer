@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#0c0d0f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png">
-<title>Paderborn 1932</title>
+<title>Am Bogen 32 · Das alte Paderborn</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;font-family:-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;touch-action:none}
@@ -34,9 +34,9 @@ body.touch #st{display:block}
 <canvas id="cv"></canvas>
 <a class="g" id="back" href="./">‹ MENÜ</a>
 <select class="g" id="ort"></select>
-<div id="lbl">PADERBORN · 1932</div>
+<div id="lbl">AM BOGEN 32</div>
 <div id="st"><i></i></div>
-<div id="lp"><div id="sl"></div><div id="lt"><div class="k">Paderborn · März 1932</div><h1>Dämmerungsrand</h1><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
+<div id="lp"><div id="sl"></div><div id="lt"><div class="k">Das alte Paderborn</div><h1>Am Bogen 32</h1><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
 <script src="three.min.js"></script><script src="GLTFLoader.js"></script>
 <script>
@@ -99,7 +99,7 @@ function pump(){if(busy>=2)return;var best=null,bd=1e9,i;for(i=0;i<TL.length;i++
     scene.add(g.scene);if(tdist(best)<260)shC.x=1e9;status();pump()},undefined,function(e){window.__err=(window.__err||[]);window.__err.push(best.f+': '+(e&&e.message||e));busy--;best.s=0;best.err=(best.err||0)+1;if(best.err>3)best.s=9;setTimeout(pump,1500)});pump()}
 function status(){var need=0,got=0,i;for(i=0;i<TL.length;i++){var t=TL[i],d=tdist(t);if(d<160){need+=t.b;if(t.s===2)got+=t.b}}var ok=need>0&&got>=need;
   if(!started){$('bar').firstChild.style.width=(need?Math.min(100,got/need*100):0)+'%';$('pt').textContent=ok?'Bereit':'Lade Stadt … '+Math.round(got/1048576)+' von '+Math.round(need/1048576)+' MB';if(ok){ready=true;$('go').style.display='block'}}
-  $('lbl').textContent=ok?'PADERBORN · 1932':'PADERBORN · 1932 · LÄDT …'}
+  $('lbl').textContent=ok?'AM BOGEN 32':'AM BOGEN 32 · LÄDT …'}
 function sweep(){for(var i=0;i<TL.length;i++){var t=TL[i],d=tdist(t);if(t.s===2){if(d>R_DROP&&!t.all){scene.remove(t.o);t.o.traverse(function(o){if(o.geometry)o.geometry.dispose()});t.o=null;t.s=0}else t.o.visible=d<650}}pump();status()}
 fetch('w/t/index.json').then(function(r){return r.json()}).then(function(M){M.forEach(function(m){TL.push({f:m.f,x:m.x,z:m.z,r:m.r,b:m.b,s:0,o:null,all:m.r>700||/^Boden|^T01/.test(m.n)})});sweep();setInterval(sweep,700)}).catch(function(){$('pt').textContent='Laden fehlgeschlagen. Bitte Seite neu laden.'});
 var t0=Date.now();setInterval(function(){if(!started&&!ready&&Date.now()-t0>45000)$('hint').textContent='Das Laden dauert ungewöhnlich lange. Bitte Verbindung prüfen oder die Seite neu laden.'},5000);
