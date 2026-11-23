@@ -30,28 +30,14 @@ footer a{color:#b9b3a5;text-decoration:none}
 </style></head><body>
 <main>
   <div class="k">Dämmerungsrand</div>
-  <h1>Paderborn<br><span id="yr">1932</span></h1>
-  <p class="l" id="txt">Mit der Straßenbahn vom Westerntor durch die Westernstraße zum Rathaus. Selbst fahren, aussteigen, zu Fuß weiter.</p>
-  <a class="go" id="go" href="viertel.html">SPIELEN</a>
-  <div class="g"><div class="k">Zeit</div><div class="row" id="era">
-    <button class="c" data-v="1932"><b>1932</b>Vorkrieg</button>
-    <button class="c" data-v="1622"><b>1622</b>Dom und Markt</button>
-    <button class="c" data-v="heute"><b>Heute</b>Kreuzung</button></div></div>
-  <div class="g"><div class="k">Grafik</div><div class="row" id="q">
-    <button class="c" data-v="3"><b>Ultra</b>PC</button>
-    <button class="c" data-v="2"><b>Hoch</b>neues Handy</button>
-    <button class="c" data-v="1"><b>Mittel</b>Handy</button>
-    <button class="c" data-v="0"><b>Niedrig</b>ältere Geräte</button></div></div>
-  <div class="h">Links ziehen: gehen oder Gas geben · rechts ziehen: umsehen · Knopf unten rechts: ein- und aussteigen · „Optionen“ im Spiel: Stimmung, Look, Figur.</div>
+  <h1>Paderborn<br>1932</h1>
+  <p class="l">Das Westerntor an einem Märznachmittag. Zu Fuß über den Platz: Herz-Jesu-Kirche, Bankhaus, Bäckerei Zarnitz, Haus Steinrücken, Atelier Köppelmann, Husarenbrunnen.</p>
+  <a class="go" href="westerntor.html">SPIELEN</a>
+  <div class="h">Links ziehen: gehen · rechts ziehen: umsehen · oben rechts: Standort wechseln. Die Darstellung passt sich selbst an das Gerät an.</div>
 </main>
-<footer><a href="klassik.html">Frühere Spiele: Reise · Flug · Frei</a><span id="ver"></span></footer>
+<footer><span><a href="viertel.html">Vorheriger Stand mit Straßenbahn</a> · <a href="klassik.html">Frühere Spiele</a></span><span id="ver"></span></footer>
 <script>
-(function(){var T={'1932':'Mit der Straßenbahn vom Westerntor durch die Westernstraße zum Rathaus. Selbst fahren, aussteigen, zu Fuß weiter.','1622':'Zu Fuß und zu Pferd um Dom und Markt, mitten im Dreißigjährigen Krieg.','heute':'Die erste Fassung: eine Straßenkreuzung bei Abend, zu Fuß und im Wagen.'};
-function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}function set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function grp(id,key,def,cb){var el=document.getElementById(id),cur=get(key,def);function paint(){[].forEach.call(el.children,function(b){b.classList.toggle('on',b.getAttribute('data-v')===cur)});if(cb)cb(cur)}
-  el.addEventListener('click',function(e){var b=e.target.closest('.c');if(!b)return;cur=b.getAttribute('data-v');set(key,cur);paint()});paint()}
-grp('era','dr-ve','1932',function(v){document.getElementById('yr').textContent=v==='heute'?'heute':v;document.getElementById('txt').textContent=T[v]||T['1932']});
-var MOB=/iPhone|iPad|iPod|Android|Mobile/.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&Math.min(screen.width,screen.height)<900);if(MOB){var u=document.querySelector('#q button[data-v="3"]');if(u)u.remove();if(get('dr-vq3','2')==='3')set('dr-vq3','2')}set('dr-boot','0');grp('q','dr-vq3',MOB?'2':'3');
+(function(){try{localStorage.setItem('dr-boot','0')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 if(window.caches&&caches.keys)caches.keys().then(function(k){var n=k.filter(function(x){return x.indexOf('daemmerungsrand-')===0}).sort().pop();if(n)document.getElementById('ver').textContent=n.replace('daemmerungsrand-','')})})();
 </script></body></html>
