@@ -24,6 +24,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #mapc{position:absolute;inset:0;width:100%;height:100%}
 #mapx{top:calc(12px + env(safe-area-inset-top));left:calc(12px + env(safe-area-inset-left));z-index:9;font-family:inherit}
 #mapi{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;font-size:11px;letter-spacing:.14em;color:#4a4238;text-transform:uppercase;pointer-events:none}
+#mapz{top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));z-index:9;font-family:inherit}
+#card{position:absolute;left:0;right:0;bottom:0;z-index:10;max-height:62%;overflow:auto;-webkit-overflow-scrolling:touch;background:#f5f1e6;color:#2a251f;border-radius:16px 16px 0 0;box-shadow:0 -6px 30px rgba(0,0,0,.35);padding:18px 20px calc(22px + env(safe-area-inset-bottom));display:none;touch-action:pan-y;-webkit-user-select:text;user-select:text}
+#card h2{font-family:Georgia,serif;font-weight:400;font-size:22px;margin:4px 0 10px;line-height:1.2}#card .d{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8a5a3a}
+#card p{font-size:14px;line-height:1.55;margin:0 0 10px}#card .s{font-size:12px;color:#6a6258}#card a{color:#1b2f3f}#card button{float:right;border:0;background:#1b2f3f;color:#f5f1e6;border-radius:999px;padding:8px 14px;font-size:11px;letter-spacing:.14em;font-family:inherit}
 #iv{position:fixed;inset:0;z-index:12;background:#f5f3e8;display:flex;align-items:center;justify-content:center;transition:opacity .7s}
 #iv video{width:100%;height:100%;object-fit:contain;background:#f5f3e8}
 #logo{display:block;width:auto;height:auto;max-width:min(74vw,400px);max-height:24vh;margin:0 0 2px -4px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55))}
@@ -48,7 +52,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <div id="lbl">AM BOGEN 32</div>
 <div id="st"><i></i></div>
 <div id="ui"><button class="g" id="act"></button><button class="g" id="view">Ansicht</button><canvas id="mm" width="208" height="208"></canvas></div>
-<div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
+<div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
 <div id="lp"><div id="sl"></div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
@@ -171,10 +175,22 @@ function life(){if(Fig||!window.Figuren)return;Fig=window.Figuren(THREE,scene,MO
   fetch('w/leben.json').then(function(r){return r.json()}).then(function(L){LB=L;var A=L.achsen,pw=mkPath(A['Westernstraße'].points),pb=mkPath(A['Bahnhofstraße'].points);
     /* Die Elektrische (Wagen A aus der Stadtgrundlage) fährt die ganze Linie: Bahnhofstraße – Westerntor – Westernstraße – Marienplatz – Rathausplatz – Schildern – Markt/Dom */
     var pl=mkPath(L.linie);LINE=pl;if(T01F)LD.load('w/t/'+T01F,function(g){g.scene.traverse(function(o){if(o.isMesh){o.material=mat(o.material);o.castShadow=!o.material.transparent;bsph(o.geometry);o.frustumCulled=false}});var t=mkTram(g.scene,pl,8,pl.len-6,'Straßenbahn',2.35);t.s=pl.L[9]+14;tramPose(t)});
+    zeitInit();
     Fig.load(function(){var ks=Fig.keys();if(!ks.length)return;hero=Fig.mk(ks[0],'idle_look_around',true);hero.o.visible=false;hero.yaw=hyaw;
       var names=['Westernstraße','Bahnhofstraße','Riemekestraße','Friedrichstraße','Wilhelmstraße'],n=MOB?7:14,i;
       for(i=0;i<n;i++){var a=A[names[i%names.length]],p=Fig.mk(ks[(i+1)%ks.length]);p.path=mkPath(a.points);p.lat=(i%2?1:-1)*(a.width/2+1.2+((i*7)%10)/10);p.d=12+((i*53)%Math.max(20,Math.floor(Math.min(150,p.path.len)-20)));p.dir=i%3?1:-1;p.vw=1.15+((i*31)%40)/100;p.max=Math.min(160,p.path.len-4);ppl.push(p)}
       var S=L.stand,sk=Object.keys(S);sk.slice(0,MOB?3:6).forEach(function(k,i){var p=Fig.mk(ks[(i+2)%ks.length],'idle_look_around');p.x=S[k][0]+2.5+i%2;p.z=-S[k][1]+1.5;p.yaw=i*1.9;p.poseW=1;p.still=true;ppl.push(p)})})}).catch(function(){})}
+/* Zeitgenossen (24 stehende Figuren an ihren Orten) und Fahrzeuge aus der Lieferung; geladen wird, was in der Nähe ist */
+var ZF=[],CARS=[],zBusy=false;
+function stat(o){o.traverse(function(m){if(m.isMesh){m.castShadow=true;m.receiveShadow=true;if(m.material){m.material.envMapIntensity=0.5}}})}
+function zeitInit(){fetch('w/zeit.json').then(function(r){return r.json()}).then(function(Z){ZT=Z;if(!nav)return;var cnt={};Z.figuren.slice(0,MOB?14:24).forEach(function(f,i){var key=f.ort==='Bahnhof'?'Hauptbahnhof':f.ort,o=null;nav.orte.forEach(function(q){if(!o&&q.name.indexOf(key)>=0)o=q});if(!o)return;var k=cnt[key]=(cnt[key]||0)+1;ZF.push({f:f.f,cx:o.ost,cz:-o.nord,k:k,i:i,s:0,o:null})})}).catch(function(){});
+  var A=LB.achsen;[['limousine','Wilhelmstraße',1.7,5.5],['pritschenwagen','Riemekestraße',1.7,4.5],['lieferwagen','Friedrichstraße',1.7,5]].concat(MOB?[]:[['offener_zweisitzer','Bahnhofstraße',-3.4,0],['boxermotorrad','Westernstraße',3.3,0],['tourenrad','Westernstraße',-3.4,0],['tiefdurchstiegsrad','Riemekestraße',-3.3,0],['leiterwagen','Wilhelmstraße',-3.3,0]]).forEach(function(c,i){LD.load('l/'+c[0]+'.glb',function(g){stat(g.scene);scene.add(g.scene);var p=mkPath(A[c[1]].points),v={o:g.scene,p:p,d:c[3]?30+i*25:38+i*9,lat:c[2],v:c[3],dir:1,w:0};CARS.push(v);carPose(v)})})}
+function carPose(v){var q=pAt(v.p,v.d,v.lat*v.dir);v.o.position.set(q.x,0.02,q.z);v.o.rotation.y=Math.atan2(q.dx*v.dir,q.dz*v.dir);v.x=q.x;v.z=q.z}
+function zeitStep(dt){var i;for(i=0;i<CARS.length;i++){var v=CARS[i];if(!v.v)continue;if(v.w>0){v.w-=dt;continue}var mx=Math.min(170,v.p.len-8),near=Math.hypot(v.x-me.x,v.z-me.z)<4.5;if(!near)v.d+=v.dir*v.v*dt;if(v.d>mx){v.d=mx;v.dir=-1;v.w=4}else if(v.d<14){v.d=14;v.dir=1;v.w=4}carPose(v)}}
+function zeitTick(){for(var i=0;i<ZF.length;i++){var z=ZF[i],d=Math.hypot(z.cx-me.x,z.cz-me.z);if(z.o)z.o.visible=d<(MOB?90:130);else if(d<110&&!zBusy&&z.s===0){
+      /* freien Standplatz nahe dem Ort suchen: erst wenn das Begehbarkeitsraster dort geladen ist */
+      var a=z.k*2.4+z.i,r=5+z.k*2.3,x=z.cx+Math.cos(a)*r,y=z.cz+Math.sin(a)*r,t=occT(Math.floor((x+1250)/250),Math.floor((y+1350)/250)),n;if(!t.d)continue;for(n=0;n<30&&!canWalk(x,y);n++){a+=0.7;r+=0.6;x=z.cx+Math.cos(a)*r;y=z.cz+Math.sin(a)*r}if(!canWalk(x,y)){z.s=9;continue}
+      z.s=1;zBusy=true;(function(z,x,y){LD.load('l/'+z.f,function(g){zBusy=false;stat(g.scene);g.scene.position.set(x,0,y);g.scene.rotation.y=Math.atan2(z.cx-x,z.cz-y)+((z.i*37)%10-5)*0.12;scene.add(g.scene);z.o=g.scene},undefined,function(){zBusy=false;z.s=9})})(z,x,y)}}}
 function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.position.z)>(MOB?70:110);if(p.path){p.d+=p.dir*p.vw*dt;if(p.d>p.max){p.d=p.max;p.dir=-1}if(p.d<6){p.d=6;p.dir=1}var q=pAt(p.path,p.d,p.lat*p.dir);
     if(!canWalk(q.x,q.z)){p.lat*=0.94}p.x=q.x;p.z=q.z;p.sp=p.vw;var ty=Math.atan2(q.dx*p.dir,q.dz*p.dir),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=da*Math.min(1,dt*5)}
   p.o.visible=!far;if(far){p.bl.visible=false;return}Fig.animate(p,dt)}
@@ -196,7 +212,13 @@ function miniMap(){if(!mapOK)return;var R=95,px=me.x+1250,py=me.z+1350;mmC.fillS
 function mapDraw(){if(!mapOpen)return;var w=mapC.width,h=mapC.height,dp=w/mapC.clientWidth,z=MV.z*dp,g=mapG,i;g.fillStyle='#e8e2d4';g.fillRect(0,0,w,h);if(mapOK)g.drawImage(MAP,w/2-MV.x*z,h/2-MV.y*z,2750*z,2250*z);
   function sx(x){return w/2+(x+1250-MV.x)*z}function sy(v){return h/2+(v+1350-MV.y)*z}
   if(nav){g.font='600 '+Math.round(11*dp)+'px -apple-system,Helvetica,Arial,sans-serif';g.textAlign='center';nav.orte.forEach(function(o){var x=sx(o.ost),y=sy(-o.nord);dot(g,x,y,6*dp,'#1b2f3f');g.lineWidth=3*dp;g.strokeStyle='rgba(245,241,232,.9)';g.strokeText(o.name,x,y-11*dp);g.fillStyle='#1b2f3f';g.fillText(o.name,x,y-11*dp)})}
+  if(zOn&&ZT)ZT.spuren.forEach(function(p){dot(g,sx(p.anker[0]),sy(-p.anker[1]),7*dp,p.modus==='nsdap'?'#5a4636':'#b8862b')});
   for(i=0;i<TR.length;i++)dot(g,sx(TR[i].x),sy(TR[i].z),6*dp,'#2f5d46');mark(g,sx(me.x),sy(me.z),heading(),10*dp)}
+/* Zeitspuren: belegte Einträge zu Menschen, Geschäften und zur politischen Entwicklung 1932/33 als Lesekarten auf der Karte */
+var ZT=null,zOn=false;function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+$('mapz').addEventListener('click',function(){zOn=!zOn;this.textContent='Zeitspuren · '+(zOn?'an':'aus');if(!zOn)$('card').style.display='none';mapDraw()});
+function cardShow(L){var c=$('card'),h='<button id="cardx">Schließen</button>';L.forEach(function(p){h+='<div class="d">'+esc(p.datum)+' · '+esc(p.ort)+'</div><h2>'+esc(p.titel)+'</h2><p>'+esc(p.befund)+'</p>'+(p.spaeter?'<p>'+esc(p.spaeter)+'</p>':'')+(p.grenze?'<p class="s">Grenzen der Darstellung: '+esc(p.grenze)+'</p>':'')+'<p class="s">Quellen: '+(p.quellen||[]).map(function(q){return /^https?:/.test(q[1])?'<a target="_blank" rel="noopener" href="'+esc(q[1])+'">'+esc(q[0])+'</a>':esc(q[0])}).join(' · ')+'</p>'});
+  c.innerHTML=h;c.style.display='block';c.scrollTop=0;$('cardx').addEventListener('click',function(){c.style.display='none'})}
 function mapSize(){var dp=Math.min(2,window.devicePixelRatio||1);mapC.width=Math.round(mapEl.clientWidth*dp);mapC.height=Math.round(mapEl.clientHeight*dp);mapDraw()}
 function mapShow(on){mapOpen=on;mapEl.style.display=on?'block':'none';if(on){MV.x=me.x+1250;MV.y=me.z+1350;MV.z=Math.max(1.2,Math.min(window.innerWidth,window.innerHeight)/420);mapSize()}}
 $('mm').addEventListener('click',function(){mapShow(true)});$('mapx').addEventListener('click',function(){mapShow(false)});window.addEventListener('resize',function(){if(mapOpen)mapSize()});
@@ -205,7 +227,7 @@ mapC.addEventListener('pointerdown',function(e){try{mapC.setPointerCapture(e.poi
 mapC.addEventListener('pointermove',function(e){var p=mpt[e.pointerId];if(!p)return;var ids=Object.keys(mpt),dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(ids.length===1){MV.x-=dx/MV.z;MV.y-=dy/MV.z;mpMoved+=Math.abs(dx)+Math.abs(dy)}else if(ids.length===2){var o=mpt[ids[0]===String(e.pointerId)?ids[1]:ids[0]],d0=Math.hypot(p.x-o.x,p.y-o.y),d1=Math.hypot(e.clientX-o.x,e.clientY-o.y);if(d0>4)MV.z*=d1/d0;mpMoved=99}
   p.x=e.clientX;p.y=e.clientY;mclamp();mapDraw()});
-function mapUp(e){var p=mpt[e.pointerId];if(!p)return;delete mpt[e.pointerId];if(mpMoved<8&&nav&&e.type==='pointerup'){var wx=MV.x-1250+(e.clientX-mapC.clientWidth/2)/MV.z,wz=MV.y-1350+(e.clientY-mapC.clientHeight/2)/MV.z,best=-1,bd=26/MV.z;nav.orte.forEach(function(o,i){var d=Math.hypot(o.ost-wx,-o.nord-wz);if(d<bd){bd=d;best=i}});
+function mapUp(e){var p=mpt[e.pointerId];if(!p)return;delete mpt[e.pointerId];if(mpMoved<8&&nav&&e.type==='pointerup'){var wx=MV.x-1250+(e.clientX-mapC.clientWidth/2)/MV.z,wz=MV.y-1350+(e.clientY-mapC.clientHeight/2)/MV.z,best=-1,bd=26/MV.z;if(zOn&&ZT){var hit=ZT.spuren.filter(function(p){return Math.hypot(p.anker[0]-wx,-p.anker[1]-wz)<22/MV.z});if(hit.length){cardShow(hit);return}}nav.orte.forEach(function(o,i){var d=Math.hypot(o.ost-wx,-o.nord-wz);if(d<bd){bd=d;best=i}});
     if(best>=0){if(ride){ride.wait=6;ride.v=0;ride=null;view='schulter';label()}$('ort').value=best;place(nav.orte[best]);mapShow(false)}}}
 mapC.addEventListener('pointerup',mapUp);mapC.addEventListener('pointercancel',mapUp);
 mapC.addEventListener('wheel',function(e){e.preventDefault();MV.z*=e.deltaY<0?1.15:0.87;mclamp();mapDraw()},{passive:false});
@@ -226,8 +248,8 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
       lookIdle+=dt;if(view==='schulter'&&hsp>0.6&&lookIdle>0.7&&!tL&&!drag){var dy=Math.atan2(Math.sin(hyaw+Math.PI-me.yaw),Math.cos(hyaw+Math.PI-me.yaw));me.yaw+=dy*Math.min(1,dt*1.5)*Math.min(1,Math.abs(fx)*1.5+0.2);me.pitch+=(-0.2-me.pitch)*Math.min(1,dt*0.8)}}
     hsp+=((dt>0?moved/dt:0)-hsp)*Math.min(1,dt*8);
     if(hero){hero.o.visible=!ride&&view==='schulter';if(hero.o.visible){hero.x=me.x;hero.z=me.z;hero.y=0;hero.sp=hsp;hero.yaw+=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw))*Math.min(1,dt*7);hero.poseW=0;Fig.animate(hero,dt)}else hero.bl.visible=false}
-    for(i=0;i<ppl.length;i++)npcStep(ppl[i],dt);
-    uiT+=dt;if(uiT>0.25){uiT=0;actBtn();miniMap();if(mapOpen)mapDraw();if(!ride&&!canWalk(me.x,me.z)){for(var q=1;q<80;q++){var qr=0.5+q*0.4,qa=q*2.4;if(canWalk(me.x+Math.cos(qa)*qr,me.z+Math.sin(qa)*qr)){me.x+=Math.cos(qa)*qr;me.z+=Math.sin(qa)*qr;break}}}}
+    for(i=0;i<ppl.length;i++)npcStep(ppl[i],dt);zeitStep(dt);
+    uiT+=dt;if(uiT>0.25){uiT=0;actBtn();miniMap();zeitTick();if(mapOpen)mapDraw();if(!ride&&!canWalk(me.x,me.z)){for(var q=1;q<80;q++){var qr=0.5+q*0.4,qa=q*2.4;if(canWalk(me.x+Math.cos(qa)*qr,me.z+Math.sin(qa)*qr)){me.x+=Math.cos(qa)*qr;me.z+=Math.sin(qa)*qr;break}}}}
     fAcc+=dt;fN++;if(fN>=45){var fps=fN/fAcc;fAcc=fN=0;var p2=PR;if(fps<43)p2=Math.max(PRMIN,PR-0.15);else if(fps>56)p2=Math.min(PRMAX,PR+0.08);if(p2!==PR){PR=p2;renderer.setPixelRatio(PR);resize()}window.__fps=fps}}
   /* Kamera: Ich-Ansicht, Schulterblick, im Wagen, hinter dem Wagen */
   if(ride&&view==='innen')camera.position.set(ride.x+ride.dx*ride.half*0.45,ride.eye,ride.z+ride.dz*ride.half*0.45);
