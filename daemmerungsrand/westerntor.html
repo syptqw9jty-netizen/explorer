@@ -42,6 +42,13 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #albv{position:fixed;inset:0;z-index:12;background:rgba(10,10,12,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
 #albv img{max-width:100%;max-height:74%;box-shadow:0 6px 30px rgba(0,0,0,.6)}#albv div{display:flex;gap:12px}#albv .g{position:static;font-family:inherit;text-transform:uppercase}
 #alb .leer{color:#8d877a;font-size:13px;line-height:1.6;max-width:30em}
+#film{position:fixed;inset:0;z-index:13;background:#000;display:none}
+#film video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#fsub{position:absolute;left:8%;right:8%;bottom:calc(64px + env(safe-area-inset-bottom));text-align:center;font-size:17px;line-height:1.4;color:#fff;text-shadow:0 1px 4px #000,0 0 12px rgba(0,0,0,.8);pointer-events:none}
+#fskip{right:calc(14px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));font-family:inherit;text-transform:uppercase}
+#fwahl{position:absolute;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom));display:none;flex-direction:column;align-items:center;gap:10px;padding:0 20px}
+#fwahl button{position:static;font-family:inherit;text-transform:uppercase;background:rgba(233,228,216,.94);color:#0c0d0f;font-weight:600;padding:15px 22px;min-width:240px}
+#fwahl .n{font-size:11px;color:#cfc9bb;letter-spacing:.06em;text-align:center;max-width:30em;text-shadow:0 1px 4px #000}
 #iv{position:fixed;inset:0;z-index:12;background:#f5f3e8;display:flex;align-items:center;justify-content:center;transition:opacity .7s}
 #iv video{width:100%;height:100%;object-fit:contain;background:#f5f3e8}
 #logo{display:block;width:auto;height:auto;max-width:min(74vw,400px);max-height:24vh;margin:0 0 2px -4px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.55))}
@@ -69,6 +76,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <div id="kam"><div id="kf"></div><div id="kbar"><button class="g" id="kalb">Album</button><button id="ks" aria-label="Auslösen"></button><button class="g" id="kx">Fertig</button></div></div><div id="kfl"></div>
 <div id="alb"><div class="hd"><b>Album</b><button class="g" id="albx">Zurück</button></div><div id="albg"></div></div><div id="albv"><img id="albi" alt=""><div><button class="g" id="albs">Speichern</button><button class="g" id="albd">Löschen</button><button class="g" id="albc">Schließen</button></div></div>
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
+<div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Mitfahren zum Westerntor</button><button class="g" id="fw2">Am Bahnhof bleiben</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Die Fahrt selbst ist noch nicht spielbar – „Mitfahren“ setzt dich am Westerntor ab.</div></div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
 <div id="lp"><div id="sl"></div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
@@ -157,7 +165,14 @@ function sweep(){for(var i=0;i<TL.length;i++){var t=TL[i],d=tdist(t);if(t.s===2)
 fetch('w/t/index.json').then(function(r){return r.json()}).then(function(M){M.forEach(function(m){if(/^T01/.test(m.n)){T01F=m.f;return}TL.push({f:m.f,x:m.x,z:m.z,r:m.r,b:m.b,s:0,o:null,all:m.r>700||/^Boden|^T01/.test(m.n)})});sweep();setInterval(sweep,700)}).catch(function(){$('pt').textContent='Laden fehlgeschlagen. Bitte Seite neu laden.'});
 var T01F=null;
 var t0=Date.now();setInterval(function(){if(!started&&!ready&&Date.now()-t0>45000)$('hint').textContent='Das Laden dauert ungewöhnlich lange. Bitte Verbindung prüfen oder die Seite neu laden.'},5000);
-$('go').addEventListener('click',function(){$('lp').style.display='none';started=true;splashOff();$('ui').style.display='flex';life()});
+/* Ankunftsfilm: beim ersten Betreten (oder mit ?film), mit Untertiteln; danach Wahl des Startorts. Überspringen, Ende und Fehler führen einmalig zum selben Zustand. */
+var CUE=[[7.24,9.56,'Guten Morgen. Ich hatte telegrafiert.'],[9.56,11.28,'Wegen des Wagens.'],[11.55,13.03,'Ah, der Fotograf!'],[13.03,16.06,'Ich dachte schon, Sie hätten den Zug verpasst.'],[16.39,18.9,'Wo krieg ich um die Zeit schon Leute aufs Bild?'],[19.58,20.82,'Am Westerntor.'],[20.82,23.05,'Da hält gleich die Straßenbahn.'],[23.05,24.34,'Steigen Sie ein.']];
+function spielStart(ort){$('film').style.display='none';$('lp').style.display='none';started=true;splashOff();$('ui').style.display='flex';if(ort!==undefined&&nav){$('ort').value=ort;place(nav.orte[ort])}life()}
+function filmStart(){var F=$('film'),v=$('fv'),fin=false;function ende(){if(fin)return;fin=true;try{v.pause()}catch(e){}$('fsub').textContent='';$('fskip').style.display='none';$('fwahl').style.display='flex';try{localStorage.setItem('ab32-ankunft','1')}catch(e){}}
+  F.style.display='block';$('lp').style.display='none';splashOff();v.src=window.innerHeight>window.innerWidth?'s/ankunft_h.mp4':'s/ankunft_q.mp4';
+  v.addEventListener('timeupdate',function(){if(fin)return;var t=v.currentTime,x='';for(var i=0;i<CUE.length;i++)if(t>=CUE[i][0]&&t<CUE[i][1])x=CUE[i][2];$('fsub').textContent=x});v.addEventListener('ended',ende);v.addEventListener('error',ende);$('fskip').addEventListener('click',ende);
+  $('fw1').addEventListener('click',function(){spielStart(1)});$('fw2').addEventListener('click',function(){spielStart(0)});var p=v.play();if(p&&p.catch)p.catch(ende)}
+$('go').addEventListener('click',function(){var seen=false;try{seen=localStorage.getItem('ab32-ankunft')==='1'}catch(e){}if(!seen||/[?&]film/.test(location.search))filmStart();else spielStart()});
 /* Ladebilder: vollflächig, langsam wandernd, überblendend */
 var SP=[['s1','Westernstraße'],['s4','Am Westerntor'],['s3','Rathausplatz'],['s6','Linie 1'],['s2','Marienplatz'],['s7','Herz-Jesu-Kirche'],['s9','Im Wagen'],['s8','Über den Dächern'],['s5','Am Westerntor']],spi=-1,spT=0,spCur=null,spOff=false;
 function splashOff(){spOff=true;clearTimeout(spT);$('sl').innerHTML=''}
@@ -331,7 +346,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
   v.src=window.innerHeight>window.innerWidth?'s/intro_h.mp4':'s/intro_q.mp4';v.addEventListener('ended',function(){setTimeout(end,500)});v.addEventListener('error',end);iv.addEventListener('click',end);setTimeout(end,7500);
   var p=v.play();if(p&&p.catch)p.catch(end)})();
 requestAnimationFrame(frame);
-window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){$('go').click()},walk:canWalk};
+window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__TL=TL;window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){try{localStorage.setItem('ab32-ankunft','1')}catch(e){}$('go').click()},walk:canWalk};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script></body></html>
