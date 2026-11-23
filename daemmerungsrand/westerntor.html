@@ -178,6 +178,7 @@ function tEnd(e){for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouch
 cv.addEventListener('mousedown',function(e){drag={x:e.clientX,y:e.clientY}});window.addEventListener('mouseup',function(){drag=null});window.addEventListener('mousemove',function(e){if(drag){look(e.clientX-drag.x,e.clientY-drag.y);drag.x=e.clientX;drag.y=e.clientY}});
 /* ---------- Leben: Spielfigur, Passanten, zwei Straßenbahnen ---------- */
 var LINE=null,view='schulter',lookIdle=9,vel={x:0,z:0},cT=new V3(),cD=8,ride=null,hero=null,ppl=[],TR=[],Fig=null,LB=null,fwd=new V3();
+function hsh(x,y){var h=Math.imul(Math.floor(x*13)|0,374761393)^Math.imul(Math.floor(y*13)|0,668265263);h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return(h>>>0)/4294967296}
 function mkPath(P){var Q=P.map(function(p){return[p[0],-p[1]]}),L=[0],i;for(i=1;i<Q.length;i++)L.push(L[i-1]+Math.hypot(Q[i][0]-Q[i-1][0],Q[i][1]-Q[i-1][1]));return{Q:Q,L:L,len:L[L.length-1]}}
 function pAt(p,d,lat){d=Math.max(0,Math.min(p.len,d));var i=1;while(i<p.L.length-1&&p.L[i]<d)i++;var a=p.Q[i-1],b=p.Q[i],sl=p.L[i]-p.L[i-1]||1,t=(d-p.L[i-1])/sl,dx=(b[0]-a[0])/sl,dz=(b[1]-a[1])/sl;
   /* an den Knicken die Richtung weich überblenden */
@@ -203,10 +204,10 @@ function life(){if(Fig||!window.Figuren)return;Fig=window.Figuren(THREE,scene,MO
     /* gewählter Wagen: dein PESAG-Wagen mit Glas und Innenraum */
     LD.load('v/m/pesag_j.glb',function(g){g.scene.traverse(function(o){if(o.isMesh){var m=o.material;if(m.transparent){m.depthWrite=false;m.envMapIntensity=1.3}else m.envMapIntensity=0.6;o.castShadow=!m.transparent;o.frustumCulled=false}});var t=mkTram(g.scene,pl,8,pl.len-6,'Straßenbahn',2.5);t.s=pl.L[9]+14;tramPose(t)});
     zeitInit();
-    Fig.load(function(){var ks=Fig.keys();if(!ks.length)return;ks.sort();var hk=ks.indexOf('m1')>=0?'m1':(ks.filter(function(k){return k[0]==='m'})[0]||ks[0]);hero=Fig.mk(hk,'idle_look_around',true);hero.o.visible=false;hero.yaw=hyaw;
+    Fig.load(function(){var ks=Fig.keys();if(!ks.length)return;ks.sort();var hk=ks.indexOf('m1')>=0?'m1':(ks.filter(function(k){return k[0]==='m'})[0]||ks[0]);hero=Fig.mk(hk,'idle_look_around',true);hero.auto=1;hero.ir=3;hero.o.visible=false;hero.yaw=hyaw;
       var names=['Westernstraße','Bahnhofstraße','Riemekestraße','Friedrichstraße','Wilhelmstraße'],n=MOB?7:14,i;
-      for(i=0;i<n;i++){var a=A[names[i%names.length]],p=Fig.mk(ks[(i+1)%ks.length]);p.path=mkPath(a.points);p.lat=(i%2?1:-1)*(a.width/2+1.2+((i*7)%10)/10);p.d=12+((i*53)%Math.max(20,Math.floor(Math.min(150,p.path.len)-20)));p.dir=i%3?1:-1;p.vw=1.15+((i*31)%40)/100;p.max=Math.min(160,p.path.len-4);ppl.push(p)}
-      var S=L.stand,sk=Object.keys(S);sk.slice(0,MOB?3:6).forEach(function(k,i){var p=Fig.mk(ks[(i+2)%ks.length],'idle_look_around');p.x=S[k][0]+2.5+i%2;p.z=-S[k][1]+1.5;p.still=1;p.yaw=i*1.9;p.poseW=1;p.still=true;ppl.push(p)})})}).catch(function(){})}
+      for(i=0;i<n;i++){var a=A[names[i%names.length]],p=Fig.mk(ks[(i+1)%ks.length],'idle_look_around');p.auto=1;p.ir=hsh(i,5)*6;p.path=mkPath(a.points);p.lat=(i%2?1:-1)*(a.width/2+1.2+((i*7)%10)/10);p.d=12+((i*53)%Math.max(20,Math.floor(Math.min(150,p.path.len)-20)));p.dir=i%3?1:-1;p.vw=0.95+((i*31)%55)/100;p.max=Math.min(160,p.path.len-4);ppl.push(p)}
+      var S=L.stand,sk=Object.keys(S);sk.slice(0,MOB?3:6).forEach(function(k,i){var p=Fig.mk(ks[(i+2)%ks.length],'idle_look_around');p.x=S[k][0]+2.5+i%2;p.z=-S[k][1]+1.5;p.still=1;p.yaw=i*1.9;p.auto=1;p.ir=hsh(i,8)*6;p.still=true;ppl.push(p)})})}).catch(function(){})}
 /* Zeitgenossen (24 stehende Figuren an ihren Orten) und Fahrzeuge aus der Lieferung; geladen wird, was in der Nähe ist */
 var ZF=[],CARS=[],zBusy=false;
 function stat(o){o.traverse(function(m){if(m.isMesh){m.castShadow=true;m.receiveShadow=true;if(m.material){m.material.envMapIntensity=0.5}}})}
@@ -218,8 +219,18 @@ function zeitTick(){for(var i=0;i<ZF.length;i++){var z=ZF[i],d=Math.hypot(z.cx-m
       /* freien Standplatz nahe dem Ort suchen: erst wenn das Begehbarkeitsraster dort geladen ist */
       var a=z.k*2.4+z.i,r=5+z.k*2.3,x=z.cx+Math.cos(a)*r,y=z.cz+Math.sin(a)*r,t=occT(Math.floor((x+1250)/250),Math.floor((y+1350)/250)),n;if(!t.d)continue;for(n=0;n<30&&!canWalk(x,y);n++){a+=0.7;r+=0.6;x=z.cx+Math.cos(a)*r;y=z.cz+Math.sin(a)*r}if(!canWalk(x,y)){z.s=9;continue}
       z.s=1;zBusy=true;(function(z,x,y){LD.load('l/'+z.f,function(g){zBusy=false;stat(g.scene);g.scene.position.set(x,hAt(x,y),y);g.scene.rotation.y=Math.atan2(z.cx-x,z.cz-y)+((z.i*37)%10-5)*0.12;scene.add(g.scene);z.o=g.scene},undefined,function(){zBusy=false;z.s=9})})(z,x,y)}}}
-function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.position.z)>(MOB?70:110);if(p.path){p.d+=p.dir*p.vw*dt;if(p.d>p.max){p.d=p.max;p.dir=-1}if(p.d<6){p.d=6;p.dir=1}var q=pAt(p.path,p.d,p.lat*p.dir);
-    if(!canWalk(q.x,q.z)){p.lat*=0.94}p.x=q.x;p.z=q.z;p.y+=(hAt(q.x,q.z)-p.y)*Math.min(1,dt*10);p.sp=p.vw;var ty=Math.atan2(q.dx*p.dir,q.dz*p.dir),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=da*Math.min(1,dt*5)}
+function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.position.z)>(MOB?70:110),i;
+  if(p.path){if(p.t0===undefined){p.t0=6+hsh(p.d,1)*25;p.v=p.vw;p.tl=p.lat}
+    /* Ziel-Tempo: gehen, an Hindernissen und zum Verweilen anhalten */
+    var tv=p.vw,q0=pAt(p.path,p.d,p.lat*p.dir),ax=q0.dx*p.dir,az=q0.dz*p.dir,ox=me.x-p.x,oz=me.z-p.z,al=ox*ax+oz*az,sd=-ox*az+oz*ax;
+    if(!ride&&al>0&&al<2.2&&Math.abs(sd)<0.75){tv=al<1?0:p.vw*0.45;p.tl=p.lat+(sd*p.dir>0?-0.7:0.7)*Math.sign(p.lat||1)*0}   /* vor der Spielfigur langsamer, notfalls stehen */
+    for(i=0;i<TR.length;i++){var t=TR[i],tx=t.x-p.x,tz=t.z-p.z;if(Math.abs(tx*t.dx+tz*t.dz)<t.half+3&&Math.abs(-tx*t.dz+tz*t.dx)<t.wid+1.6)tv=0}
+    for(i=0;i<ppl.length;i++){var o=ppl[i];if(o===p||!o.o.visible)continue;var bx=o.x-p.x,bz=o.z-p.z,ba=bx*ax+bz*az;if(ba>0&&ba<1.5&&Math.abs(-bx*az+bz*ax)<0.55)tv=Math.min(tv,o.still?0.5:(o.v||0)*0.9)}
+    p.t0-=dt;if(p.t0<0){if(p.rest>0){p.rest-=dt;tv=0;if(p.rest<=0){p.t0=14+hsh(p.d,p.x)*40;if(hsh(p.x,p.d)<0.3)p.dir=-p.dir}}else p.rest=2.5+hsh(p.d,7)*6}
+    var end=p.dir>0?p.max-p.d:p.d-6;if(end<1.6)tv=Math.min(tv,0.35+end*0.5);if(end<0.05){p.dir=-p.dir;p.t0=-1;p.rest=1.5+hsh(p.d,9)*3}
+    p.v+=(tv-p.v)*Math.min(1,dt*(tv<p.v?3.2:1.6));if(p.v<0.03)p.v=0;p.d+=p.dir*p.v*dt;p.d=Math.max(6,Math.min(p.max,p.d));
+    var q=pAt(p.path,p.d,p.lat*p.dir);if(!canWalk(q.x,q.z))p.lat*=0.94;p.x=q.x;p.z=q.z;p.y+=(hAt(q.x,q.z)-p.y)*Math.min(1,dt*10);p.sp=p.v;
+    var ty=Math.atan2(q.dx*p.dir,q.dz*p.dir),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=Math.sign(da)*Math.min(Math.abs(da),dt*(1.4+Math.abs(da)*2.2))}
   p.o.visible=!far;if(far){p.bl.visible=false;return}if(p.still)p.y=hAt(p.x,p.z);Fig.animate(p,dt);var nd=Math.hypot(me.x-p.x,me.z-p.z);Fig.kopf(p,nd<6&&!ride?Math.atan2(me.x-p.x,me.z-p.z):p.yaw,dt)}
 $('view').addEventListener('click',function(){view=ride?(view==='innen'?'aussen':'innen'):(view==='ich'?'schulter':'ich');label()});
 function label(){$('view').textContent='Ansicht · '+({ich:'Ich',schulter:'Schulter',innen:'Innen',aussen:'Außen'})[view]}label();
@@ -296,7 +307,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
       /* Kamera schwenkt von selbst hinter die Figur, wenn man eine Weile nicht umgesehen hat */
       lookIdle+=dt;if(view==='schulter'&&hsp>0.6&&lookIdle>0.7&&!tL&&!drag){var dy=Math.atan2(Math.sin(hyaw+Math.PI-me.yaw),Math.cos(hyaw+Math.PI-me.yaw));me.yaw+=dy*Math.min(1,dt*1.5)*Math.min(1,Math.abs(fx)*1.5+0.2);me.pitch+=(-0.2-me.pitch)*Math.min(1,dt*0.8)}}
     hsp+=((dt>0?moved/dt:0)-hsp)*Math.min(1,dt*8);me.y+=((ride?0:hAt(me.x,me.z))-me.y)*Math.min(1,dt*12);
-    if(hero){hero.o.visible=!ride&&view==='schulter'&&!kam;if(hero.o.visible){hero.x=me.x;hero.z=me.z;hero.y=me.y;hero.sp=hsp;hero.yaw+=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw))*Math.min(1,dt*7);hero.poseW=0;Fig.animate(hero,dt);Fig.kopf(hero,Math.atan2(fwd.x,fwd.z),dt)}else hero.bl.visible=false}
+    if(hero){hero.o.visible=!ride&&view==='schulter'&&!kam;if(hero.o.visible){hero.x=me.x;hero.z=me.z;hero.y=me.y;hero.sp=hsp;var hd=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw));hero.yaw+=Math.sign(hd)*Math.min(Math.abs(hd),dt*(2.2+Math.abs(hd)*4.5));if(Math.abs(hd)>1.9){vel.x*=1-Math.min(1,dt*6);vel.z*=1-Math.min(1,dt*6)};Fig.animate(hero,dt);Fig.kopf(hero,Math.atan2(fwd.x,fwd.z),dt)}else hero.bl.visible=false}
     for(i=0;i<ppl.length;i++)npcStep(ppl[i],dt);zeitStep(dt);
     uiT+=dt;if(uiT>0.25){uiT=0;actBtn();miniMap();zeitTick();if(mapOpen)mapDraw();if(!ride&&!canWalk(me.x,me.z)){for(var q=1;q<80;q++){var qr=0.5+q*0.4,qa=q*2.4;if(canWalk(me.x+Math.cos(qa)*qr,me.z+Math.sin(qa)*qr)){me.x+=Math.cos(qa)*qr;me.z+=Math.sin(qa)*qr;break}}}}
     fAcc+=dt;fN++;if(fN>=45){var fps=fN/fAcc;fAcc=fN=0;var p2=PR;if(fps<43)p2=Math.max(PRMIN,PR-0.15);else if(fps>56)p2=Math.min(PRMAX,PR+0.08);if(p2!==PR){PR=p2;renderer.setPixelRatio(PR);resize()}window.__fps=fps}}

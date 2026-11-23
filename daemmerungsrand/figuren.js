@@ -8,7 +8,7 @@ function mkPerson(key,extra){var root=THREE.SkeletonUtils.clone(loaded.av[key]),
   function add(nm,c){var cl=loaded.cl[sx][c];if(!cl)return;var tr=cl.tracks.filter(function(t){var i=t.name.lastIndexOf('.'),n=t.name.slice(0,i),pr=t.name.slice(i+1);return root.getObjectByName(n)&&(pr==='quaternion'||n==='Bip01')});
     if(c.indexOf('walk')>=0||c.indexOf('run')>=0)tr.forEach(function(t){if(t.name.slice(-9)==='.position'){var v=t.values,x0=v[0],z0=v[2];for(var i=0;i<v.length;i+=3){v[i]=x0;v[i+2]=z0}}});
     var a=mx.clipAction(new THREE.AnimationClip(nm,cl.duration,tr));a.play();a.setEffectiveWeight(nm==='idle'?1:0);A[nm]=a}
-  add('idle','idle_neutral');add('walk','walk_neutral');add('run','run_neutral');if(extra)add('pose',extra);
+  add('idle','idle_neutral');add('walk','walk_neutral');add('run','run_neutral');if(extra)add('pose',extra);if(A.walk)A.walk.time=hsh(W.pn||0,3)*1.1;
   scene.add(root);if(ERA)dress(root,(W.pn=(W.pn||0)+1),key);if(E32){W.pn=(W.pn||0)+1;dress(root,W.isMe?-1:W.pn,key);hat32(root,W.isMe?3:W.pn,key)}return{o:root,mx:mx,A:A,x:0,z:0,y:0,yaw:0,sp:0,ph:0,bl:blob(1.0,1.0,0.5)}}
 var HATY=0.145;
 function dress(root,k,key){var hero=k<0;if(hero)k=1;var fem=key&&key[0]==='f';root.updateMatrixWorld(true);var sm=null;root.traverse(function(o){if(o.isSkinnedMesh&&!sm)sm=o});if(!sm)return;var sk=sm.skeleton,P={},I={};
@@ -55,7 +55,12 @@ function load(done){var n=AV.length+CL.length*2,fin=function(){if(--n===0)done()
 /* Gewichte der Bewegungen nach Tempo; pose (Sitzen, Umsehen) blendet darüber */
 function animate(p,dt){var s=p.sp,wr=sstep(2.3,3.4,s),ww=sstep(0.12,0.8,s)*(1-wr),wi=1-sstep(0.12,0.8,s),pw=p.A.pose?(p.poseW||0):0;if(p.A.pose)p.A.pose.setEffectiveWeight(pw);wi*=1-pw;ww*=1-pw;wr*=1-pw;
   if(p.A.idle)p.A.idle.setEffectiveWeight(wi);if(p.A.walk){p.A.walk.setEffectiveWeight(ww);p.A.walk.setEffectiveTimeScale(clamp(s/1.4,0.6,1.5))}if(p.A.run){p.A.run.setEffectiveWeight(wr);p.A.run.setEffectiveTimeScale(clamp(s/3.8,0.7,1.4))}
-  p.mx.update(dt);p.o.position.set(p.x,p.y,p.z);p.o.rotation.y=p.yaw;p.bl.position.set(p.x,p.y+0.02,p.z);p.bl.visible=p.o.visible}
+  p.mx.update(dt);
+  /* Körper legt sich leicht in Beschleunigung und Kurve; beim Stehen ab und zu umsehen */
+  var acc=dt>0?(s-(p.ps===undefined?s:p.ps))/dt:0,yr=dt>0?Math.atan2(Math.sin(p.yaw-(p.py===undefined?p.yaw:p.py)),Math.cos(p.yaw-(p.py===undefined?p.yaw:p.py)))/dt:0;p.ps=s;p.py=p.yaw;
+  p.lx=(p.lx||0)+(clamp(acc*0.035+s*0.012,-0.09,0.14)-(p.lx||0))*Math.min(1,dt*4);p.lz=(p.lz||0)+(clamp(-yr*0.03*Math.min(1,s/1.5),-0.1,0.1)-(p.lz||0))*Math.min(1,dt*5);
+  if(p.auto){p.it=s<0.1?(p.it||0)+dt:0;var w=p.it>2.5?0.5-0.5*Math.cos(Math.min(1,(p.it-2.5)/1.2)*3.1416):0;if(p.it>9+p.ir)p.it=0,p.ir=hsh(p.x*7,p.z*7)*6;p.poseW=(p.poseW||0)+(w-(p.poseW||0))*Math.min(1,dt*2.5)}
+  p.o.position.set(p.x,p.y,p.z);p.o.rotation.set(p.lx,p.yaw,p.lz,'YXZ');p.bl.position.set(p.x,p.y+0.02,p.z);p.bl.visible=p.o.visible}
 /* Fotoapparat der Spielfigur: Balgenkamera am Lederriemen vor der Brust, hängt am Oberkörper-Knochen */
 function apparat(root){root.updateMatrixWorld(true);var sp=null,nk=null;root.traverse(function(o){if(o.isBone){if(/Spine2$/.test(o.name)&&!sp)sp=o;if(/Neck$/.test(o.name)&&!nk)nk=o}});if(!sp)return;var S=sp.getWorldPosition(new V3()),Nk=(nk||sp).getWorldPosition(new V3()),g=new THREE.Group(),
     led=new THREE.MeshStandardMaterial({color:0x1b1512,roughness:0.6,envMapIntensity:0.4}),met=new THREE.MeshStandardMaterial({color:0xb9b6ae,roughness:0.3,metalness:0.9,envMapIntensity:1}),gls=new THREE.MeshStandardMaterial({color:0x0b1016,roughness:0.08,metalness:0.2,envMapIntensity:1.6});
