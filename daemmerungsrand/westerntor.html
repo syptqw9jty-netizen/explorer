@@ -16,20 +16,28 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #st{position:fixed;z-index:3;left:calc(28px + env(safe-area-inset-left));bottom:calc(34px + env(safe-area-inset-bottom));width:112px;height:112px;border-radius:50%;border:1px solid rgba(233,228,216,.35);background:rgba(20,21,23,.25);display:none}
 #st i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:rgba(233,228,216,.55)}
 body.touch #st{display:block}
-#lp{position:fixed;inset:0;z-index:9;background:#0c0d0f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px}
-#lp h1{font-family:Georgia,serif;font-weight:400;font-size:34px;margin:0}
-#lp .k{font-size:11px;letter-spacing:.28em;color:#8d877a}
-#bar{width:220px;height:2px;background:#2a2a27}#bar i{display:block;height:2px;width:0;background:#e9e4d8}
-#go{display:none;background:#e9e4d8;color:#0c0d0f;border:0;border-radius:4px;padding:16px 30px;font-size:13px;letter-spacing:.24em;font-weight:600;font-family:inherit}
-#hint{font-size:12px;color:#8d877a;max-width:28em;line-height:1.6}
+#lp{position:fixed;inset:0;z-index:9;background:#0c0d0f;overflow:hidden}
+#sl{position:absolute;inset:0}
+#sl img{position:absolute;top:0;left:0;height:100%;min-width:100%;max-width:none;object-fit:cover;opacity:0;transition:opacity 1.4s ease;will-change:transform,opacity}
+#sl img.on{opacity:1}
+#lp:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.45) 0,rgba(8,8,10,0) 22%,rgba(8,8,10,0) 48%,rgba(8,8,10,.86) 100%);pointer-events:none}
+#lt{position:absolute;z-index:2;left:calc(22px + env(safe-area-inset-left));right:calc(22px + env(safe-area-inset-right));bottom:calc(26px + env(safe-area-inset-bottom));text-align:left;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+#lp h1{font-family:Georgia,serif;font-weight:400;font-style:italic;font-size:44px;line-height:1;margin:6px 0 4px;color:#f3eee2}
+#lp .k{font-size:11px;letter-spacing:.28em;color:#d8d2c4;text-transform:uppercase}
+#cap{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#f3eee2;border-left:2px solid #c9a24a;padding-left:10px;margin:14px 0 16px;transition:opacity .6s}
+#bar{width:100%;height:2px;background:rgba(233,228,216,.25);margin-bottom:10px}#bar i{display:block;height:2px;width:0;background:#e9e4d8;transition:width .4s}
+#lr{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:50px}
+#go{display:none;background:#e9e4d8;color:#0c0d0f;border:0;border-radius:4px;padding:16px 30px;font-size:13px;letter-spacing:.24em;font-weight:600;font-family:inherit;text-shadow:none}
+#hint{font-size:11px;color:#bdb7a9;line-height:1.5;margin-top:8px;max-width:44em}
+@media(max-height:480px){#lp h1{font-size:30px}#cap{margin:8px 0 10px}#hint{display:none}}
 </style></head><body>
 <canvas id="cv"></canvas>
 <a class="g" id="back" href="./">‹ MENÜ</a>
 <select class="g" id="ort"></select>
 <div id="lbl">PADERBORN · 1932</div>
 <div id="st"><i></i></div>
-<div id="lp"><div class="k">Paderborn 1932</div><h1>Innenstadt</h1><div id="bar"><i></i></div><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button>
-<div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div>
+<div id="lp"><div id="sl"></div><div id="lt"><div class="k">Paderborn · März 1932</div><h1>Dämmerungsrand</h1><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
+<div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
 <script src="three.min.js"></script><script src="GLTFLoader.js"></script>
 <script>
 (function(){'use strict';
@@ -95,7 +103,17 @@ function status(){var need=0,got=0,i;for(i=0;i<TL.length;i++){var t=TL[i],d=tdis
 function sweep(){for(var i=0;i<TL.length;i++){var t=TL[i],d=tdist(t);if(t.s===2){if(d>R_DROP&&!t.all){scene.remove(t.o);t.o.traverse(function(o){if(o.geometry)o.geometry.dispose()});t.o=null;t.s=0}else t.o.visible=d<650}}pump();status()}
 fetch('w/t/index.json').then(function(r){return r.json()}).then(function(M){M.forEach(function(m){TL.push({f:m.f,x:m.x,z:m.z,r:m.r,b:m.b,s:0,o:null,all:m.r>700||/^Boden|^T01/.test(m.n)})});sweep();setInterval(sweep,700)}).catch(function(){$('pt').textContent='Laden fehlgeschlagen. Bitte Seite neu laden.'});
 var t0=Date.now();setInterval(function(){if(!started&&!ready&&Date.now()-t0>45000)$('hint').textContent='Das Laden dauert ungewöhnlich lange. Bitte Verbindung prüfen oder die Seite neu laden.'},5000);
-$('go').addEventListener('click',function(){$('lp').style.display='none';started=true});
+$('go').addEventListener('click',function(){$('lp').style.display='none';started=true;splashOff()});
+/* Ladebilder: vollflächig, langsam wandernd, überblendend */
+var SP=[['s1','Westernstraße'],['s4','Am Westerntor'],['s3','Rathausplatz'],['s6','Linie 1'],['s2','Marienplatz'],['s7','Herz-Jesu-Kirche'],['s9','Im Wagen'],['s8','Über den Dächern'],['s5','Am Westerntor']],spi=-1,spT=0,spCur=null,spOff=false;
+function splashOff(){spOff=true;clearTimeout(spT);$('sl').innerHTML=''}
+function splashNext(){if(spOff)return;spi=(spi+1)%SP.length;var e=SP[spi],im=new Image();
+  im.onload=function(){if(spOff)return;var sl=$('sl'),old=spCur;sl.appendChild(im);var ex=Math.max(0,im.offsetWidth-sl.clientWidth),d=spi%2,a=ex*(d?0.82:0.18),b=ex*(d?0.3:0.7);
+    if(im.animate)im.animate([{transform:'translate3d('+(-a)+'px,0,0) scale(1.03)'},{transform:'translate3d('+(-b)+'px,0,0) scale(1.1)'}],{duration:9000,easing:'linear',fill:'forwards'});else im.style.transform='translate3d('+(-(a+b)/2)+'px,0,0)';
+    im.offsetWidth;im.className='on';$('cap').textContent=e[1];spCur=im;if(old){old.className='';setTimeout(function(){if(old.parentNode)old.parentNode.removeChild(old)},1600)}
+    spT=setTimeout(splashNext,6200)};
+  im.onerror=function(){spT=setTimeout(splashNext,1500)};im.decoding='async';im.src='s/'+e[0]+'.jpg'}
+splashNext();
 /* Eingabe: links gehen, rechts umsehen */
 var keys={},mv={x:0,y:0},tS=null,tL=null,stEl=$('st'),knob=stEl.firstChild,drag=null;
 window.addEventListener('keydown',function(e){keys[e.key.toLowerCase()]=1});window.addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=0});
