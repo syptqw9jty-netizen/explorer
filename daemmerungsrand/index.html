@@ -27,13 +27,15 @@ a.go:active{opacity:.8}
 .h{font-size:12px;line-height:1.6;color:#8d877a;margin-top:26px}
 footer{max-width:560px;width:100%;margin:26px auto 0;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;color:#6f6a60;border-top:1px solid #23231f;padding-top:14px}
 footer a{color:#b9b3a5;text-decoration:none}
-</style></head><body>
+#dreh{display:none;position:fixed;inset:0;z-index:99;background:#0c0d0f;color:#e9e4d8;align-items:center;justify-content:center;flex-direction:column;gap:22px;text-align:center;padding:30px;font-size:12px;letter-spacing:.22em;text-transform:uppercase}#dreh i{width:78px;height:44px;border:2px solid #e9e4d8;border-radius:9px;display:block;animation:dreh 2.6s ease-in-out infinite}@keyframes dreh{0%,20%{transform:rotate(90deg)}55%,100%{transform:rotate(0)}}@media (orientation:portrait) and (max-width:900px){#dreh{display:flex}}
+@media (orientation:landscape) and (max-height:560px){body{padding-top:calc(12px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom))}main{flex-direction:row;align-items:center;gap:36px;max-width:880px}main>img{width:min(38vw,330px)!important;margin:0!important;flex:0 0 auto}.r{flex:1;min-width:0}p.l{font-size:13px;margin-bottom:14px}a.go{padding:14px 20px}.h{margin-top:12px;font-size:11px}footer{max-width:880px;margin-top:8px;padding-top:8px}}
+</style></head><body><div id="dreh"><i></i>Bitte das Gerät quer halten</div>
 <main>
   <img src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn" style="width:min(86vw,440px);height:auto;margin:0 0 18px -4px">
-  <p class="l">Die Innenstadt an einem Märznachmittag 1932, zu Fuß oder mit der Elektrischen: vom Hauptbahnhof über Westerntor und Westernstraße zu Marienplatz, Rathaus, Dom und Liboriberg.</p>
+  <div class="r"><p class="l">Die Innenstadt an einem Märznachmittag 1932, zu Fuß oder mit der Elektrischen: vom Hauptbahnhof über Westerntor und Westernstraße zu Marienplatz, Rathaus, Dom und Liboriberg.</p>
   <a class="go" id="spiel" href="westerntor.html">SPIELEN</a>
   <div id="neu" style="margin-top:14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase"><a href="#" id="neu1" style="color:#bdb7a9">Neustart</a><span id="neu2" style="display:none;color:#d9d3c6">Alles zurücksetzen? Geschichte, Karte, Album und Papiere werden gelöscht. &nbsp; <a href="#" id="neuja" style="color:#f2c14e">Ja, neu beginnen</a> &nbsp;·&nbsp; <a href="#" id="neunein" style="color:#bdb7a9">Abbrechen</a></span></div>
-  <div class="h">Links ziehen: gehen · rechts ziehen: umsehen · oben rechts: Standort wechseln · unten rechts: Ansicht wechseln, an der Bahn einsteigen. Die Darstellung passt sich selbst an das Gerät an.</div>
+  <div class="h">Im Querformat spielen · links ziehen: gehen und lenken · rechts ziehen: umsehen · unten rechts: Ton, Kamera, Ansicht, im Wagen Gas und Bremse.</div></div>
 </main>
 <footer><span><a href="quellen.html">Quellen</a> · <a href="viertel.html">Vorheriger Stand</a> · <a href="klassik.html">Frühere Spiele</a></span><span id="ver"></span></footer>
 <script>

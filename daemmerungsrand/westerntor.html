@@ -51,7 +51,6 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #fwahl{position:absolute;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom));display:none;flex-direction:column;align-items:center;gap:10px;padding:0 20px}
 #fwahl button{position:static;font-family:inherit;text-transform:uppercase;background:rgba(233,228,216,.94);color:#0c0d0f;font-weight:600;padding:15px 22px;min-width:240px}
 #fwahl .n{font-size:11px;color:#cfc9bb;letter-spacing:.06em;text-align:center;max-width:30em;text-shadow:0 1px 4px #000}
-@media (orientation:portrait){body:not(.kino) #sub{bottom:calc(352px + env(safe-area-inset-bottom))}}
 #sub{position:fixed;z-index:4;left:7%;right:7%;bottom:calc(150px + env(safe-area-inset-bottom));text-align:center;font-size:16px;line-height:1.4;color:#fff;text-shadow:0 1px 4px #000,0 0 14px rgba(0,0,0,.85);pointer-events:none;opacity:0;transition:opacity .4s}
 #sub small{display:block;font-size:11px;letter-spacing:.08em;color:#e3d9bf;margin-top:4px}
 #sz{position:fixed;left:0;right:0;bottom:0;z-index:7;max-height:70%;overflow:auto;-webkit-overflow-scrolling:touch;background:#f5f1e6;color:#2a251f;border-radius:16px 16px 0 0;box-shadow:0 -6px 30px rgba(0,0,0,.4);padding:18px 20px calc(22px + env(safe-area-inset-bottom));display:none;touch-action:pan-y}
@@ -78,6 +77,18 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #go{display:none;background:#e9e4d8;color:#0c0d0f;border:0;border-radius:4px;padding:16px 30px;font-size:13px;letter-spacing:.24em;font-weight:600;font-family:inherit;text-shadow:none}
 #hint{font-size:11px;color:#bdb7a9;line-height:1.5;margin-top:8px;max-width:44em}
 @media(max-height:480px){#lp h1{font-size:30px}#cap{margin:8px 0 10px}#hint{display:none}}
+/* ---------- Querformat: Bedienung an die Daumen. Karte oben rechts, Knopfreihe unten rechts (Fahren: Pedale ganz außen), Handlungsknopf darüber, Untertitel unten in der Mitte ---------- */
+#dreh{display:none;position:fixed;inset:0;z-index:99;background:#0c0d0f;color:#e9e4d8;align-items:center;justify-content:center;flex-direction:column;gap:22px;text-align:center;padding:30px;font-size:12px;letter-spacing:.22em;text-transform:uppercase}#dreh i{width:78px;height:44px;border:2px solid #e9e4d8;border-radius:9px;display:block;animation:dreh 2.6s ease-in-out infinite}@keyframes dreh{0%,20%{transform:rotate(90deg)}55%,100%{transform:rotate(0)}}@media (orientation:portrait) and (max-width:900px){#dreh{display:flex}}
+#ui{flex-direction:row;flex-wrap:nowrap;justify-content:flex-end;align-items:flex-end;gap:8px;bottom:calc(14px + env(safe-area-inset-bottom))}
+#ui button{padding:12px 14px;white-space:nowrap}
+#tonb{order:1}#kamb{order:2}#view{order:3}#ped{order:4}
+#ui #act{position:fixed;right:calc(14px + env(safe-area-inset-right));bottom:calc(110px + env(safe-area-inset-bottom));padding:13px 18px}
+#mm{position:fixed;top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));width:96px;height:96px}
+#ort{right:calc(118px + env(safe-area-inset-right));max-width:34vw}
+#opx{right:calc(12px + env(safe-area-inset-right))}
+#sub{left:17%;right:17%;bottom:calc(64px + env(safe-area-inset-bottom));font-size:15px}
+#tonp{top:50%;bottom:auto;transform:translateY(-50%);max-height:92%;overflow:auto;padding:12px 18px 14px}#tonp label{margin-top:9px}#tonp div{margin-top:12px}
+#sz{left:18%;right:18%;max-height:88%}
 </style></head><body>
 <canvas id="cv"></canvas>
 <a class="g" id="back" href="./">‹ MENÜ</a>
@@ -91,7 +102,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz" style="display:none">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
 <div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Weiter · Bahnhofsvorplatz</button><button class="g" id="fw2">Am Westerntor beginnen</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Auch die Begegnung auf dem Vorplatz und die Fahrt sind Spielszene; belegte Angaben sind als solche gekennzeichnet.</div></div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
-<div id="lp"><div id="sl"></div><div id="tt">Tippen für Ton</div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
+<div id="dreh"><i></i>Bitte das Gerät quer halten</div><div id="lp"><div id="sl"></div><div id="tt">Tippen für Ton</div><div id="lt"><img id="logo" src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">BETRETEN</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
 <script src="three.min.js"></script><script src="GLTFLoader.js"></script><script src="SkeletonUtils.js"></script><script src="figuren.js"></script>
 <script>
@@ -529,7 +540,7 @@ function musikStep(dt){if(!MU.ok)return;var t=AC.currentTime,D=MU.d[MU.akt],geht
   /* Stadt tritt beim Sprechen leicht zurück, Stimmen bleiben vorn */
   SND.m.gain.setTargetAtTime(MU.MIX.c/100*Math.pow(10,(rd?-3.5:0)/20),t,0.08)}
 /* Ton so früh wie möglich: beim ersten Tippen oder Tastendruck irgendwo, auch schon auf dem Ladebild (vorher lässt kein Browser Ton zu) */
-(function(){var los=function(){tonInit();try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}if(SND.ok&&AC.state==='running'){var tt=$('tt');if(tt)tt.style.display='none';['touchend','click','keydown'].forEach(function(n){document.removeEventListener(n,los,true)})}};['touchend','click','keydown'].forEach(function(n){document.addEventListener(n,los,true)})})();
+(function(){var los=function(){tonInit();try{var so=screen.orientation;if(so&&so.lock)so.lock('landscape').catch(function(){})}catch(e){}try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}if(SND.ok&&AC.state==='running'){var tt=$('tt');if(tt)tt.style.display='none';['touchend','click','keydown'].forEach(function(n){document.removeEventListener(n,los,true)})}};['touchend','click','keydown'].forEach(function(n){document.addEventListener(n,los,true)})})();
 document.addEventListener('visibilitychange',function(){if(!SND.ok)return;try{if(document.hidden){AC.suspend();MU.d.forEach(function(d){d.el.pause()})}else{AC.resume();var D=MU.d[MU.akt];if(D&&D.n){var p=D.el.play();if(p&&p.catch)p.catch(function(){})}}}catch(e){}});
 /* Regler: Musik, Stimmen, Stadt getrennt */
 (function(){var P=$('tonp');[['m','mxm'],['s','mxs'],['c','mxc']].forEach(function(e){var i=$(e[1]);i.value=MU.MIX[e[0]];i.addEventListener('input',function(){MU.MIX[e[0]]=+i.value;try{localStorage.setItem('ab32-mix2',JSON.stringify(MU.MIX))}catch(x){}mixSet()})});
@@ -657,7 +668,7 @@ renderer.domElement.addEventListener('webglcontextlost',function(e){e.preventDef
 var FILL=new THREE.DirectionalLight(0xfff0dc,0);scene.add(FILL);scene.add(FILL.target);var JAW=null,blk={a:2,b:3.1};fetch('w/muetze.json').then(function(r){return r.json()}).then(function(j){JAW=j}).catch(function(){});
 /* Bildschleife mit selbstregelnder Auflösung */
 var last=performance.now(),fAcc=0,fN=0,bob=0,hsp=0,hyaw=0,uiT=0;
-function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/1000);last=now;if(window.__dt)dt=window.__dt;
+function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/1000);last=now;if(window.__dt)dt=window.__dt;if(MOB&&window.innerHeight>window.innerWidth&&window.innerWidth<900)return; /* hochkant: Spiel steht, Hinweis zum Drehen liegt darüber */
   var cp=Math.cos(me.pitch);fwd.set(-Math.sin(me.yaw)*cp,Math.sin(me.pitch),-Math.cos(me.yaw)*cp);
   if(!started)musikStep(dt);
   if(started){var fx=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+mv.x,fz=(keys.s||keys.arrowdown?1:0)-(keys.w||keys.arrowup?1:0)+mv.y,l,moved=0,i;if(OP.on||hero&&hero.seq)fx=fz=0;l=Math.hypot(fx,fz);
