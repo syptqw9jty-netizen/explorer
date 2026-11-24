@@ -1,52 +1,65 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c0d0f">
+<meta name="theme-color" content="#201B18">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Am Bogen 32">
+<meta name="apple-mobile-web-app-title" content="Der Besucher">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Am Bogen 32 · Das alte Paderborn</title>
+<link rel="preload" href="f/SourceSerif4Variable-Roman.ttf.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="ui.css">
+<title>Der Besucher · Paderborn 1933</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:#0c0d0f;color:#e9e4d8;font-family:-apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif}
-body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;padding:calc(28px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left))}
-main{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:560px;width:100%;margin:0 auto}
-.k{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#8d877a}
-h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(38px,9vw,60px);line-height:1.02;margin:10px 0 6px;letter-spacing:-.01em}
-p.l{font-size:15px;line-height:1.5;color:#b9b3a5;margin:0 0 30px;max-width:30em}
-a.go{display:block;text-align:center;text-decoration:none;background:#e9e4d8;color:#0c0d0f;padding:18px 20px;border-radius:4px;font-size:13px;letter-spacing:.24em;font-weight:600}
-a.go:active{opacity:.8}
-.g{margin-top:26px}
-.g .k{margin-bottom:10px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.c{flex:1 1 0;min-width:96px;border:1px solid #34332f;border-radius:4px;padding:12px 10px;font-size:12px;letter-spacing:.08em;color:#b9b3a5;cursor:pointer;text-align:left;background:none;font-family:inherit}
-.c b{display:block;font-weight:600;color:#e9e4d8;font-size:14px;letter-spacing:.02em;margin-bottom:2px}
-#q .c{flex-basis:calc(50% - 4px)}
-.c.on{border-color:#e9e4d8;background:#17181a}
-.h{font-size:12px;line-height:1.6;color:#8d877a;margin-top:26px}
-footer{max-width:560px;width:100%;margin:26px auto 0;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;color:#6f6a60;border-top:1px solid #23231f;padding-top:14px}
-footer a{color:#b9b3a5;text-decoration:none}
-#dreh{display:none;position:fixed;inset:0;z-index:99;background:#0c0d0f;color:#e9e4d8;align-items:center;justify-content:center;flex-direction:column;gap:22px;text-align:center;padding:30px;font-size:12px;letter-spacing:.22em;text-transform:uppercase}#dreh i{width:78px;height:44px;border:2px solid #e9e4d8;border-radius:9px;display:block;animation:dreh 2.6s ease-in-out infinite}@keyframes dreh{0%,20%{transform:rotate(90deg)}55%,100%{transform:rotate(0)}}@media (orientation:portrait) and (max-width:900px){#dreh{display:flex}}
-@media (orientation:landscape) and (max-height:560px){body{padding-top:calc(12px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom))}main{flex-direction:row;align-items:center;gap:36px;max-width:880px}main>img{width:min(38vw,330px)!important;margin:0!important;flex:0 0 auto}.r{flex:1;min-width:0}p.l{font-size:13px;margin-bottom:14px}a.go{padding:14px 20px}.h{margin-top:12px;font-size:11px}footer{max-width:880px;margin-top:8px;padding-top:8px}}
-</style></head><body><div id="dreh"><i></i>Bitte das Gerät quer halten</div>
-<main>
-  <img src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn" style="width:min(86vw,440px);height:auto;margin:0 0 18px -4px">
-  <div class="r"><p class="l">Die Innenstadt an einem Märznachmittag 1932, zu Fuß oder mit der Elektrischen: vom Hauptbahnhof über Westerntor und Westernstraße zu Marienplatz, Rathaus, Dom und Liboriberg.</p>
-  <a class="go" id="spiel" href="westerntor.html">SPIELEN</a>
-  <div id="neu" style="margin-top:14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase"><a href="#" id="neu1" style="color:#bdb7a9">Neustart</a><span id="neu2" style="display:none;color:#d9d3c6">Alles zurücksetzen? Geschichte, Karte, Album und Papiere werden gelöscht. &nbsp; <a href="#" id="neuja" style="color:#f2c14e">Ja, neu beginnen</a> &nbsp;·&nbsp; <a href="#" id="neunein" style="color:#bdb7a9">Abbrechen</a></span></div>
-  <div class="h">Im Querformat spielen · links ziehen: gehen und lenken · rechts ziehen: umsehen · unten rechts: Ton, Kamera, Ansicht, im Wagen Gas und Bremse.</div></div>
-</main>
-<footer><span><a href="quellen.html">Quellen</a> · <a href="viertel.html">Vorheriger Stand</a> · <a href="klassik.html">Frühere Spiele</a></span><span id="ver"></span></footer>
+html,body{margin:0;height:100%;background:var(--rot);color:var(--text);overflow:hidden}
+#bild{position:fixed;left:0;top:0;bottom:0;right:min(46vw,470px);background:#b3140f url(s/b_cover.webp) center top/cover no-repeat}
+#tafel{position:fixed;top:0;bottom:0;right:0;width:min(46vw,470px);background:var(--flaeche-fest);border-left:1px solid var(--linie);display:flex;flex-direction:column;justify-content:center;padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) 0}
+#tafel .ortz{padding:0 16px 0 23px;color:var(--text-leise);white-space:nowrap;letter-spacing:.1em}
+#tafel .satzl{margin:8px 16px 8px 23px;color:var(--linie)}
+.liste{display:none;flex-direction:column}.liste.an{display:flex}
+#frage{padding:4px 16px 10px 23px;font:400 17px/1.4 var(--schrift);color:var(--text)}
+#fuss{padding:10px 16px 0 23px;font:500 13px/1.4 var(--schrift);color:var(--text-leise);display:flex;justify-content:space-between;gap:10px}
+#dreh{display:none;position:fixed;inset:0;z-index:99;background:var(--flaeche-fest);color:var(--text);align-items:center;justify-content:center;flex-direction:column;gap:20px;text-align:center;padding:30px;font:600 22px/1.2 var(--schrift)}
+#dreh img{width:112px;height:112px;border-radius:22px}
+#dreh i{width:78px;height:44px;border:2px solid var(--text);border-radius:8px;display:block;animation:dreh 2.6s ease-in-out infinite}@keyframes dreh{0%,20%{transform:rotate(90deg)}55%,100%{transform:rotate(0)}}
+@media (orientation:portrait) and (max-width:900px){#dreh{display:flex}}
+@media (max-height:360px){.mz{font-size:22px;min-height:44px;padding-top:6px;padding-bottom:6px}}
+</style></head><body>
+<div id="dreh"><img src="icon-192.png" alt=""><i></i>Bitte das Gerät quer halten</div>
+<div id="bild" role="img" aria-label="Der Besucher – ein Mann mit Hut, Mantel und Kamera steigt am Bahnsteig aus dem Zug"></div>
+<nav id="tafel" aria-label="Hauptmenü">
+  <div class="ortz">Paderborn · Frühjahr 1933</div><hr class="satzl">
+  <div class="liste an" id="haupt">
+    <a class="mz" id="spiel" href="westerntor.html">Spielen</a>
+    <button class="mz" id="neu" type="button">Neu beginnen</button>
+    <a class="mz k" href="quellen.html">Quellen lesen</a>
+    <a class="mz k" href="viertel.html">Vorherigen Stand öffnen</a>
+    <a class="mz k" href="klassik.html">Frühere Spiele öffnen</a>
+  </div>
+  <div class="liste" id="sicher">
+    <div id="frage">Geschichte, Karte, Album und Papiere werden gelöscht. Die Toneinstellung bleibt.</div>
+    <button class="mz" id="neuja" type="button">Verwerfen und neu beginnen</button>
+    <button class="mz" id="neunein" type="button">Abbrechen</button>
+  </div>
+  <div id="fuss"><span>Im Querformat spielen</span><span id="ver"></span></div>
+</nav>
 <script>
-/* Neustart: Spielstand vollständig löschen (Toneinstellung bleibt), dann von vorn beginnen */
-(function(){var e=function(i){return document.getElementById(i)},st=false;try{st=!!(localStorage.getItem('ab32-muetze')||localStorage.getItem('ab32-nebel'))}catch(x){}
-  if(st)e('spiel').textContent='WEITERSPIELEN';else e('neu').style.display='none';
-  e('neu1').addEventListener('click',function(v){v.preventDefault();e('neu1').style.display='none';e('neu2').style.display='inline'});
-  e('neunein').addEventListener('click',function(v){v.preventDefault();e('neu2').style.display='none';e('neu1').style.display='inline'});
-  e('neuja').addEventListener('click',function(v){v.preventDefault();try{['ab32-muetze','ab32-ankunft','ab32-sg','ab32-papiere','ab32-nebel','ab32-album','ab32-blick','ab32-story','ab32-leute'].forEach(function(k){localStorage.removeItem(k)})}catch(x){}location.href='westerntor.html'})})();
-</script>
-<script>
+/* Hauptmenü: eine Menüzeile, ein Fokus. Pfeiltasten/Controller-Steuerkreuz bewegen den Fokus, Eingabe löst aus, Escape geht zurück und stellt die vorherige Zeile wieder her. */
+(function(){var e=function(i){return document.getElementById(i)},st=false,vor=null;
+  try{st=!!(localStorage.getItem('ab32-muetze')||localStorage.getItem('ab32-nebel')||localStorage.getItem('ab32-story'))}catch(x){}
+  if(st)e('spiel').textContent='Fortsetzen';else e('neu').style.display='none';
+  function zeilen(){var l=document.querySelector('.liste.an');return Array.prototype.filter.call(l.querySelectorAll('.mz'),function(z){return z.offsetParent!==null})}
+  function zeig(id,fok){e('haupt').classList.toggle('an',id==='haupt');e('sicher').classList.toggle('an',id==='sicher');(fok||zeilen()[0]).focus()}
+  e('neu').addEventListener('click',function(){vor=e('neu');zeig('sicher',e('neunein'))});
+  e('neunein').addEventListener('click',function(){zeig('haupt',vor)});
+  e('neuja').addEventListener('click',function(){try{['ab32-muetze','ab32-ankunft','ab32-sg','ab32-papiere','ab32-nebel','ab32-album','ab32-blick','ab32-story','ab32-leute'].forEach(function(k){localStorage.removeItem(k)})}catch(x){}location.href='westerntor.html'});
+  document.addEventListener('keydown',function(v){var z=zeilen(),i=z.indexOf(document.activeElement);
+    if(v.key==='ArrowDown'){v.preventDefault();z[(i+1)%z.length].focus()}
+    else if(v.key==='ArrowUp'){v.preventDefault();z[(i-1+z.length)%z.length].focus()}
+    else if(v.key==='Escape'&&e('sicher').classList.contains('an'))zeig('haupt',vor)});
+  /* Steuerkreuz und A/B eines Controllers */
+  var gp=0;setInterval(function(){var p=navigator.getGamepads?navigator.getGamepads()[0]:null;if(!p)return;var b=function(n){return p.buttons[n]&&p.buttons[n].pressed},k=b(12)?1:b(13)?2:b(0)?3:b(1)?4:0;if(k&&k!==gp){var z=zeilen(),i=z.indexOf(document.activeElement);if(k===1)z[(i-1+z.length)%z.length].focus();if(k===2)z[(i+1)%z.length].focus();if(k===3&&i>=0)z[i].click();if(k===4&&e('sicher').classList.contains('an'))zeig('haupt',vor)}gp=k},90);
+  if(!('ontouchstart' in window))e('spiel').focus();else e('spiel').classList.add('fok')})();
 (function(){try{localStorage.setItem('dr-boot','0')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 if(window.caches&&caches.keys)caches.keys().then(function(k){var n=k.filter(function(x){return x.indexOf('daemmerungsrand-')===0}).sort().pop();if(n)document.getElementById('ver').textContent=n.replace('daemmerungsrand-','')})})();

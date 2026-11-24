@@ -1,0 +1,27 @@
+/* Der Besucher – gemeinsame Oberfläche: Schrift, Tokens, Menüzeile, Papier.
+   Schrift: Source Serif 4 (variabel, Originaldatei, SIL OFL 1.1 – siehe f/OFL.txt) */
+@font-face{font-family:"Source Serif 4";src:url(f/SourceSerif4Variable-Roman.ttf.woff2) format("woff2");font-weight:200 900;font-style:normal;font-display:swap}
+:root{
+  --druck:#201B18;--papier:#F3E6CB;--rot:#A51F18;
+  --text:#F3E6CB;--text-leise:rgba(243,230,203,.72);--text-papier:#201B18;--text-papier-leise:#5a4d42;
+  --flaeche:rgba(32,27,24,.86);--flaeche-fest:#201B18;--flaeche-papier:#F3E6CB;
+  --aktion:#F3E6CB;--aktion-text:#201B18;--fokus:#A51F18;--gesperrt:rgba(243,230,203,.38);
+  --linie:rgba(243,230,203,.28);--linie-papier:rgba(32,27,24,.55);
+  --a1:4px;--a2:8px;--a3:12px;--a4:18px;--a5:28px;
+  --zeit:.16s;
+  --schrift:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;
+}
+@media (prefers-reduced-motion:reduce){:root{--zeit:0s}*{animation-duration:.001s!important;transition-duration:.001s!important}}
+html,body,button,select,input{font-family:var(--schrift);font-optical-sizing:auto;font-variant-numeric:lining-nums}
+
+/* Menüzeile: Default dunkel; Fokus/Hover = heller Grund, dunkle Schrift, roter Randstrich; gedrückt dunkler; ausgewählt = Strich ohne Fläche; gesperrt blass */
+.mz{display:flex;align-items:baseline;justify-content:space-between;gap:var(--a4);width:100%;min-height:48px;padding:9px 16px 9px 18px;border:0;border-left:5px solid transparent;border-radius:0;background:transparent;color:var(--text);font:600 26px/1.15 var(--schrift);text-align:left;text-decoration:none;cursor:pointer;transition:background var(--zeit),color var(--zeit)}
+.mz small{font:500 15px/1.3 var(--schrift);color:var(--text-leise);text-align:right}
+.mz.k{font-size:18px;min-height:44px}
+.mz:focus-visible,.mz.fok,.mz:hover{outline:0;background:var(--aktion);color:var(--aktion-text);border-left-color:var(--fokus)}
+.mz:focus-visible small,.mz.fok small,.mz:hover small{color:var(--text-papier-leise)}
+.mz:active{background:#d9caa9;color:var(--aktion-text);border-left-color:var(--fokus)}
+.mz.gew{border-left-color:var(--text)}
+.mz[disabled],.mz.aus{color:var(--gesperrt);pointer-events:none}
+.ortz{font:500 14px/1.3 var(--schrift);letter-spacing:.14em;text-transform:uppercase}
+.satzl{height:0;border:0;border-top:1px solid currentColor;opacity:.6;margin:8px 0 10px}
