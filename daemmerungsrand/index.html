@@ -41,7 +41,7 @@ html,body{margin:0;height:100%;background:var(--rot);color:var(--text);overflow:
     <button class="mz" id="neuja" type="button">Verwerfen und neu beginnen</button>
     <button class="mz" id="neunein" type="button">Abbrechen</button>
   </div>
-  <div id="fuss"><span>Im Querformat spielen</span><span id="ver"></span></div>
+  <div id="fuss"><span>Im Querformat spielen<span id="tip" style="display:none"> · Tippen für Ton</span></span><span id="ver"></span></div>
 </nav>
 <script>
 /* Hauptmenü: eine Menüzeile, ein Fokus. Pfeiltasten/Controller-Steuerkreuz bewegen den Fokus, Eingabe löst aus, Escape geht zurück und stellt die vorherige Zeile wieder her. */
@@ -60,6 +60,13 @@ html,body{margin:0;height:100%;background:var(--rot);color:var(--text);overflow:
   /* Steuerkreuz und A/B eines Controllers */
   var gp=0;setInterval(function(){var p=navigator.getGamepads?navigator.getGamepads()[0]:null;if(!p)return;var b=function(n){return p.buttons[n]&&p.buttons[n].pressed},k=b(12)?1:b(13)?2:b(0)?3:b(1)?4:0;if(k&&k!==gp){var z=zeilen(),i=z.indexOf(document.activeElement);if(k===1)z[(i-1+z.length)%z.length].focus();if(k===2)z[(i+1)%z.length].focus();if(k===3&&i>=0)z[i].click();if(k===4&&e('sicher').classList.contains('an'))zeig('haupt',vor)}gp=k},90);
   if(!('ontouchstart' in window))e('spiel').focus();else e('spiel').classList.add('fok')})();
+/* Musik im Menü: „The Square Opens“. Beginnt sofort, wenn der Browser es zulässt, sonst mit der ersten Berührung; die Stelle wird ans Spiel weitergegeben. */
+(function(){var a=new Audio('a/mu_platz.mp3'),an=false,mix={m:80},tip=document.getElementById('tip');a.loop=true;a.setAttribute('playsinline','');try{var j=JSON.parse(localStorage.getItem('ab32-mix2')||'null');if(j&&j.m!==undefined)mix=j}catch(x){}
+  a.volume=Math.max(0,Math.min(1,mix.m/100*0.55));try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(x){}
+  function los(){if(an)return;var p=a.play();if(p&&p.then)p.then(function(){an=true;tip.style.display='none'}).catch(function(){tip.style.display='block'});else an=true}
+  los();['pointerdown','touchend','keydown','click'].forEach(function(n){document.addEventListener(n,los,true)});
+  function merk(){try{sessionStorage.setItem('ab32-mupos',String(an?a.currentTime:0))}catch(x){}}
+  window.addEventListener('pagehide',merk);document.addEventListener('visibilitychange',function(){if(document.hidden){merk();a.pause();an=false}else los()})})();
 (function(){try{localStorage.setItem('dr-boot','0')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 if(window.caches&&caches.keys)caches.keys().then(function(k){var n=k.filter(function(x){return x.indexOf('daemmerungsrand-')===0}).sort().pop();if(n)document.getElementById('ver').textContent=n.replace('daemmerungsrand-','')})})();
