@@ -88,6 +88,24 @@ function heben(p,k){if(!p.cam||!p.head)return;k=k*k*(3-2*k);p.o.updateMatrixWorl
     dreh(u,vE.clone().sub(vS),vB.clone().sub(vS),k);fo.getWorldPosition(vE);ha.getWorldPosition(vH);dreh(fo,vH.clone().sub(vE),vT.clone().sub(vE),k)});
   var par=p.cam.parent;par.updateWorldMatrix(true,false);var loc=par.worldToLocal(ziel.clone());p.cam.position.lerpVectors(p.camP,loc,k);par.getWorldQuaternion(qP);qW.setFromAxisAngle(YA,p.yaw);p.cam.quaternion.copy(p.camQ).slerp(qP.invert().multiply(qW),k);p.riem.forEach(function(r){r.visible=k<0.15})}
 var qA=new THREE.Quaternion(),qB=new THREE.Quaternion(),qC=new THREE.Quaternion(),YA=new V3(0,1,0);
+/* Neues Figurenmodell (Fotograf) übernimmt die Bewegung der bisherigen Figur: je Knochen wird die Drehung gegenüber der Ruhepose im Figurenraum übertragen, Gliedmaßen dabei auf die andere Ruhepose (A- statt T-Haltung) ausgerichtet. */
+var MAP=[['Pelvis','Hips'],['Spine','Spine02'],['Spine1','Spine01'],['Spine2','Spine'],['Neck','neck'],['Head','Head'],
+  ['L[ _]Clavicle','LeftShoulder','L[ _]UpperArm','LeftArm'],['L[ _]UpperArm','LeftArm','L[ _]Forearm','LeftForeArm'],['L[ _]Forearm','LeftForeArm','L[ _]Hand','LeftHand'],['L[ _]Hand','LeftHand'],
+  ['R[ _]Clavicle','RightShoulder','R[ _]UpperArm','RightArm'],['R[ _]UpperArm','RightArm','R[ _]Forearm','RightForeArm'],['R[ _]Forearm','RightForeArm','R[ _]Hand','RightHand'],['R[ _]Hand','RightHand'],
+  ['L[ _]Thigh','LeftUpLeg','L[ _]Calf','LeftLeg'],['L[ _]Calf','LeftLeg','L[ _]Foot','LeftFoot'],['L[ _]Foot','LeftFoot'],['L[ _]Toe0','LeftToeBase'],
+  ['R[ _]Thigh','RightUpLeg','R[ _]Calf','RightLeg'],['R[ _]Calf','RightLeg','R[ _]Foot','RightFoot'],['R[ _]Foot','RightFoot'],['R[ _]Toe0','RightToeBase']];
+function sBone(root,re){var r=null,x=new RegExp('(^|[ _])'+re+'$');root.traverse(function(o){if(o.isBone&&!r&&x.test(o.name))r=o});return r}
+function ruhe(p){p.o.updateMatrixWorld(true);p.rest={};MAP.forEach(function(m){[m[0],m[2]].forEach(function(n){if(!n||p.rest[n])return;var b=sBone(p.o,n);if(b)p.rest[n]={b:b,q:b.getWorldQuaternion(new THREE.Quaternion()),p:p.o.worldToLocal(b.getWorldPosition(new V3()))}})})}
+function ersatz(p,neu){if(!p.rest)return;neu.updateMatrixWorld(true);var L=[];MAP.forEach(function(m){var s=p.rest[m[0]],t=neu.getObjectByName(m[1]);if(!s||!t)return;var e={s:s.b,t:t,si:s.q.clone().invert(),tr:t.getWorldQuaternion(new THREE.Quaternion()),c:new THREE.Quaternion()};
+    if(m[2]){var s2=p.rest[m[2]],t2=neu.getObjectByName(m[3]);if(s2&&t2){var sd=s2.p.clone().sub(s.p).normalize(),td=t2.getWorldPosition(new V3()).sub(t.getWorldPosition(new V3())).normalize();e.c.setFromUnitVectors(td,sd)}}
+    e.k=e.c.clone().multiply(e.tr);L.push(e)});
+  var hs=p.rest.Pelvis,ht=neu.getObjectByName('Hips');p.neu={o:neu,L:L,hs:hs,ht:ht,hp:ht.position.clone(),hw:ht.getWorldPosition(new V3()),r:1};p.neu.r=p.neu.hw.y/Math.max(0.3,hs.p.y);
+  neu.traverse(function(o){if(o.isMesh){o.castShadow=true;o.frustumCulled=false;if(o.material)o.material.envMapIntensity=0.55}});p.o.traverse(function(o){if(o.isMesh)o.visible=false});scene.add(neu)}
+var qR=new THREE.Quaternion(),qRi=new THREE.Quaternion(),qS=new THREE.Quaternion(),qT=new THREE.Quaternion(),qPa=new THREE.Quaternion(),vP=new V3();
+function folge(p){var n=p.neu;if(!n)return;n.o.visible=p.o.visible;if(!p.o.visible)return;p.o.updateMatrixWorld(true);n.o.position.copy(p.o.position);n.o.quaternion.copy(p.o.quaternion);p.o.getWorldQuaternion(qR);qRi.copy(qR).invert();
+  /* Becken: Auf-und-ab und Vor-zurück der Bewegung übernehmen, auf die Beinlänge der neuen Figur umgerechnet */
+  n.hs.b.getWorldPosition(vP);p.o.worldToLocal(vP);n.ht.position.set(n.hp.x+(vP.x-n.hs.p.x)*n.r,n.hp.y+(vP.y-n.hs.p.y)*n.r,n.hp.z+(vP.z-n.hs.p.z)*n.r);n.o.updateMatrixWorld(true);
+  for(var i=0;i<n.L.length;i++){var e=n.L[i];e.s.getWorldQuaternion(qS);qT.copy(qRi).multiply(qS).multiply(e.si).multiply(e.k);qT.premultiply(qR);e.t.parent.updateWorldMatrix(true,false);e.t.parent.getWorldQuaternion(qPa);e.t.quaternion.copy(qPa.invert().multiply(qT));e.t.updateMatrix()}}
 /* Kopf um die Hochachse zur gewünschten Richtung drehen (nach dem Abspielen der Bewegung, begrenzt und weich) */
 function kopf(p,ziel,dt){if(!p.head)return;var d=Math.atan2(Math.sin(ziel-p.yaw),Math.cos(ziel-p.yaw));d=Math.abs(d)>2.2?0:clamp(d,-0.75,0.75);p.hk=(p.hk||0)+(d-(p.hk||0))*Math.min(1,dt*5);if(Math.abs(p.hk)<0.01)return;p.head.parent.updateWorldMatrix(true,false);p.head.parent.getWorldQuaternion(qA);qB.copy(qA).multiply(p.head.quaternion);qC.setFromAxisAngle(YA,p.hk);qB.premultiply(qC);p.head.quaternion.copy(qA.invert().multiply(qB))}
-return{load:load,keys:function(){return Object.keys(loaded.av)},mk:function(key,extra,hero){W.isMe=hero?1:0;var p=mkPerson(key,extra);W.isMe=0;stoff(p.o);schuhe(p.o,p);if(hero)apparat(p.o,p);return p},animate:animate,kopf:kopf,heben:heben}};
+return{load:load,keys:function(){return Object.keys(loaded.av)},mk:function(key,extra,hero){W.isMe=hero?1:0;var p=mkPerson(key,extra);W.isMe=0;stoff(p.o);schuhe(p.o,p);if(hero){ruhe(p);apparat(p.o,p)}return p},animate:animate,kopf:kopf,heben:heben,ersatz:ersatz,folge:folge}};
