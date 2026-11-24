@@ -19,6 +19,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 #ui{position:fixed;z-index:3;right:calc(14px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));display:none;flex-direction:column;gap:10px;align-items:flex-end}
 #ui button{position:static;font-family:inherit;text-transform:uppercase;padding:13px 16px}
 #tonp{display:none;position:fixed;z-index:7;right:calc(14px + env(safe-area-inset-right));bottom:calc(150px + env(safe-area-inset-bottom));width:min(280px,78vw);padding:16px 18px;border-radius:18px;background:rgba(20,21,23,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(233,228,216,.22);color:#e9e4d8;font-size:12px;letter-spacing:.12em;text-transform:uppercase}#tonp b{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:18px;letter-spacing:0;text-transform:none}#tonp label{display:block;margin-top:14px}#tonp input{display:block;width:100%;margin-top:8px;accent-color:#e9e4d8}#tonp div{display:flex;gap:10px;margin-top:16px}#tonp .g{position:static;font-family:inherit;text-transform:uppercase;flex:1}
+#wahl{display:none;position:fixed;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(112px + env(safe-area-inset-bottom));flex-direction:column;gap:7px;width:min(430px,56vw)}#wahl button{border:1px solid rgba(233,228,216,.3);background:rgba(20,21,23,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#f1ecdf;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;text-align:left}#wahl button:active{background:rgba(233,228,216,.9);color:#0c0d0f}#wahl i{font-size:12px;color:#e9e4d8;text-shadow:0 1px 4px #000;text-align:center;font-style:normal;letter-spacing:.04em}
+#stx{display:none;position:fixed;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));font-family:inherit;text-transform:uppercase}
+#bl{display:none;position:fixed;inset:0;z-index:9;background:#000;opacity:0;transition:opacity .9s;pointer-events:none}
+#sz .bw{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}#sz .bw img{width:118px;border:3px solid transparent;border-radius:3px}#sz .bw img.on{border-color:#1b2f3f}#sz .bw.ly span{width:118px;height:84px;background:#d8d0be;overflow:hidden;display:block}#sz .bw.ly span img{width:200px;margin:-30px 0 0 -40px;border:0}#sz .pp{background:#ece4cf;border:1px solid #cfc4a8;padding:10px 12px;font-family:Georgia,serif}
 #ped{display:none;gap:12px}#ui #ped button{width:84px;height:84px;border-radius:50%;padding:0;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}#ui #pg{background:rgba(233,228,216,.9);color:#0c0d0f;font-weight:600}
 #act{display:none;background:rgba(233,228,216,.92)!important;color:#0c0d0f!important;font-weight:600}
 #mm{width:104px;height:104px;border-radius:14px;border:1px solid rgba(233,228,216,.45);box-shadow:0 2px 14px rgba(0,0,0,.45);background:#e8e2d4}
@@ -98,7 +102,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0c0d0f;color:#e9e4d8;
 <div id="ui"><button class="g" id="act"></button><button class="g" id="tonb">Ton</button><button class="g" id="kamb">Kamera</button><button class="g" id="view">Ansicht</button><div id="ped"><button class="g" id="pb">Bremse</button><button class="g" id="pg">Gas</button></div><canvas id="mm" width="208" height="208"></canvas></div>
 <div id="kam"><div id="kf"></div><div id="kbar"><button class="g" id="kalb">Album</button><button id="ks" aria-label="Auslösen"></button><button class="g" id="kx">Fertig</button></div></div><div id="kfl"></div>
 <div id="alb"><div class="hd"><b>Album</b><button class="g" id="albx">Zurück</button></div><div id="albp"></div><div id="albg"></div></div><div id="albv"><img id="albi" alt=""><div><button class="g" id="albs">Speichern</button><button class="g" id="albd">Löschen</button><button class="g" id="albc">Schließen</button></div></div>
-<div id="tonp"><b>Ton</b><label>Musik<input type="range" id="mxm" min="0" max="100"></label><label>Stimmen<input type="range" id="mxs" min="0" max="100"></label><label>Stadt<input type="range" id="mxc" min="0" max="100"></label><div><button class="g" id="mxa">Ton aus</button><button class="g" id="mxz">Fertig</button></div></div><div id="kino1"></div><div id="kino2"></div><button class="g" id="opx">Überspringen</button><div id="sub"></div><div id="sz"></div>
+<div id="tonp"><b>Ton</b><label>Musik<input type="range" id="mxm" min="0" max="100"></label><label>Stimmen<input type="range" id="mxs" min="0" max="100"></label><label>Stadt<input type="range" id="mxc" min="0" max="100"></label><div><button class="g" id="mxa">Ton aus</button><button class="g" id="mxz">Fertig</button></div></div><div id="wahl"></div><button class="g" id="stx">Weiter ›</button><div id="bl"></div><div id="kino1"></div><div id="kino2"></div><button class="g" id="opx">Überspringen</button><div id="sub"></div><div id="sz"></div>
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">‹ Zurück</button><button class="g" id="mapz" style="display:none">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
 <div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Weiter · Bahnhofsvorplatz</button><button class="g" id="fw2">Am Westerntor beginnen</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Auch die Begegnung auf dem Vorplatz und die Fahrt sind Spielszene; belegte Angaben sind als solche gekennzeichnet.</div></div></div>
 <div id="iv"><video id="ivv" muted playsinline preload="auto"></video></div>
@@ -272,7 +276,7 @@ function life(){if(Fig||!window.Figuren)return;Fig=window.Figuren(THREE,scene,MO
 /* Zeitgenossen (24 stehende Figuren an ihren Orten) und Fahrzeuge aus der Lieferung; geladen wird, was in der Nähe ist */
 var ZF=[],CARS=[],zBusy=false;
 function stat(o){o.traverse(function(m){if(m.isMesh){m.castShadow=true;m.receiveShadow=true;if(m.material){m.material.envMapIntensity=0.5}}})}
-function zeitInit(){fetch('w/zeit.json').then(function(r){return r.json()}).then(function(Z){ZT=Z;if(!nav)return;var cnt={};Z.figuren.slice(0,MOB?14:24).forEach(function(f,i){var key=f.ort==='Bahnhof'?'Hauptbahnhof':f.ort,o=null;nav.orte.forEach(function(q){if(!o&&q.name.indexOf(key)>=0)o=q});if(!o)return;var k=cnt[key]=(cnt[key]||0)+1;ZF.push({f:f.f,cx:o.ost,cz:-o.nord,k:k,i:i,s:0,o:null})})}).catch(function(){});
+function zeitInit(){fetch('w/zeit.json').then(function(r){return r.json()}).then(function(Z){ZT=Z;if(!nav)return;var cnt={};Z.figuren.filter(function(f){var k=f.f.replace('.glb',''),r;for(r in ST.FIG)if(ST.FIG[r]===k)return false;return true}).slice(0,MOB?10:24).forEach(function(f,i){var key=f.ort==='Bahnhof'?'Hauptbahnhof':f.ort,o=null;nav.orte.forEach(function(q){if(!o&&q.name.indexOf(key)>=0)o=q});if(!o)return;var k=cnt[key]=(cnt[key]||0)+1;ZF.push({f:f.f,cx:o.ost,cz:-o.nord,k:k,i:i,s:0,o:null})})}).catch(function(){});
   vehInit()}
 /* ---------- Fahrzeuge: fahren von selbst oder parken; jedes lässt sich selbst fahren. Alle bewegen sich über eine echte Lenkrechnung (Hinterachse folgt, Vorderräder lenken), Räder drehen und lenken sichtbar, Türen öffnen sich. ---------- */
 var VEH=[],VMOD={},SEQ=[],PED={g:0,b:0},VNAME={limousine:'Limousine',pritschenwagen:'Pritschenwagen',lieferwagen:'Lieferwagen',offener_zweisitzer:'Zweisitzer',boxermotorrad:'Motorrad'},
@@ -304,7 +308,7 @@ function vehSet(v,dt){v.dx=Math.sin(v.yaw);v.dz=Math.cos(v.yaw);var o=v.o,fa=v.r
   if(v.T.L)v.T.L.rotation.y=-v.ta.L*1.2;if(v.T.R)v.T.R.rotation.y=v.ta.R*1.2;o.position.set(v.x,v.oy+0.01,v.z);o.rotation.set(v.pt,v.yaw,v.rl,'YXZ')}
 /* ein Zeitschritt Fahren: die Hinterachse rollt in Wagenrichtung, die Richtung dreht sich nach Lenkwinkel und Radstand */
 function vehKin(v,dt){var ds=v.v*dt,ny=v.yaw+ds/v.wb*Math.tan(v.st),my=(v.yaw+ny)/2,rx=v.x+v.dx*v.ra+Math.sin(my)*ds,rz=v.z+v.dz*v.ra+Math.cos(my)*ds;return[rx-Math.sin(ny)*v.ra,rz-Math.cos(ny)*v.ra,ny]}
-function lenkZu(v,tx,tz,dt){var ex=tx-(v.x+v.dx*v.ra),ez=tz-(v.z+v.dz*v.ra),ld=Math.hypot(ex,ez)||1,al=wk(Math.atan2(ex,ez)-v.yaw),zs=kl(Math.atan2(2*v.wb*Math.sin(al),ld),-v.sm,v.sm);v.st+=kl(zs-v.st,-1.5*dt,1.5*dt)}
+function lenkZu(v,tx,tz,dt){var ex=tx-(v.x+v.dx*v.ra),ez=tz-(v.z+v.dz*v.ra),ld=Math.hypot(ex,ez)||1,al=wk(Math.atan2(ex,ez)-v.yaw),zs=Math.abs(al)>2?v.sm:kl(Math.atan2(2*v.wb*Math.sin(al),ld),-v.sm,v.sm);v.st+=kl(zs-v.st,-1.5*dt,1.5*dt)}
 function geladen(x,z){var i=Math.floor((x+1250)/250),j=Math.floor((z+1350)/250);return !!(occT(i,j).d&&hoeT(i,j).d)}
 /* Abstand von der Straßenachse bis zur Bordsteinkante auf der eigenen (rechten) Seite; 0 = keine gefunden */
 function bord(p,d,dir){var q=pAt(p,d),h0=hAt(q.x,q.z),l,s;if(!geladen(q.x,q.z))return 0;for(l=1.5;l<9;l+=0.25){s=pAt(p,d,l*dir);if(!canWalk(s.x,s.z)||hAt(s.x,s.z)>h0+0.07)return l}return 0}
@@ -342,10 +346,10 @@ function vehWende(v,dt,q){var zy=Math.atan2(-q.dx*v.dir,-q.dz*v.dir),h0=hAt(q.x,
   if(!ok2&&v.wt<=0&&Math.abs(ts-v.st)<=0.12)v.wb2=true;if(v.wb2){tv=0;if(Math.abs(v.v)<0.05){v.wb2=false;if(v.wl<0.25)v.eng=(v.eng||0)+1;else v.eng=0;v.wp=v.eng>2?9:v.wp+1;v.wt=0.5;v.wl=0}}
   v.v+=kl(tv-v.v,-3*dt,1.4*dt);v.wl+=Math.abs(v.v)*dt;vehRoll(v,dt)}
 /* Rundfahrt mit dem Fahrer: gleiche Lenkrechnung, festes Ziel */
-function vehTour(v,dt){var p=v.p,q=pAt(p,v.d),rest,tv,T,m;v.d=kl(v.d+kl((v.x-q.x)*q.dx+(v.z-q.z)*q.dz,-3,3),0,p.len);rest=v.s1-v.d;tv=Math.min(8.5,Math.sqrt(Math.max(0,2*1.2*(rest-0.4))));
-  T=pAt(p,Math.min(v.s1+8,v.d+3.6+v.v*0.8),v.lat);lenkZu(v,T.x,T.z,dt);tv=Math.min(tv,8.5/(1+Math.abs(v.st)*2.2));m=vorn(v);if(m<12&&(v.stau||0)<7){tv=m<2?0:Math.min(tv,(m-2)*0.9+0.4);if(v.v<0.3)v.stau=(v.stau||0)+dt}else if(m>=12)v.stau=0;
-  v.v+=kl(tv-v.v,-3*dt,1.3*dt);if(v.v<0)v.v=0;vehRoll(v,dt);var f=(v.d-v.dA)/(v.s1-v.dA);while(v.li<FL.length&&f>=FL[v.li][0]){sub(FL[v.li][1],FL[v.li][2],6.5);v.li++}
-  if(rest<0.8&&v.v<0.12){v.done=true;v.v=0;v.mode='park';v.chk=true;sub('Fahrer: „Westerntor. Den Apparat behalten Sie wohl lieber selbst.“','Aussteigen: Knopf unten rechts',9)}}
+function vehTour(v,dt){var p=v.p,q=pAt(p,v.d),td=v.td||1,rest,tv,T,m;v.d=kl(v.d+kl((v.x-q.x)*q.dx+(v.z-q.z)*q.dz,-3,3),0,p.len);rest=(v.s1-v.d)*td;tv=Math.min(8.5,Math.sqrt(Math.max(0,2*1.2*(rest-0.4))));
+  T=pAt(p,td>0?Math.min(v.s1+8,v.d+5.5+v.v*0.8):Math.max(v.s1-8,v.d-5.5-v.v*0.8),v.lat*td);lenkZu(v,T.x,T.z,dt);tv=Math.min(tv,8.5/(1+Math.abs(v.st)*2.2));m=vorn(v);v.stau=v.stau||0;if(m<12&&v.stau<7){var tb=m<2?0:Math.min(tv,(m-2)*0.9+0.4);if(tb<1.5)v.stau+=dt;tv=tb}else if(m>=12)v.stau=Math.max(0,v.stau-dt*2);else{/* lange genug gewartet: langsam vorbeifahren */v.stau+=dt;tv=Math.min(tv,2.5);if(v.stau>15)v.stau=0}
+  v.v+=kl(tv-v.v,-3*dt,1.3*dt);if(v.v<0)v.v=0;vehRoll(v,dt);
+  if(rest<0.8&&v.v<0.12){v.done=true;v.v=0;v.mode='warte';v.chk=true}}
 /* selbst fahren: links/rechts lenken, Gas und Bremse als Pedale (am Rechner W/S); Bremse im Stand legt den Rückwärtsgang ein. Je schneller, desto kleiner der Lenkeinschlag. */
 function vehIch(v,dt,fx){var th=PED.g?1:PED.b?-1:(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0),ln=Math.abs(fx)<0.1?0:kl(fx,-1,1),a,r,n;
   if(th>0)a=v.v<-0.1?5:2.7*(1-Math.max(0,v.v)/12.5);else if(th<0)a=v.v>0.25?-6.5:(v.v>-3?-1.6:0);else a=-Math.sign(v.v)*Math.min(Math.abs(v.v)/Math.max(dt,0.001),0.45+Math.abs(v.v)*0.08);
@@ -424,7 +428,7 @@ function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.posit
   p.o.visible=!far;if(far){p.bl.visible=false;return}if(p.still)p.y=hAt(p.x,p.z);Fig.animate(p,dt);var nd=Math.hypot(me.x-p.x,me.z-p.z);Fig.kopf(p,nd<6&&!ride?Math.atan2(me.x-p.x,me.z-p.z):p.yaw,dt)}
 $('view').addEventListener('click',function(){if(ride&&ride.car)return;view=ride?(view==='innen'?'aussen':'innen'):(view==='ich'?'schulter':'ich');label()});
 function label(){$('view').textContent='Ansicht · '+({ich:'Ich',schulter:'Schulter',innen:'Innen',aussen:'Außen'})[view]}label();
-$('act').addEventListener('click',function(){if(hero&&hero.seq)return;var v;
+$('act').addEventListener('click',function(){if(hero&&hero.seq)return;var v;if(ST.wart&&!ride&&FA&&Math.hypot(me.x-FA.x,me.z-FA.z)<7){stEinsteigen();return}
   if(!ride&&FA&&FA.bereit&&hero&&Math.hypot(me.x-FA.x,me.z-FA.z)<6){FA.bereit=false;sub('');steig(hero,FA,true,true,false,function(){ride=FA;FA.sre=true;FA.los=true;view='aussen';me.pitch=-0.2;me.yaw=FA.yaw+Math.PI;lookIdle=9;label()});if(OP.dr&&!OP.dr.seq&&!OP.dr.im){OP.geht=false;OP.warte=false;steig(OP.dr,FA,false,false,false,null)}return}
   if(ride&&ride.car){v=ride;if(hero&&Math.abs(v.v)<0.7&&(v.car===2||v.done)){ride=null;v.v=0;if(v.mode==='me')v.mode='park';view='schulter';label();me.x=hero.x;me.z=hero.z;steig(hero,v,v.sre,true,true,function(){if(v===FA){FA.car=2;FA.besetzt=!!(OP.dr&&OP.dr.im)}sub('')})}return}
   if(!ride&&SG.near&&SG.st===0){sgLaden();return}
@@ -433,7 +437,7 @@ $('act').addEventListener('click',function(){if(hero&&hero.seq)return;var v;
   else if(near){ride=near;ride.v=ride.v*ride.dir;view='innen';me.pitch=0;label()}});
 function pedal(id,k){var b=$(id),an=function(e){e.preventDefault();PED[k]=1;b.style.opacity='0.6'},ab=function(e){e.preventDefault();PED[k]=0;b.style.opacity=''};b.addEventListener('touchstart',an,{passive:false});b.addEventListener('touchend',ab,{passive:false});b.addEventListener('touchcancel',ab,{passive:false});b.addEventListener('mousedown',an);b.addEventListener('mouseup',ab);b.addEventListener('mouseleave',ab)}pedal('pg','g');pedal('pb','b');
 var near=null,actT='';
-function actBtn(){var b=$('act'),tx='';near=null;if(!ride&&FA&&FA.bereit&&Math.hypot(me.x-FA.x,me.z-FA.z)<6)tx='Einsteigen · Fahrt zum Westerntor';else if(!ride&&SG.near&&SG.st===0&&$('sz').style.display!=='block')tx='Rathausplatz 7 · Eintreten';else if(hero&&hero.seq)tx='';else if(ride)tx=ride.car?(Math.abs(ride.v)<0.7&&(ride.car===2||ride.done)?ride.name+' · Aussteigen':''):ride.name+' · Aussteigen';else{for(var i=0;i<TR.length;i++){var t=TR[i],ax=me.x-t.x,az=me.z-t.z,al=Math.abs(ax*t.dx+az*t.dz),sd=Math.abs(-ax*t.dz+az*t.dx);if(al<t.half+2.5&&sd<t.wid+3.5){near=t;tx=t.name+' · Einsteigen'}}if(!near){var bd=1e9;for(i=0;i<VEH.length;i++){var c=VEH[i];if(c.car!==2||c.besetzt||c.mode==='tour')continue;var cx=me.x-c.x,cz=me.z-c.z,cl=Math.abs(cx*c.dx+cz*c.dz),cs=Math.abs(-cx*c.dz+cz*c.dx),cd=Math.hypot(cx,cz);if(cl<c.half+1.8&&cs<c.wid+1.8&&cd<bd){bd=cd;near=c;tx=c.name+' · Fahren'}}}}
+function actBtn(){var b=$('act'),tx='';near=null;if(ST.wart&&!ride&&FA&&!(hero&&hero.seq)&&Math.hypot(me.x-FA.x,me.z-FA.z)<7)tx='Einsteigen';else if(!ride&&FA&&FA.bereit&&Math.hypot(me.x-FA.x,me.z-FA.z)<6)tx='Einsteigen · Fahrt zum Westerntor';else if(!ride&&SG.near&&SG.st===0&&$('sz').style.display!=='block')tx='Rathausplatz 7 · Eintreten';else if(hero&&hero.seq)tx='';else if(ride)tx=ride.car?(Math.abs(ride.v)<0.7&&(ride.car===2||ride.done)?ride.name+' · Aussteigen':''):ride.name+' · Aussteigen';else{for(var i=0;i<TR.length;i++){var t=TR[i],ax=me.x-t.x,az=me.z-t.z,al=Math.abs(ax*t.dx+az*t.dz),sd=Math.abs(-ax*t.dz+az*t.dx);if(al<t.half+2.5&&sd<t.wid+3.5){near=t;tx=t.name+' · Einsteigen'}}if(!near){var bd=1e9;for(i=0;i<VEH.length;i++){var c=VEH[i];if(c.car!==2||c.besetzt||c.mode==='tour')continue;var cx=me.x-c.x,cz=me.z-c.z,cl=Math.abs(cx*c.dx+cz*c.dz),cs=Math.abs(-cx*c.dz+cz*c.dx),cd=Math.hypot(cx,cz);if(cl<c.half+1.8&&cs<c.wid+1.8&&cd<bd){bd=cd;near=c;tx=c.name+' · Fahren'}}}}
   var fu=!!(ride&&ride.car===2&&ride.mode==='me');if(fu!==PED.an){PED.an=fu;PED.g=PED.b=0;$('ped').style.display=fu?'flex':'none';$('kamb').style.display=$('view').style.display=fu?'none':''}
   if(tx!==actT){actT=tx;b.textContent=tx;b.style.display=tx?'block':'none'}}
 function tramBlock(x,z){for(var i=0;i<TR.length;i++){var t=TR[i],ax=x-t.x,az=z-t.z;if(Math.abs(ax*t.dx+az*t.dz)<t.half+0.25&&Math.abs(-ax*t.dz+az*t.dx)<t.wid+0.25)return true}return false}
@@ -457,9 +461,9 @@ function sgLaden(){spiel('tuer',0.5,1);szShow('<div class="d">Vormittag · Ratha
 function sgSchild(){var c=document.createElement('canvas');c.width=512;c.height=384;var g=c.getContext('2d');g.fillStyle='#ece4cf';g.fillRect(0,0,512,384);g.strokeStyle='#2a241c';g.lineWidth=6;g.strokeRect(10,10,492,364);g.fillStyle='#1d1812';g.textAlign='center';g.font='bold 64px Georgia,serif';g.fillText('Wer hier kauft',256,150);g.fillText('wird',256,225);g.fillText('photografiert',256,300);
   var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;var G=new THREE.Group(),b=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.6,0.03),[0,1,2,3,4,5].map(function(i){return new THREE.MeshStandardMaterial(i===4?{map:t,roughness:0.9}:{color:0x6b5a44,roughness:0.9})}));b.position.y=1.05;b.rotation.x=-0.16;b.castShadow=true;G.add(b);
   [-0.34,0.34].forEach(function(x){var l=new THREE.Mesh(new THREE.BoxGeometry(0.04,1.3,0.04),new THREE.MeshStandardMaterial({color:0x4a3c2c,roughness:0.9}));l.position.set(x,0.65,-0.06);l.castShadow=true;G.add(l)});return G}
-function sgTick(){if(!nav||ride)return;var d=Math.hypot(me.x-SG.x,me.z-SG.z);
+function sgTick(){if(!nav)return;var d=Math.hypot(me.x-SG.x,me.z-SG.z);if(ride&&SG.ok)return;
   if(!SG.ok&&d<120){var o=nav.orte[4],dx=o.ost-SG.x,dz=-o.nord-SG.z,l=Math.hypot(dx,dz)||1,k;if(!occT(Math.floor((SG.x+1250)/250),Math.floor((SG.z+1350)/250)).d)return;for(k=0;k<l;k+=0.5){var x=SG.x+dx/l*k,z=SG.z+dz/l*k;if(canWalk(x,z)){SG.sx=x+dx/l*1.2;SG.sz=z+dz/l*1.2;SG.ya=Math.atan2(dx,dz);SG.ok=true;break}}}
-  if(!SG.ok)return;var dn=Math.hypot(me.x-SG.sx,me.z-SG.sz);SG.near=dn<9;
+  if(!SG.ok||ST.D)return; /* die Station wird jetzt von der Erzählung geführt */var dn=Math.hypot(me.x-SG.sx,me.z-SG.sz);SG.near=dn<9;
   if(SG.st===1&&(PAP.some(function(q){return q.id==='markt'})&&d>60)){SG.st=2;sgSave()}
   if(SG.st===2&&d<70){SG.st=3;var G=sgSchild();G.position.set(SG.sx,hAt(SG.sx,SG.sz),SG.sz);G.rotation.y=SG.ya;scene.add(G);SG.obj=G;LD.load('l/p10.glb',function(g){stat(g.scene);var px=SG.sx+Math.cos(SG.ya)*1.6+Math.sin(SG.ya)*1.2,pz=SG.sz-Math.sin(SG.ya)*1.6+Math.cos(SG.ya)*1.2;g.scene.position.set(px,hAt(px,pz),pz);g.scene.rotation.y=SG.ya+Math.PI;scene.add(g.scene)})}
   if(SG.st===3&&dn<14){SG.t+=0.25;if(SG.t>4)papier('april1','Beiblatt · 1. April 1933','Boykott gegen jüdische Geschäfte. Für das Haus Rathausplatz 7 ist der Satz „Wer hier kauft wird photografiert“ überliefert. Position, Material und Schrift des Schilds im Spiel sind angenähert.','Historisch belegt · Stadt Paderborn, Besuch der Nachkommen 2012 · W. Stüken, Haus Grünebaum, PHM 37, S. 70 ff. · mehr in der Karte unter „Zeitspuren“');
@@ -520,7 +524,7 @@ function musikSpiel(n,ab,ein,aus){if(!MU.ok)return;var t=AC.currentTime,alt=MU.d
   neu.el.addEventListener('loadedmetadata',go);neu.el.src='a/mu_'+n+'.mp3';neu.el.load()}
 function musikRolle(){if(!started)return'titel';if(OP.on||(!OP.done&&OP.st<3))return'';if(OP.st===3||(FA&&ride===FA&&!FA.done))return'reise';
   var q=nah('Paderquell',70,200),dm=Math.max(nah('Markt und Dom',60,170),nah('Domdechanei',50,150),nah('Ikenberg',50,150)),pl=Math.max(nah('Marienplatz',50,140),nah('Rathausplatz',60,150)),ws=Math.max(nah('Westernstraße',90,200),nah('Westerntor',40,110)*0.9);
-  if(q>0.5)return'quelle';if(SG.st>=3&&(pl>0.4||dm>0.4))return'wende';if(dm>0.5)return'dom';if(pl>0.5)return'platz';if(ws>0.5)return'strasse';return'reise'}
+  if(ST.D&&ST.STILL[ST.s.node]&&ST.ph&&ST.ph!=='weg')return''; /* keine Musik unter dem Boykott */if(q>0.5)return'quelle';if(ST.s.node>='07b'&&(pl>0.4||dm>0.4))return'wende';if(dm>0.5)return'dom';if(pl>0.5)return'platz';if(ws>0.5)return'strasse';return'reise'}
 function musikRede(sek,db){MU.rede=Math.max(MU.rede,sek);MU.redeDb=db||-9}
 function slew(v,z,ab,auf,dt){return v+kl(z-v,-ab*dt,auf*dt)}
 function musikStep(dt){if(!MU.ok)return;var t=AC.currentTime,D=MU.d[MU.akt],geht=ride?Math.abs(ride.v||0)>0.5:hsp>0.4,r,I,p,k,n,d,c,rd,ka;
@@ -566,7 +570,7 @@ function opStart(){if(OP.on||OP.st>0)return;if(!hero||!hero.neu||!OP.dr||!OP.dr.
 function opZeile(i){OP.li=i;OP.lt=0;var L=OL[i];sub((L[0]==='F'?'Fahrer: ':'Fotograf: ')+'„'+L[1]+'“',i===0?'Spielszene · Figuren und Dialog sind erfunden':'',L[2]+L[3]+0.3);if(OP.src){try{OP.src.stop()}catch(e){}OP.src=null}
   if(SND.ok&&SB['m'+(i+1)]){var q=AC.createBufferSource(),g=AC.createGain();q.buffer=SB['m'+(i+1)];g.gain.value=1;q.connect(g);g.connect(SND.bs);q.start();OP.src=q}}
 function opEnde(){if(OP.st===3||OP.st===4)return;if(OP.src){try{OP.src.stop()}catch(e){}OP.src=null}sub('');OP.on=false;OP.st=3;OP.gA=OP.gB=OP.gC=0;OP.geht=true;document.body.classList.remove('kino');if(OP.pr){PR=OP.pr;renderer.setPixelRatio(PR);resize()}if(hero)Fig.mimik(hero,'JawOpen',0);if(OP.dr)Fig.mimik(OP.dr,'JawOpen',0);$('opx').style.display='none';$('ort').style.display='';$('ui').style.display='flex';try{localStorage.setItem('ab32-muetze','1')}catch(e){}OP.done=true;/* mit dem ersten Schritt des Fahrers setzt die volle Reisephrase ein */(function(){var I=MU.I&&MU.I[MUS.reise],ab=I&&I.ein[1]?I.ein[1]-0.35:0;MU.soll='reise';MU.rede=0;MU.voll=4;MU.still=0;if(!MU.d[MU.akt]||MU.d[MU.akt].n!==MUS.reise)musikSpiel(MUS.reise,ab,0.35,1)})();
-  if(Math.hypot(OP.dr.x-me.x,OP.dr.z-me.z)>40){OP.dr.x=OP.px;OP.dr.z=OP.pz;OP.dr.o.visible=true}sub('Zum Wagen','Der Fahrer geht vor. Du kannst dich vorher frei umsehen.',7)}
+  if(Math.hypot(OP.dr.x-me.x,OP.dr.z-me.z)>40){OP.dr.x=OP.px;OP.dr.z=OP.pz;OP.dr.o.visible=true}sub('Dem Fahrer folgen','Du kannst dich vorher frei umsehen.',6)}
 $('opx').addEventListener('click',opEnde);
 function dre(d,tx,tz,dt,r){var da=Math.atan2(Math.sin(Math.atan2(tx-d.x,tz-d.z)-d.yaw),Math.cos(Math.atan2(tx-d.x,tz-d.z)-d.yaw));d.yaw+=da*Math.min(1,dt*r)}
 function opStep(dt){var d=OP.dr;if(!d||!d.bereit||OP.st===0)return;if(OP.frost)dt=0;if(d.seq||d.im){if(d.im)sitzen(d,d.im.v,d.im.re);d.o.visible=true;Fig.animate(d,dt);Fig.kopf(d,d.yaw,dt);ikAnw(d);Fig.folge(d);return}
@@ -589,6 +593,146 @@ function opStep(dt){var d=OP.dr;if(!d||!d.bereit||OP.st===0)return;if(OP.frost)d
   else if(OP.st===3){/* zum Wagen gehen und dort warten; die Spielfigur muss nicht folgen */if(OP.geht){var tx=OP.wx-d.x,tz=OP.wz-d.z,tl=Math.hypot(tx,tz);d.sp+=((tl>0.3?1.3:0)-d.sp)*Math.min(1,dt*3);if(tl>0.05){d.x+=tx/tl*Math.min(tl,Math.max(d.sp,0.5)*dt);d.z+=tz/tl*Math.min(tl,Math.max(d.sp,0.5)*dt);dre(d,OP.wx,OP.wz,dt,5)}if(tl<=0.3){OP.geht=false;OP.warte=true;d.sp=0}}else{dre(d,me.x,me.z,dt,2);d.sp=0}OP.kc+=(0-OP.kc)*Math.min(1,dt*2)}
   d.y=hAt(d.x,d.z);d.o.visible=Math.hypot(d.x-camera.position.x,d.z-camera.position.z)<160;if(!d.o.visible){if(d.neu)d.neu.o.visible=false;return}Fig.animate(d,dt);Fig.kopf(d,OP.on||OP.warte?Math.atan2(me.x-d.x,me.z-d.z):d.yaw,dt);
   if(OP.gA>0.01)Fig.arm(d,'R',Fig.ort(d,0.42,-0.72,-0.16),OP.gA);if(OP.gC>0.01)Fig.arm(d,'R',Fig.ort(d,0.12,0.1,-0.1),OP.gC);Fig.folge(d)}
+/* ---------- „Ein Besuch in Paderborn“: Erzählung nach dem gelieferten Regiebuch (w/story.json). Ablauf je Szene: Ort erreichen → Eintrittszeilen → Wahl → festschreiben → Antwortzeilen → nächste Szene. Stand wird nach jeder Wahl gespeichert. ---------- */
+var ST={D:null,s:null,ph:'',q:[],qi:0,t:0,src:null,A:{},F:{},bett:null,bn:'',gb:{},an:null,frage:0,per:'',warte:0,karte:false,
+  FIG:{zeitung:'p08',bote:'p15',werk:'p06',deko:'p12',kollegin:'p16',verkauf:'p20',markt:'p17',kundin_markt:'p14',parteibote:'p23',gemeinde:'p22',nachbar:'p19',kundin_tuer:'p10',ratsbote:'p13'},
+  AUTO:{'02a':1,'03a':1,'05b':1,'07a':1},INNEN:{'09b':1,'09c':1,'09d':1},STILL:{'05a':1,'07b':1,'07c':1,'07d':1},
+  NEU:{'01b':'bhf.start','01c':'bhf.start','02a':'bhf.start','02b':'fabrik.tuer','02c':'fabrik.tuer','03a':'west.park','04a':'western.klingenthal','05a':'kaufhaus.fenster','05b':'markt.waage','06a':'markt.ost','06b':'gemeinde.haus','06c':'busdorf.pfeiler','07a':'busdorf.halt','07b':'rathaus.halt','07c':'kaufhaus.fenster','07d':'kaufhaus.fenster','08a':'kaufhaus.fenster','08b':'rathaus.arkaden','09a':'rathaus.arkaden','09b':'rathaus.halt','09c':'labor.halt','09d':'labor.halt','09e':'labor.halt','09f':'bhf.stand','ende':'bhf.start'}};
+try{ST.s=JSON.parse(localStorage.getItem('ab32-story')||'null')}catch(e){}
+if(!ST.s||!ST.s.node)ST.s={v:1,node:OP.done?'01b':'01a',flags:{},seen:{},submitted:[],privat:null,rev:0};
+fetch('w/story.json').then(function(r){return r.json()}).then(function(j){ST.D=j}).catch(function(){});
+$('stx').addEventListener('click',function(){stWeiterZeile()});
+function stSave(){try{localStorage.setItem('ab32-story',JSON.stringify(ST.s))}catch(e){}}
+function stPasst(w){var k;for(k in w){if((k==='hasPhotos'?ALB.length>0:(ST.s.flags[k]===undefined?false:ST.s.flags[k]))!==w[k])return false}return true}
+/* Lage der Bahnhofsstelle auf der Linie und nächster Linienpunkt zu einem Ort */
+function stBs(){if(ST.bs===undefined&&LINE){var k,bd=1e9;for(k=0;k<260;k+=2){var q=pAt(LINE,k),e=Math.hypot(q.x+402,q.z-230);if(e<bd){bd=e;ST.bs=k}}}return ST.bs||0}
+function stLin(x,z){var k,bd=1e9,bs=0;for(k=0;k<LINE.len;k+=3){var q=pAt(LINE,k),e=Math.hypot(q.x-x,q.z-z);if(e<bd){bd=e;bs=k}}return bs}
+/* Haltepunkte der Geschichte → Ort in der Stadt. w = mit dem Wagen anzufahren, d = Stelle auf der Linie, g = Lage geschätzt (kein eigener Baukörper in der Stadtkulisse) */
+function stAnker(n,roh){var a=roh?null:ST.A[n],L=LINE,q,p,b;if(a)return a;if(!L||!nav)return null;b=stBs();
+  var F=function(x,z,g){var f=roh?[x,z]:frei(x,z);return f?{x:f[0],z:f[1],g:g}:null},S=function(d,lat,w,g){q=pAt(L,d,lat);var f=w||roh?[q.x,q.z]:frei(q.x,q.z);return f?{x:f[0],z:f[1],w:w,d:d,g:g}:null};
+  if(n==='bhf.start'||n==='bhf.ausgang')a=F(-402,230);else if(n==='bhf.stand')a=F(-391,239,1);else if(n==='bhf.auto')return FA?{x:FA.x,z:FA.z,auto:1}:null;
+  else if(n==='fabrik.halt')a=S(b+118,3.6,1,1);else if(n==='fabrik.tuer')a=S(b+118,7.4,0,1);else if(n==='west.gleis')a=S(L.L[8]-72,2.3,1);else if(n==='west.park')a=S(L.L[8]-24,2.3,1);
+  else if(n==='western.klingenthal'){p=stLin(218,-113);q=pAt(L,p);var s=((218-q.x)*-q.dz+(-113-q.z)*q.dx)>0?1:-1;a=S(p,5.6*s,0)}
+  else if(n.indexOf('kaufhaus.')===0){if(!SG.ok){return roh?{x:SG.x,z:SG.z}:null}a={x:SG.sx,z:SG.sz}}
+  else if(n==='markt.waage')a=F(643,-322);else if(n==='markt.ost')a=F(704,-336,1);else if(n==='schildern.mitte')a=F(613,-272);
+  else if(n==='gemeinde.haus')a=F(800,-300,1);else if(n==='busdorf.pfeiler')a=F(846,-398,1);else if(n==='busdorf.halt')a=F(872,-374,1);
+  else if(n==='rathaus.halt')a=S(stLin(505,-190),2.5,1);else if(n==='rathaus.arkaden'||n==='rathaus.blatt')a=F(521,-187);
+  else if(n==='labor.halt')a=S(b+26,2.4,1,1);else if(n.indexOf('labor.')===0)a=S(b+26,2.4,1,1);else if(n==='album')a={x:-402,z:230};
+  if(a&&!roh)ST.A[n]=a;return a}
+/* Ton der Geschichte: Sprachzeilen, Geräusche und Ortsbetten werden bei Bedarf geladen */
+function stBuf(k,url,cb){if(ST.gb[k]){if(cb)cb(ST.gb[k]);return}if(ST.gb[k]===0||!SND.ok)return;ST.gb[k]=0;fetch(url).then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(d){ST.gb[k]=d;if(cb)cb(d)},function(){ST.gb[k]=undefined})}).catch(function(){ST.gb[k]=undefined})}
+function stGer(n,vol,wann){if(!SND.ok)return;var go=function(d){var s=AC.createBufferSource(),g=AC.createGain();s.buffer=d;g.gain.value=vol||0.6;s.connect(g);g.connect(SND.m);s.start(AC.currentTime+(wann||0))};if(ST.gb['g_'+n])go(ST.gb['g_'+n]);else stBuf('g_'+n,'a/g/'+n+'.mp3',go)}
+function stBett(n){if(n===ST.bn||!SND.ok)return;var t=AC.currentTime,alt=ST.bett;ST.bn=n;if(alt){alt.g.gain.setTargetAtTime(0,t,0.15);setTimeout(function(){try{alt.s.stop()}catch(e){}},900)}ST.bett=null;if(!n||n==='stille')return;
+  stBuf('o_'+n,'a/o/'+n+'.mp3',function(d){if(ST.bn!==n)return;var s=AC.createBufferSource(),g=AC.createGain();s.buffer=d;s.loop=true;g.gain.value=0;s.connect(g);g.connect(SND.m);s.start();g.gain.setTargetAtTime(0.55,AC.currentTime,0.15);ST.bett={s:s,g:g}})}
+function stVor(L){L.forEach(function(id){stBuf('s_'+id,'a/s/'+id+'.mp3')})}
+/* eine Zeile sprechen: Untertitel mit Rollenname, Stimme auf dem Sprachbus; Mund der beiden Hauptfiguren folgt der Lautstärke */
+function stSprich(id){var T=ST.D.text[id],d;if(!T){ST.t=0.1;return}ST.sp=T[0];ST.t=T[2]+0.23;sub((ST.D.rolle[T[0]]||T[0])+': „'+T[1]+'“','',T[2]+1.2);stStumm();d=ST.gb['s_'+id];
+  var go=function(b){if(ST.akt!==id)return;var s=AC.createBufferSource();s.buffer=b;s.connect(ST.an||SND.bs);s.start();ST.src=s};ST.akt=id;
+  if(SND.ok){if(!ST.an){try{ST.an=AC.createAnalyser();ST.an.fftSize=256;ST.an.connect(SND.bs);ST.ad=new Uint8Array(128)}catch(e){ST.an=null}}if(d)go(d);else stBuf('s_'+id,'a/s/'+id+'.mp3',go)}}
+function stStumm(){if(ST.src){try{ST.src.stop()}catch(e){}ST.src=null}ST.akt='';if(hero)Fig.mimik(hero,'JawOpen',0);if(OP.dr)Fig.mimik(OP.dr,'JawOpen',0)}
+function stReihe(L,dann){ST.q=L.slice();ST.qi=0;ST.dann=dann;ST.t=0;stVor(L);if(!L.length){ST.q=[];if(dann)dann();return}$('stx').style.display='block';stSprich(L[0])}
+function stWeiterZeile(){if(!ST.q.length)return;ST.qi++;if(ST.qi<ST.q.length)stSprich(ST.q[ST.qi]);else{var f=ST.dann;ST.q=[];ST.dann=null;stStumm();ST.sp='';$('stx').style.display='none';sub('');if(f)f()}}
+/* Wahl anzeigen (nur was laut Stand zulässig ist) */
+function stWahl(){var N=ST.D.szenen[ST.s.node],W=$('wahl'),h='',L=N.a.filter(function(a){return stPasst(a.wenn)});ST.ph='wahl';
+  if(ST.s.node==='07b'){L=L.filter(function(a){return a.id!=='heben'});h='<i>Du kannst die Kamera heben – oder weitergehen.</i>'}
+  if(ST.s.node==='07c')h='<i>Der Auslöser löst nur aus, wenn du ihn drückst.</i>';
+  L.forEach(function(a){h+='<button data-a="'+a.id+'">'+esc(a.t)+'</button>'});W.innerHTML=h;W.style.display=L.length?'flex':'none';
+  Array.prototype.forEach.call(W.querySelectorAll('button'),function(b){b.addEventListener('click',function(){stTat(b.getAttribute('data-a'))})})}
+/* Wahl festschreiben: erst Stand setzen und speichern, dann die Antwortzeilen spielen, dann die nächste Szene */
+function stTat(id,extra){var k=ST.s.node,N=ST.D.szenen[k],a=null,f;N.a.forEach(function(x){if(x.id===id&&stPasst(x.wenn))a=x});if(!a||ST.ph==='tat')return;
+  if(k==='09c'&&id==='auswahl'&&!(extra&&extra.length)){stBilder(true,function(sel){if(sel.length)stTat('auswahl',sel)});return}
+  if(k==='09e'&&id==='geben'&&extra===undefined){stBilder(false,function(sel){if(sel.length)stTat('geben',sel[0])});return}
+  if((k+'.'+id==='06b.bild'||k+'.'+id==='07c.schild')&&!extra){ST.foto=id;sub('Kamera heben und auslösen','Erst die wirkliche Aufnahme zählt',6);$('wahl').style.display='none';ST.ph='foto';return}
+  $('wahl').style.display='none';szHide();ST.karte=false;for(f in a.set)ST.s.flags[f]=a.set[f];ST.s.seen[k+'.'+id]=1;if(k==='09c')ST.s.submitted=id==='auswahl'?extra:[];if(k==='09e'&&id==='geben')ST.s.privat=extra;
+  if(a.set.wagen&&ride===FA&&k!=='02a')ST.nach=a.set.wagen;if(k==='07c'&&kam)try{$('kx').click()}catch(e){}
+  ST.s.node=a.zu;ST.s.rev++;ST.ph='tat';ST.von=k;stSave();a.ger.forEach(function(g,i){stGer(g,0.6,i*0.5)});stPapiere(k,id);
+  stReihe(a.z,function(){ST.ph='';ST.neu=true})}
+/* Schriftstücke ins Album, sobald sie in der Geschichte vorkommen */
+function stPapiere(k,id){var D=ST.D.dok,P=function(i,t,f){papier('st-'+i,t,D[i].replace(/\s*\[Q[^\]]*\]/g,''),f||'Aus dem Regiebuch · Quellen unter „Quellen“ im Menü')};
+  if(k==='01b')P('gepaeck','Umschlag am Riemen','Spielgegenstand · erfunden');if(k==='05a')P('markt','Marktrand · 11. März 1933');if(k==='06a'){P('karte','Die Ansichtskarte');P('schule','Zwei Adressen')}if(k==='06b')P('erinnerung','Eine spätere Erinnerung');
+  if(k==='06c')P('zwischenblatt','Nacht zum 29. März 1933');if(k==='07b'||k==='07c')P('tuer','Rathausplatz 7 · 1. April 1933');if(k==='08a')P('rathaus','Rathaus · 20. April 1933');
+  if(k==='09c'){P('bestellung','Bildauftrag','Spielgegenstand · erfunden');P('ausweis','Mitgliedsausweis','Spielgegenstand · erfunden')}if(k==='09f'){P('montage','Ein erzählter Tag');P('weiterleben','Jahrzehnte später');P('verein','Die Casino-Gesellschaft')}
+  if(k==='04a'&&id!=='ohne')papier('zettel','Abholzettel','Steinberg & Grünebaum, Rathausplatz 7 · '+(id==='hell'?'helles':'dunkles')+' Muster, zugeschnitten und zurückgelegt. Abholung auf dem Rückweg.','Spielgegenstand · erfunden')}
+/* Auswahl eigener Abzüge (Redaktionstisch, privater Abzug) */
+function stBilder(mehr,cb){var h='<div class="d">'+(mehr?'Redaktionstisch':'Am Zeitungsstand')+'</div><h2>'+(mehr?'Welche Abzüge geben Sie ab?':'Welcher Abzug ist für sie?')+'</h2><div class="bw">';ALB.forEach(function(a,i){h+='<img src="'+a.t+'" data-i="'+i+'">'});
+  h+='</div><button id="bwok">'+(mehr?'Diese übergeben':'Diesen geben')+'</button><button class="h" id="bwno">Zurück</button>';szShow(h);var sel=[];
+  Array.prototype.forEach.call($('sz').querySelectorAll('img'),function(im){im.addEventListener('click',function(){var i=+im.getAttribute('data-i'),p=sel.indexOf(i);if(!mehr){sel=[i];Array.prototype.forEach.call($('sz').querySelectorAll('img'),function(o){o.className=''});im.className='on';return}if(p>=0){sel.splice(p,1);im.className=''}else{sel.push(i);im.className='on'}})});
+  $('bwok').addEventListener('click',function(){if(sel.length)cb(sel)});$('bwno').addEventListener('click',function(){stKarte()})}
+/* Innenraum als Papiertisch (Arbeitsraum ist in der Stadt nicht gebaut) und Nachklang */
+function stKarte(){var k=ST.s.node,N=ST.D.szenen[k],D=ST.D.dok,h='<div class="d">'+esc(N.zeit)+' · '+esc(N.ort)+'</div><h2>'+esc(N.titel)+'</h2>',L;ST.karte=true;
+  if(k==='09b')h+='<p>Der Arbeitsraum beim Bahnhof. Auf dem Tisch liegen die Abrede, die Karte'+(ST.s.flags.zettel?' und der Abholzettel':'')+'. '+(ALB.length?ALB.length+' Aufnahmen gehen in die Entwicklung.':'Der Film ist unbelichtet.')+'</p>';
+  if(k==='09c')h+='<p class="pp">'+esc(D.bestellung)+'</p><p class="pp">'+esc(D.ausweis)+'</p>'+(ALB.length?'<div class="bw">'+ALB.map(function(a){return'<img src="'+a.t+'">'}).join('')+'</div>':'<p>Kein Kontaktbogen: es gibt keine Aufnahmen.</p>');
+  if(k==='09d'){h+='<p>'+(ST.s.submitted.length?'Auf der Seite stehen nur die übergebenen Abzüge, von der Redaktion beschnitten. Der ganze Bildrand bleibt in deinem Album.':'Die Bildfelder der Seite bleiben leer.')+'</p><div class="bw ly">';
+    if(ST.s.submitted.length)ST.s.submitted.forEach(function(i){if(ALB[i])h+='<span><img src="'+ALB[i].t+'"></span>'});else h+='<span></span><span></span><span></span>';h+='</div>'}
+  if(k==='ende'){h+='<p>'+esc(D.montage)+'</p><p>'+esc(D.weiterleben.replace(/\s*\[Q[^\]]*\]/g,''))+'</p><p>'+esc(D.karte.replace(/\s*\[Q[^\]]*\]/g,''))+'</p><p class="s">Alle Schriftstücke und deine Aufnahmen liegen im Album (Kamera → Album). Quellen: Menü → Quellen.</p><button id="endk">Zum Album</button><button class="h" id="endw">In der Stadt bleiben</button>';szShow(h);
+    $('endk').addEventListener('click',function(){szHide();ST.karte=false;try{albShow();$('alb').style.display='block'}catch(e){}});$('endw').addEventListener('click',function(){szHide();ST.karte=false});return}
+  L=N.a.filter(function(a){return stPasst(a.wenn)});L.forEach(function(a){h+='<button data-a="'+a.id+'">'+esc(a.t)+'</button>'});h+='<p class="s" style="margin-top:10px">Der Arbeitsraum ist in der Stadt noch nicht gebaut; die Szene spielt deshalb am Papiertisch.</p>';szShow(h);
+  Array.prototype.forEach.call($('sz').querySelectorAll('button[data-a]'),function(b){b.addEventListener('click',function(){stTat(b.getAttribute('data-a'))})})}
+/* Nebenfiguren der Szene an ihren Platz stellen (jede Rolle genau eine Figur, sie bleibt stehen) */
+function stFigur(r,x,z,bx,bz){var f=ST.F[r],n;if(!ST.FIG[r])return;if(!f){f=ST.F[r]={o:null,l:0};}
+  var a=Math.atan2(x-bx,z-bz),k,px=x,pz=z;for(k=0;k<16;k++){px=x+Math.sin(a+k*0.5)*1.9;pz=z+Math.cos(a+k*0.5)*1.9;if(canWalk(px,pz))break}f.x=px;f.z=pz;f.ya=Math.atan2(x-px,z-pz);
+  if(f.o){f.o.position.set(px,hAt(px,pz),pz);f.o.rotation.y=f.ya;f.o.visible=true}else if(!f.l){f.l=1;LD.load('l/'+ST.FIG[r]+'.glb',function(g){stat(g.scene);f.o=g.scene;f.o.position.set(f.x,hAt(f.x,f.z),f.z);f.o.rotation.y=f.ya;scene.add(f.o)})}}
+/* Fahrer an eine Stelle zu Fuß stellen oder wieder ans Steuer setzen */
+function stGuide(x,z,sitz){var d=OP.dr;if(!d||!d.bereit)return;if(d.seq){var i=SEQ.indexOf(d.seq);if(i>=0)SEQ.splice(i,1);d.seq=null}OP.geht=false;OP.warte=true;if(OP.st<3)OP.st=3;
+  if(sitz&&FA){d.im={v:FA,re:sitz===2};d.sitW=1;return}d.im=null;d.sitW=0;d.duck=0;var f=frei(x,z)||[x,z];d.x=f[0];d.z=f[1];d.y=hAt(d.x,d.z);d.sp=0;d.o.visible=true}
+/* Wagen an einen Haltepunkt versetzen (nur außer Sicht oder beim Wiedereinstieg in einen Spielstand) */
+function stWagenAn(n){var a=stAnker(n);if(!a||!FA)return;var q=a.d!==undefined?pAt(LINE,a.d):null;FA.x=a.x;FA.z=a.z;if(q){FA.yaw=Math.atan2(q.dx,q.dz);FA.d=a.d}FA.v=0;FA.st=0;FA.mode='warte';FA.done=true;vehSet(FA,0)}
+/* Fahrt zu einem Haltepunkt: geführt (Fahrer am Steuer) oder selbst */
+function stFahrt(n,art){var a=stAnker(n);if(!a||!FA)return;ST.fz=n;ST.fa=art;FA.car=2;FA.besetzt=true;FA.done=false;
+  if(art==='selbst'){FA.mode=ride===FA?'me':FA.mode;return}
+  var ld=stLin(FA.x,FA.z),lq=pAt(LINE,ld);if(a.d===undefined||Math.hypot(FA.x-lq.x,FA.z-lq.z)>28){/* keine befahrbare Strecke hinterlegt: Übergang am sicheren Bordstein */stBlende(function(){stWagenAn(n)},'Fahrt · Übergang (die Strecke ist für die geführte Fahrt noch nicht hinterlegt)');return}
+  FA.d=ld;
+  FA.td=a.d>=FA.d?1:-1;FA.s1=a.d;FA.dA=FA.d;FA.li=99;FA.stau=0;FA.mode='tour'}
+function stBlende(f,text){var e=$('bl');e.style.display='block';e.style.opacity='0';e.offsetWidth;e.style.opacity='1';ST.warte=2.2;setTimeout(function(){f();if(text)sub(text,'',5);e.style.opacity='0';setTimeout(function(){e.style.display='none'},900)},1100)}
+/* Einsteigen in den Wagen der Geschichte: bei geführter Fahrt rechts, beim Selbstfahren links; der Fahrer nimmt den anderen Platz */
+function stEinsteigen(){var art=ST.wart,d=OP.dr,re=art!=='selbst';if(!FA||!hero||hero.seq||ride)return;if(d&&d.bereit){if(d.im&&d.im.re===re){d.im=null;d.x=FA.x-FA.dz*(re?-1:1)*1.6;d.z=FA.z+FA.dx*(re?-1:1)*1.6}if(!d.im&&!d.seq)steig(d,FA,!re,false,false,null)}
+  steig(hero,FA,re,true,false,function(){ride=FA;FA.sre=re;view='aussen';me.pitch=-0.2;me.yaw=FA.yaw+Math.PI;lookIdle=9;label();if(art==='selbst'){FA.mode='me';FA.v=0;if(!PED.tip){PED.tip=1;sub(MOB?'Links lenken · rechts Gas und Bremse':'A / D lenken · W Gas · S Bremse','',6)}}ST.sitzt=true})}
+/* Szene betreten: Zeitmarke, Ortsklang, Figuren, Wagen */
+function stBeginn(){var k=ST.s.node,N=ST.D.szenen[k],fl=ST.s.flags;if(k==='01c'&&!FA)return false;ST.neu=false;ST.ph='weg';ST.foto='';ST.sitzt=false;ST.wart='';ST.anT=0;ST.ortDa=false;ST.fz='';ST.hin=0;
+  if(N.zeit!==ST.per){ST.per=N.zeit;$('lbl').textContent=N.zeit.toUpperCase()}stVor(N.z);N.a.forEach(function(x){stVor(x.z)});N.bz.forEach(function(c){stVor(c[1])});
+  if(FA){FA.bereit=false;FA.car=2;FA.li=99;if(!ride)FA.besetzt=true}
+  if(k==='02a'||k==='02c')ST.wart=fl.fahrtA;if(k==='07a'&&fl.fahrtB!=='fuss')ST.wart=fl.fahrtB;if(k==='09b')ST.wart=fl.fahrtC;
+  if(k==='06c')ST.verz=['busdorf.halt',30];if(k==='07a'&&fl.fahrtB==='fuss')ST.verz=['rathaus.halt',70];
+  if(ST.INNEN[k]&&ST.von&&ST.INNEN[ST.von])ST.ph='da';if(k==='ende'){ST.ph='ende';stBett('stille');stKarte()}return true}
+/* Räumliches der Szene, sobald der Ort geladen und nah genug ist: Nebenfiguren, Fahrer, Schild */
+function stOrt(a){var k=ST.s.node,N=ST.D.szenen[k],r={},i;ST.ortDa=true;if(ST.INNEN[k])return;
+  N.z.concat.apply(N.z,N.a.map(function(x){return x.z}).concat(N.bz.map(function(c){return c[1]}))).forEach(function(id){var T=ST.D.text[id];if(T)r[T[0]]=1});for(i in r)stFigur(i,a.x,a.z,me.x,me.z);
+  if(k==='07b'||k==='07c'||k==='07d'){stFigur('kundin_tuer',a.x,a.z,me.x,me.z);stFigur('verkauf',a.x,a.z,a.x+Math.cos(SG.ya||0)*3,a.z-Math.sin(SG.ya||0)*3);if(!SG.obj&&SG.ok){var G=sgSchild();G.position.set(SG.sx+Math.cos(SG.ya)*1.5,hAt(SG.sx,SG.sz),SG.sz-Math.sin(SG.ya)*1.5);G.rotation.y=SG.ya;scene.add(G);SG.obj=G}}
+  if(k==='01b'&&OP.dr&&FA){var t=tuerPkt(FA,false).st;OP.wx=t.x;OP.wz=t.z;OP.geht=true}
+  if((k==='05a'||k==='05b'||k==='08a'||k==='09f')&&r.guide)stGuide(a.x+2.4,a.z+1.4)}
+function stZiel(){if(!ST.D||!ST.s||ST.s.node==='01a'||ST.s.node==='ende'||!ST.ph||ST.ph==='ende')return null;var N=ST.D.szenen[ST.s.node],n=ST.fz&&ride===FA?ST.fz:ST.nach&&ride===FA?ST.nach:N.anker,a=stAnker(n)||stAnker(n,true);
+  if(ST.wart&&!ride&&FA)return{x:FA.x,z:FA.z,n:'Zum Wagen'};if(ST.ph!=='weg'||!a||ST.INNEN[ST.s.node]&&!ride)return null;return{x:a.x,z:a.z,n:N.ort+(a.g?' (Lage geschätzt)':'')}}
+/* Schritt je Bild */
+function stStep(dt){if(!ST.D||!started||OP.on)return;var k=ST.s.node,N,a,d,i,v;if(k==='01a'){if(OP.done||OP.st>=3){ST.s.node='01b';stSave()}else return}
+  if(!hero||!hero.neu||!nav||!LINE)return;
+  if(!ST.platz){ST.platz=1;if(!OP.st){var pa=stAnker(ST.NEU[k]||'bhf.start',true);if(pa){me.x=pa.x+2.5;me.z=pa.z+2.5;shC.x=1e9;vel.x=vel.z=0}}}
+  if(ST.warte>0){ST.warte-=dt;return}k=ST.s.node;N=ST.D.szenen[k];
+  if(!ST.ph||ST.neu){if(!stBau()||!stBeginn())return}
+  /* Mund folgt der Stimme */
+  if(ST.q.length){ST.t-=dt;if(ST.an&&ST.sp&&(ST.sp==='fotograf'||ST.sp==='guide')){ST.an.getByteTimeDomainData(ST.ad);v=0;for(i=0;i<128;i+=4)v=Math.max(v,Math.abs(ST.ad[i]-128));Fig.mimik(ST.sp==='guide'?OP.dr:hero,'JawOpen',Math.min(0.5,v/60))}if(ST.t<=0)stWeiterZeile();return}
+  if(ST.ph==='ende'||ST.ph==='wahl'||ST.ph==='tat')return;
+  a=stAnker(N.anker);
+  /* Ortsklang in der Nähe des Schauplatzes */
+  if(a){d=Math.hypot(me.x-a.x,me.z-a.z);stBett(d<70&&ST.ph!=='weg'||d<45?N.bett:'');if(!ST.ortDa&&d<160)stOrt(a)}
+  if(ST.verz&&FA&&ride!==FA){var vz=stAnker(ST.verz[0]);if(vz&&(Math.hypot(me.x-FA.x,me.z-FA.z)>ST.verz[1]||Math.hypot(FA.x-vz.x,FA.z-vz.z)<3)){if(Math.hypot(FA.x-vz.x,FA.z-vz.z)>=3){stWagenAn(ST.verz[0]);stGuide(0,0,1)}ST.verz=null}}
+  if(ST.ph==='foto'){if(ST.alb!==undefined&&ALB.length>ST.alb){var f=ST.foto;ST.foto='';ST.ph='wahl';stTat(f,true)}else ST.alb=ST.alb===undefined?ALB.length:ST.alb;return}ST.alb=undefined;
+  if(ST.ph==='da'){ST.ph='rede';stReihe(N.z.concat.apply(N.z,N.bz.filter(function(c){return stPasst(c[0])}).map(function(c){return c[1]})),function(){N.ger.forEach(function(g,j){stGer(g,0.5,j*0.4)});if(ST.INNEN[k])stKarte();else if(ST.AUTO[k]&&N.a.length===1)stTat(N.a[0].id);else stWahl()});return}
+  if(ST.ph!=='weg')return;
+  /* nach einer Wahl mit neuem Haltepunkt (z. B. hinter der Bahn parken) fährt der Wagen dorthin weiter */
+  if(ST.nach&&!ST.wart){if(ride===FA){if(!ST.fz)stFahrt(ST.nach,ST.fa||'guide');var zn=stAnker(ST.nach);if(zn&&(Math.hypot(FA.x-zn.x,FA.z-zn.z)<(ST.fa==='selbst'?11:6)||FA.done&&FA.mode!=='tour')&&Math.abs(FA.v)<0.5){FA.done=true;if(FA.mode==='tour')FA.mode='warte';ST.nach='';ST.fz=''}}else if(!(hero&&hero.seq)){ST.nach='';ST.fz=''}}
+  /* Wagen-Abschnitte: erst einsteigen, dann fahren, am Haltepunkt ankommen */
+  if(ST.wart){if(!ride){if(FA&&!(hero&&hero.seq)&&Math.hypot(me.x-FA.x,me.z-FA.z)<7&&(k==='02a'||k==='09b'||k==='07a'))stEinsteigen();return}
+    if(ride===FA&&!ST.fz){stFahrt(k==='02a'?'fabrik.halt':k==='02c'?'west.gleis':k==='07a'?'rathaus.halt':'labor.halt',ST.wart)}
+    if(ride===FA&&ST.fz){var z=stAnker(ST.fz);d=z?Math.hypot(FA.x-z.x,FA.z-z.z):99;if(ST.fa==='selbst'&&d<45&&d>18&&!ST.hin&&Math.abs(FA.v)>2){ST.hin=1;stReihe(['S52'],null);return}
+      if((d<(ST.fa==='selbst'?11:6)||FA.done&&FA.mode!=='tour')&&Math.abs(FA.v)<0.5&&ST.warte<=0){FA.v=0;FA.done=true;if(FA.mode==='tour')FA.mode='warte';ST.fz='';ST.hin=0;ST.wart='';ST.ph='da'}}return}
+  /* zu Fuß: am Ort ankommen */
+  if(a&&!ride&&!(hero&&hero.seq)){d=Math.hypot(me.x-a.x,me.z-a.z);if(d<(a.auto?5.5:4.6)){ST.anT+=dt;if(ST.anT>0.35)ST.ph='da'}else ST.anT=0}}
+function stKamera(){if(!ST.D||ST.s.node!=='07b'||ST.ph!=='wahl'||ST.q.length)return;var a=stAnker('kaufhaus.fenster');if(a&&Math.hypot(me.x-a.x,me.z-a.z)<16){ST.warte=0;stTat('heben');ST.t+=1.8}}
+/* Figuren und Wagen der Geschichte bereitstellen (auch beim Wiedereinstieg in einen gespeicherten Stand) */
+function stBau(){var d=OP.dr;if(!d||!d.bereit||!OP.wagen){opLaden();return false}if(FA)return true;if(!geladen(me.x,me.z))return false;var n=ST.s.flags.wagen||'',a=n?stAnker(n):null,W=OP.wagen,q,cx,cz,cy,r,k,ok2=false;
+  FA=vehObj(W,'limousine',{car:2,besetzt:true,p:LINE,d:stBs()+6,s1:LINE.L[8]-24,lat:2.3,name:'Wagen',li:99,done:true,bereit:false,mode:'warte',chk:true});
+  if(a&&a.d!==undefined){q=pAt(LINE,a.d);FA.x=a.x;FA.z=a.z;FA.yaw=Math.atan2(q.dx,q.dz);FA.d=a.d}else{q=pAt(LINE,stBs()+10);cy=Math.atan2(q.dx,q.dz);for(r=4;r<30&&!ok2;r+=1.5)for(k=0;k<8&&!ok2;k++){cx=me.x+Math.sin(k*0.8)*r;cz=me.z+Math.cos(k*0.8)*r;ok2=vehFrei(FA,cx,cz,cy)}FA.x=cx;FA.z=cz;FA.yaw=cy}
+  vehSet(FA,0);W.visible=true;VEH.push(FA);OP.st=3;OP.geht=false;OP.warte=true;stGuide(0,0,1);return true}
 /* ---------- Erkundung: die Karte zeigt nur, wo man schon war (Umkreis 60 m); Stand bleibt gespeichert ---------- */
 var FW=275,FH=225,FOG=new Uint8Array(FW*FH),fogC=document.createElement('canvas'),fogD=true,fogS=0;fogC.width=FW;fogC.height=FH;
 try{var fs=localStorage.getItem('ab32-nebel');if(fs){var fb=atob(fs),fi;for(fi=0;fi<FOG.length;fi++)if(fb.charCodeAt(fi>>3)&(1<<(fi&7)))FOG[fi]=1}}catch(e){}
@@ -599,7 +743,7 @@ function fogSave(){if(!fogS)return;fogS=0;try{var b='',i,v;for(i=0;i<FOG.length;
 setInterval(fogSave,6000);
 /* ---------- Wegweiser: Lichtkegel am nächsten Ort der Geschichte (auch auf der Karte); kleine, dezente Lichtpunkte an Orten mit eigener Geschichte (nur im Spiel) ---------- */
 var KEG=null,ZIEL=null,MRK=[];
-function ziel(){if(!nav)return null;if(OP.st===3&&FA&&FA.bereit)return{x:OP.zx,z:OP.zz,n:'Zum Wagen'};if(OP.on)return null;var hat=function(id){return PAP.some(function(q){return q.id===id})},sp=function(id){var r=null;if(ZT)ZT.spuren.forEach(function(p){if(p.id===id)r=p});return r},p;
+function ziel(){if(!nav)return null;if(OP.on)return null;if(ST.D&&ST.s.node!=='01a')return stZiel();if(OP.st===3&&FA&&FA.bereit)return{x:OP.zx,z:OP.zz,n:'Zum Wagen'};var hat=function(id){return PAP.some(function(q){return q.id===id})},sp=function(id){var r=null;if(ZT)ZT.spuren.forEach(function(p){if(p.id===id)r=p});return r},p;
   if(SG.st===0||SG.st===2||(SG.st===3&&!hat('april1')))return SG.ok?{x:SG.sx,z:SG.sz,n:'Rathausplatz 7 · Steinberg & Grünebaum'}:{x:SG.x,z:SG.z,n:'Rathausplatz 7 · Steinberg & Grünebaum'};
   if(SG.st===1){p=sp('markt');return p?{x:p.mx!==undefined?p.mx:p.anker[0],z:p.mx!==undefined?p.mz:-p.anker[1],n:'Markt'}:null}
   if(SG.st===3&&!hat('rat')){p=sp('rat');return p?{x:p.mx!==undefined?p.mx:p.anker[0],z:p.mx!==undefined?p.mz:-p.anker[1],n:'Historisches Rathaus'}:null}return null}
@@ -644,7 +788,7 @@ var kam=false,snap=false,kPrev='schulter',ALB=[],AC=null;
 try{ALB=JSON.parse(localStorage.getItem('ab32-album')||'[]')}catch(e){ALB=[]}
 function kRect(){var w=window.innerWidth,h=window.innerHeight,fw=Math.min(w*0.94,(h*0.66)*1.5),fh=fw/1.5;return{x:(w-fw)/2,y:Math.max(54,(h-fh)/2-30),w:fw,h:fh}}
 function kLay(){var r=kRect(),f=$('kf').style;f.left=r.x+'px';f.top=r.y+'px';f.width=r.w+'px';f.height=r.h+'px'}
-function kamSet(on){kam=on;$('kam').style.display=on?'block':'none';$('ui').style.display=on?'none':'flex';$('ort').style.display=$('back').style.display=$('lbl').style.display=on?'none':'';if(on){kPrev=view;if(!ride)view='ich';else view='innen';kLay()}else{view=ride?'innen':kPrev;label()}camera.fov=on?(window.innerWidth<window.innerHeight?58:44):(window.innerWidth<window.innerHeight?72:58);camera.updateProjectionMatrix()}
+function kamSet(on){if(on)stKamera();kam=on;$('kam').style.display=on?'block':'none';$('ui').style.display=on?'none':'flex';$('ort').style.display=$('back').style.display=$('lbl').style.display=on?'none':'';if(on){kPrev=view;if(!ride)view='ich';else view='innen';kLay()}else{view=ride?'innen':kPrev;label()}camera.fov=on?(window.innerWidth<window.innerHeight?58:44):(window.innerWidth<window.innerHeight?72:58);camera.updateProjectionMatrix()}
 /* Ablauf im Schulterblick: Apparat heben – Kamera fährt ans Auge – Sucher; am Ende umgekehrt */
 var kPh='',kT=0,kUp=0;
 $('kamb').addEventListener('click',function(){if(kPh)return;if(!ride&&view==='schulter'&&hero){kPh='up';kT=0;$('ui').style.display='none'}else{kPh='on';kamSet(true)}});
@@ -684,7 +828,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
       lookIdle+=dt;if(view==='schulter'&&hsp>0.6&&lookIdle>0.7&&!tL&&!drag){var dy=Math.atan2(Math.sin(hyaw+Math.PI-me.yaw),Math.cos(hyaw+Math.PI-me.yaw));me.yaw+=dy*Math.min(1,dt*1.5)*Math.min(1,Math.abs(fx)*1.5+0.2);me.pitch+=(-0.2-me.pitch)*Math.min(1,dt*0.8)}}
     hsp+=((dt>0?moved/dt:0)-hsp)*Math.min(1,dt*8);tonStep(dt,moved);musikStep(dt);me.y+=((ride?0:hAt(me.x,me.z))-me.y)*Math.min(1,dt*12);
     if(kPh==='up'){kT+=dt/0.75;kUp=Math.min(1,kT);hyaw=Math.atan2(fwd.x,fwd.z);if(kT>=1){kPh='in';kT=0}}else if(kPh==='in'){kT+=dt/0.45;kUp=1;if(kT>=1){kPh='on';kamSet(true)}}else if(kPh==='out'){kT+=dt/0.45;kUp=1;hyaw=Math.atan2(fwd.x,fwd.z);if(kT>=1){kPh='down';kT=0}}else if(kPh==='down'){kT+=dt/0.65;kUp=Math.max(0,1-kT);if(kT>=1){kPh='';kUp=0;$('ui').style.display='flex'}}
-    seqAlle(dt);if(FA&&FA.los&&ride===FA&&(!OP.dr||OP.dr.im||!OP.dr.seq)){FA.los=false;fahrtStart()}
+    stStep(dt);seqAlle(dt);if(FA&&FA.los&&ride===FA&&(!OP.dr||OP.dr.im||!OP.dr.seq)){FA.los=false;fahrtStart()}
     if(hero){var imW=ride&&ride.car&&!hero.seq;hero.o.visible=!kam&&(imW||hero.seq?true:ride?view==='aussen':view==='schulter'&&cD>1.2&&!(kPh==='in'&&kT>0.7)&&!(kPh==='out'&&kT<0.3));
       if(hero.o.visible){if(hero.seq){me.x=hero.x;me.z=hero.z;hyaw=hero.yaw}else if(imW)sitzen(hero,ride,ride.sre);else if(ride){hero.x=ride.x+ride.dx*ride.half*0.5;hero.z=ride.z+ride.dz*ride.half*0.5;hero.y=0.95;hero.sp=0;hero.yaw=Math.atan2(ride.dx*(ride.dir||1),ride.dz*(ride.dir||1))}
         else{hero.x=me.x;hero.z=me.z;hero.y=me.y;hero.sp=hsp;hero.sitW=0;hero.duck=0;var hd=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw));hero.yaw+=Math.sign(hd)*Math.min(Math.abs(hd),dt*(2.2+Math.abs(hd)*4.5));if(Math.abs(hd)>1.9){vel.x*=1-Math.min(1,dt*6);vel.z*=1-Math.min(1,dt*6)}}
@@ -710,7 +854,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
   v.src=window.innerHeight>window.innerWidth?'s/intro_h.mp4':'s/intro_q.mp4';v.addEventListener('ended',function(){setTimeout(end,500)});v.addEventListener('error',end);iv.addEventListener('click',end);setTimeout(end,7500);
   var p=v.play();if(p&&p.catch)p.catch(end)})();
 requestAnimationFrame(frame);
-window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__SG=SG;window.__ein=function(){return SEQ.map(function(S){return[S.ph,Math.round(S.t*10)/10,S.held]})};window.__act=function(){$('act').click();return $('act').textContent};window.__PED=PED;window.__fahr=function(v){if(hero){hero.im=null;hero.seq=null}ride=v;v.sre=false;v.mode='me';v.v=0;view='aussen';me.yaw=v.yaw+Math.PI;me.pitch=-0.2;label()};window.__keys=keys;window.__eng=function(v){var r=[];[1,-1].forEach(function(s){var dx=v.dx,dz=v.dz,h=v.half*0.9*s,w=v.wid*0.7,px=v.x+dx*h,pz=v.z+dz*h;r.push([occAt(px-dz*w,pz+dx*w),occAt(px+dz*w,pz-dx*w),occAt(px,pz),tramBlock(px,pz),vehStoss(v,v.x,v.z,v.yaw),vehFrei(v,v.x,v.z,v.yaw)])});return JSON.stringify(r)};window.__op=function(a){if(a==='start'){spielOrt(0);opStart()}return[OP.on,OP.st,OP.li,Math.round(OP.t*10)/10,OP.dr&&OP.dr.bereit,OP.warte,FA&&FA.bereit]};window.__veh=function(){return VEH.map(function(v){return[v.name,v.mode,Math.round(v.x),Math.round(v.z),Math.round(v.v*10)/10]})};window.__VEH=VEH;window.__mu=function(){var D=MU.d[MU.akt];return{rolle:MU.soll,n:D&&D.n,t:D&&+D.el.currentTime.toFixed(1),p:D&&D.el.paused,dS:+MU.dS.toFixed(1),dR:+MU.dR.toFixed(1),dB:+MU.dB.toFixed(1),dK:+MU.dK.toFixed(2),sp:+MU.sp.toFixed(2),g:+MU.g.gain.value.toFixed(3),still:+MU.still.toFixed(1),ges:MU.gesehen}};window.__MU=MU;window.__snd=function(){return{ok:SND.ok,buf:Object.keys(SB).length,loops:Object.keys(SL).map(function(k){return k+':'+SL[k].gain.value.toFixed(2)}),tm:TM}};window.__weg=function(){return[ZIEL,MRK.length,FOG.reduce(function(a,b){return a+b},0)]};window.__PAP=function(){return PAP};window.__fahrt=function(){spielOrt(0);fahrtStart()};window.__FA=function(){return FA&&FA.o?[Math.round(FA.s),Math.round(FA.s1),FA.done,Math.round(FA.x),Math.round(FA.z)]:null};window.__TL=TL;window.__g=function(){return{hero:hero,Fig:Fig,VEH:VEH,FA:FA,OP:OP,THREE:THREE,scene:scene,hAt:hAt,canWalk:canWalk,LB:LB,pAt:pAt,mkPath:mkPath}};window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){OP.done=true;$('go').click()},walk:canWalk};
+window.__ALB=function(){return ALB};window.__k=function(p,t){kPh=p;kT=t};window.__SG=SG;window.__ein=function(){return SEQ.map(function(S){return[S.ph,Math.round(S.t*10)/10,S.held]})};window.__act=function(){$('act').click();return $('act').textContent};window.__PED=PED;window.__fahr=function(v){if(hero){hero.im=null;hero.seq=null}ride=v;v.sre=false;v.mode='me';v.v=0;view='aussen';me.yaw=v.yaw+Math.PI;me.pitch=-0.2;label()};window.__keys=keys;window.__eng=function(v){var r=[];[1,-1].forEach(function(s){var dx=v.dx,dz=v.dz,h=v.half*0.9*s,w=v.wid*0.7,px=v.x+dx*h,pz=v.z+dz*h;r.push([occAt(px-dz*w,pz+dx*w),occAt(px+dz*w,pz-dx*w),occAt(px,pz),tramBlock(px,pz),vehStoss(v,v.x,v.z,v.yaw),vehFrei(v,v.x,v.z,v.yaw)])});return JSON.stringify(r)};window.__op=function(a){if(a==='start'){spielOrt(0);opStart()}return[OP.on,OP.st,OP.li,Math.round(OP.t*10)/10,OP.dr&&OP.dr.bereit,OP.warte,FA&&FA.bereit]};window.__veh=function(){return VEH.map(function(v){return[v.name,v.mode,Math.round(v.x),Math.round(v.z),Math.round(v.v*10)/10]})};window.__VEH=VEH;window.__st=function(){return{n:ST.s.node,ph:ST.ph,q:ST.q.length,qi:ST.qi,wart:ST.wart,fz:ST.fz,nach:ST.nach,fl:ST.s.flags,z:stZiel(),fa:FA&&[Math.round(FA.x),Math.round(FA.z),FA.mode,FA.done,+FA.v.toFixed(1),Math.round(FA.d),Math.round(FA.s1),FA.td,+FA.st.toFixed(2),+(FA.stau||0).toFixed(1)],ride:!!ride,karte:ST.karte}};window.__ST=ST;window.__vorn=function(){return FA?[vorn(FA),SEQ.length,VEH.indexOf(FA),FA.mode,FA.v,FA.stau,FA.d,FA.s1,FA.td,ST.warte,window.__dt]:null};window.__stTat=function(i,x){stTat(i,x)};window.__stx=function(){stWeiterZeile()};window.__mu=function(){var D=MU.d[MU.akt];return{rolle:MU.soll,n:D&&D.n,t:D&&+D.el.currentTime.toFixed(1),p:D&&D.el.paused,dS:+MU.dS.toFixed(1),dR:+MU.dR.toFixed(1),dB:+MU.dB.toFixed(1),dK:+MU.dK.toFixed(2),sp:+MU.sp.toFixed(2),g:+MU.g.gain.value.toFixed(3),still:+MU.still.toFixed(1),ges:MU.gesehen}};window.__MU=MU;window.__snd=function(){return{ok:SND.ok,buf:Object.keys(SB).length,loops:Object.keys(SL).map(function(k){return k+':'+SL[k].gain.value.toFixed(2)}),tm:TM}};window.__weg=function(){return[ZIEL,MRK.length,FOG.reduce(function(a,b){return a+b},0)]};window.__PAP=function(){return PAP};window.__fahrt=function(){spielOrt(0);fahrtStart()};window.__FA=function(){return FA&&FA.o?[Math.round(FA.s),Math.round(FA.s1),FA.done,Math.round(FA.x),Math.round(FA.z)]:null};window.__TL=TL;window.__g=function(){return{hero:hero,Fig:Fig,VEH:VEH,FA:FA,OP:OP,THREE:THREE,scene:scene,hAt:hAt,canWalk:canWalk,LB:LB,pAt:pAt,mkPath:mkPath}};window.__MC=MC;window.__sun=sun;window.__w={set:function(o){for(var k in o)me[k]=o[k];shC.x=1e9},me:me,tr:TR,ppl:ppl,st:function(){return{view:view,ride:ride&&ride.name,hero:!!hero,n:ppl.length,tr:TR.map(function(t){return[t.name,Math.round(t.x),Math.round(t.z),Math.round(t.s),t.lx,Math.round(t.half*10)/10,Math.round(t.wid*10)/10]})}},info:function(){var i=renderer.info;return[i.render.calls,i.render.triangles,i.memory.geometries,i.memory.textures,PR,TL.filter(function(t){return t.s===2}).length,Object.keys(MC).length]},start:function(){OP.done=true;$('go').click()},walk:canWalk};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 })();
 </script></body></html>
