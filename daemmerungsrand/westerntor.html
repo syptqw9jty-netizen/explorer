@@ -381,7 +381,7 @@ function texFit(t,lim){var im=t&&t.image;if(!im||t._f||t.isDataTexture||t.isComp
 /* doppelt geladene Bilder erst freigeben, wenn feststeht, dass keine behaltene Textur sie noch braucht */
 var ZUL=[];function zuLeer(){var L=ZUL;ZUL=[];L.forEach(function(im){if(im&&!(TXR.get(im)>0))texZu(im)})}
 function texAlle(o,lim){o.traverse(function(q){if(!q.material)return;(Array.isArray(q.material)?q.material:[q.material]).forEach(function(m){TXK.forEach(function(k){if(m[k])texFit(m[k],lim)})})})}
-LD.load=function(u,ok,pr,er){return LD0(u,function(g){if(u.indexOf('w/t/')!==0)texAlle(g.scene,/^l\/|^v\/(fahrer|fotograf|m\/pesag|m\/rh_|m\/sg_nah|m\/platzring|m\/dom|m\/ph_street)/.test(u)?1024:512);ok(g)},pr,er)};
+LD.load=function(u,ok,pr,er){return LD0(u,function(g){/* Rathaus nah: die Fassadenfarbe bleibt auch auf dem Telefon in 2K (Relief und Rauheit weiter 1K) */if(u.indexOf('v/m/rh_nah')===0)g.scene.traverse(function(q){if(q.material)(Array.isArray(q.material)?q.material:[q.material]).forEach(function(m){if(m.map){texFit(m.map,2048);m.map.anisotropy=ANI}})});if(u.indexOf('w/t/')!==0)texAlle(g.scene,/^l\/|^v\/(fahrer|fotograf|m\/pesag|m\/rh_|m\/sg_nah|m\/platzring|m\/dom|m\/ph_street)/.test(u)?1024:512);ok(g)},pr,er)};
 function mat(m){var n=m.name||m.uuid,c=MC[n];if(c){TXK.forEach(function(k){if(m[k]&&m[k]!==c[k]){if(!ZUL.length)setTimeout(zuLeer,0);ZUL.push(m[k].image);m[k].dispose()}});m.dispose();return c}TXK.forEach(function(k){if(m[k])texFit(m[k],512)});
   if(m.transparent){m.depthWrite=false;m.envMapIntensity=1.3}else m.envMapIntensity=0.55;
   /* Stadtweite Grundflächen liegen deckungsgleich unter dem feineren Pflaster: nach hinten schieben, sonst flimmert der Boden. Dazu Belag aus Weltkoordinaten und einzelne Pfützen. */
