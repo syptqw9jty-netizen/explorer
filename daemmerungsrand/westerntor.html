@@ -821,11 +821,51 @@ function kinH(lz){if(lz>-12.094)return 0;if(lz<-41.39)return -1.7;return -0.06*M
 function kinOcc(){var i=Math.floor((KIN.cx+1250)/250),j=Math.floor((KIN.cz+1350)/250),t=occT(i,j),h=hoeT(i,j),u,v,x,z,b=KIN.bb,p,q=kinW(0,4),g;if(!t.d||!h.d)return;KIN.oc=1;g=h.d[(Math.floor((q[1]+1350)*2)-j*500)*500+Math.floor((q[0]+1250)*2)-i*500];KIN.g=g;
   for(v=0;v<500;v++){z=(j*500+v+0.5)/2-1350;if(z<b[2]||z>b[3])continue;for(u=0;u<500;u++){x=(i*500+u+0.5)/2-1250;if(x<b[0]||x>b[1])continue;if(imP(KIN.fp,x,z)){p=kinL(x,z);t.d[v*500+u]=kinGeh(p[0],p[1])?0:1;h.d[v*500+u]=g}else if(kinSchnitt(x,z)){t.d[v*500+u]=0;h.d[v*500+u]=g}}}}
 var KINI=/^(Klappfuß|Sitzkissen|Lehnenholz|Polsterlehne|Armlehne|Jacke|Hemdkragen|Kopf|Frisur|Nase|Oberschenkel|Unterschenkel|Schuh|Ärmel|Hand|Filzkrempe|Filzhut|Hose|Bodenstufe|Gang|Paneelsteg|Wandleuchte|Akustikfeld|Lichtpfeiler|Messingfuge|Vorhangfalte|Terrazzoboden|Kartenblock|Kassettenfüllung|Furnierfüllung)/;
+/* Ausbau des Saals ohne fremdes Material (eigene Annäherung, nicht belegt): Decke mit Unterzügen und indirekter Lichtvoute, Wandfelder mit Stoffbespannung
+   zwischen Lisenen, Gesims, Reihenschilder am Gang, Samt für die Polster, gemusterter Läufer. Alles in Saalkoordinaten des Moduls. */
+function kinCv(w,h,f){var c=document.createElement('canvas');c.width=w;c.height=h;f(c.getContext('2d'),w,h);var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=ANI;t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+function kinRausch(g,w,h,n,a,col){for(var i=0;i<n;i++){g.fillStyle='rgba('+col+','+(Math.random()*a)+')';g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*2,1+Math.random()*2)}}
+function kinAusbau(IN,R){var B=function(w,h,d,m,x,y,z){var o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.receiveShadow=true;IN.add(o);return o},i,z,
+    putz=new THREE.MeshStandardMaterial({color:0xe9dfc8,roughness:0.92,envMapIntensity:0.3,emissive:0x2a2418}),
+    stuck=new THREE.MeshStandardMaterial({color:0xf2e8d2,roughness:0.85,envMapIntensity:0.3,emissive:0x3a3122}),
+    gold=new THREE.MeshStandardMaterial({color:0xb08a46,roughness:0.42,metalness:0.75,envMapIntensity:0.9,emissive:0x1d150a}),
+    licht=new THREE.MeshStandardMaterial({color:0xfff2d6,emissive:0xffdc9c,emissiveIntensity:1.6,roughness:0.6}),
+    decke=new THREE.MeshStandardMaterial({roughness:0.95,envMapIntensity:0.2,emissive:0xffffff,emissiveIntensity:0.55,
+      map:kinCv(64,512,function(g,w,h){var gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#fff0cf');gr.addColorStop(0.22,'#d9cbb0');gr.addColorStop(0.5,'#c9bba0');gr.addColorStop(0.78,'#d9cbb0');gr.addColorStop(1,'#fff0cf');g.fillStyle=gr;g.fillRect(0,0,w,h);kinRausch(g,w,h,2500,0.05,'60,50,35')})}),
+    stoff=new THREE.MeshStandardMaterial({roughness:0.96,envMapIntensity:0.15,emissive:0xffffff,emissiveIntensity:0.12,
+      map:kinCv(256,512,function(g,w,h){g.fillStyle='#5c1f1c';g.fillRect(0,0,w,h);for(var y=0;y<h;y+=64)for(var x=0;x<w;x+=64){var cx=x+32+((y/64)%2?32:0),cy=y+32;g.strokeStyle='rgba(176,128,72,.38)';g.lineWidth=2;g.beginPath();g.moveTo(cx,cy-24);g.quadraticCurveTo(cx+18,cy,cx,cy+24);g.quadraticCurveTo(cx-18,cy,cx,cy-24);g.stroke();g.beginPath();g.arc(cx,cy,4,0,7);g.stroke()}kinRausch(g,w,h,9000,0.10,'20,6,6')})}),
+    schild=kinCv(512,256,function(g,w,h){g.fillStyle='#2a1f14';g.fillRect(0,0,w,h);g.fillStyle='#d8b66a';g.font='bold 40px Georgia,serif';g.textAlign='center';g.textBaseline='middle';for(var k=0;k<32;k++)g.fillText(String(k+1),(k%8)*64+32,Math.floor(k/8)*64+34)});
+  schild.wrapS=schild.wrapT=THREE.ClampToEdgeWrapping;
+  /* Decke: tiefer gesetzte Seitenstreifen mit Voute, helles Mittelfeld, Unterzüge */
+  var dk=new THREE.Mesh(new THREE.PlaneGeometry(17.6,35.4),decke);dk.rotation.x=Math.PI/2;dk.position.set(0,7.35,-27.0);IN.add(dk);
+  [-1,1].forEach(function(sd){B(3.2,0.32,35.6,putz,sd*10.4,6.72,-27.0);B(0.1,0.42,35.6,stuck,sd*8.82,6.98,-27.0);var l=B(0.06,0.05,35.4,licht,sd*8.9,7.2,-27.0);l.castShadow=false;
+    B(0.22,0.18,35.6,stuck,sd*11.9,6.45,-27.0);/* Gesims */B(0.12,0.08,35.6,gold,sd*11.82,6.32,-27.0)});
+  for(z=-12.6;z>-44;z-=4.6){B(17.6,0.3,0.42,stuck,0,7.18,z);B(17.6,0.05,0.5,gold,0,7.02,z)}
+  /* Wandfelder: Lisenen mit Stoffbespannung dazwischen */
+  for(i=0;i<8;i++){z=-12.6-i*4.6;[-1,1].forEach(function(sd){var fl=-1.5+0.06*Math.min(28,(-12.094-z)/1.01),h=6.25-Math.max(1.9,fl+3.5);
+      B(0.3,6.3-fl-1.8,0.46,putz,sd*11.5,(6.3+fl+1.8)/2,z);
+      if(z-2.3>-44.2){var f=new THREE.Mesh(new THREE.PlaneGeometry(3.9,4.1),stoff);f.position.set(sd*11.6,4.2,z-2.3);f.rotation.y=-sd*Math.PI/2;f.receiveShadow=true;IN.add(f);
+        B(0.06,0.06,3.95,gold,sd*11.57,2.13,z-2.3);B(0.06,0.06,3.95,gold,sd*11.57,6.27,z-2.3)}})}
+  /* Reihenschilder an beiden Gangseiten, vorn beginnt Reihe 1 */
+  var zs={};KIN.S.forEach(function(S){zs[S[1].toFixed(2)]=1});var Z=Object.keys(zs).map(Number).sort(function(a,b){return a-b}),pos=[],uv=[],ix=[],n=0;
+  Z.forEach(function(zz,k){if(k>31)return;var u0=(k%8)/8,v0=1-Math.floor(k/8+1)/4,y=kinH(zz)+0.86;[-1,1].forEach(function(sd){var x=sd*1.02,w=0.11,hh=0.07,d=sd;pos.push(x,y-hh,zz-w*d, x,y-hh,zz+w*d, x,y+hh,zz+w*d, x,y+hh,zz-w*d);uv.push(u0,v0,u0+1/8,v0,u0+1/8,v0+0.25,u0,v0+0.25);ix.push(n,n+1,n+2,n,n+2,n+3);n+=4})});
+  var sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));sg.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));sg.setIndex(ix);sg.computeVertexNormals();
+  IN.add(new THREE.Mesh(sg,new THREE.MeshStandardMaterial({map:schild,roughness:0.5,metalness:0.3,emissive:0xffffff,emissiveMap:schild,emissiveIntensity:0.35,side:THREE.DoubleSide})));
+  /* Polster: Samt; Läufer: Muster */
+  R.traverse(function(o){if(!o.material)return;var m=o.material;
+    if(/^Gang/.test(o.name)&&!o._kx){o._kx=1;m=o.material=m.clone();m._kx=1;m.map=kinCv(64,256,function(g,w,h){g.fillStyle='#5a1716';g.fillRect(0,0,w,h);g.fillStyle='#b08a46';g.fillRect(4,0,3,h);g.fillRect(w-7,0,3,h);for(var y=8;y<h;y+=32){g.save();g.translate(w/2,y+8);g.rotate(Math.PI/4);g.strokeStyle='rgba(176,138,70,.6)';g.lineWidth=2;g.strokeRect(-6,-6,12,12);g.restore()}kinRausch(g,w,h,1800,0.15,'20,4,4')});m.color.setRGB(1,1,1);m.emissiveMap=m.map;m.emissive.setRGB(0.15,0.13,0.12);m.needsUpdate=true;return}
+    if(m._kx)return;m._kx=1;
+    if(m.name==='stoff'){m.map=kinCv(128,128,function(g,w,h){g.fillStyle='#6a1d1e';g.fillRect(0,0,w,h);kinRausch(g,w,h,5000,0.22,'25,4,6');kinRausch(g,w,h,1500,0.12,'200,90,90')});m.color.setRGB(1,1,1);m.roughness=0.98;m.emissiveMap=m.map;m.emissive.setRGB(0.16,0.13,0.13);m.needsUpdate=true}
+    else if(m.name==='licht')KIN.lmat=(KIN.lmat||[]).concat([m])});
+  KIN.voute=licht;KIN.decke=decke}
+/* Saallicht: beim Film dunkler (Belichtung), Leinwand bleibt hell */
+function kinFrame(){var ziel=KIN.film&&KIN.saal?0.3:0.68,e=renderer.toneMappingExposure;if(Math.abs(e-ziel)<0.004&&!KIN.fz)return;KIN.fz=Math.abs(e-ziel)>=0.004;e+=(ziel-e)*0.08;renderer.toneMappingExposure=e;var k=(e-0.3)/0.38;
+  if(KIN.schirm&&KIN.film)KIN.schirm.emissiveIntensity=0.68/e;if(KIN.voute)KIN.voute.emissiveIntensity=0.5+1.1*k;if(KIN.decke)KIN.decke.emissiveIntensity=0.2+0.35*k;if(KIN.lmat)KIN.lmat.forEach(function(m){m.emissiveIntensity=0.35+1.05*k})}
 function kinBau(root){var G={},k,e,o,i,R=new THREE.Group(),IN=new THREE.Group(),weg=[],M=new THREE.Matrix4();root.updateMatrixWorld(true);
-  root.traverse(function(o){if(!o.isMesh)return;var m=o.material;if(!m._k){m._k=1;m.envMapIntensity=0.4;if(m.name==='licht'){m.emissive=new THREE.Color(1,0.86,0.6);m.emissiveIntensity=1.4}else if(m.name==='schirm'){KIN.schirm=m;m.emissive=new THREE.Color(0.5,0.48,0.42)}else if(m.emissive){if(m.map){m.emissiveMap=m.map;m.emissive.setRGB(0.3,0.27,0.23)}else m.emissive.copy(m.color).multiplyScalar(0.3);if(m.map)m.map.anisotropy=ANI}}
+  root.traverse(function(o){if(!o.isMesh)return;var m=o.material;if(!m._k){m._k=1;m.envMapIntensity=0.4;if(m.name==='licht'){m.emissive=new THREE.Color(1,0.86,0.6);m.emissiveIntensity=1.4}else if(m.name==='stoff'||m.name==='rot'){}else if(m.name==='schirm'){KIN.schirm=m;m.emissive=new THREE.Color(0.5,0.48,0.42)}else if(m.emissive){if(m.map){m.emissiveMap=m.map;m.emissive.setRGB(0.3,0.27,0.23)}else m.emissive.copy(m.color).multiplyScalar(0.3);if(m.map)m.map.anisotropy=ANI}}
     k=o.geometry.uuid+'|'+m.uuid;(G[k]=G[k]||{g:o.geometry,m:m,L:[],n:o.name}).L.push(o.matrixWorld.clone())});
   for(k in G){e=G[k];var inn=KINI.test(e.n),ziel=inn?IN:R;if(e.L.length>1){o=new THREE.InstancedMesh(e.g,e.m,e.L.length);for(i=0;i<e.L.length;i++)o.setMatrixAt(i,e.L[i]);o.instanceMatrix.needsUpdate=true;o.frustumCulled=false}else{o=new THREE.Mesh(e.g,e.m);o.applyMatrix4(e.L[0]);o.castShadow=!inn&&!e.m.transparent}o.receiveShadow=!e.m.transparent;o.name=e.n;ziel.add(o)}
-  R.add(IN);KIN.inn=IN;return R}
+  R.add(IN);KIN.inn=IN;try{kinAusbau(IN,R)}catch(e){console.error(e)}R.traverse(function(o){if(/^Saaldecke/.test(o.name))o.visible=false});return R}
 /* Publikum: statt der einfachen Platzhalter des Moduls sitzen Figuren des Spiels im Saal. Je Variante wird eine Figur einmal in die Sitzhaltung gebracht,
    ihre Gestalt fest ausgerechnet (ohne Knochen) und dann als Instanz auf die belegten Plätze gesetzt – so kosten viele Zuschauer kaum Rechenzeit. */
 var KINF=/^(Jacke|Hemdkragen|Kopf|Frisur|Nase|Oberschenkel|Unterschenkel|Schuh|Ärmel|Hand|Filzkrempe|Filzhut|Hose)/;
@@ -1291,10 +1331,10 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
     var CDM=window.innerWidth<window.innerHeight?7.8:6.6,t=CDM,q;for(q=0.6;q<=CDM;q+=0.35){if(!canWalk(cT.x-fwd.x*q,cT.z-fwd.z*q)){t=Math.max(0.6,q-0.45);break}}if(OP.on)t=Math.min(t,3.4);cD+=(t-cD)*Math.min(1,dt*(t<cD?(OP.on?2.5:20):3));
     camera.position.set(cT.x-fwd.x*cD,Math.max(me.y+0.3,cT.y-fwd.y*cD),cT.z-fwd.z*cD);
     if(kPh==='in'||kPh==='out'){var ke=kPh==='in'?kT:1-kT;ke=Math.max(0,Math.min(1,ke));ke=ke*ke*(3-2*ke);camera.position.x+=(me.x-camera.position.x)*ke;camera.position.y+=(me.y+1.72-camera.position.y)*ke;camera.position.z+=(me.z-camera.position.z)*ke}}
-  else camera.position.set(me.x,me.y+1.72+Math.sin(bob)*0.022,me.z);
+  else camera.position.set(me.x,me.y+(KIN.sitz?1.2:1.72)+Math.sin(bob)*0.022,me.z);
   camera.rotation.set(me.pitch,me.yaw,0,'YXZ');SU.uT.value=(now*0.001)%4000;if(KEG&&KEG.visible){var kp=0.5+0.5*Math.sin(now/420);KEG.r.scale.setScalar(1+kp*0.25);KEG.r.material.opacity=0.8-kp*0.4}shadowAt(me.x,me.z);if(TR.length&&Math.hypot(TR[0].x-me.x,TR[0].z-me.z)<120||ride)renderer.shadowMap.needsUpdate=(fN%3===0)||renderer.shadowMap.needsUpdate;
   if(OP.dr&&OP.ci&&OP.kc>0.004&&view==='schulter'&&!ride&&isFinite(OP.cp.x+OP.cp.z+OP.cl.x+OP.cl.z)&&canWalk(OP.cp.x,OP.cp.z)){var ke=OP.kc*OP.kc*(3-2*OP.kc),qa=camera.quaternion.clone(),pa=camera.position.clone();camera.position.copy(OP.cp);camera.lookAt(OP.cl);var qb=camera.quaternion.clone();camera.position.lerpVectors(pa,OP.cp,ke);camera.quaternion.copy(qa).slerp(qb,ke);var hk=window.innerWidth<window.innerHeight,f0=hk?72:58,f1=hk?46:36;camera.fov=f0+(f1-f0)*ke;camera.updateProjectionMatrix();OP.fov=true;FILL.intensity=0.75*ke;FILL.position.copy(camera.position);FILL.target.position.copy(OP.cl)}else if(OP.fov){OP.fov=false;FILL.intensity=0;resize()}
-  if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}if(!window.__nr||!((window.__nf=(window.__nf||0)+1)%window.__nr))if(SYN.in&&SYN.sc){synBild();renderer.render(SYN.sc,SYN.cam)}else renderer.render(scene,camera);if(snap){snap=false;try{develop()}catch(e){window.__err=(window.__err||[]);window.__err.push('foto: '+e.message)}}}
+  if(KIN.o)kinFrame();if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}if(!window.__nr||!((window.__nf=(window.__nf||0)+1)%window.__nr))if(SYN.in&&SYN.sc){synBild();renderer.render(SYN.sc,SYN.cam)}else renderer.render(scene,camera);if(snap){snap=false;try{develop()}catch(e){window.__err=(window.__err||[]);window.__err.push('foto: '+e.message)}}}
 /* Ton schon beim Start: erlaubt der Browser es ohne Tippen (z. B. direkt aus dem Menü heraus), beginnt „The Square Opens“ sofort an der Stelle, an der es im Menü lief; sonst mit der ersten Berührung */
 (function(){try{var p0=+(sessionStorage.getItem('ab32-mupos')||0);if(p0>0)MU.pos.platz=p0}catch(e){}try{var t=new Audio('a/still.mp3');t.volume=0.01;var p=t.play();if(p&&p.then)p.then(function(){try{t.pause()}catch(e){}tonInit()}).catch(function(){})}catch(e){}})();
 requestAnimationFrame(frame);
