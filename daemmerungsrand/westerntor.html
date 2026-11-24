@@ -150,11 +150,14 @@ button.g:active,a.g:active{background:#d9caa9;color:var(--druck)}
 #go{background:var(--aktion);color:var(--aktion-text);border-radius:0;border-left:5px solid var(--fokus);padding:11px 26px 11px 20px;min-height:48px;font:600 26px/1.15 var(--schrift);letter-spacing:0}#go:active{background:#d9caa9}
 #hint{font:400 14px/1.45 var(--schrift);color:var(--text-leise)}
 #tt{left:0;right:auto;width:46%;top:auto;bottom:calc(14px + env(safe-area-inset-bottom));font:500 14px/1.3 var(--schrift);letter-spacing:.12em;color:var(--text);text-shadow:0 1px 6px #000}
+/* Vignette und feines Korn über dem Spielbild (unter der Bedienung) */
+#vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(20,15,12,0) 52%,rgba(20,15,12,.34) 86%,rgba(20,15,12,.62) 100%)}
+#korn{position:fixed;inset:-64px;z-index:1;pointer-events:none;opacity:.05;background-size:128px 128px;animation:korn .5s steps(4) infinite}@keyframes korn{0%{transform:translate(0,0)}25%{transform:translate(-31px,17px)}50%{transform:translate(23px,-41px)}75%{transform:translate(-47px,-9px)}100%{transform:translate(0,0)}}
 #dreh{background:var(--flaeche-fest);color:var(--text);font:600 22px/1.2 var(--schrift);letter-spacing:0;text-transform:none}#dreh img{width:112px;height:112px;border-radius:22px}#dreh i{border-color:var(--text)}
 @media(max-height:480px){#hint{display:block}}
 @media(max-height:350px){#hint{display:none}#sub{font-size:18px}#wahl button{font-size:17px;padding-top:8px;padding-bottom:8px}}
 </style></head><body>
-<canvas id="cv"></canvas>
+<canvas id="cv"></canvas><div id="vig"></div><div id="korn"></div>
 <a class="g" id="back" href="./">Menü</a>
 <select class="g" id="ort"></select>
 <div id="lbl">Paderborn 1933</div>
@@ -175,10 +178,12 @@ if(MOB||navigator.maxTouchPoints>0)document.body.classList.add('touch');
 var renderer;try{renderer=new THREE.WebGLRenderer({canvas:$('cv'),antialias:true,powerPreference:'high-performance'})}catch(e){$('pt').textContent='Dieses Gerät unterstützt kein WebGL.';return}
 /* ein Modus: die Auflösung regelt sich selbst nach der Bildrate */
 var PRMAX=Math.min(window.devicePixelRatio||1,MOB?2:2),PRMIN=MOB?0.85:1,PR=Math.min(PRMAX,MOB?1.4:1.75);
-renderer.setPixelRatio(PR);renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.62;
+renderer.setPixelRatio(PR);renderer.outputEncoding=THREE.sRGBEncoding;/* Bildstimmung „diesiger Vormittag“: Filmkurve, danach entsättigt, härterer Kontrast, kühle Schatten und warme Lichter, Schwarz leicht angehoben. Liegt in der Tonwertstufe jedes Materials – kein Zwischenbild, kein zusätzlicher Speicher, die Kantenglättung bleibt. */
+THREE.ShaderChunk.tonemapping_pars_fragment=THREE.ShaderChunk.tonemapping_pars_fragment.replace('vec3 CustomToneMapping( vec3 color ) { return color; }','vec3 CustomToneMapping(vec3 color){color=ACESFilmicToneMapping(color);float l=dot(color,vec3(.2126,.7152,.0722));color=mix(vec3(l),color,.70);color=mix(color,color*color*(3.-2.*color),.32);color*=mix(vec3(.90,.97,1.07),vec3(1.07,1.0,.88),smoothstep(0.,.55,l));color=color*.965+.012;return clamp(color,0.,1.);}');
+renderer.toneMapping=THREE.CustomToneMapping;renderer.toneMappingExposure=0.68;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
-var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,1,0.3,1400),SUN=new V3(-0.860,0.316,0.401).normalize();   /* März 16:30: Sonne 18° hoch, Azimut 245° */
-scene.fog=new THREE.FogExp2(0x9fb2c8,0.0026);
+var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,1,0.3,1400),SUN=new V3(0.908,0.259,0.330).normalize();   /* Frühjahrsvormittag: Sonne 15° hoch im Ostsüdosten, hinter Dunst */
+scene.fog=new THREE.FogExp2(new THREE.Color(0.46,0.44,0.41),0.0050);
 function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=kam?(w<h?58:44):(w<h?72:58);camera.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();
 /* Himmel: Verlauf, Sonne, Dunst, ziehende Wolken; daraus auch das Umgebungslicht */
@@ -191,16 +196,22 @@ var SU={uSun:{value:SUN},uN:{value:NT},uT:{value:0}},SKM=new THREE.ShaderMateria
   'float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return texture2D(uN,(i+f+.5)/64.).r;}',
   'float fbm(vec2 p){return n2(p)*.5+n2(p*2.03+7.3)*.25+n2(p*4.11+3.1)*.125+n2(p*8.27+1.7)*.0625+n2(p*16.9)*.03;}',
   'void main(){vec3 d=normalize(vD);float h=max(d.y,0.),sd=max(dot(d,uSun),0.);',
-  'vec3 c=mix(vec3(.56,.70,.88),vec3(.11,.27,.66),pow(h,.42));',
-  'c=mix(c,vec3(1.,.80,.56),pow(sd,5.)*.45*(1.-h*.9));c+=vec3(1.,.86,.62)*pow(sd,160.)*.8;c+=vec3(1.,.95,.86)*smoothstep(.99988,.99996,sd)*60.;',
-  'if(d.y>.015){vec2 u=d.xz/(d.y+.14)*1.6+uT*vec2(.012,.005);float f=fbm(u)+.12*fbm(u*3.7);float cov=smoothstep(.50,.70,f),den=smoothstep(.55,.95,f);',
-  'vec3 cl=mix(vec3(1.,.94,.84)*1.35,vec3(.44,.50,.62),den*.8);cl=mix(cl,vec3(1.,.84,.62)*1.7,pow(sd,3.)*.55*(1.-den));c=mix(c,cl,cov*smoothstep(.015,.16,d.y));}',
-  'if(d.y<0.)c=mix(vec3(.50,.58,.68),vec3(.20,.19,.18),min(1.,-d.y*7.));',
+  'vec3 c=mix(vec3(.50,.48,.45),vec3(.23,.26,.31),pow(h,.5));',
+  'c=mix(c,vec3(1.,.82,.60),pow(sd,3.)*.55*(1.-h*.8));c+=vec3(1.,.88,.68)*pow(sd,60.)*.9;c+=vec3(1.,.93,.80)*smoothstep(.9990,.99985,sd)*5.;',
+  'if(d.y>.015){vec2 u=d.xz/(d.y+.14)*1.6+uT*vec2(.012,.005);float f=fbm(u)+.12*fbm(u*3.7);float cov=smoothstep(.34,.60,f),den=smoothstep(.42,.86,f);',
+  'vec3 cl=mix(vec3(.74,.71,.66),vec3(.24,.25,.27),den*.9);cl=mix(cl,vec3(1.,.86,.66)*1.5,pow(sd,3.)*.6*(1.-den*.7));c=mix(c,cl,cov*smoothstep(.015,.2,d.y));}c=mix(c,vec3(.46,.44,.41),exp(-h*11.));',
+  'if(d.y<0.)c=vec3(.46,.44,.41);',
   'gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}'].join('\n')});
 var dome=new THREE.Mesh(new THREE.SphereGeometry(1,32,16),SKM);dome.frustumCulled=false;dome.renderOrder=999;scene.add(dome);
 (function(){var s2=new THREE.Scene(),d2=new THREE.Mesh(dome.geometry,SKM);d2.frustumCulled=false;s2.add(d2);var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(s2,0,0.1,10).texture;pm.dispose()})();
-var sun=new THREE.DirectionalLight(0xffdcb2,3.2);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);var sc=sun.shadow.camera,SB=95;sc.left=-SB;sc.right=SB;sc.top=SB;sc.bottom=-SB;sc.near=1;sc.far=520;sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.14;scene.add(sun);scene.add(sun.target);
-scene.add(new THREE.HemisphereLight(new THREE.Color(0.52,0.66,0.98),new THREE.Color(0.40,0.34,0.28),0.42));
+var sun=new THREE.DirectionalLight(0xffdfba,2.25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);var sc=sun.shadow.camera,SB=95;sc.left=-SB;sc.right=SB;sc.top=SB;sc.bottom=-SB;sc.near=1;sc.far=520;sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.14;scene.add(sun);scene.add(sun.target);
+scene.add(new THREE.HemisphereLight(new THREE.Color(0.60,0.62,0.68),new THREE.Color(0.36,0.32,0.28),0.74));
+/* Dunstschwaden: wenige große, weiche Flächen, die bodennah um den Standort treiben */
+var DS=[];(function(){var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d'),r=g.createRadialGradient(64,64,4,64,64,64);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(0.5,'rgba(255,255,255,.42)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,128,128);var t=new THREE.CanvasTexture(c),i;
+  for(i=0;i<(MOB?9:14);i++){var m=new THREE.SpriteMaterial({map:t,color:new THREE.Color(0.50,0.48,0.45),transparent:true,opacity:0,depthWrite:false,fog:false}),sp=new THREE.Sprite(m);sp.renderOrder=5;sp.visible=false;scene.add(sp);DS.push({o:sp,a:i*2.4,r:0,t:-1,op:0})}})();
+function dunstStep(dt,x,z){for(var i=0;i<DS.length;i++){var d=DS[i];if(d.t<0||Math.hypot(d.o.position.x-x,d.o.position.z-z)>150){d.a+=2.1+hsh(i,d.a)*2;d.r=26+hsh(i+3,d.a)*90;var sz=28+hsh(i+7,d.a)*34;d.o.scale.set(sz*1.7,sz*0.42,1);d.o.position.set(x+Math.sin(d.a)*d.r,1.2+hsh(i+9,d.a)*3.2+sz*0.1,z+Math.cos(d.a)*d.r);d.t=0;d.op=0.10+hsh(i+5,d.a)*0.13;d.o.visible=true}
+    d.t+=dt;d.o.position.x+=dt*0.55;d.o.position.z+=dt*0.22;var n=Math.hypot(d.o.position.x-x,d.o.position.z-z);d.o.material.opacity=d.op*Math.min(1,d.t/4)*Math.min(1,Math.max(0,(n-9)/22))}}
+(function(){var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d'),im=g.createImageData(128,128),d=im.data,i,v;for(i=0;i<d.length;i+=4){v=Math.random()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=255}g.putImageData(im,0,0);try{$('korn').style.backgroundImage='url('+c.toDataURL('image/png')+')'}catch(e){}})();
 var shC=new V3(1e9,0,0);function shadowAt(x,z){if(Math.hypot(x-shC.x,z-shC.z)<28)return;shC.set(x,0,z);sun.target.position.set(x,0,z);sun.position.set(x+SUN.x*220,SUN.y*220,z+SUN.z*220);sun.target.updateMatrixWorld();renderer.shadowMap.needsUpdate=true}
 /* Stadt laden */
 var nav=null,obst=[],me={x:-20,z:16,y:0,yaw:0,pitch:0},started=false,tram=null;
@@ -218,7 +229,7 @@ fetch('w/stadt_nav.json').then(function(r){return r.json()}).then(function(n){de
   n.orte.forEach(function(p,i){var o=document.createElement('option');o.value=i;o.textContent=p.name;$('ort').appendChild(o)});nav=n;$('ort').value=1;place(n.orte[1])}).catch(function(){});
 $('ort').addEventListener('change',function(){if(nav)place(nav.orte[+this.value]);this.blur()});
 /* Stadt in Kartenkacheln: es wird nur geladen, was in der Nähe liegt; Entferntes wird wieder freigegeben */
-var TL=[],MC={},busy=0,LD=new THREE.GLTFLoader(),LD0=LD.load.bind(LD),ANI=renderer.capabilities.getMaxAnisotropy?Math.min(4,renderer.capabilities.getMaxAnisotropy()):1,ready=false,R_LOAD=MOB?440:700,R_DROP=MOB?640:1000;
+var TL=[],MC={},busy=0,LD=new THREE.GLTFLoader(),LD0=LD.load.bind(LD),ANI=renderer.capabilities.getMaxAnisotropy?Math.min(4,renderer.capabilities.getMaxAnisotropy()):1,ready=false,R_LOAD=MOB?360:540,R_DROP=MOB?540:800;
 /* Speicher: Bilder werden nach dem Hochladen zur Grafikkarte freigegeben (sonst liegt jede Textur doppelt im Speicher); auf dem Handy werden Gebäudetexturen auf 512 begrenzt, Figuren und Fahrzeuge bleiben voll */
 var TXK=['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','alphaMap'],TX1=document.createElement('canvas');TX1.width=TX1.height=1;
 function texZu(im){try{if(im&&im.close)im.close();else if(im&&im.getContext&&im!==TX1)im.width=im.height=1}catch(e){}}
@@ -248,13 +259,13 @@ var RAS=null,WT3=[];
 function wand(m,art){if(!WT3[art])WT3[art]=gtex(['v/putz_d.jpg','v/ziegel_d.jpg','v/dach_d.jpg'][art],false);var t=WT3[art],sc=[0.31,0.42,0.5][art],ck='wand'+art;m.customProgramCacheKey=function(){return ck};m.roughness=Math.max(m.roughness,art===2?0.7:0.88);
   m.onBeforeCompile=function(sh){sh.uniforms.uPN={value:NT};sh.uniforms.uWT={value:t};
     sh.vertexShader='varying vec3 vWq;varying vec3 vWn;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nvWq=(modelMatrix*vec4(transformed,1.)).xyz;vWn=normalize(mat3(modelMatrix)*objectNormal);');
-    sh.fragmentShader='varying vec3 vWq;varying vec3 vWn;uniform sampler2D uPN;uniform sampler2D uWT;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nvec3 an=abs(vWn);vec2 wu=an.y>.6?vWq.xz:(an.x>an.z?vWq.zy:vWq.xy);vec3 wt=texture2D(uWT,wu*'+sc.toFixed(2)+').rgb;float wl=dot(wt,vec3(.333));float wm=texture2D(uPN,wu*.021).r*.6+texture2D(uPN,wu*.11+.3).r*.4;diffuseColor.rgb*=mix(.7,1.28,wl)*mix(.84,1.12,wm);')};m.needsUpdate=true}
+    sh.fragmentShader='varying vec3 vWq;varying vec3 vWn;uniform sampler2D uPN;uniform sampler2D uWT;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\nvec3 an=abs(vWn);vec2 wu=an.y>.6?vWq.xz:(an.x>an.z?vWq.zy:vWq.xy);vec3 wt=texture2D(uWT,wu*'+sc.toFixed(2)+').rgb;float wl=dot(wt,vec3(.333));float wm=texture2D(uPN,wu*.021).r*.6+texture2D(uPN,wu*.11+.3).r*.4;diffuseColor.rgb*=mix(.7,1.28,wl)*mix(.70,1.08,wm)*vec3'+['(.90,.86,.79)','(.90,.84,.79)','(.80,.80,.82)'][art]+';if(an.y<.6){float so=1.-smoothstep(0.,2.4+wm*2.2,vWq.y);float sr=smoothstep(.52,.82,texture2D(uPN,vec2((an.x>an.z?vWq.z:vWq.x)*.33,vWq.y*.017)).r);float ru=smoothstep(.56,.8,texture2D(uPN,wu*.047+.61).r);diffuseColor.rgb*=mix(1.,.66,so*.85)*mix(1.,.80,sr*.8)*mix(1.,.84,ru);}')};m.needsUpdate=true}
 /* Bodenwirkung: Belag aus Weltkoordinaten (sc), großflächige Hell-Dunkel-Tönung gegen das Kachelmuster, Wiese mit Erdstellen (t2), einzelne Pfützen (pud) */
 function gfx(m,o){var ck='gfx'+(o.sc||0)+'_'+(o.pud?1:0)+'_'+(o.t2?1:0);m.customProgramCacheKey=function(){return ck};m.onBeforeCompile=function(sh){sh.uniforms.uPN={value:NT};if(o.t2)sh.uniforms.uT2={value:o.t2};
     sh.vertexShader='varying vec2 vWp;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nvWp=(modelMatrix*vec4(transformed,1.)).xz;'+(o.sc?'\n#ifdef USE_UV\nvUv=vWp*'+o.sc.toFixed(4)+';\n#endif':''));
-    var f='#include <map_fragment>\nfloat mc=texture2D(uPN,vWp*.0031).r*.6+texture2D(uPN,vWp*.019+.5).r*.4;diffuseColor.rgb*=mix(.76,1.18,mc);';
+    var f='#include <map_fragment>\nfloat mc=texture2D(uPN,vWp*.0031).r*.6+texture2D(uPN,vWp*.019+.5).r*.4;diffuseColor.rgb*=mix(.66,1.06,mc)*vec3(.94,.91,.87);';
     if(o.t2)f+='float mk=smoothstep(.44,.6,texture2D(uPN,vWp*.0078+.21).r*.62+texture2D(uPN,vWp*.06).r*.38);vec3 e2=texture2D(uT2,vWp*.21).rgb;diffuseColor.rgb=mix(diffuseColor.rgb,e2*e2*vec3(.95,.86,.74),mk);';
-    f+='float pd='+(o.pud?'smoothstep(.635,.685,texture2D(uPN,vWp*.0121).r*.72+texture2D(uPN,vWp*.047+.37).r*.28)':'0.')+';diffuseColor.rgb*=mix(1.,.5,pd);';
+    f+='float pd='+(o.pud?'smoothstep(.69,.73,texture2D(uPN,vWp*.0121).r*.72+texture2D(uPN,vWp*.047+.37).r*.28)':'0.')+';diffuseColor.rgb*=mix(1.,.5,pd);';
     sh.fragmentShader='varying vec2 vWp;uniform sampler2D uPN;'+(o.t2?'uniform sampler2D uT2;':'')+'\n'+sh.fragmentShader.replace('#include <map_fragment>',f).replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(roughnessFactor,.03,pd);').replace('#include <normal_fragment_maps>','#include <normal_fragment_maps>\nnormal=normalize(mix(normal,normalize(vNormal),pd));')};m.needsUpdate=true}
 function ground(m,d,nrm,sc,col,lay,o){m.map=gtex(d,true);if(nrm){m.normalMap=gtex(nrm);m.normalScale=new THREE.Vector2(1,1)}m.color.setHex(col);m.roughness=o.pud?0.6:0.93;m.metalness=0;m.userData.flat=1;m.polygonOffset=true;m.polygonOffsetFactor=lay*2;m.polygonOffsetUnits=lay*24;if(o.pud)m.envMapIntensity=0.9;gfx(m,o)}
 /* Dom: das Gebäude aus dem früheren 1622-Stand, auf den echten Grundriss gesetzt. An dieser Stelle wird der einfache Baukörper der Stadtkulisse ausgeblendet (alle Dreiecke über dem Boden, deren Mitte im Dom-Umriss liegt). */
@@ -937,7 +948,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
       lookIdle+=dt;if(view==='schulter'&&hsp>0.6&&lookIdle>0.7&&!tL&&!drag){var dy=Math.atan2(Math.sin(hyaw+Math.PI-me.yaw),Math.cos(hyaw+Math.PI-me.yaw));me.yaw+=dy*Math.min(1,dt*1.5)*Math.min(1,Math.abs(fx)*1.5+0.2);me.pitch+=(-0.2-me.pitch)*Math.min(1,dt*0.8)}}
     hsp+=((dt>0?moved/dt:0)-hsp)*Math.min(1,dt*8);tonStep(dt,moved);musikStep(dt);me.y+=((ride?0:hAt(me.x,me.z))-me.y)*Math.min(1,dt*12);
     if(kPh==='up'){kT+=dt/0.75;kUp=Math.min(1,kT);hyaw=Math.atan2(fwd.x,fwd.z);if(kT>=1){kPh='in';kT=0}}else if(kPh==='in'){kT+=dt/0.45;kUp=1;if(kT>=1){kPh='on';kamSet(true)}}else if(kPh==='out'){kT+=dt/0.45;kUp=1;hyaw=Math.atan2(fwd.x,fwd.z);if(kT>=1){kPh='down';kT=0}}else if(kPh==='down'){kT+=dt/0.65;kUp=Math.max(0,1-kT);if(kT>=1){kPh='';kUp=0;$('ui').style.display='flex'}}
-    stStep(dt);leAuto(dt);seqAlle(dt);if(FA&&FA.los&&ride===FA&&(!OP.dr||OP.dr.im||!OP.dr.seq)){FA.los=false;fahrtStart()}
+    stStep(dt);leAuto(dt);dunstStep(dt,me.x,me.z);seqAlle(dt);if(FA&&FA.los&&ride===FA&&(!OP.dr||OP.dr.im||!OP.dr.seq)){FA.los=false;fahrtStart()}
     if(hero){var imW=ride&&ride.car&&!hero.seq;hero.o.visible=!kam&&(imW||hero.seq?true:ride?view==='aussen':view==='schulter'&&cD>1.2&&!(kPh==='in'&&kT>0.7)&&!(kPh==='out'&&kT<0.3));
       if(hero.o.visible){if(hero.seq){me.x=hero.x;me.z=hero.z;hyaw=hero.yaw}else if(imW)sitzen(hero,ride,ride.sre);else if(ride){hero.x=ride.x+ride.dx*ride.half*0.5;hero.z=ride.z+ride.dz*ride.half*0.5;hero.y=0.95;hero.sp=0;hero.yaw=Math.atan2(ride.dx*(ride.dir||1),ride.dz*(ride.dir||1))}
         else{hero.x=me.x;hero.z=me.z;hero.y=me.y;hero.sp=hsp;hero.sitW=0;hero.duck=0;var hd=Math.atan2(Math.sin(hyaw-hero.yaw),Math.cos(hyaw-hero.yaw));hero.yaw+=Math.sign(hd)*Math.min(Math.abs(hd),dt*(2.2+Math.abs(hd)*4.5));if(Math.abs(hd)>1.9){vel.x*=1-Math.min(1,dt*6);vel.z*=1-Math.min(1,dt*6)}}
