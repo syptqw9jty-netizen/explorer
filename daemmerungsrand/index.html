@@ -31,10 +31,19 @@ footer a{color:#b9b3a5;text-decoration:none}
 <main>
   <img src="s/logo_hell.png" alt="Am Bogen ’32 – Ein Spaziergang durch das alte Paderborn" style="width:min(86vw,440px);height:auto;margin:0 0 18px -4px">
   <p class="l">Die Innenstadt an einem Märznachmittag 1932, zu Fuß oder mit der Elektrischen: vom Hauptbahnhof über Westerntor und Westernstraße zu Marienplatz, Rathaus, Dom und Liboriberg.</p>
-  <a class="go" href="westerntor.html">SPIELEN</a>
+  <a class="go" id="spiel" href="westerntor.html">SPIELEN</a>
+  <div id="neu" style="margin-top:14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase"><a href="#" id="neu1" style="color:#bdb7a9">Neustart</a><span id="neu2" style="display:none;color:#d9d3c6">Alles zurücksetzen? Geschichte, Karte, Album und Papiere werden gelöscht. &nbsp; <a href="#" id="neuja" style="color:#f2c14e">Ja, neu beginnen</a> &nbsp;·&nbsp; <a href="#" id="neunein" style="color:#bdb7a9">Abbrechen</a></span></div>
   <div class="h">Links ziehen: gehen · rechts ziehen: umsehen · oben rechts: Standort wechseln · unten rechts: Ansicht wechseln, an der Bahn einsteigen. Die Darstellung passt sich selbst an das Gerät an.</div>
 </main>
-<footer><span><a href="westerntor.html?film=1">Ankunft ansehen</a> · <a href="quellen.html">Quellen</a> · <a href="viertel.html">Vorheriger Stand</a> · <a href="klassik.html">Frühere Spiele</a></span><span id="ver"></span></footer>
+<footer><span><a href="quellen.html">Quellen</a> · <a href="viertel.html">Vorheriger Stand</a> · <a href="klassik.html">Frühere Spiele</a></span><span id="ver"></span></footer>
+<script>
+/* Neustart: Spielstand vollständig löschen (Toneinstellung bleibt), dann von vorn beginnen */
+(function(){var e=function(i){return document.getElementById(i)},st=false;try{st=!!(localStorage.getItem('ab32-muetze')||localStorage.getItem('ab32-nebel'))}catch(x){}
+  if(st)e('spiel').textContent='WEITERSPIELEN';else e('neu').style.display='none';
+  e('neu1').addEventListener('click',function(v){v.preventDefault();e('neu1').style.display='none';e('neu2').style.display='inline'});
+  e('neunein').addEventListener('click',function(v){v.preventDefault();e('neu2').style.display='none';e('neu1').style.display='inline'});
+  e('neuja').addEventListener('click',function(v){v.preventDefault();try{['ab32-muetze','ab32-ankunft','ab32-sg','ab32-papiere','ab32-nebel','ab32-album'].forEach(function(k){localStorage.removeItem(k)})}catch(x){}location.href='westerntor.html'})})();
+</script>
 <script>
 (function(){try{localStorage.setItem('dr-boot','0')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}

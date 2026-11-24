@@ -181,7 +181,8 @@ function filmStart(){var F=$('film'),v=$('fv'),fin=false;function ende(){if(fin)
   F.style.display='block';$('lp').style.display='none';splashOff();v.src=window.innerHeight>window.innerWidth?'s/ankunft_h.mp4':'s/ankunft_q.mp4';
   v.addEventListener('timeupdate',function(){if(fin)return;var t=v.currentTime,x='';for(var i=0;i<CUE.length;i++)if(t>=CUE[i][0]&&t<CUE[i][1])x=CUE[i][2];$('fsub').textContent=x});v.addEventListener('ended',ende);v.addEventListener('error',ende);$('fskip').addEventListener('click',ende);
   $('fw1').addEventListener('click',function(){spielStart(0);if(OP.done)fahrtStart();else opStart()});$('fw2').addEventListener('click',function(){spielStart(1)});var p=v.play();if(p&&p.catch)p.catch(ende)}
-$('go').addEventListener('click',function(){var seen=false;try{seen=localStorage.getItem('ab32-ankunft')==='1'}catch(e){}if(!seen||/[?&]film/.test(location.search))filmStart();else spielStart()});
+/* Spielbeginn: beim ersten Mal mit der Begegnung am Bahnhof, sonst dort weiter, wo der Standort gewählt ist */
+$('go').addEventListener('click',function(){if(!OP.done){spielStart(0);opStart()}else spielStart()});
 /* Ladebilder: vollflächig, langsam wandernd, überblendend */
 var SP=[['s1','Westernstraße'],['s4','Am Westerntor'],['s3','Rathausplatz'],['s6','Linie 1'],['s2','Marienplatz'],['s7','Herz-Jesu-Kirche'],['s9','Im Wagen'],['s8','Über den Dächern'],['s5','Am Westerntor']],spi=-1,spT=0,spCur=null,spOff=false;
 function splashOff(){spOff=true;clearTimeout(spT);$('sl').innerHTML=''}
