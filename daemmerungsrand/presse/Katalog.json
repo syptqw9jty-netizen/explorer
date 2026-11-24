@@ -1,0 +1,62 @@
+[
+  {
+    "id": "zeitung",
+    "titel": "Lippspringer Anzeiger",
+    "datei": "Material/zeitung.jpg",
+    "quelle": "https://zeitpunkt.nrw/ulbms/periodical/zoom/880416",
+    "status": "Titelblatt, 11. März 1933. Verkauf am Spielort ist angenommen.",
+    "info": "Titelblatt, 11. März 1933. Verkauf am Spielort ist angenommen.",
+    "nachweis": "ULB Münster / zeit.punktNRW",
+    "datum": "11. März 1933",
+    "rechte": "Quellenangaben beibehalten. Für die Zeitung ist der Schutzstatus nicht bewertet (CNE). Freigabe für kommerzielle Verwendung offen.",
+    "pixel": [
+      2000,
+      2719
+    ]
+  },
+  {
+    "id": "presse",
+    "titel": "Zeitungen und Zeitungsvertrieb",
+    "datei": "Material/presse.jpg",
+    "quelle": "https://lwl-archiv.paderborn.de/595-Adressbuch/595-Adressbuch_1933-1934.pdf#page=181",
+    "status": "Adressbuch 1933/34, Druckseite 339. Ausschnitt.",
+    "info": "Adressbuch 1933/34, Druckseite 339. Ausschnitt.",
+    "nachweis": "Stadt- und Kreisarchiv Paderborn",
+    "datum": "1933/34",
+    "rechte": "Quellenangaben beibehalten. Für die Zeitung ist der Schutzstatus nicht bewertet (CNE). Freigabe für kommerzielle Verwendung offen.",
+    "pixel": [
+      510,
+      233
+    ]
+  },
+  {
+    "id": "residenz",
+    "titel": "Residenz-Theater",
+    "datei": "Material/residenz.png",
+    "quelle": "https://zeitpunkt.nrw/ulbms/periodical/zoom/880416",
+    "status": "Originalanzeige, Digitalisatseite 4.",
+    "info": "Originalanzeige, Digitalisatseite 4.",
+    "nachweis": "ULB Münster / zeit.punktNRW",
+    "datum": "11. März 1933",
+    "rechte": "Quellenangaben beibehalten. Für die Zeitung ist der Schutzstatus nicht bewertet (CNE). Freigabe für kommerzielle Verwendung offen.",
+    "pixel": [
+      308,
+      848
+    ]
+  },
+  {
+    "id": "palast",
+    "titel": "Lichtspiel-Palast",
+    "datei": "Material/palast.png",
+    "quelle": "https://zeitpunkt.nrw/ulbms/periodical/zoom/880416",
+    "status": "Originalanzeige, Digitalisatseite 4.",
+    "info": "Originalanzeige, Digitalisatseite 4.",
+    "nachweis": "ULB Münster / zeit.punktNRW",
+    "datum": "11. März 1933",
+    "rechte": "Quellenangaben beibehalten. Für die Zeitung ist der Schutzstatus nicht bewertet (CNE). Freigabe für kommerzielle Verwendung offen.",
+    "pixel": [
+      320,
+      714
+    ]
+  }
+]
