@@ -282,6 +282,8 @@ var SU={uSun:{value:SUN},uN:{value:NT},uT:{value:0}},SKM=new THREE.ShaderMateria
   'gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}'].join('\n')});
 var dome=new THREE.Mesh(new THREE.SphereGeometry(1,32,16),SKM);dome.frustumCulled=false;dome.renderOrder=999;scene.add(dome);
 (function(){var s2=new THREE.Scene(),d2=new THREE.Mesh(dome.geometry,SKM);d2.frustumCulled=false;s2.add(d2);var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(s2,0,0.1,10).texture;pm.dispose()})();
+var HQ={an:false,on:false};
+try{HQ.an=!MOB&&(/[?&]hq\b/.test(location.search)||localStorage.getItem('ab32-hq')==='1')}catch(e){}
 var sun=new THREE.DirectionalLight(0xffdfba,2.25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);var sc=sun.shadow.camera,SB=95;sc.left=-SB;sc.right=SB;sc.top=SB;sc.bottom=-SB;sc.near=1;sc.far=520;sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.14;scene.add(sun);scene.add(sun.target);
 scene.add(new THREE.HemisphereLight(new THREE.Color(0.60,0.62,0.68),new THREE.Color(0.36,0.32,0.28),0.74));
 /* Dunstschwaden: wenige große, weiche Flächen, die bodennah um den Standort treiben */
@@ -1042,7 +1044,7 @@ function anW(lx,ly,lz){var y=BHF.o?BHF.o.position.y:0;return new V3(BHF.x+lx*BHF
 function anBereit(){if(!BHF.o||!BHF.oc||!hero||!hero.neu||!Fig||!nav||!LINE)return false;var i=Math.floor((me.x+1250)/250),j=Math.floor((me.z+1350)/250);if(!occT(i,j).d)return false;return !TL.some(function(t){return t.s!==2&&tdist(t)<160})}
 function titelKarte(){var TI=$('titel');TI.style.transition='none';TI.style.opacity='1';TI.style.display='flex';TI.offsetWidth;TI.style.transition='';setTimeout(function(){TI.style.opacity='0'},3300);setTimeout(function(){TI.style.display='none'},4800)}
 function anStart(){if(AN.on)return;AN.w=(AN.w||0)+1;opLaden();if(!anBereit()&&AN.w<240){setTimeout(anStart,500);return}if(!BHF.o){OP.deck=true;opStart();return}
-  AN.on=1;AN.t=0;sub('Hauptbahnhof','',3.5);var f=anW(1,0,0).sub(anW(0,0,0)),sp=anW(-22,0,-10.3);me.x=sp.x;me.z=sp.z;/* Blick am Bahnsteig entlang (Zug links, Gebäude rechts); der Fotograf steht davor und schaut halb zur Kamera, leicht zum Zug hin */me.yaw=Math.atan2(-f.x,-f.z);me.pitch=-0.1;var tz=anW(0,0,-1).sub(anW(0,0,0)),hd=new V3(-f.x*0.9+tz.x*0.42,0,-f.z*0.9+tz.z*0.42);hyaw=Math.atan2(hd.x,hd.z);vel.x=vel.z=0;if(hero){hero.x=me.x;hero.z=me.z;hero.yaw=hyaw;hero.y=hAt(me.x,me.z)}view='schulter';label();
+  AN.on=1;AN.t=0;sub('Hauptbahnhof','',3.5);hqEin();var f=anW(1,0,0).sub(anW(0,0,0)),sp=anW(-22,0,-10.3);me.x=sp.x;me.z=sp.z;/* Blick am Bahnsteig entlang (Zug links, Gebäude rechts); der Fotograf steht davor und schaut halb zur Kamera, leicht zum Zug hin */me.yaw=Math.atan2(-f.x,-f.z);me.pitch=-0.1;var tz=anW(0,0,-1).sub(anW(0,0,0)),hd=new V3(-f.x*0.9+tz.x*0.42,0,-f.z*0.9+tz.z*0.42);hyaw=Math.atan2(hd.x,hd.z);vel.x=vel.z=0;if(hero){hero.x=me.x;hero.z=me.z;hero.yaw=hyaw;hero.y=hAt(me.x,me.z)}view='schulter';label();
   BHF.o.traverse(function(o){if(/^(Lok_38_3050|Tender|Personenwagen)/.test(o.name)&&o.isMesh){o.userData.x0=o.position.x;AN.zug.push(o)}});
   anRauchInit();
   anLeute();document.body.classList.add('kino');$('ui').style.display='none';$('ort').style.display='none';$('inx').style.display='block';
@@ -1050,7 +1052,7 @@ function anStart(){if(AN.on)return;AN.w=(AN.w||0)+1;opLaden();if(!anBereit()&&AN
   if(SND.ok&&!AN.g){stBuf('an_bhf','a/bahnhof.mp3',function(b){var sr=AC.createBufferSource(),gn=AC.createGain();sr.buffer=b;sr.loop=true;gn.gain.value=0.28;sr.connect(gn);gn.connect(SND.m);sr.start();AN.g=gn;AN.src=sr})}
   }
 /* Reisende: steigen aus und gehen durch die Halle hinaus, andere warten, Gepäckträger am Zug */
-function anLeute(){var ks=Fig.keys().filter(function(k){return /^[mf]\d$/.test(k)}),n=MOB?12:22,i;if(!ks.length)return;
+function anLeute(){var ks=Fig.keys().filter(function(k){return /^[mf]\d$/.test(k)}),n=MOB?12:(HQ.an?34:22),i;if(!ks.length)return;
   var weg=function(x0){return mkPath([[x0,-10.4],[x0*0.5,-9.6],[0,-8.6],[0,-5.6],[0,-1],[0,4],[0,8.2],[x0>0?6:-6,13],[x0>0?14:-14,18]].map(function(q){var w=anW(q[0],0,q[1]);return[w.x,-w.z]}))};
   for(i=0;i<n;i++){var p=Fig.mk(ks[(i*5+2)%ks.length],'idle_look_around'),x0=-44+((i*17)%40)+hsh(i,4)*3;p.auto=1;p.an=1;p.ir=hsh(i,7)*6;
     if(i%3===2){/* wartend oder schauend, still */if(Math.abs(x0+24)<7)x0-=14;var w=anW(x0,0,-9.2+((i*7)%5)*0.55);p.x=w.x;p.z=w.z;p.yaw=Math.atan2(BHF.s*0+(-BHF.s),-BHF.c)+(i%2?0.4:-2.6);p.still=true}
@@ -1063,14 +1065,54 @@ function anKam(t){var off=AN.off||0,P,L,k;
   else if(t<16.5){k=(t-11.5)/5;P=anW(-60+k*12,7.6-k*1.4,-6.2);L=anW(-10+k*6,0.8,-13)}
   else if(t<21){k=(t-16.5)/4.5;P=anW(14-k*6,1.9,-24.5);L=anW(off-4-k*4,4.4,-15.5)}
   else{k=Math.min(1,(t-21)/4);var e=k*k*(3-2*k),f=new V3(-Math.sin(me.yaw),0,-Math.cos(me.yaw)),rx=Math.cos(me.yaw),rz=-Math.sin(me.yaw),Q=new V3(me.x+rx*0.42-f.x*2.8,me.y+1.55+Math.sin(0.1)*2.8,me.z+rz*0.42-f.z*2.8),A=anW(-34,2.0,-8);P=A.lerp(Q,e);L=anW(-14,1.6,-11.5).lerp(new V3(me.x+rx*0.42+f.x*8,me.y+1.55-Math.sin(0.1)*8,me.z+rz*0.42+f.z*8),e)}
-  camera.position.copy(P);camera.lookAt(L)}
+  camera.position.copy(P);camera.lookAt(L);AN.fok=t>21&&hero?Math.max(1.5,P.distanceTo(new V3(hero.x,hero.y+1.5,hero.z))):Math.max(2,Math.min(60,P.distanceTo(L)))}
+
+/* ---------- Kinoqualität fürs Intro (Test, nur am PC) ----------
+   Eingeschaltet über ?hq in der Adresse oder im Zahnrad. Auf Handy und Tablet wird nichts davon benutzt.
+   Bild wird 1,5-fach größer in eine Textur gerendert, dann: Leuchten (Bloom), Tiefenunschärfe, Vignette, Filmkorn. Dazu Schatten 4096 px, schärfere Texturen, mehr Rauch und Reisende. */
+function hqBau(){if(HQ.rA)return;var T=THREE,par={minFilter:T.LinearFilter,magFilter:T.LinearFilter,format:T.RGBAFormat,depthBuffer:true,stencilBuffer:false};
+  HQ.rA=new T.WebGLRenderTarget(4,4,par);HQ.rA.texture.encoding=renderer.outputEncoding;HQ.rA.depthTexture=new T.DepthTexture();HQ.rA.depthTexture.type=T.UnsignedIntType;
+  ['rB','rB2','rC','rC2'].forEach(function(k){HQ[k]=new T.WebGLRenderTarget(4,4,{minFilter:T.LinearFilter,magFilter:T.LinearFilter,format:T.RGBAFormat,depthBuffer:false,stencilBuffer:false})});
+  HQ.cam=new T.OrthographicCamera(-1,1,1,-1,0,1);HQ.sc=new T.Scene();HQ.q=new T.Mesh(new T.PlaneBufferGeometry(2,2));HQ.q.frustumCulled=false;HQ.sc.add(HQ.q);
+  var vs='varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}';
+  function M(fs,u){return new T.ShaderMaterial({uniforms:u,vertexShader:vs,fragmentShader:fs,depthTest:false,depthWrite:false,toneMapped:false})}
+  /* hell ausfiltern (für das Leuchten) und verkleinern */
+  HQ.mHell=M('uniform sampler2D t;uniform vec2 px;uniform float thr;varying vec2 vUv;void main(){vec3 c=vec3(0.);c+=texture2D(t,vUv+px*vec2(-1.,-1.)).rgb;c+=texture2D(t,vUv+px*vec2(1.,-1.)).rgb;c+=texture2D(t,vUv+px*vec2(-1.,1.)).rgb;c+=texture2D(t,vUv+px*vec2(1.,1.)).rgb;c*=.25;float l=dot(c,vec3(.299,.587,.114));gl_FragColor=vec4(c*smoothstep(thr,thr+.25,l),1.);}',{t:{value:null},px:{value:new T.Vector2()},thr:{value:.62}});
+  HQ.mKlein=M('uniform sampler2D t;uniform vec2 px;varying vec2 vUv;void main(){vec3 c=vec3(0.);c+=texture2D(t,vUv+px*vec2(-1.,-1.)).rgb;c+=texture2D(t,vUv+px*vec2(1.,-1.)).rgb;c+=texture2D(t,vUv+px*vec2(-1.,1.)).rgb;c+=texture2D(t,vUv+px*vec2(1.,1.)).rgb;gl_FragColor=vec4(c*.25,1.);}',{t:{value:null},px:{value:new T.Vector2()}});
+  HQ.mBlur=M('uniform sampler2D t;uniform vec2 d;varying vec2 vUv;void main(){vec3 c=texture2D(t,vUv).rgb*.227;c+=(texture2D(t,vUv+d*1.385).rgb+texture2D(t,vUv-d*1.385).rgb)*.316;c+=(texture2D(t,vUv+d*3.231).rgb+texture2D(t,vUv-d*3.231).rgb)*.070;gl_FragColor=vec4(c,1.);}',{t:{value:null},d:{value:new T.Vector2()}});
+  HQ.mEnd=M('uniform sampler2D tA,tB,tC,tD;uniform vec2 px;uniform float nah,fern,fok,blende,zeit,glanz;varying vec2 vUv;'+
+    'float lin(float d){return nah*fern/(fern-d*(fern-nah));}'+
+    'float rnd(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233))+zeit)*43758.5453);}'+
+    'void main(){vec3 c=vec3(0.);c+=texture2D(tA,vUv+px*vec2(-.5,-.5)).rgb;c+=texture2D(tA,vUv+px*vec2(.5,-.5)).rgb;c+=texture2D(tA,vUv+px*vec2(-.5,.5)).rgb;c+=texture2D(tA,vUv+px*vec2(.5,.5)).rgb;c*=.25;'+
+    'float z=lin(texture2D(tD,vUv).r);float coc=clamp(abs(1./fok-1./z)*blende,0.,1.);c=mix(c,texture2D(tC,vUv).rgb,smoothstep(.08,.85,coc));'+
+    'c+=texture2D(tB,vUv).rgb*glanz;'+
+    'vec2 q=vUv-.5;c*=mix(1.,.7,smoothstep(.28,.85,length(q*vec2(1.25,1.))));'+
+    'c+=(rnd(vUv*vec2(731.,513.))-.5)*.035;gl_FragColor=vec4(c,1.);}',
+    {tA:{value:null},tB:{value:null},tC:{value:null},tD:{value:null},px:{value:new T.Vector2()},nah:{value:.3},fern:{value:1400},fok:{value:10},blende:{value:1.5},zeit:{value:0},glanz:{value:.85}})}
+function hqPass(m,ziel){HQ.q.material=m;renderer.setRenderTarget(ziel);renderer.render(HQ.sc,HQ.cam)}
+function hqRender(){var T=THREE,v=renderer.getDrawingBufferSize(new T.Vector2()),SS=Math.min(1.5,4096/Math.max(1,v.x)),w=Math.round(v.x*SS),h=Math.round(v.y*SS),w4=Math.max(2,w>>2),h4=Math.max(2,h>>2);
+  if(HQ.rA.width!==w||HQ.rA.height!==h){HQ.rA.setSize(w,h);['rB','rB2','rC','rC2'].forEach(function(k){HQ[k].setSize(w4,h4)})}
+  var ac=renderer.autoClear;renderer.setRenderTarget(HQ.rA);renderer.clear();renderer.render(scene,camera);
+  /* Leuchten: hell herausfiltern, zweimal weich zeichnen */
+  HQ.mHell.uniforms.t.value=HQ.rA.texture;HQ.mHell.uniforms.px.value.set(1.5/w,1.5/h);hqPass(HQ.mHell,HQ.rB);
+  HQ.mKlein.uniforms.t.value=HQ.rA.texture;HQ.mKlein.uniforms.px.value.set(1.5/w,1.5/h);hqPass(HQ.mKlein,HQ.rC);
+  for(var k=0;k<2;k++){var r=1+k*1.5;
+    HQ.mBlur.uniforms.t.value=HQ.rB.texture;HQ.mBlur.uniforms.d.value.set(r/w4,0);hqPass(HQ.mBlur,HQ.rB2);HQ.mBlur.uniforms.t.value=HQ.rB2.texture;HQ.mBlur.uniforms.d.value.set(0,r/h4);hqPass(HQ.mBlur,HQ.rB);
+    HQ.mBlur.uniforms.t.value=HQ.rC.texture;HQ.mBlur.uniforms.d.value.set(r*0.8/w4,0);hqPass(HQ.mBlur,HQ.rC2);HQ.mBlur.uniforms.t.value=HQ.rC2.texture;HQ.mBlur.uniforms.d.value.set(0,r*0.8/h4);hqPass(HQ.mBlur,HQ.rC)}
+  var u=HQ.mEnd.uniforms;u.tA.value=HQ.rA.texture;u.tB.value=HQ.rB.texture;u.tC.value=HQ.rC.texture;u.tD.value=HQ.rA.depthTexture;u.px.value.set(1/w,1/h);u.nah.value=camera.near;u.fern.value=camera.far;u.zeit.value=(performance.now()%10000)/1000;
+  /* Schärfe: auf den Zug, im letzten Bild auf den Fotografen */var fz=AN.fok||10;u.fok.value+=(fz-u.fok.value)*0.12;u.blende.value=AN.t>20.5?2.2:1.4;
+  hqPass(HQ.mEnd,null);renderer.autoClear=ac}
+function hqEin(){if(!HQ.an||HQ.on)return;HQ.on=true;hqBau();var a=renderer.capabilities.getMaxAnisotropy();HQ.ani=[];
+  scene.traverse(function(o){if(!o.material)return;(Array.isArray(o.material)?o.material:[o.material]).forEach(function(m){['map','normalMap','roughnessMap'].forEach(function(k){var t=m[k];if(t&&t.anisotropy<a){HQ.ani.push([t,t.anisotropy]);t.anisotropy=a;t.needsUpdate=true}})})});
+  if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null}sun.shadow.mapSize.set(4096,4096);renderer.shadowMap.needsUpdate=true}
+function hqAus(){if(!HQ.on)return;HQ.on=false;(HQ.ani||[]).forEach(function(x){x[0].anisotropy=x[1];x[0].needsUpdate=true});HQ.ani=null;if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null}sun.shadow.mapSize.set(2048,2048);renderer.shadowMap.needsUpdate=true}
 /* Rauch, Dampf und Nebel am Zug: dunkler Kohlenrauch aus dem Schornstein, weißer Dampf in Höhe der Räder, Qualm über Bahnsteig und Gleis */
 function anRauchInit(){if(AN.rauch.length)return;
   var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d');for(var q=0;q<10;q++){var px=64+(Math.random()-0.5)*44,py=64+(Math.random()-0.5)*40,pr=22+Math.random()*24,gr=g.createRadialGradient(px,py,2,px,py,pr);gr.addColorStop(0,'rgba(255,255,255,.6)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,128,128)}var tx=new THREE.CanvasTexture(c);AN.tx=tx;
   function sp(col){var m=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false,opacity:0,color:col,rotation:Math.random()*6.28}));m.visible=false;scene.add(m);return m}
-  for(var k=0,n=MOB?40:64;k<n;k++)AN.rauch.push({o:sp(0x4a4640),t:-k*(9/n),dun:0.7+Math.random()*0.5});
-  AN.rad=[];for(k=0,n=MOB?22:34;k<n;k++)AN.rad.push({o:sp(0xe6e4df),t:-k*(5.5/n),L:4.5+Math.random()*2.5});
-  AN.qualm=[];for(k=0,n=MOB?16:26;k<n;k++)AN.qualm.push({o:sp(0xd4d1ca),t:-k*(10/n),L:8+Math.random()*6})}
+  for(var k=0,n=MOB?40:(HQ.an?96:64);k<n;k++)AN.rauch.push({o:sp(0x4a4640),t:-k*(9/n),dun:0.7+Math.random()*0.5});
+  AN.rad=[];for(k=0,n=MOB?22:(HQ.an?52:34);k<n;k++)AN.rad.push({o:sp(0xe6e4df),t:-k*(5.5/n),L:4.5+Math.random()*2.5});
+  AN.qualm=[];for(k=0,n=MOB?16:(HQ.an?40:26);k<n;k++)AN.qualm.push({o:sp(0xd4d1ca),t:-k*(10/n),L:8+Math.random()*6})}
 function anRauch(dt,t){var off=AN.off||0,ch=anW(6.6+off,4.95,-15.5),v=AN.v||0,L=9,wind=anW(-1,0,0.45).sub(anW(0,0,0)),still=Math.max(0,1-v/5);
   AN.rauch.forEach(function(r){r.t+=dt;if(r.t<0)return;if(r.t>L||r.x===undefined){r.t=r.t>L?r.t-L:r.t;r.x=ch.x;r.y=ch.y;r.z=ch.z;r.vx=(Math.random()-0.5)*0.7;r.vz=(Math.random()-0.5)*0.7}
     /* der Rauch bleibt in der Welt stehen, der fahrende Zug zieht darunter weg; so entsteht die Fahne */var k=r.t/L;r.o.visible=true;r.o.position.set(r.x+(wind.x*0.8+r.vx)*r.t,r.y+0.3+r.t*0.55+r.t*r.t*0.045,r.z+(wind.z*0.8+r.vz)*r.t);var sc=1.9+k*10.5;r.o.scale.set(sc,sc*0.8,sc);r.o.material.rotation+=dt*0.06;
@@ -1113,7 +1155,7 @@ function ztStehen(dt){if(!BHF.o)return;var dz=Math.hypot(me.x-BHF.x,me.z-BHF.z);
 function anDampf(k){/* weiße Dampfstöße seitlich an den Zylindern */AN.dampf=AN.dampf||[];if(!AN.dampf.length){for(var i=0;i<8;i++){var m=new THREE.Sprite(AN.rauch[0].o.material.clone());m.material.opacity=0;m.material.color.setHex(0xf2f0ec);scene.add(m);AN.dampf.push({o:m,t:9})}}AN.dampf.forEach(function(p,i){p.t=-i*0.06;p.k=k;p.s=i%2?1:-1})}
 function anDampfStep(dt){if(!AN.dampf)return;var b=anW(6.2+(AN.off||0),0.75,-15.5);AN.dampf.forEach(function(p){p.t+=dt;if(p.t<0||p.t>2.2){p.o.visible=false;return}var e=p.t/2.2,side=anW(0,0,p.s*(1.2+e*2.4)).sub(anW(0,0,0));p.o.visible=true;p.o.position.set(b.x+side.x,b.y+e*1.4,b.z+side.z);var sc=0.6+e*3.2;p.o.scale.set(sc,sc,sc);p.o.material.opacity=(1-e)*0.6*p.k})}
 function anStep(dt){if(!AN.on)return false;AN.t+=dt;var t=AN.t;anZug(t);anRauch(dt,t);anNebel();ztIntro(t,dt);anDampfStep(dt);mv.x=mv.y=0;vel.x=vel.z=0;anKam(t);if(t>=AN.DAUER)anEnde();return true}
-function anEnde(){if(!AN.on)return;AN.on=0;anZug(99);if(ZT.es&&AN.t<23){try{ZT.eg.gain.setTargetAtTime(0,AC.currentTime,0.15);ZT.es.stop(AC.currentTime+0.8)}catch(e){}}document.body.classList.remove('kino');$('inx').style.display='none';/* Übergabe an die Schulterkamera ohne Sprung, erst nah am Fotografen */AN.nah=1;cT.set(me.x+Math.cos(me.yaw)*0.42,me.y+1.55,me.z-Math.sin(me.yaw)*0.42);cD=2.8;$('ui').style.display='flex';$('ort').style.display='';view='schulter';label();me.pitch=-0.16;lookIdle=0;anZiel()}
+function anEnde(){if(!AN.on)return;AN.on=0;hqAus();anZug(99);if(ZT.es&&AN.t<23){try{ZT.eg.gain.setTargetAtTime(0,AC.currentTime,0.15);ZT.es.stop(AC.currentTime+0.8)}catch(e){}}document.body.classList.remove('kino');$('inx').style.display='none';/* Übergabe an die Schulterkamera ohne Sprung, erst nah am Fotografen */AN.nah=1;cT.set(me.x+Math.cos(me.yaw)*0.42,me.y+1.55,me.z-Math.sin(me.yaw)*0.42);cD=2.8;$('ui').style.display='flex';$('ort').style.display='';view='schulter';label();me.pitch=-0.16;lookIdle=0;anZiel()}
 /* Ziel vor dem Bahnhof: Wagen im Lichtkegel */
 function anZiel(){var T=anW(0,0,16),bs=0,bd=1e9,k,q;for(k=0;k<LINE.len;k+=2){q=pAt(LINE,k);var e=Math.hypot(q.x-T.x,q.z-T.z);if(e<bd){bd=e;bs=k}}var ql=pAt(LINE,bs+4),cy=Math.atan2(ql.dx,ql.dz),W=OP.wagen,fz={half:2.4,wid:0.95,dx:Math.sin(cy),dz:Math.cos(cy)},L=[2.3,-2.3,3.4,-3.4,4.6,-4.6],i,x,z;
   for(i=0;i<L.length;i++){q=pAt(LINE,bs,L[i]);if(vehFrei(fz,q.x,q.z,cy)){x=q.x;z=q.z;break}}if(x===undefined){x=T.x;z=T.z}
@@ -1255,7 +1297,7 @@ document.addEventListener('visibilitychange',function(){if(!SND.ok)return;try{if
 /* Regler: Musik, Stimmen, Stadt getrennt */
 (function(){var P=$('tonp');[['m','mxm'],['s','mxs'],['c','mxc']].forEach(function(e){var i=$(e[1]);i.value=MU.MIX[e[0]];i.parentNode.setAttribute('data-v',i.value+' %');i.addEventListener('input',function(){i.parentNode.setAttribute('data-v',i.value+' %');MU.MIX[e[0]]=+i.value;try{localStorage.setItem('ab32-mix2',JSON.stringify(MU.MIX))}catch(x){}mixSet()})});
   $('mxa').addEventListener('click',function(){tonSet(TM>0?0:1)});$('mxz').addEventListener('click',function(){P.style.display='none'})})();
-(function(){var p=$('setp');[$('ort'),$('tonb')].forEach(function(e){p.appendChild(e)});var q=document.createElement('a');q.className='g';q.href='quellen.html';q.textContent='Quellen und Belege';q.style.textDecoration='none';p.appendChild(q);p.appendChild($('back'));$('back').textContent='Hauptmenü';$('set').addEventListener('click',function(e){e.stopPropagation();p.classList.toggle('an')});document.addEventListener('pointerdown',function(e){if(p.classList.contains('an')&&!p.contains(e.target)&&e.target!==$('set'))p.classList.remove('an')},true)})();
+(function(){var p=$('setp');[$('ort'),$('tonb')].forEach(function(e){p.appendChild(e)});var q=document.createElement('a');q.className='g';q.href='quellen.html';q.textContent='Quellen und Belege';q.style.textDecoration='none';p.appendChild(q);if(!MOB){var hb=document.createElement('button');hb.className='g';var hl=function(){hb.textContent='Kinoqualität im Intro (Test) · '+(HQ.an?'an':'aus')};hl();hb.addEventListener('click',function(){HQ.an=!HQ.an;try{localStorage.setItem('ab32-hq',HQ.an?'1':'0')}catch(e){}hl()});p.appendChild(hb)}p.appendChild($('back'));$('back').textContent='Hauptmenü';$('set').addEventListener('click',function(e){e.stopPropagation();p.classList.toggle('an')});document.addEventListener('pointerdown',function(e){if(p.classList.contains('an')&&!p.contains(e.target)&&e.target!==$('set'))p.classList.remove('an')},true)})();
 $('tonb').addEventListener('click',function(){tonInit();$('setp').classList.remove('an');var P=$('tonp');P.style.display=P.style.display==='block'?'none':'block'});tonSet(TM);
 /* ---------- Eröffnung „Die Mütze“: Begegnung mit dem Fahrer auf dem Bahnhofsvorplatz, in Echtzeit mit beiden Figuren und den gelieferten Stimmen ---------- */
 var OP={on:false,st:0,t:0,li:-1,lt:0,dr:null,kc:0,cp:new V3(),cl:new V3(),ci:false,sd:1,warte:false,gA:0,gB:0,gC:0,src:null,done:false,zx:0,zz:0},
@@ -1580,7 +1622,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min(0.1,(now-last)/
   else camera.position.set(me.x,me.y+(KIN.sitz?1.2:1.72)+Math.sin(bob)*0.022,me.z);
   camera.rotation.set(me.pitch,me.yaw,0,'YXZ');SU.uT.value=(now*0.001)%4000;if(KEG&&KEG.visible){var kp=0.5+0.5*Math.sin(now/420);KEG.r.scale.setScalar(1+kp*0.25);KEG.r.material.opacity=0.8-kp*0.4}shadowAt(me.x,me.z);if(TR.length&&Math.hypot(TR[0].x-me.x,TR[0].z-me.z)<120||ride)renderer.shadowMap.needsUpdate=(fN%3===0)||renderer.shadowMap.needsUpdate;
   if(OP.dr&&OP.ci&&OP.kc>0.004&&view==='schulter'&&!ride&&isFinite(OP.cp.x+OP.cp.z+OP.cl.x+OP.cl.z)&&canWalk(OP.cp.x,OP.cp.z)){var ke=OP.kc*OP.kc*(3-2*OP.kc),qa=camera.quaternion.clone(),pa=camera.position.clone();camera.position.copy(OP.cp);camera.lookAt(OP.cl);var qb=camera.quaternion.clone();camera.position.lerpVectors(pa,OP.cp,ke);camera.quaternion.copy(qa).slerp(qb,ke);var hk=window.innerWidth<window.innerHeight,f0=hk?72:58,f1=hk?46:36;camera.fov=f0+(f1-f0)*ke;camera.updateProjectionMatrix();OP.fov=true;FILL.intensity=0.75*ke;FILL.position.copy(camera.position);FILL.target.position.copy(OP.cl)}else if(OP.fov){OP.fov=false;FILL.intensity=0;resize()}
-  if(AN.on)anStep(Math.min(0.05,dt));else if(BHF.o){ztStehen(Math.min(0.05,dt));anDampfStep(Math.min(0.05,dt))}if(KIN.o)kinFrame();if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}if(!window.__nr||!((window.__nf=(window.__nf||0)+1)%window.__nr))if(SYN.in&&SYN.sc){synBild();renderer.render(SYN.sc,SYN.cam)}else renderer.render(scene,camera);if(snap){snap=false;try{develop()}catch(e){window.__err=(window.__err||[]);window.__err.push('foto: '+e.message)}}}
+  if(AN.on)anStep(Math.min(0.05,dt));else if(BHF.o){ztStehen(Math.min(0.05,dt));anDampfStep(Math.min(0.05,dt))}if(KIN.o)kinFrame();if(window.__cam){var C=window.__cam;camera.position.set(C[0],C[1],C[2]);camera.lookAt(C[3],C[4],C[5])}if(!window.__nr||!((window.__nf=(window.__nf||0)+1)%window.__nr))if(SYN.in&&SYN.sc){synBild();renderer.render(SYN.sc,SYN.cam)}else if(HQ.on&&AN.on)hqRender();else renderer.render(scene,camera);if(snap){snap=false;try{develop()}catch(e){window.__err=(window.__err||[]);window.__err.push('foto: '+e.message)}}}
 /* Ton schon beim Start: erlaubt der Browser es ohne Tippen (z. B. direkt aus dem Menü heraus), beginnt „The Square Opens“ sofort an der Stelle, an der es im Menü lief; sonst mit der ersten Berührung */
 (function(){try{var p0=+(sessionStorage.getItem('ab32-mupos')||0);if(p0>0)MU.pos.platz=p0}catch(e){}try{var t=new Audio('a/still.mp3');t.volume=0.01;var p=t.play();if(p&&p.then)p.then(function(){try{t.pause()}catch(e){}tonInit()}).catch(function(){})}catch(e){}})();
 requestAnimationFrame(frame);
