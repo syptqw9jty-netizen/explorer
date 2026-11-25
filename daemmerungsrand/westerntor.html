@@ -157,19 +157,90 @@ button.g:active,a.g:active{background:#d9caa9;color:var(--druck)}
 #dreh{background:var(--flaeche-fest);color:var(--text);font:600 22px/1.2 var(--schrift);letter-spacing:0;text-transform:none}#dreh img{width:112px;height:112px;border-radius:22px}#dreh i{border-color:var(--text)}
 @media(max-height:480px){#hint{display:block}}
 @media(max-height:350px){#hint{display:none}#sub{font-size:18px}#wahl button{font-size:17px;padding-top:8px;padding-bottom:8px}}
+/* ---------- HUD neu (GTA-artig, fürs Handy): Joystick links, Kontext-Knöpfe rechts, Karte oben rechts, Einstellungen oben links ---------- */
+.ic-gear{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='6.4'/%3E%3Ccircle cx='12' cy='12' r='2.4'/%3E%3Cpath d='M18.40 12.00L21.40 12.00'/%3E%3Cpath d='M16.53 16.53L18.65 18.65'/%3E%3Cpath d='M12.00 18.40L12.00 21.40'/%3E%3Cpath d='M7.47 16.53L5.35 18.65'/%3E%3Cpath d='M5.60 12.00L2.60 12.00'/%3E%3Cpath d='M7.47 7.47L5.35 5.35'/%3E%3Cpath d='M12.00 5.60L12.00 2.60'/%3E%3Cpath d='M16.53 7.47L18.65 5.35'/%3E%3C/svg%3E")}
+.ic-kam{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8h4l2-3h6l2 3h4v11H3z'/%3E%3Ccircle cx='12' cy='13' r='3.6'/%3E%3C/svg%3E")}
+.ic-blick{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")}
+.ic-rede{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v10H10l-5 4v-4H4z'/%3E%3Cpath d='M8 9h8M8 12h5'/%3E%3C/svg%3E")}
+.ic-tuer{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 21V3h11v18'/%3E%3Cpath d='M3 21h18'/%3E%3Ccircle cx='14' cy='12.5' r='.9'/%3E%3C/svg%3E")}
+.ic-auto{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 15.5v-3l2-1 2.5-4h8l3 4 3.5 1v3'/%3E%3Cpath d='M7 11.5h11'/%3E%3Ccircle cx='7' cy='16.5' r='2.2'/%3E%3Ccircle cx='17' cy='16.5' r='2.2'/%3E%3Cpath d='M9.2 16.5h5.6'/%3E%3C/svg%3E")}
+.ic-raus{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 21H5V3h9v5'/%3E%3Cpath d='M13 15h8M18 12l3 3-3 3'/%3E%3C/svg%3E")}
+.ic-sitz{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3v10h10v8M7 13v8M7 9h7'/%3E%3C/svg%3E")}
+.ic-lesen{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z'/%3E%3Cpath d='M12 6v14'/%3E%3C/svg%3E")}
+.ic-warte{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h10M7 21h10M8 3c0 6 8 6 8 9s-8 3-8 9M16 3c0 6-8 6-8 9'/%3E%3C/svg%3E")}
+.ic-gas{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 15l6-7 6 7'/%3E%3C/svg%3E")}
+.ic-brems{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7v10M16 7v10'/%3E%3C/svg%3E")}
+.ic-zurueck{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 7 6-7'/%3E%3C/svg%3E")}
+
+#lbl{display:none!important}
+.ib{position:absolute!important;width:58px;height:58px;min-height:0!important;padding:0!important;border-radius:50%!important;display:flex;align-items:center;justify-content:center;background:rgba(16,15,14,.38)!important;border:1.5px solid rgba(241,234,219,.6)!important;color:#f1eadb!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:0!important;box-shadow:0 1px 8px rgba(0,0,0,.25)!important;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.ib::before{content:""!important;display:block!important;width:27px!important;height:27px!important;margin:0!important;border:0!important;border-radius:0!important;background:currentColor;-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+.ib:active{background:rgba(241,234,219,.85)!important;color:#191714!important}
+#ui{position:fixed!important;right:calc(10px + env(safe-area-inset-right))!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;width:196px;height:178px;gap:0!important;pointer-events:none}
+#ui>*{pointer-events:auto}
+/* Rauten-Anordnung wie am Controller: unten Hauptaktion, oben Kamera, links Ansicht */
+#ui #act{position:absolute!important;right:62px!important;bottom:4px!important;width:72px;height:72px;background:rgba(241,234,219,.9)!important;color:#191714!important;border-color:rgba(255,255,255,.9)!important;animation:actein .35s ease-out}
+#ui #act::before{width:32px!important;height:32px!important}
+#ui #kamb{right:69px;bottom:116px;order:0}
+#ui #view{right:134px;bottom:58px;order:0}
+#ui #view::after{content:attr(data-k);position:absolute;bottom:-3px;right:-3px;font:700 10px/16px var(--schrift);width:16px;height:16px;border-radius:50%;background:#f1eadb;color:#191714;text-align:center}
+@keyframes actein{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+/* Fahren: Gas groß rechts, Bremse links daneben, Aussteigen oben */
+#ui #ped{position:absolute!important;inset:0;display:none;gap:0}
+#ui #ped .ib{width:78px;height:78px}
+#ui #pg{right:0;bottom:6px;background:rgba(241,234,219,.9)!important;color:#191714!important}
+#ui #pb{right:92px;bottom:0}
+#ui:has(#ped[style*="flex"]) #act{right:16px!important;bottom:104px!important;width:58px;height:58px}
+#ui:has(#ped[style*="flex"]) #act::before{width:27px!important;height:27px!important}
+/* kurzer Hinweis zur Aktion, verschwindet nach zwei Sekunden */
+#acth{position:fixed;z-index:3;right:calc(214px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));max-width:34vw;text-align:right;font:500 14px/1.3 var(--schrift);color:#f4efe4;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 10px rgba(0,0,0,.6);pointer-events:none;opacity:0;transition:opacity .5s}
+#acth.an{opacity:1}
+/* Karte oben rechts */
+#mm{position:fixed!important;top:calc(10px + env(safe-area-inset-top))!important;right:calc(10px + env(safe-area-inset-right))!important;width:108px!important;height:108px!important;border-radius:50%!important;border:2px solid rgba(241,234,219,.75)!important;box-shadow:0 2px 12px rgba(0,0,0,.4)!important}
+/* Einstellungen oben links */
+#set{position:fixed!important;z-index:5;top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));width:46px;height:46px;display:none}
+#set::before{width:24px!important;height:24px!important}
+body:has(#ui[style*="flex"]) #set{display:flex}
+#setp{display:none;position:fixed;z-index:6;top:calc(64px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));flex-direction:column;gap:6px;min-width:220px;background:var(--flaeche);border:1px solid var(--linie);padding:8px}
+#setp.an{display:flex}
+#setp .g{position:static!important;display:flex!important;width:100%;max-width:none!important;right:auto!important;top:auto!important;text-align:left}
+#setp select.g{display:block!important}
+#setp .g{order:0!important}
+/* Joystick: immer unten links sichtbar */
+#st{left:calc(26px + env(safe-area-inset-left));bottom:calc(22px + env(safe-area-inset-bottom));width:124px;height:124px;border:1.5px solid rgba(241,234,219,.5);background:rgba(16,15,14,.28);transition:opacity .3s}
+#st i{width:52px;height:52px;margin:-26px;background:rgba(241,234,219,.7);box-shadow:0 1px 6px rgba(0,0,0,.35)}
+body:has(#ui[style*="flex"]) #st{display:block!important}
+#st.ruht{opacity:.55}
+@media (hover:hover) and (pointer:fine){body:has(#ui[style*="flex"]) #st{display:none!important}}
+/* Untertitel: klein, dezent, ohne Kasten */
+#sub,#wahl[style*="flex"]~#sub{background:none!important;border:0!important;padding:0!important;font:500 15px/1.4 var(--schrift)!important;color:#f6f1e6!important;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 12px rgba(0,0,0,.7)!important}
+#sub{left:50%!important;right:auto!important;top:auto!important;transform:translateX(-50%)!important;bottom:calc(16px + env(safe-area-inset-bottom))!important;width:max-content!important;max-width:min(44vw,520px)!important;text-align:center!important}
+#sub small{font:500 12px/1.3 var(--schrift)!important;color:rgba(246,241,230,.75)!important}
+#wahl[style*="flex"]~#sub{left:calc(min(400px,44vw) + 28px + env(safe-area-inset-left))!important;transform:none!important;top:calc(70px + env(safe-area-inset-top))!important;bottom:auto!important;text-align:left!important;max-width:40vw!important}
+
+#titel{position:fixed;inset:0;z-index:42;background:#000;display:none;align-items:center;justify-content:center;opacity:1;transition:opacity 1.4s ease;pointer-events:none}
+#titel span{font:400 clamp(22px,3.4vw,34px)/1.3 var(--schrift);letter-spacing:.06em;color:#efe8d8;opacity:0;animation:titein 1.6s .5s ease forwards}
+@keyframes titein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Startbild: Dunkelkammer vollflächig dahinter, Logo als Vektor davor */
+#sl{inset:0!important;width:auto!important;right:0!important}
+#sl img{width:100%!important;min-width:0!important;height:100%!important;object-fit:cover;object-position:50% 34%!important;transform-origin:30% 40%}
+#lt{left:42%!important;background:linear-gradient(90deg,rgba(14,8,6,0) 0,rgba(14,8,6,.72) 26%,rgba(14,8,6,.9) 100%)!important;border-left:0!important}
+#logo{width:min(100%,430px)!important;height:auto!important;filter:drop-shadow(0 3px 14px rgba(0,0,0,.6))!important}
+#cap{display:none}
 </style></head><body>
 <canvas id="cv"></canvas><div id="glanz"></div><div id="vig"></div><div id="korn"></div>
 <a class="g" id="back" href="./">Menü</a>
 <select class="g" id="ort"></select>
 <div id="lbl">Paderborn 1933</div>
 <div id="st"><i></i></div>
-<div id="ui"><button class="g" id="act"></button><button class="g" id="tonb">Ton</button><button class="g" id="kamb">Kamera</button><button class="g" id="view">Ansicht</button><div id="ped"><button class="g" id="pb">Bremse</button><button class="g" id="pg">Gas</button></div><canvas id="mm" width="208" height="208"></canvas></div>
+<button class="g ib ic-gear" id="set" aria-label="Einstellungen"></button><div id="setp" role="menu"></div><div id="acth"></div>
+<div id="ui"><button class="g ib ic-rede" id="act"></button><button class="g" id="tonb">Ton</button><button class="g ib ic-kam" id="kamb" aria-label="Kamera"></button><button class="g ib ic-blick" id="view" aria-label="Ansicht"></button><div id="ped"><button class="g ib ic-brems" id="pb" aria-label="Bremse"></button><button class="g ib ic-gas" id="pg" aria-label="Gas"></button></div><canvas id="mm" width="208" height="208"></canvas></div>
 <div id="fzb"></div><button class="g" id="inx">Überspringen</button><div id="kin"><button class="g" id="kinf">Film starten</button></div><div id="syn"><button class="g" id="synb">Standpunkt</button><button class="g" id="synv">Vorhang · Schabbat</button><button class="g" id="synq">Belege</button><button class="g" id="synx">Hinausgehen</button></div><div id="ans"></div><div id="kam"><div id="kf"></div><div id="kbar"><button class="g" id="kalb">Album</button><button id="ks" aria-label="Auslösen"></button><button class="g" id="kx">Fertig</button></div></div><div id="kfl"></div>
 <div id="alb"><div class="hd"><b>Album</b><button class="g" id="albx">Zurück</button></div><div id="albp"></div><div id="albg"></div></div><div id="albv"><img id="albi" alt=""><div><button class="g" id="albs">Speichern</button><button class="g" id="albd">Löschen</button><button class="g" id="albc">Schließen</button></div></div>
-<div id="tonp"><b>Ton</b><label>Musik<input type="range" id="mxm" min="0" max="100"></label><label>Stimmen<input type="range" id="mxs" min="0" max="100"></label><label>Stadt<input type="range" id="mxc" min="0" max="100"></label><div><button class="g" id="mxa">Ton aus</button><button class="g" id="mxz">Fertig</button></div></div><div id="wahl"></div><button class="g" id="stx">Weiter</button><div id="bl"></div><div id="kino1"></div><div id="kino2"></div><button class="g" id="opx">Überspringen</button><div id="sub"></div><div id="sz"></div>
+<div id="tonp"><b>Ton</b><label>Musik<input type="range" id="mxm" min="0" max="100"></label><label>Stimmen<input type="range" id="mxs" min="0" max="100"></label><label>Stadt<input type="range" id="mxc" min="0" max="100"></label><div><button class="g" id="mxa">Ton aus</button><button class="g" id="mxz">Fertig</button></div></div><div id="wahl"></div><button class="g" id="stx">Weiter</button><div id="bl"></div><div id="kino1"></div><div id="kino2"></div><button class="g" id="opx">Überspringen</button><div id="sub"></div><div id="titel"><span>Paderborn, 17. März 1933</span></div><div id="sz"></div>
 <div id="map"><canvas id="mapc"></canvas><button class="g" id="mapx">Zurück</button><button class="g" id="mapz" style="display:none">Zeitspuren · aus</button><div id="card"></div><div id="mapi">Ziehen · Zoomen · Ort antippen zum Hinspringen</div></div>
 <div id="film"><video id="fv" playsinline preload="none"></video><div id="fsub"></div><button class="g" id="fskip">Überspringen</button><div id="fwahl"><button class="g" id="fw1">Weiter · Bahnhofsvorplatz</button><button class="g" id="fw2">Am Westerntor beginnen</button><div class="n">Filmszene: Figuren und Dialog sind erfunden. Auch die Begegnung auf dem Vorplatz und die Fahrt sind Spielszene; belegte Angaben sind als solche gekennzeichnet.</div></div></div>
-<div id="dreh"><img src="icon-192.png" alt=""><i></i>Bitte das Gerät quer halten</div><div id="lp"><div id="sl"></div><div id="tt">Tippen für Ton</div><div id="lt"><img id="logo" src="s/b_wort.png" alt="Der Besucher"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">Betreten</button></div>
+<div id="dreh"><img src="icon-192.png" alt=""><i></i>Bitte das Gerät quer halten</div><div id="lp"><div id="sl"></div><div id="tt">Tippen für Ton</div><div id="lt"><img id="logo" src="s/logo.svg" alt="Der Besucher"><div id="cap">&nbsp;</div><div id="bar"><i></i></div><div id="lr"><div class="k" id="pt">Lade Stadt …</div><button id="go">Betreten</button></div>
 <div id="hint">Links ziehen: gehen · rechts ziehen: umsehen · am Rechner W A S D und Maus ziehen, Umschalt für schnelles Gehen</div></div></div>
 <script src="three.min.js"></script><script src="GLTFLoader.js"></script><script src="SkeletonUtils.js"></script><script src="figuren.js"></script>
 <script>
@@ -185,11 +256,11 @@ THREE.ShaderChunk.tonemapping_pars_fragment=THREE.ShaderChunk.tonemapping_pars_f
 THREE.ShaderChunk.fog_pars_vertex='#ifdef USE_FOG\n\tvarying float fogDepth;\n\tvarying float vFogY;\n\tvarying float vFogS;\n#endif';
 THREE.ShaderChunk.fog_vertex='#ifdef USE_FOG\n\tfogDepth = - mvPosition.z;\n\tvFogY = dot( viewMatrix[1].xyz, mvPosition.xyz ) + cameraPosition.y;\n\tvFogS = dot( normalize( mvPosition.xyz ), mat3( viewMatrix ) * vec3( 0.908, 0.259, 0.330 ) );\n#endif';
 THREE.ShaderChunk.fog_pars_fragment=THREE.ShaderChunk.fog_pars_fragment.replace('varying float fogDepth;','varying float fogDepth;\n\tvarying float vFogY;\n\tvarying float vFogS;');
-THREE.ShaderChunk.fog_fragment='#ifdef USE_FOG\n\t#ifdef FOG_EXP2\n\t\tfloat fgd = fogDensity * mix( 1.5, 0.45, smoothstep( 0.0, 34.0, vFogY ) );\n\t\tfloat fogFactor = 1.0 - exp( - fgd * fgd * fogDepth * fogDepth );\n\t#else\n\t\tfloat fogFactor = smoothstep( fogNear, fogFar, fogDepth );\n\t#endif\n\tvec3 fgc = mix( fogColor, vec3( 1.0, 0.80, 0.56 ), pow( max( vFogS, 0.0 ), 3.0 ) * 0.5 );\n\t#ifdef TONE_MAPPING\n\t\tfgc = toneMapping( fgc );\n\t#endif\n\tfgc = linearToOutputTexel( vec4( fgc, 1.0 ) ).rgb;\n\tgl_FragColor.rgb = mix( gl_FragColor.rgb, fgc, fogFactor );\n#endif';
+THREE.ShaderChunk.fog_fragment='#ifdef USE_FOG\n\t#ifdef FOG_EXP2\n\t\tfloat fgd = fogDensity * mix( 1.5, 0.45, smoothstep( 0.0, 34.0, vFogY ) );\n\t\tfloat fogFactor = 1.0 - exp( - fgd * fgd * fogDepth * fogDepth );\n\t\tfogFactor = 1.0 - ( 1.0 - fogFactor ) * ( 1.0 - 0.5 * smoothstep( 70.0, 460.0, fogDepth ) );\n\t#else\n\t\tfloat fogFactor = smoothstep( fogNear, fogFar, fogDepth );\n\t#endif\n\tvec3 fgc = mix( fogColor, vec3( 1.0, 0.80, 0.56 ), pow( max( vFogS, 0.0 ), 3.0 ) * 0.5 );\n\t#ifdef TONE_MAPPING\n\t\tfgc = toneMapping( fgc );\n\t#endif\n\tfgc = linearToOutputTexel( vec4( fgc, 1.0 ) ).rgb;\n\tgl_FragColor.rgb = mix( gl_FragColor.rgb, fgc, fogFactor );\n#endif';
 renderer.toneMapping=THREE.CustomToneMapping;renderer.toneMappingExposure=0.68;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
 var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(60,1,0.3,1400),SUN=new V3(0.908,0.259,0.330).normalize();   /* Frühjahrsvormittag: Sonne 15° hoch im Ostsüdosten, hinter Dunst */
-scene.fog=new THREE.FogExp2(new THREE.Color(0.46,0.44,0.41),0.0046);
+scene.fog=new THREE.FogExp2(new THREE.Color(0.47,0.45,0.42),0.0052);
 function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=kam?(w<h?58:44):(w<h?72:58);camera.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();
 /* Himmel: Verlauf, Sonne, Dunst, ziehende Wolken; daraus auch das Umgebungslicht */
@@ -500,30 +571,30 @@ var t0=Date.now();setInterval(function(){if(!started&&!ready&&Date.now()-t0>4500
 /* Ankunftsfilm: beim ersten Betreten (oder mit ?film), mit Untertiteln; danach Wahl des Startorts. Überspringen, Ende und Fehler führen einmalig zum selben Zustand. */
 var CUE=[[7.24,9.56,'Guten Morgen. Ich hatte telegrafiert.'],[9.56,11.28,'Wegen des Wagens.'],[11.55,13.03,'Ah, der Fotograf!'],[13.03,16.06,'Ich dachte schon, Sie hätten den Zug verpasst.'],[16.39,18.9,'Wo krieg ich um die Zeit schon Leute aufs Bild?'],[19.58,20.82,'Am Westerntor.'],[20.82,23.05,'Da hält gleich die Straßenbahn.'],[23.05,24.34,'Steigen Sie ein.']];
 function spielOrt(o){if(nav){$('ort').value=o;place(nav.orte[o])}}
-function spielStart(ort,deck){tonInit();$('film').style.display='none';started=true;if(!deck){$('lp').style.display='none';splashOff();$('ui').style.display='flex'}if(ort!==undefined&&nav){$('ort').value=ort;place(nav.orte[ort])}life()}
+function spielStart(ort,deck){tonInit();$('film').style.display='none';started=true;if(!deck){$('lp').style.display='none';splashOff();$('ui').style.display='flex'}if(ort!==undefined&&nav){$('ort').value=ort;place(nav.orte[ort])}life();setTimeout(function(){MU.st0={x:me.x,z:me.z}},600)}
 function filmStart(){var F=$('film'),v=$('fv'),fin=false;function ende(){if(fin)return;fin=true;try{v.pause()}catch(e){}$('fsub').textContent='';$('fskip').style.display='none';$('fwahl').style.display='flex';try{localStorage.setItem('ab32-ankunft','1')}catch(e){}}
   F.style.display='block';$('lp').style.display='none';splashOff();v.src=window.innerHeight>window.innerWidth?'s/ankunft_h.mp4':'s/ankunft_q.mp4';
   v.addEventListener('timeupdate',function(){if(fin)return;var t=v.currentTime,x='';for(var i=0;i<CUE.length;i++)if(t>=CUE[i][0]&&t<CUE[i][1])x=CUE[i][2];$('fsub').textContent=x});v.addEventListener('ended',ende);v.addEventListener('error',ende);$('fskip').addEventListener('click',ende);
   $('fw1').addEventListener('click',function(){spielStart(0);if(OP.done)fahrtStart();else opStart()});$('fw2').addEventListener('click',function(){spielStart(1)});var p=v.play();if(p&&p.catch)p.catch(ende)}
 /* Spielbeginn: beim ersten Mal mit der Begegnung am Bahnhof, sonst dort weiter, wo der Standort gewählt ist */
-$('go').addEventListener('click',function(){if(!OP.done){$('go').style.display='none';$('pt').textContent='Der Zug fährt ein …';spielStart(0,true);anStart()}else spielStart()});
+$('go').addEventListener('click',function(){if(!OP.done){$('go').style.display='none';$('pt').textContent='Der Zug fährt ein …';var TI=$('titel');TI.style.opacity='1';TI.style.display='flex';spielStart(0,true);anStart()}else spielStart()});
 /* Ladebilder: vollflächig, langsam wandernd, überblendend */
-var SP=[['b_tuch','Unter dem Tuch'],['b_schale','In der Dunkelkammer'],['b_bruecke','Am Wasser']],spi=-1,spT=0,spCur=null,spOff=false;
+var SP=[['b_schale','In der Dunkelkammer']],spi=-1,spT=0,spCur=null,spOff=false;
 function splashOff(){spOff=true;clearTimeout(spT);$('sl').innerHTML=''}
 function splashNext(){if(spOff)return;spi=(spi+1)%SP.length;var e=SP[spi],im=new Image();
   im.onload=function(){if(spOff)return;var sl=$('sl'),old=spCur;sl.appendChild(im);var ex=Math.max(0,im.offsetWidth-sl.clientWidth),d=spi%2,a=ex*(d?0.82:0.18),b=ex*(d?0.3:0.7);
-    if(im.animate)im.animate([{transform:'translate3d('+(-a)+'px,0,0) scale(1.03)'},{transform:'translate3d('+(-b)+'px,0,0) scale(1.1)'}],{duration:9000,easing:'linear',fill:'forwards'});else im.style.transform='translate3d('+(-(a+b)/2)+'px,0,0)';
+    if(im.animate)im.animate([{transform:'scale(1.02)'},{transform:'scale(1.12)'}],{duration:40000,easing:'linear',fill:'forwards'});else im.style.transform='translate3d('+(-(a+b)/2)+'px,0,0)';
     im.offsetWidth;im.className='on';$('cap').textContent=e[1];spCur=im;if(old){old.className='';setTimeout(function(){if(old.parentNode)old.parentNode.removeChild(old)},1600)}
-    spT=setTimeout(splashNext,6200)};
+    if(SP.length>1)spT=setTimeout(splashNext,6200)};
   im.onerror=function(){spT=setTimeout(splashNext,1500)};im.decoding='async';im.src='s/'+e[0]+'.webp'}
 splashNext();
 /* Eingabe: links gehen, rechts umsehen */
-var keys={},mv={x:0,y:0},tS=null,tL=null,stEl=$('st'),knob=stEl.firstChild,drag=null;
+var keys={},mv={x:0,y:0},tS=null,tL=null,stEl=$('st'),knob=stEl.firstChild,drag=null;stEl.classList.add('ruht');
 window.addEventListener('keydown',function(e){keys[e.key.toLowerCase()]=1});window.addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=0});
 function look(dx,dy){if(OP.on)return;lookIdle=0;var orb=ride?view==='aussen':view==='schulter';me.yaw-=dx*(orb?0.0040:0.0055);me.pitch=Math.max(orb?-0.55:-1.1,Math.min(orb?0.1:1.1,me.pitch-dy*(orb?0.003:0.0042)))}
-var cv=$('cv');cv.addEventListener('touchstart',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.clientX<window.innerWidth*0.42&&!tS){tS={id:t.identifier,x:t.clientX,y:t.clientY};stEl.style.left=(t.clientX-56)+'px';stEl.style.top=(t.clientY-56)+'px';stEl.style.bottom='auto';stEl.style.display='block'}else if(!tL)tL={id:t.identifier,x:t.clientX,y:t.clientY}}},{passive:false});
+var cv=$('cv');cv.addEventListener('touchstart',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.clientX<window.innerWidth*0.42&&!tS){var rb=stEl.getBoundingClientRect(),mx=rb.left+rb.width/2,my=rb.top+rb.height/2;if(rb.width&&Math.hypot(t.clientX-mx,t.clientY-my)<rb.width*0.95){tS={id:t.identifier,x:mx,y:my}}else{tS={id:t.identifier,x:t.clientX,y:t.clientY};stEl.style.left=(t.clientX-62)+'px';stEl.style.top=(t.clientY-62)+'px';stEl.style.bottom='auto'}stEl.classList.remove('ruht');stEl.style.display='block'}else if(!tL)tL={id:t.identifier,x:t.clientX,y:t.clientY}}},{passive:false});
 cv.addEventListener('touchmove',function(e){e.preventDefault();for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(tS&&t.identifier===tS.id){var dx=t.clientX-tS.x,dy=t.clientY-tS.y,l=Math.hypot(dx,dy),m=Math.min(l,50);if(l>0){dx=dx/l*m;dy=dy/l*m}mv.x=dx/50;mv.y=dy/50;knob.style.transform='translate('+dx+'px,'+dy+'px)'}else if(tL&&t.identifier===tL.id){look(t.clientX-tL.x,t.clientY-tL.y);tL.x=t.clientX;tL.y=t.clientY}}},{passive:false});
-function tEnd(e){for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(tS&&t.identifier===tS.id){tS=null;mv.x=mv.y=0;knob.style.transform='';stEl.style.display='none'}if(tL&&t.identifier===tL.id)tL=null}}cv.addEventListener('touchend',tEnd);cv.addEventListener('touchcancel',tEnd);
+function tEnd(e){for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(tS&&t.identifier===tS.id){tS=null;mv.x=mv.y=0;knob.style.transform='';stEl.style.left=stEl.style.top=stEl.style.bottom='';stEl.classList.add('ruht')}if(tL&&t.identifier===tL.id)tL=null}}cv.addEventListener('touchend',tEnd);cv.addEventListener('touchcancel',tEnd);
 cv.addEventListener('mousedown',function(e){drag={x:e.clientX,y:e.clientY}});window.addEventListener('mouseup',function(){drag=null});window.addEventListener('mousemove',function(e){if(drag){look(e.clientX-drag.x,e.clientY-drag.y);drag.x=e.clientX;drag.y=e.clientY}});
 /* ---------- Leben: Spielfigur, Passanten, zwei Straßenbahnen ---------- */
 var LINE=null,view='schulter',lookIdle=9,vel={x:0,z:0},cT=new V3(),cD=6.6,ride=null,hero=null,ppl=[],TR=[],Fig=null,LB=null,fwd=new V3();
@@ -755,7 +826,7 @@ function npcStep(p,dt){var far=Math.hypot(p.x-camera.position.x,p.z-camera.posit
     var ty=p.halt>0&&p.zuMir?Math.atan2(me.x-p.x,me.z-p.z):Math.atan2(q.dx*p.dir,q.dz*p.dir),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=Math.sign(da)*Math.min(Math.abs(da),dt*(1.4+Math.abs(da)*2.2))}
   p.o.visible=!far;if(far){p.bl.visible=false;return}if(p.still)p.y=hAt(p.x,p.z);var nd=Math.hypot(me.x-p.x,me.z-p.z);p.af=!p.af;if(nd>26&&p.af){p.ad=dt}else{Fig.animate(p,dt+(p.ad||0));p.ad=0}Fig.kopf(p,nd<6&&!ride?Math.atan2(me.x-p.x,me.z-p.z):p.yaw,dt)}
 $('view').addEventListener('click',function(){if(ride&&ride.car)return;view=ride?(view==='innen'?'aussen':'innen'):(view==='ich'?'schulter':'ich');label()});
-function label(){$('view').textContent='Ansicht · '+({ich:'Ich',schulter:'Schulter',innen:'Innen',aussen:'Außen'})[view]}label();
+function label(){var n=({ich:'Ich',schulter:'Schulter',innen:'Innen',aussen:'Außen'})[view],b=$('view');b.textContent='';b.setAttribute('aria-label','Ansicht · '+n);b.setAttribute('data-k',n.charAt(0))}label();
 $('act').addEventListener('click',function(){if(FZ.bl)return;var v;if(KIN.sitz||actT==='Hinsetzen'){kinSetz();return}if(actT==='Synagoge · Eintreten'&&SYN.nah){synRein();return}if(ANS.nah&&!ride){if(ANS.nah.url){/* begehbares Kino von 1935: eigener Rundgang, bewusster Vorgriff */sub('Zeitsprung: Residenz-Theater, 3. August 1935','Der Rundgang öffnet sich in einem eigenen Fenster.',6);window.open(ANS.nah.url,'_blank');return}ansZeig(ANS.nah);return}if(ride&&ride.car===2&&ride.mode==='me'){if(Math.abs(ride.v)>0.4)FZ.raus=1;else fzAus();return}if(hero&&hero.seq)return;if(LE.nah&&actT==='Ansprechen'){leRede(LE.nah);return}if(ST.wart&&!ride&&FA&&Math.hypot(me.x-FA.x,me.z-FA.z)<7){stEinsteigen();return}
   if(!ride&&FA&&FA.bereit&&hero&&Math.hypot(me.x-FA.x,me.z-FA.z)<6){FA.bereit=false;sub('');steig(hero,FA,true,true,false,function(){ride=FA;FA.sre=true;FA.los=true;view='aussen';me.pitch=-0.2;me.yaw=FA.yaw+Math.PI;lookIdle=9;label()});if(OP.dr&&!OP.dr.seq&&!OP.dr.im){OP.geht=false;OP.warte=false;steig(OP.dr,FA,false,false,false,null)}return}
   if(ride&&ride.car){v=ride;if(hero&&Math.abs(v.v)<0.7&&(v.car===2||v.done)){ride=null;v.v=0;if(v.mode==='me')v.mode='park';view='schulter';label();me.x=hero.x;me.z=hero.z;steig(hero,v,v.sre,true,true,function(){if(v===FA){FA.car=2;FA.besetzt=!!(OP.dr&&OP.dr.im)}sub('')})}return}
@@ -969,13 +1040,13 @@ var AN={on:0,t:0,DAUER:25,zug:[],rauch:[],leute:[]};
 function anW(lx,ly,lz){var y=BHF.o?BHF.o.position.y:0;return new V3(BHF.x+lx*BHF.c+lz*BHF.s,y+ly,BHF.z-lx*BHF.s+lz*BHF.c)}
 function anBereit(){if(!BHF.o||!BHF.oc||!hero||!hero.neu||!Fig||!nav||!LINE)return false;var i=Math.floor((me.x+1250)/250),j=Math.floor((me.z+1350)/250);if(!occT(i,j).d)return false;return !TL.some(function(t){return t.s!==2&&tdist(t)<160})}
 function anStart(){if(AN.on)return;AN.w=(AN.w||0)+1;opLaden();if(!anBereit()&&AN.w<240){setTimeout(anStart,500);return}if(!BHF.o){OP.deck=true;opStart();return}
-  AN.on=1;AN.t=0;var f=anW(1,0,0).sub(anW(0,0,0)),sp=anW(-22,0,-10.3);me.x=sp.x;me.z=sp.z;/* Blick am Bahnsteig entlang (Zug links, Gebäude rechts); der Fotograf steht davor und schaut halb zur Kamera, leicht zum Zug hin */me.yaw=Math.atan2(-f.x,-f.z);me.pitch=-0.1;var tz=anW(0,0,-1).sub(anW(0,0,0)),hd=new V3(-f.x*0.9+tz.x*0.42,0,-f.z*0.9+tz.z*0.42);hyaw=Math.atan2(hd.x,hd.z);vel.x=vel.z=0;if(hero){hero.x=me.x;hero.z=me.z;hero.yaw=hyaw;hero.y=hAt(me.x,me.z)}view='schulter';label();
+  AN.on=1;AN.t=0;AN.tt=4.2;var TI=$('titel');TI.style.transition='none';TI.style.opacity='1';TI.style.display='flex';TI.offsetWidth;TI.style.transition='';var f=anW(1,0,0).sub(anW(0,0,0)),sp=anW(-22,0,-10.3);me.x=sp.x;me.z=sp.z;/* Blick am Bahnsteig entlang (Zug links, Gebäude rechts); der Fotograf steht davor und schaut halb zur Kamera, leicht zum Zug hin */me.yaw=Math.atan2(-f.x,-f.z);me.pitch=-0.1;var tz=anW(0,0,-1).sub(anW(0,0,0)),hd=new V3(-f.x*0.9+tz.x*0.42,0,-f.z*0.9+tz.z*0.42);hyaw=Math.atan2(hd.x,hd.z);vel.x=vel.z=0;if(hero){hero.x=me.x;hero.z=me.z;hero.yaw=hyaw;hero.y=hAt(me.x,me.z)}view='schulter';label();
   BHF.o.traverse(function(o){if(/^(Lok_38_3050|Tender|Personenwagen)/.test(o.name)&&o.isMesh){o.userData.x0=o.position.x;AN.zug.push(o)}});
   anRauchInit();
   anLeute();document.body.classList.add('kino');$('ui').style.display='none';$('ort').style.display='none';$('inx').style.display='block';
   var e=$('lp');e.style.transition='opacity .9s';e.style.opacity='0';setTimeout(function(){e.style.display='none';e.style.opacity='';splashOff()},950);
   if(SND.ok&&!AN.g){stBuf('an_bhf','a/bahnhof.mp3',function(b){var sr=AC.createBufferSource(),gn=AC.createGain();sr.buffer=b;sr.loop=true;gn.gain.value=0.28;sr.connect(gn);gn.connect(SND.m);sr.start();AN.g=gn;AN.src=sr})}
-  sub('Paderborn, Hauptbahnhof','Frühjahr 1933',4.5)}
+  }
 /* Reisende: steigen aus und gehen durch die Halle hinaus, andere warten, Gepäckträger am Zug */
 function anLeute(){var ks=Fig.keys().filter(function(k){return /^[mf]\d$/.test(k)}),n=MOB?12:22,i;if(!ks.length)return;
   var weg=function(x0){return mkPath([[x0,-10.4],[x0*0.5,-9.6],[0,-8.6],[0,-5.6],[0,-1],[0,4],[0,8.2],[x0>0?6:-6,13],[x0>0?14:-14,18]].map(function(q){var w=anW(q[0],0,q[1]);return[w.x,-w.z]}))};
@@ -1009,7 +1080,7 @@ function anRauch(dt,t){var off=AN.off||0,ch=anW(6.6+off,4.95,-15.5),v=AN.v||0,L=
   var q=0.35+0.65*still;if(AN.qualm)AN.qualm.forEach(function(p,i){p.t+=dt;if(p.t<0)return;if(p.t>p.L||p.x===undefined){p.t=p.t>p.L?p.t-p.L:p.t;var w=anW(-34+Math.random()*48+off*0.4,0.5+Math.random()*2.6,-10.8-Math.random()*6.5);p.x=w.x;p.y=w.y;p.z=w.z}
     var k=p.t/p.L;p.o.visible=true;p.o.position.set(p.x+wind.x*p.t*0.3,p.y+k*1.5,p.z+wind.z*p.t*0.3);var sc=3.5+k*6;p.o.scale.set(sc*1.4,sc*0.6,sc);p.o.material.opacity=Math.sin(k*Math.PI)*0.42*q})}
 /* Nebel am Bahnhof dichter, solange man in der Nähe des Zuges ist */
-function anNebel(){if(!BHF.o||!scene.fog)return;if(!AN.f0){AN.f0=scene.fog.density;AN.fc=scene.fog.color.clone()}var d=Math.hypot(camera.position.x-BHF.cx,camera.position.z-BHF.cz),w=Math.max(0,Math.min(1,(170-d)/90));scene.fog.density=AN.f0*(1+2.4*w);scene.fog.color.copy(AN.fc).lerp(new THREE.Color(0.6,0.59,0.57),w*0.45)}
+function anNebel(){if(!BHF.o||!scene.fog)return;if(!AN.f0){AN.f0=scene.fog.density;AN.fc=scene.fog.color.clone()}var d=Math.hypot(camera.position.x-BHF.cx,camera.position.z-BHF.cz),w=Math.max(0,Math.min(1,(170-d)/90));scene.fog.density=AN.f0*(1+2.0*w);scene.fog.color.copy(AN.fc).lerp(new THREE.Color(0.6,0.59,0.57),w*0.45)}
 /* Zuggeräusche, im Browser erzeugt (kein Tonmaterial vorhanden): Pfiff aus der Ferne, Rollen und Schienenstöße je nach Tempo und Nähe,
    Bremsenquietschen beim Halten, danach Dampfzischen in Abständen; dazu das Bahnhofsgeräusch als Schleife, leiser mit Abstand. */
 var ZT={};
@@ -1039,8 +1110,8 @@ function ztStehen(dt){if(!BHF.o)return;var dz=Math.hypot(me.x-BHF.x,me.z-BHF.z);
   if(AN.g)AN.g.gain.setTargetAtTime(Math.max(0,1-d/150)*0.45,AC.currentTime,1)}
 function anDampf(k){/* weiße Dampfstöße seitlich an den Zylindern */AN.dampf=AN.dampf||[];if(!AN.dampf.length){for(var i=0;i<8;i++){var m=new THREE.Sprite(AN.rauch[0].o.material.clone());m.material.opacity=0;m.material.color.setHex(0xf2f0ec);scene.add(m);AN.dampf.push({o:m,t:9})}}AN.dampf.forEach(function(p,i){p.t=-i*0.06;p.k=k;p.s=i%2?1:-1})}
 function anDampfStep(dt){if(!AN.dampf)return;var b=anW(6.2+(AN.off||0),0.75,-15.5);AN.dampf.forEach(function(p){p.t+=dt;if(p.t<0||p.t>2.2){p.o.visible=false;return}var e=p.t/2.2,side=anW(0,0,p.s*(1.2+e*2.4)).sub(anW(0,0,0));p.o.visible=true;p.o.position.set(b.x+side.x,b.y+e*1.4,b.z+side.z);var sc=0.6+e*3.2;p.o.scale.set(sc,sc,sc);p.o.material.opacity=(1-e)*0.6*p.k})}
-function anStep(dt){if(!AN.on)return false;AN.t+=dt;var t=AN.t;anZug(t);anRauch(dt,t);anNebel();ztIntro(t,dt);anDampfStep(dt);mv.x=mv.y=0;vel.x=vel.z=0;anKam(t);if(t>=AN.DAUER)anEnde();return true}
-function anEnde(){if(!AN.on)return;AN.on=0;anZug(99);if(ZT.es&&AN.t<23){try{ZT.eg.gain.setTargetAtTime(0,AC.currentTime,0.15);ZT.es.stop(AC.currentTime+0.8)}catch(e){}}document.body.classList.remove('kino');$('inx').style.display='none';/* Übergabe an die Schulterkamera ohne Sprung, erst nah am Fotografen */AN.nah=1;cT.set(me.x+Math.cos(me.yaw)*0.42,me.y+1.55,me.z-Math.sin(me.yaw)*0.42);cD=2.8;$('ui').style.display='flex';$('ort').style.display='';view='schulter';label();me.pitch=-0.16;lookIdle=0;anZiel()}
+function anStep(dt){if(!AN.on)return false;if(AN.tt>0){AN.tt-=dt;if(AN.tt<1.4&&!AN.tf){AN.tf=1;$('titel').style.opacity='0';sub('Hauptbahnhof','',3.5)}if(AN.tt<=0)$('titel').style.display='none';mv.x=mv.y=0;vel.x=vel.z=0;anZug(0);anKam(0);return true}AN.t+=dt;var t=AN.t;anZug(t);anRauch(dt,t);anNebel();ztIntro(t,dt);anDampfStep(dt);mv.x=mv.y=0;vel.x=vel.z=0;anKam(t);if(t>=AN.DAUER)anEnde();return true}
+function anEnde(){if(!AN.on)return;AN.on=0;AN.tt=0;$('titel').style.display='none';anZug(99);if(ZT.es&&AN.t<23){try{ZT.eg.gain.setTargetAtTime(0,AC.currentTime,0.15);ZT.es.stop(AC.currentTime+0.8)}catch(e){}}document.body.classList.remove('kino');$('inx').style.display='none';/* Übergabe an die Schulterkamera ohne Sprung, erst nah am Fotografen */AN.nah=1;cT.set(me.x+Math.cos(me.yaw)*0.42,me.y+1.55,me.z-Math.sin(me.yaw)*0.42);cD=2.8;$('ui').style.display='flex';$('ort').style.display='';view='schulter';label();me.pitch=-0.16;lookIdle=0;anZiel()}
 /* Ziel vor dem Bahnhof: Wagen im Lichtkegel */
 function anZiel(){var T=anW(0,0,16),bs=0,bd=1e9,k,q;for(k=0;k<LINE.len;k+=2){q=pAt(LINE,k);var e=Math.hypot(q.x-T.x,q.z-T.z);if(e<bd){bd=e;bs=k}}var ql=pAt(LINE,bs+4),cy=Math.atan2(ql.dx,ql.dz),W=OP.wagen,fz={half:2.4,wid:0.95,dx:Math.sin(cy),dz:Math.cos(cy)},L=[2.3,-2.3,3.4,-3.4,4.6,-4.6],i,x,z;
   for(i=0;i<L.length;i++){q=pAt(LINE,bs,L[i]);if(vehFrei(fz,q.x,q.z,cy)){x=q.x;z=q.z;break}}if(x===undefined){x=T.x;z=T.z}
@@ -1069,8 +1140,9 @@ function actBtn(){var b=$('act'),tx='';near=null;if(ST.wart&&!ride&&FA&&!(hero&&
   if(KIN.sitz)tx='Aufstehen';else if(KIN.saal&&KIN.platz>=0&&(!tx||tx==='Ansprechen')){LE.nah=null;tx='Hinsetzen'}
   if(SYN.nah&&(!tx||tx==='Ansprechen')&&!(hero&&hero.seq)){LE.nah=null;tx='Synagoge · Eintreten'}
   ANS.nah=null;if(!ride&&!(hero&&hero.seq)&&(!tx||tx==='Ansprechen')){ANS.nah=ansNah();if(ANS.nah){LE.nah=null;tx=ANS.nah.t+' · '+(ANS.nah.akt||'Lesen')}}
-  var fu=!!(ride&&ride.car===2&&ride.mode==='me');if(fu!==PED.an){PED.an=fu;PED.g=PED.b=0;$('ped').style.display=fu?'flex':'none';$('kamb').style.display=$('view').style.display=fu?'none':''}if(fu){var rz=ride.v<0.3&&ride.v>-9&&(ride.v<-0.05||PED.b&&ride.v<0.3)?'Zurück':'Bremse';if(rz!==PED.tx){PED.tx=rz;$('pb').textContent=rz}}
-  if(tx!==actT){actT=tx;b.textContent=tx;b.style.display=tx?'block':'none'}}
+  var fu=!!(ride&&ride.car===2&&ride.mode==='me');if(fu!==PED.an){PED.an=fu;PED.g=PED.b=0;$('ped').style.display=fu?'flex':'none';$('kamb').style.display=$('view').style.display=fu?'none':''}if(fu){var rz=ride.v<0.3&&ride.v>-9&&(ride.v<-0.05||PED.b&&ride.v<0.3)?'Zurück':'Bremse';if(rz!==PED.tx){PED.tx=rz;var pb=$('pb');pb.setAttribute('aria-label',rz);pb.className='g ib '+(rz==='Zurück'?'ic-zurueck':'ic-brems')}}
+  if(tx!==actT){actT=tx;b.textContent=tx;b.setAttribute('aria-label',tx);b.className='g ib ic-'+actIc(tx);b.style.display=tx?'flex':'none';var h=$('acth');clearTimeout(h.t);h.textContent=tx;h.classList.toggle('an',!!tx);if(tx)h.t=setTimeout(function(){h.classList.remove('an')},2200)}}
+function actIc(t){if(/Hält an/.test(t))return'warte';if(/Aussteigen/.test(t))return'raus';if(/Einsteigen|Fahren/.test(t))return'auto';if(/Eintreten|Hinausgehen|Betreten/.test(t))return'tuer';if(/Hinsetzen|Aufstehen/.test(t))return'sitz';if(/Ansprechen|Fragen|Reden/.test(t))return'rede';return'lesen'}
 function tramBlock(x,z){for(var i=0;i<TR.length;i++){var t=TR[i],ax=x-t.x,az=z-t.z;if(Math.abs(ax*t.dx+az*t.dz)<t.half+0.25&&Math.abs(-ax*t.dz+az*t.dx)<t.wid+0.25)return true}return false}
 function vehBlock(x,z){for(var i=0;i<VEH.length;i++){var t=VEH[i],ax=x-t.x,az=z-t.z;if(Math.abs(ax*t.dx+az*t.dz)<t.half+0.2&&Math.abs(-ax*t.dz+az*t.dx)<t.wid+0.2)return true}return false}
 function ok(x,z){return canWalk(x,z)&&!tramBlock(x,z)&&!vehBlock(x,z)}
@@ -1134,7 +1206,7 @@ function kulisse(){if(!SND.ok)return;tonLaden();var bh=nah('Hauptbahnhof',70,260
   EV.hu-=0.25;if(EV.hu<0&&str>0.3&&SB.huf0){EV.hu=22+Math.random()*40;var n=14+Math.floor(Math.random()*10),i,v0=0.05+Math.random()*0.09;for(i=0;i<n;i++){var e=Math.sin(Math.PI*i/(n-1));spiel(i%2?'huf1':'huf0',v0*e*str*inn,0.8+Math.random()*0.15,i*0.31+(i%2?0.07:0))}}
   /* Glocken: nächste Kirche schlägt, gedämpft mit der Entfernung */
   EV.gl-=0.25;if(EV.gl<0&&SB.glocke){EV.gl=70+Math.random()*80;var K=[[40,-45,0.5],[690,-375,0.4],[250,-20,0.62],[520,-200,0.55]],bd=1e9,bk=K[0];K.forEach(function(k){var d=Math.hypot(k[0]-me.x,k[1]-me.z);if(d<bd){bd=d;bk=k}});g=0.5*Math.max(0,1-bd/520)*inn;if(g>0.02){var m=3+Math.floor(Math.random()*4);for(i=0;i<m;i++)spiel('glocke',g,bk[2],i*1.9)}}}
-function tonSet(m){TM=m;SND.on=m>0;try{localStorage.setItem('ab32-ton',String(m))}catch(e){}if(SND.ok){SND.aus.gain.value=m>0?1:0;mixSet()}$('tonb').textContent=m>0?'Ton':'Ton · aus';$('mxa').textContent=m>0?'Ton aus':'Ton an'}
+function tonSet(m){TM=m;SND.on=m>0;try{localStorage.setItem('ab32-ton',String(m))}catch(e){}if(SND.ok){SND.aus.gain.value=m>0?1:0;mixSet()}$('tonb').textContent=m>0?'Ton und Musik':'Ton und Musik · aus';$('mxa').textContent=m>0?'Ton aus':'Ton an'}
 /* ---------- Adaptive Musik: Ort und Fortschritt wählen das Stück, das Verhalten des Spielers bestimmt, wie präsent es ist. Die Stücke sind austauschbar: Rolle → Datei a/mu_<name>.mp3, ruhige Phrasenenden und Einsätze stehen in w/musik.json. ---------- */
 var MUS={titel:'platz',reise:'puls',strasse:'strasse',platz:'platz',dom:'dom',quelle:'quelle',wende:'wende'},
   MU={ok:false,d:[],akt:-1,rolle:'',soll:'',st:0,pos:{},still:0,rede:0,redeDb:-9,dR:0,dS:0,dB:0,dK:0,dP:0,blick:0,bt:0,span:0,sp:0,voll:0,I:null,MIX:{m:80,s:100,c:50}};
@@ -1154,7 +1226,7 @@ function musikSpiel(n,ab,ein,aus){if(!MU.ok)return;var t=AC.currentTime,alt=MU.d
   MU.akt=MU.akt===0?1:0;neu.n=n;neu.end=0;MU.st=0;if(!n){weg();return}neu.g.gain.cancelScheduledValues(t);neu.g.gain.setValueAtTime(0,t);
   go=function(){neu.el.removeEventListener('loadedmetadata',go);try{if(ab>0.5&&isFinite(neu.el.duration)&&ab<neu.el.duration-5)neu.el.currentTime=ab}catch(e){}var p=neu.el.play(),los=function(){if(MU.d[MU.akt]!==neu)return;neu.g.gain.cancelScheduledValues(AC.currentTime);neu.g.gain.setTargetAtTime(1,AC.currentTime,ein/3);weg()};if(p&&p.then)p.then(los).catch(los);else los()};
   var url='a/mu_'+n+'.mp3';if(neu.el.getAttribute('src')===url&&neu.el.readyState>=1){go()}else{neu.el.addEventListener('loadedmetadata',go);neu.el.src=url;neu.el.load()}}
-function musikRolle(){if(!started)return'platz';/* Start und Neustart: gleich „The Square Opens“ */if(KIN.film)return'';if(OP.on)return'';if(!OP.done&&OP.st===0)return'platz';/* Ankunft und Weg zum Wagen: „The Square Opens“ */if(!OP.done&&OP.st<3)return'platz';if(OP.st===3||(FA&&ride===FA&&!FA.done))return'reise';
+function musikRolle(){if(!started)return'platz';if(MU.st0){if(Math.hypot(me.x-MU.st0.x,me.z-MU.st0.z)<90&&!ride)return'platz';MU.st0=null}/* Start und Neustart: gleich „The Square Opens“ */if(KIN.film)return'';if(OP.on)return'';if(!OP.done&&OP.st===0)return'platz';/* Ankunft und Weg zum Wagen: „The Square Opens“ */if(!OP.done&&OP.st<3)return'platz';if(OP.st===3||(FA&&ride===FA&&!FA.done))return'reise';
   var q=nah('Paderquell',70,200),dm=Math.max(nah('Markt und Dom',60,170),nah('Domdechanei',50,150),nah('Ikenberg',50,150)),pl=Math.max(nah('Marienplatz',50,140),nah('Rathausplatz',60,150)),ws=Math.max(nah('Westernstraße',90,200),nah('Westerntor',40,110)*0.9);
   if(ST.D&&ST.STILL[ST.s.node]&&ST.ph&&ST.ph!=='weg')return''; /* keine Musik unter dem Boykott */if(q>0.5)return'quelle';if(ST.s.node>='07b'&&(pl>0.4||dm>0.4))return'wende';if(dm>0.5)return'dom';/* freies Laufen: „The Square Opens“ ist das Grundstück (Wunsch: das ruhigere Reise- und Straßenstück war dafür zu langsam); Dom, Quellen und die Wende behalten ihre eigenen Stücke */return'platz'}
 function musikRede(sek,db){MU.rede=Math.max(MU.rede,sek);MU.redeDb=db||-9}
@@ -1181,7 +1253,8 @@ document.addEventListener('visibilitychange',function(){if(!SND.ok)return;try{if
 /* Regler: Musik, Stimmen, Stadt getrennt */
 (function(){var P=$('tonp');[['m','mxm'],['s','mxs'],['c','mxc']].forEach(function(e){var i=$(e[1]);i.value=MU.MIX[e[0]];i.parentNode.setAttribute('data-v',i.value+' %');i.addEventListener('input',function(){i.parentNode.setAttribute('data-v',i.value+' %');MU.MIX[e[0]]=+i.value;try{localStorage.setItem('ab32-mix2',JSON.stringify(MU.MIX))}catch(x){}mixSet()})});
   $('mxa').addEventListener('click',function(){tonSet(TM>0?0:1)});$('mxz').addEventListener('click',function(){P.style.display='none'})})();
-$('tonb').addEventListener('click',function(){tonInit();var P=$('tonp');P.style.display=P.style.display==='block'?'none':'block'});tonSet(TM);
+(function(){var p=$('setp');[$('ort'),$('tonb')].forEach(function(e){p.appendChild(e)});var q=document.createElement('a');q.className='g';q.href='quellen.html';q.textContent='Quellen und Belege';q.style.textDecoration='none';p.appendChild(q);p.appendChild($('back'));$('back').textContent='Hauptmenü';$('set').addEventListener('click',function(e){e.stopPropagation();p.classList.toggle('an')});document.addEventListener('pointerdown',function(e){if(p.classList.contains('an')&&!p.contains(e.target)&&e.target!==$('set'))p.classList.remove('an')},true)})();
+$('tonb').addEventListener('click',function(){tonInit();$('setp').classList.remove('an');var P=$('tonp');P.style.display=P.style.display==='block'?'none':'block'});tonSet(TM);
 /* ---------- Eröffnung „Die Mütze“: Begegnung mit dem Fahrer auf dem Bahnhofsvorplatz, in Echtzeit mit beiden Figuren und den gelieferten Stimmen ---------- */
 var OP={on:false,st:0,t:0,li:-1,lt:0,dr:null,kc:0,cp:new V3(),cl:new V3(),ci:false,sd:1,warte:false,gA:0,gB:0,gC:0,src:null,done:false,zx:0,zz:0},
   OL=[['F','Willkommen in Paderborn. Soll ich Ihnen die Tasche abnehmen?',2.8,0.4],['P','Danke, die behalt ich lieber. Sagen Sie, wo würden Sie das erste Bild machen?',3.75,0.54],['F','Bei Rosenbaum. Meine Mütze kommt von da.',2.86,0.45],['P','Darf ich die mal sehen?',1.09,0.78],['F','Die hat schon bessere Tage gesehen. Kommen Sie, ich zeig Ihnen, wo sie die machen.',4.54,0.55]];

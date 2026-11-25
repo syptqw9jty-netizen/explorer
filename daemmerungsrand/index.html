@@ -12,7 +12,8 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--rot);color:var(--text);overflow:hidden}
-#bild{position:fixed;left:0;top:0;bottom:0;right:min(46vw,470px);background:#b3140f url(s/b_cover.webp) center top/cover no-repeat}
+#bild{position:fixed;left:0;top:0;bottom:0;right:min(46vw,470px);background:linear-gradient(180deg,rgba(12,6,4,.55) 0,rgba(12,6,4,0) 38%),#4a0e0a url(s/b_schale.webp) 50% 36%/cover no-repeat}
+#blogo{position:absolute;left:calc(22px + env(safe-area-inset-left));top:calc(18px + env(safe-area-inset-top));width:min(78%,430px);height:auto;filter:drop-shadow(0 3px 14px rgba(0,0,0,.65))}
 #tafel{position:fixed;top:0;bottom:0;right:0;width:min(46vw,470px);background:var(--flaeche-fest);border-left:1px solid var(--linie);display:flex;flex-direction:column;justify-content:center;padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) 0}
 #tafel .ortz{padding:0 16px 0 23px;color:var(--text-leise);white-space:nowrap;letter-spacing:.1em}
 #tafel .satzl{margin:8px 16px 8px 23px;color:var(--linie)}
@@ -26,7 +27,7 @@ html,body{margin:0;height:100%;background:var(--rot);color:var(--text);overflow:
 @media (max-height:360px){.mz{font-size:22px;min-height:44px;padding-top:6px;padding-bottom:6px}}
 </style></head><body>
 <div id="dreh"><img src="icon-192.png" alt=""><i></i>Bitte das Gerät quer halten</div>
-<div id="bild" role="img" aria-label="Der Besucher – ein Mann mit Hut, Mantel und Kamera steigt am Bahnsteig aus dem Zug"></div>
+<div id="bild" role="img" aria-label="Der Besucher – Abzug einer Stadtansicht in der Entwicklerschale der Dunkelkammer"><img id="blogo" src="s/logo.svg" alt="Der Besucher"></div>
 <nav id="tafel" aria-label="Hauptmenü">
   <div class="ortz">Paderborn · Frühjahr 1933</div><hr class="satzl">
   <div class="liste an" id="haupt">
