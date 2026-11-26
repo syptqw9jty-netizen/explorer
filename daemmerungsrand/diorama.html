@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#16120f">
-<title>Der Besucher · Diorama-Test</title>
+<title>Der Besucher · Diorama Bahnhof–Westerntor</title>
 <style>
 html,body{margin:0;height:100%;background:#16120f;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:Georgia,'Times New Roman',serif;color:#efe8d8}
 #cv{position:fixed;inset:0;width:100%;height:100%;display:block}
@@ -21,9 +21,9 @@ html,body{margin:0;height:100%;background:#16120f;overflow:hidden;touch-action:n
 <canvas id="cv"></canvas>
 <div id="vig"></div>
 <div id="kopf"><a href="westerntor.html">← Spiel</a></div>
-<div id="info">Diorama-Test · Bahnhofsvorplatz 1933</div>
+<div id="info">Diorama-Test · Bahnhof → Westerntor 1933</div>
 <div id="hin">Tippen: hingehen · Ziehen: verschieben · Zwei Finger: zoomen</div>
-<div id="lade"><span id="lt">Lade Diorama …</span><small>Bahnhofsvorplatz Paderborn, 1933</small></div>
+<div id="lade"><span id="lt">Lade Diorama …</span><small>Bahnhof bis Westerntor, Paderborn 1933</small></div>
 <script src="three.min.js"></script>
 <script src="GLTFLoader.js"></script>
 <script src="SkeletonUtils.js"></script>
@@ -52,51 +52,52 @@ var fang=new THREE.Mesh(new THREE.PlaneBufferGeometry(16,16),new THREE.ShadowMat
 function lade(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(u);return r})}
 function bild(u){return new Promise(function(ok,no){var i=new Image();i.decoding='async';i.onload=function(){ok(i)};i.onerror=function(){no(new Error(u))};i.src=u})}
 
-Promise.all([lade('dio/vorplatz.json').then(function(r){return r.json()}),bild('dio/vorplatz.webp'),bild('dio/vorplatz_tiefe.png'),lade('dio/vorplatz_wege.json').then(function(r){return r.json()})]).then(function(a){
-  K=a[0];var img=a[1],dimg=a[2],W=a[3];
-  /* Kamera wie in Blender (orthografisch) */
-  var P=K.pitch*Math.PI/180,Y=K.yaw*Math.PI/180;
-  FW=b2t(K.F).normalize();UP=b2t([-Math.sin(Y)*Math.sin(P),Math.cos(Y)*Math.sin(P),Math.cos(P)]).normalize();RI=b2t([Math.cos(Y),Math.sin(Y),0]).normalize();C0=b2t(K.cam);
-  IW=K.os;IH=K.os*K.h/K.w;
+var KD='dio/strecke/',TL=[],RIb,UPb,Fb;
+Promise.all([lade(KD+'karte.json').then(function(r){return r.json()}),lade(KD+'wege.json').then(function(r){return r.json()})]).then(function(a){
+  K=a[0];var W=a[1];
+  /* feste Stadtkamera (orthografisch), Kacheln liegen in ihrer Bildebene */
+  FW=b2t(K.F).normalize();UP=b2t(K.UP).normalize();RI=b2t(K.RI).normalize();C0=FW.clone().multiplyScalar(-K.D);
+  IW=K.TW;IH=K.TH;
   camera=new THREE.OrthographicCamera(-1,1,1,-1,K.near,K.far);camera.up.copy(UP);
-  var d=b2t(K.sun).normalize();sun.userData.d=d;
-  /* Tiefe für Antippen auf der CPU */
-  var c=document.createElement('canvas');c.width=dimg.width;c.height=dimg.height;var g=c.getContext('2d');g.drawImage(dimg,0,0);var px=g.getImageData(0,0,c.width,c.height).data;DEP={w:c.width,h:c.height,a:new Uint16Array(c.width*c.height)};for(var i=0,n=c.width*c.height;i<n;i++)DEP.a[i]=px[i*4]*256+px[i*4+1];c.width=c.height=1;
-  /* Wegeraster */
-  var raw=atob(W.d),buf=new Uint16Array(raw.length/2);for(i=0;i<buf.length;i++)buf[i]=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);WALK={x0:W.x0,z0:W.z0,s:W.s,nx:W.nx,nz:W.nz,a:buf};
-  /* Kulisse: ein Rechteck über den ganzen Schirm, schreibt Farbe und Tiefe aus dem Rendering */
-  var tC=new THREE.Texture(img);tC.encoding=THREE.sRGBEncoding;tC.generateMipmaps=false;tC.minFilter=THREE.LinearFilter;tC.magFilter=THREE.LinearFilter;tC.anisotropy=4;tC.needsUpdate=true;
-  var tD=new THREE.Texture(dimg);tD.generateMipmaps=false;tD.minFilter=tD.magFilter=THREE.NearestFilter;tD.needsUpdate=true;
-  BG=new THREE.Mesh(new THREE.PlaneBufferGeometry(2,2),new THREE.ShaderMaterial({
-    uniforms:{tC:{value:tC},tD:{value:tD},pan:{value:new THREE.Vector2()},hsz:{value:new THREE.Vector2(1,1)},iwh:{value:new THREE.Vector2(IW,IH)},dunst:{value:new THREE.Color(0.66,0.65,0.62)},nah:{value:K.near},fern:{value:K.far},zd:{value:new THREE.Vector2(K.zmin+(K.zmax-K.zmin)*0.5,K.zmax+8)}},
-    vertexShader:'varying vec2 vU;void main(){vU=uv;gl_Position=vec4(position.xy,0.,1.);}',
-    fragmentShader:'uniform sampler2D tC,tD;uniform vec2 pan,hsz,iwh;uniform vec3 dunst;uniform float nah,fern;uniform vec2 zd;varying vec2 vU;'+
-      'void main(){vec2 m=pan+(vU*2.-1.)*hsz;vec2 uv=vec2(.5+m.x/iwh.x,.5+m.y/iwh.y);'+
-      'if(uv.x<0.||uv.x>1.||uv.y<0.||uv.y>1.){gl_FragColor=vec4(.086,.07,.06,1.);gl_FragDepthEXT=1.;return;}'+
-      'vec3 c=texture2D(tC,uv).rgb;vec4 q=texture2D(tD,uv);float d=(floor(q.r*255.+.5)*256.+floor(q.g*255.+.5))/65535.;'+
-      'float z=nah+d*(fern-nah);c=mix(c,dunst,smoothstep(zd.x,zd.y,z)*.5);'+
-      'gl_FragColor=vec4(c,1.);gl_FragDepthEXT=d;}',
-    depthTest:true,depthWrite:true,toneMapped:false}));
-  BG.material.extensions={fragDepth:true};BG.frustumCulled=false;BG.renderOrder=-10;scene.add(BG);
+  sun.userData.d=b2t(K.sun).normalize();
+  var raw=atob(W.d),buf=new Uint16Array(raw.length/2);for(var i=0;i<buf.length;i++)buf[i]=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);WALK={x0:W.x0,z0:W.z0,s:W.s,nx:W.nx,nz:W.nz,a:buf};
+  var umin=1e9,umax=-1e9,vmin=1e9,vmax=-1e9;
+  K.tiles.forEach(function(t){var i=t[0],j=t[1],u0=K.U0+i*K.TW,v0=K.V0+j*K.TH;umin=Math.min(umin,u0);umax=Math.max(umax,u0+K.TW);vmin=Math.min(vmin,v0);vmax=Math.max(vmax,v0+K.TH);
+    var m=new THREE.Mesh(new THREE.PlaneBufferGeometry(K.TW,K.TH),kachelMat());var c=C0.clone().addScaledVector(RI,u0+K.TW/2).addScaledVector(UP,v0+K.TH/2).addScaledVector(FW,K.near+2);
+    m.matrixAutoUpdate=false;m.matrix.makeBasis(RI,UP,FW.clone().negate());m.matrix.setPosition(c);m.frustumCulled=false;m.renderOrder=-10;scene.add(m);
+    TL.push({i:i,j:j,u0:u0,v0:v0,m:m,st:0,n:'k_'+i+'_'+j})});
+  K.bound={umin:umin,umax:umax,vmin:vmin,vmax:vmax};
   groesse();
-  var sp=zelleNah(0,13);if(sp)erreichbar(sp);figuren(sp);
+  var sp=zelleNah(-427,243);if(sp)erreichbar(sp);figuren(sp);
   $('lade').style.opacity=0;setTimeout(function(){$('lade').style.display='none'},900);
   setTimeout(function(){$('hin').style.opacity=0},7000);
   requestAnimationFrame(loop);
 }).catch(function(e){$('lt').textContent='Diorama konnte nicht geladen werden: '+e.message});
-
+var LEER=new THREE.DataTexture(new Uint8Array([22,18,15,255]),1,1);LEER.needsUpdate=true;var LEERD=new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1);LEERD.needsUpdate=true;
+function kachelMat(){var m=new THREE.ShaderMaterial({uniforms:{tC:{value:LEER},tD:{value:LEERD},dunst:{value:new THREE.Color(0.66,0.65,0.62)},nah:{value:0},fern:{value:1},zd:{value:new THREE.Vector2(1e5,1e5+1)}},
+    vertexShader:'varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'uniform sampler2D tC,tD;uniform vec3 dunst;uniform float nah,fern;uniform vec2 zd;varying vec2 vU;'+
+      'void main(){vec3 c=texture2D(tC,vU).rgb;vec4 q=texture2D(tD,vU);float d=(floor(q.r*255.+.5)*256.+floor(q.g*255.+.5))/65535.;'+
+      'float z=nah+d*(fern-nah);c=mix(c,dunst,smoothstep(zd.x,zd.y,z)*.45);gl_FragColor=vec4(c,1.);gl_FragDepthEXT=d;}',depthTest:true,depthWrite:true,toneMapped:false});m.extensions={fragDepth:true};return m}
+/* Kacheln nach Bedarf laden und wieder freigeben */
+function kachelnPflegen(){var hw=camera.right,hh=camera.top,mx=1.2;TL.forEach(function(t){var near=t.u0<pan.x+hw*mx+10&&t.u0+K.TW>pan.x-hw*mx-10&&t.v0<pan.y+hh*mx+10&&t.v0+K.TH>pan.y-hh*mx-10;
+    if(near&&t.st===0){t.st=1;Promise.all([bild(KD+t.n+'.webp'),bild(KD+t.n+'_t.png'),bild(KD+t.n+'_tk.png')]).then(function(a){
+        var tc=new THREE.Texture(a[0]);tc.encoding=THREE.sRGBEncoding;tc.generateMipmaps=false;tc.minFilter=tc.magFilter=THREE.LinearFilter;tc.needsUpdate=true;
+        var td=new THREE.Texture(a[1]);td.generateMipmaps=false;td.minFilter=td.magFilter=THREE.NearestFilter;td.needsUpdate=true;
+        var c=document.createElement('canvas');c.width=a[2].width;c.height=a[2].height;var g=c.getContext('2d');g.drawImage(a[2],0,0);var px=g.getImageData(0,0,c.width,c.height).data,arr=new Uint16Array(c.width*c.height);for(var i=0;i<arr.length;i++)arr[i]=px[i*4]*256+px[i*4+1];t.cd={w:c.width,h:c.height,a:arr};
+        var U=t.m.material.uniforms;U.tC.value=tc;U.tD.value=td;U.nah.value=K.near;U.fern.value=K.far;U.zd.value.set(K.zmax-90,K.zmax+20);t.st=2;t.tc=tc;t.td=td}).catch(function(){t.st=3;setTimeout(function(){t.st=0},15000)})}
+    else if(!near&&t.st===2){var far=!(t.u0<pan.x+hw*2.5&&t.u0+K.TW>pan.x-hw*2.5&&t.v0<pan.y+hh*2.5&&t.v0+K.TH>pan.y-hh*2.5);if(far){t.tc.dispose();t.td.dispose();var U=t.m.material.uniforms;U.tC.value=LEER;U.tD.value=LEERD;t.st=0;t.cd=null}}})}
 /* ---------- Ansicht: verschieben und zoomen ---------- */
 function groesse(){var w=innerWidth,h=innerHeight;renderer.setSize(w,h);if(!camera)return;
-  var ppm=K.w/IW,vw=w*PR/ppm/zoom,hw=vw/2,hh=hw*h/w;camera.left=-hw;camera.right=hw;camera.top=hh;camera.bottom=-hh;camera.updateProjectionMatrix();BG.material.uniforms.hsz.value.set(hw,hh);begrenzen()}
+  var ppm=K.w/K.TW,vw=w*PR/ppm/zoom,hw=vw/2,hh=hw*h/w;camera.left=-hw;camera.right=hw;camera.top=hh;camera.bottom=-hh;camera.updateProjectionMatrix();begrenzen()}
 addEventListener('resize',groesse);
-function begrenzen(){var hw=camera.right,hh=camera.top,mx=Math.max(0,IW/2-hw),my=Math.max(0,IH/2-hh);pan.x=Math.max(-mx,Math.min(mx,pan.x));pan.y=Math.max(-my,Math.min(my,pan.y))}
-function kamSetzen(){begrenzen();camera.position.copy(C0).addScaledVector(RI,pan.x).addScaledVector(UP,pan.y);camera.lookAt(camera.position.clone().add(FW));BG.material.uniforms.pan.value.set(pan.x,pan.y)}
+function begrenzen(){var B=K.bound,hw=Math.min(camera.right,(B.umax-B.umin)/2),hh=Math.min(camera.top,(B.vmax-B.vmin)/2);pan.x=Math.max(B.umin+hw,Math.min(B.umax-hw,pan.x));pan.y=Math.max(B.vmin+hh,Math.min(B.vmax-hh,pan.y))}
+function kamSetzen(){begrenzen();camera.position.copy(C0).addScaledVector(RI,pan.x).addScaledVector(UP,pan.y);camera.lookAt(camera.position.clone().add(FW));kachelnPflegen()}
 function bildpunkt(p){var q=p.clone().sub(C0);return{x:q.dot(RI),y:q.dot(UP)}}
 /* Bildschirmpunkt -> Weltpunkt über die Tiefe der Kulisse */
-function welt(sx,sy){var hw=camera.right,hh=camera.top,mx=pan.x+(sx/innerWidth*2-1)*hw,my=pan.y+(1-sy/innerHeight*2)*hh,u=.5+mx/IW,v=.5+my/IH;if(u<0||u>1||v<0||v>1)return null;
-  var ix=Math.min(DEP.w-1,Math.floor(u*DEP.w)),iy=Math.min(DEP.h-1,Math.floor((1-v)*DEP.h)),d=DEP.a[iy*DEP.w+ix]/65535;if(d>0.999)return null;var z=K.near+d*(K.far-K.near);
-  return C0.clone().addScaledVector(RI,mx).addScaledVector(UP,my).addScaledVector(FW,z)}
-
+function welt(sx,sy){var hw=camera.right,hh=camera.top,mu=pan.x+(sx/innerWidth*2-1)*hw,mv=pan.y+(1-sy/innerHeight*2)*hh,t=null;TL.forEach(function(k){if(mu>=k.u0&&mu<k.u0+K.TW&&mv>=k.v0&&mv<k.v0+K.TH)t=k});if(!t||!t.cd)return null;
+  var u=(mu-t.u0)/K.TW,v=(mv-t.v0)/K.TH,ix=Math.min(t.cd.w-1,Math.floor(u*t.cd.w)),iy=Math.min(t.cd.h-1,Math.floor((1-v)*t.cd.h)),d=t.cd.a[iy*t.cd.w+ix]/65535;if(d>0.999)return null;var z=K.near+d*(K.far-K.near);
+  return C0.clone().addScaledVector(RI,mu).addScaledVector(UP,mv).addScaledVector(FW,z)}
 /* ---------- Wege ---------- */
 function zh(i,j){if(i<0||j<0||i>=WALK.nx||j>=WALK.nz)return 65535;return WALK.a[j*WALK.nx+i]}
 function hoehe(i,j){var v=zh(i,j);return v===65535?null:v/100-10}
@@ -124,7 +125,7 @@ function figuren(sp){if(!window.Figuren||!sp)return;Fig=window.Figuren(THREE,sce
   Fig.load(function(){var ks=Fig.keys().sort();if(!ks.length)return;var hk=ks.indexOf('m1')>=0?'m1':ks[0];
     hero=Fig.mk(hk,'idle_look_around',true);hero.x=m.x;hero.z=m.z;hero.y=hAt(m.x,m.z);hero.yaw=Math.PI;hero.sp=0;hero.weg=[];schatten(hero.o);
     LD.load(MOB?'v/fotograf_m.glb?v=25':'v/fotograf.glb?v=25',function(g){Fig.ersatz(hero,g.scene);schatten(g.scene);umriss(g.scene)});
-    var ziele=[[-14,10],[12,12],[-6,22],[18,24],[-22,16],[4,30],[-30,26],[26,14]],n=MOB?6:9;
+    var ziele=[[-415,238],[-400,228],[-380,222],[-350,210],[-320,198],[-290,186],[-430,248],[-260,175],[-230,165],[-200,152],[-170,142],[-140,132]],n=MOB?10:16;
     for(var k=0;k<n;k++){var key=ks[(k*3+1)%ks.length],z0=ziele[k%ziele.length],c=zelleNah(z0[0]+Math.random()*4,z0[1]+Math.random()*4);if(!c)continue;var q=Fig.mk(key);var mm=mitte(c.i,c.j);q.x=mm.x;q.z=mm.z;q.y=hAt(q.x,q.z);q.yaw=Math.random()*6.28;q.sp=0;q.weg=[];q.warte=Math.random()*6;q.npc=1;npc.push(q)}
     pos0=bildpunkt(new V3(hero.x,hero.y,hero.z));pan.x=pos0.x;pan.y=pos0.y});
 }

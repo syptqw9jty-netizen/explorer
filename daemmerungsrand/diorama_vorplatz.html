@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#16120f">
+<title>Der Besucher · Diorama-Test</title>
+<style>
+html,body{margin:0;height:100%;background:#16120f;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:Georgia,'Times New Roman',serif;color:#efe8d8}
+#cv{position:fixed;inset:0;width:100%;height:100%;display:block}
+#vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 52%,rgba(22,12,6,.42) 100%)}
+#kopf{position:fixed;left:calc(12px + env(safe-area-inset-left));top:calc(10px + env(safe-area-inset-top));display:flex;gap:8px;align-items:center}
+#kopf a,#kopf button{font:500 13px/1 Georgia,serif;color:#efe8d8;background:rgba(16,15,14,.45);border:1px solid rgba(241,234,219,.45);padding:9px 12px;text-decoration:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+#hin{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));font-size:14px;text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 10px rgba(0,0,0,.6);pointer-events:none;transition:opacity 1s;text-align:center;max-width:80vw}
+#lade{position:fixed;inset:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;background:#16120f;font-size:15px;letter-spacing:.04em;transition:opacity .8s;z-index:5}
+#lade small{opacity:.6;font-size:12px}
+#info{position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));font-size:11px;opacity:.6;text-shadow:0 1px 2px #000;pointer-events:none;text-align:right}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="vig"></div>
+<div id="kopf"><a href="westerntor.html">← Spiel</a></div>
+<div id="info">Diorama-Test · Bahnhofsvorplatz 1933</div>
+<div id="hin">Tippen: hingehen · Ziehen: verschieben · Zwei Finger: zoomen</div>
+<div id="lade"><span id="lt">Lade Diorama …</span><small>Bahnhofsvorplatz Paderborn, 1933</small></div>
+<script src="three.min.js"></script>
+<script src="GLTFLoader.js"></script>
+<script src="SkeletonUtils.js"></script>
+<script src="figuren.js"></script>
+<script>
+'use strict';
+/* ---------- Diorama-Test: vorgerenderte Kulisse (Cycles) + echte 3D-Figuren ----------
+   Die Kulisse ist ein großes Bild aus einer festen Schrägansicht. Zu jedem Bildpunkt gibt es die Tiefe.
+   Die Figuren werden live gezeichnet und über diese Tiefe korrekt hinter Häusern, Bäumen und Laternen verdeckt. */
+var MOB=/iPhone|iPad|iPod|Android|Mobile/.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&Math.min(screen.width,screen.height)<900);
+var V3=THREE.Vector3,$=function(i){return document.getElementById(i)};
+var cv=$('cv'),renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});
+renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=true;
+var PR=Math.min(window.devicePixelRatio||1,MOB?2.4:2);renderer.setPixelRatio(PR);
+var scene=new THREE.Scene(),K,camera,BG,DEP,WALK,hero=null,Fig=null,npc=[],t0=performance.now();
+var C0,RI,UP,FW,IW,IH,zoom=MOB?1.45:1.15,pan={x:0,y:0},folgen=0;
+function b2t(v){return new V3(v[0],v[2],-v[1])}
+
+/* Licht passend zur gerenderten Sonne */
+var hemi=new THREE.HemisphereLight(0xdfe4ea,0x6e5c4a,0.95);scene.add(hemi);
+var sun=new THREE.DirectionalLight(0xffe4c4,2.3);sun.castShadow=true;sun.shadow.mapSize.set(MOB?1024:2048,MOB?1024:2048);var sc=sun.shadow.camera;sc.left=-9;sc.right=9;sc.top=9;sc.bottom=-9;sc.near=1;sc.far=80;sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.02;scene.add(sun);scene.add(sun.target);
+/* Schattenfänger unter dem Fotografen: unsichtbar, nimmt nur Schatten auf */
+var fang=new THREE.Mesh(new THREE.PlaneBufferGeometry(16,16),new THREE.ShadowMaterial({opacity:0.42}));fang.rotation.x=-Math.PI/2;fang.receiveShadow=true;scene.add(fang);
+
+function lade(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(u);return r})}
+function bild(u){return new Promise(function(ok,no){var i=new Image();i.decoding='async';i.onload=function(){ok(i)};i.onerror=function(){no(new Error(u))};i.src=u})}
+
+Promise.all([lade('dio/vorplatz.json').then(function(r){return r.json()}),bild('dio/vorplatz.webp'),bild('dio/vorplatz_tiefe.png'),lade('dio/vorplatz_wege.json').then(function(r){return r.json()})]).then(function(a){
+  K=a[0];var img=a[1],dimg=a[2],W=a[3];
+  /* Kamera wie in Blender (orthografisch) */
+  var P=K.pitch*Math.PI/180,Y=K.yaw*Math.PI/180;
+  FW=b2t(K.F).normalize();UP=b2t([-Math.sin(Y)*Math.sin(P),Math.cos(Y)*Math.sin(P),Math.cos(P)]).normalize();RI=b2t([Math.cos(Y),Math.sin(Y),0]).normalize();C0=b2t(K.cam);
+  IW=K.os;IH=K.os*K.h/K.w;
+  camera=new THREE.OrthographicCamera(-1,1,1,-1,K.near,K.far);camera.up.copy(UP);
+  var d=b2t(K.sun).normalize();sun.userData.d=d;
+  /* Tiefe für Antippen auf der CPU */
+  var c=document.createElement('canvas');c.width=dimg.width;c.height=dimg.height;var g=c.getContext('2d');g.drawImage(dimg,0,0);var px=g.getImageData(0,0,c.width,c.height).data;DEP={w:c.width,h:c.height,a:new Uint16Array(c.width*c.height)};for(var i=0,n=c.width*c.height;i<n;i++)DEP.a[i]=px[i*4]*256+px[i*4+1];c.width=c.height=1;
+  /* Wegeraster */
+  var raw=atob(W.d),buf=new Uint16Array(raw.length/2);for(i=0;i<buf.length;i++)buf[i]=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);WALK={x0:W.x0,z0:W.z0,s:W.s,nx:W.nx,nz:W.nz,a:buf};
+  /* Kulisse: ein Rechteck über den ganzen Schirm, schreibt Farbe und Tiefe aus dem Rendering */
+  var tC=new THREE.Texture(img);tC.encoding=THREE.sRGBEncoding;tC.generateMipmaps=false;tC.minFilter=THREE.LinearFilter;tC.magFilter=THREE.LinearFilter;tC.anisotropy=4;tC.needsUpdate=true;
+  var tD=new THREE.Texture(dimg);tD.generateMipmaps=false;tD.minFilter=tD.magFilter=THREE.NearestFilter;tD.needsUpdate=true;
+  BG=new THREE.Mesh(new THREE.PlaneBufferGeometry(2,2),new THREE.ShaderMaterial({
+    uniforms:{tC:{value:tC},tD:{value:tD},pan:{value:new THREE.Vector2()},hsz:{value:new THREE.Vector2(1,1)},iwh:{value:new THREE.Vector2(IW,IH)},dunst:{value:new THREE.Color(0.66,0.65,0.62)},nah:{value:K.near},fern:{value:K.far},zd:{value:new THREE.Vector2(K.zmin+(K.zmax-K.zmin)*0.5,K.zmax+8)}},
+    vertexShader:'varying vec2 vU;void main(){vU=uv;gl_Position=vec4(position.xy,0.,1.);}',
+    fragmentShader:'uniform sampler2D tC,tD;uniform vec2 pan,hsz,iwh;uniform vec3 dunst;uniform float nah,fern;uniform vec2 zd;varying vec2 vU;'+
+      'void main(){vec2 m=pan+(vU*2.-1.)*hsz;vec2 uv=vec2(.5+m.x/iwh.x,.5+m.y/iwh.y);'+
+      'if(uv.x<0.||uv.x>1.||uv.y<0.||uv.y>1.){gl_FragColor=vec4(.086,.07,.06,1.);gl_FragDepthEXT=1.;return;}'+
+      'vec3 c=texture2D(tC,uv).rgb;vec4 q=texture2D(tD,uv);float d=(floor(q.r*255.+.5)*256.+floor(q.g*255.+.5))/65535.;'+
+      'float z=nah+d*(fern-nah);c=mix(c,dunst,smoothstep(zd.x,zd.y,z)*.5);'+
+      'gl_FragColor=vec4(c,1.);gl_FragDepthEXT=d;}',
+    depthTest:true,depthWrite:true,toneMapped:false}));
+  BG.material.extensions={fragDepth:true};BG.frustumCulled=false;BG.renderOrder=-10;scene.add(BG);
+  groesse();
+  var sp=zelleNah(0,13);if(sp)erreichbar(sp);figuren(sp);
+  $('lade').style.opacity=0;setTimeout(function(){$('lade').style.display='none'},900);
+  setTimeout(function(){$('hin').style.opacity=0},7000);
+  requestAnimationFrame(loop);
+}).catch(function(e){$('lt').textContent='Diorama konnte nicht geladen werden: '+e.message});
+
+/* ---------- Ansicht: verschieben und zoomen ---------- */
+function groesse(){var w=innerWidth,h=innerHeight;renderer.setSize(w,h);if(!camera)return;
+  var ppm=K.w/IW,vw=w*PR/ppm/zoom,hw=vw/2,hh=hw*h/w;camera.left=-hw;camera.right=hw;camera.top=hh;camera.bottom=-hh;camera.updateProjectionMatrix();BG.material.uniforms.hsz.value.set(hw,hh);begrenzen()}
+addEventListener('resize',groesse);
+function begrenzen(){var hw=camera.right,hh=camera.top,mx=Math.max(0,IW/2-hw),my=Math.max(0,IH/2-hh);pan.x=Math.max(-mx,Math.min(mx,pan.x));pan.y=Math.max(-my,Math.min(my,pan.y))}
+function kamSetzen(){begrenzen();camera.position.copy(C0).addScaledVector(RI,pan.x).addScaledVector(UP,pan.y);camera.lookAt(camera.position.clone().add(FW));BG.material.uniforms.pan.value.set(pan.x,pan.y)}
+function bildpunkt(p){var q=p.clone().sub(C0);return{x:q.dot(RI),y:q.dot(UP)}}
+/* Bildschirmpunkt -> Weltpunkt über die Tiefe der Kulisse */
+function welt(sx,sy){var hw=camera.right,hh=camera.top,mx=pan.x+(sx/innerWidth*2-1)*hw,my=pan.y+(1-sy/innerHeight*2)*hh,u=.5+mx/IW,v=.5+my/IH;if(u<0||u>1||v<0||v>1)return null;
+  var ix=Math.min(DEP.w-1,Math.floor(u*DEP.w)),iy=Math.min(DEP.h-1,Math.floor((1-v)*DEP.h)),d=DEP.a[iy*DEP.w+ix]/65535;if(d>0.999)return null;var z=K.near+d*(K.far-K.near);
+  return C0.clone().addScaledVector(RI,mx).addScaledVector(UP,my).addScaledVector(FW,z)}
+
+/* ---------- Wege ---------- */
+function zh(i,j){if(i<0||j<0||i>=WALK.nx||j>=WALK.nz)return 65535;return WALK.a[j*WALK.nx+i]}
+function hoehe(i,j){var v=zh(i,j);return v===65535?null:v/100-10}
+function zelle(x,z){return{i:Math.floor((x-WALK.x0)/WALK.s),j:Math.floor((z-WALK.z0)/WALK.s)}}
+function mitte(i,j){return{x:WALK.x0+(i+.5)*WALK.s,z:WALK.z0+(j+.5)*WALK.s}}
+function zelleNah(x,z){var c=zelle(x,z);for(var r=0;r<14;r++)for(var dj=-r;dj<=r;dj++)for(var di=-r;di<=r;di++){if(Math.max(Math.abs(di),Math.abs(dj))!==r)continue;if(zh(c.i+di,c.j+dj)!==65535)return{i:c.i+di,j:c.j+dj}}return null}
+/* nur, was man vom Start aus erreicht, bleibt begehbar (keine eingeschlossenen Innenräume) */
+function erreichbar(sp){var nx=WALK.nx,N=nx*WALK.nz,seen=new Uint8Array(N),Q=new Int32Array(N),a=0,b=0,s=sp.j*nx+sp.i;seen[s]=1;Q[b++]=s;while(a<b){var k=Q[a++],ci=k%nx,cj=k/nx|0,h0=WALK.a[k];for(var d=0;d<4;d++){var ni=ci+(d===0?1:d===1?-1:0),nj=cj+(d===2?1:d===3?-1:0),v=zh(ni,nj);if(v===65535||Math.abs(v-h0)>45)continue;var nk=nj*nx+ni;if(!seen[nk]){seen[nk]=1;Q[b++]=nk}}}for(var i=0;i<N;i++)if(!seen[i])WALK.a[i]=65535}
+function hAt(x,z){var c=zelle(x,z),h=hoehe(c.i,c.j);return h===null?0:h}
+function weg(a,b){/* A* auf dem Raster, Stufen bis 0,45 m */var nx=WALK.nx,N=nx*WALK.nz,G=new Float32Array(N).fill(1e9),from=new Int32Array(N).fill(-1),zu=new Uint8Array(N),H=[],s=a.j*nx+a.i,e=b.j*nx+b.i;
+  function hz(k){var dx=Math.abs(k%nx-b.i),dz=Math.abs((k/nx|0)-b.j);return Math.max(dx,dz)+0.41*Math.min(dx,dz)}
+  function push(f,k){H.push([f,k]);var i=H.length-1;while(i>0){var p=(i-1)>>1;if(H[p][0]<=H[i][0])break;var t=H[p];H[p]=H[i];H[i]=t;i=p}}
+  function pop(){var top=H[0],l=H.pop();if(H.length){H[0]=l;var i=0;for(;;){var a2=2*i+1,b2=a2+1,m=i;if(a2<H.length&&H[a2][0]<H[m][0])m=a2;if(b2<H.length&&H[b2][0]<H[m][0])m=b2;if(m===i)break;var t=H[m];H[m]=H[i];H[i]=t;i=m}}return top}
+  G[s]=0;push(hz(s),s);var it=0;
+  while(H.length&&it++<120000){var k=pop()[1];if(k===e)break;if(zu[k])continue;zu[k]=1;var ci=k%nx,cj=k/nx|0,h0=WALK.a[k];
+    for(var dj=-1;dj<=1;dj++)for(var di=-1;di<=1;di++){if(!di&&!dj)continue;var ni=ci+di,nj=cj+dj,v=zh(ni,nj);if(v===65535||Math.abs(v-h0)>45)continue;if(di&&dj&&(zh(ci+di,cj)===65535||zh(ci,cj+dj)===65535))continue;var nk=nj*nx+ni,g=G[k]+(di&&dj?1.414:1);if(g<G[nk]){G[nk]=g;from[nk]=k;push(g+hz(nk),nk)}}}
+  if(from[e]<0&&s!==e)return null;var P=[],k2=e;while(k2>=0){P.push(k2);if(k2===s)break;k2=from[k2]}P.reverse();
+  /* glätten: Sichtlinie auf dem Raster */var out=[P[0]],i2=0;while(i2<P.length-1){var j2=P.length-1;for(;j2>i2+1;j2--)if(frei(P[i2],P[j2]))break;out.push(P[j2]);i2=j2}
+  return out.map(function(k){var m=mitte(k%nx,k/nx|0);return{x:m.x,z:m.z}})}
+function frei(a,b){var nx=WALK.nx,ai=a%nx,aj=a/nx|0,bi=b%nx,bj=b/nx|0,n=Math.max(Math.abs(bi-ai),Math.abs(bj-aj))*2,h=WALK.a[a];for(var t=1;t<=n;t++){var i=Math.round(ai+(bi-ai)*t/n),j=Math.round(aj+(bj-aj)*t/n),v=zh(i,j);if(v===65535||Math.abs(v-h)>45)return false;h=v}return true}
+
+/* ---------- Figuren ---------- */
+var LD=new THREE.GLTFLoader();
+function figuren(sp){if(!window.Figuren||!sp)return;Fig=window.Figuren(THREE,scene,MOB);var m=mitte(sp.i,sp.j);
+  Fig.load(function(){var ks=Fig.keys().sort();if(!ks.length)return;var hk=ks.indexOf('m1')>=0?'m1':ks[0];
+    hero=Fig.mk(hk,'idle_look_around',true);hero.x=m.x;hero.z=m.z;hero.y=hAt(m.x,m.z);hero.yaw=Math.PI;hero.sp=0;hero.weg=[];schatten(hero.o);
+    LD.load(MOB?'v/fotograf_m.glb?v=25':'v/fotograf.glb?v=25',function(g){Fig.ersatz(hero,g.scene);schatten(g.scene);umriss(g.scene)});
+    var ziele=[[-14,10],[12,12],[-6,22],[18,24],[-22,16],[4,30],[-30,26],[26,14]],n=MOB?6:9;
+    for(var k=0;k<n;k++){var key=ks[(k*3+1)%ks.length],z0=ziele[k%ziele.length],c=zelleNah(z0[0]+Math.random()*4,z0[1]+Math.random()*4);if(!c)continue;var q=Fig.mk(key);var mm=mitte(c.i,c.j);q.x=mm.x;q.z=mm.z;q.y=hAt(q.x,q.z);q.yaw=Math.random()*6.28;q.sp=0;q.weg=[];q.warte=Math.random()*6;q.npc=1;npc.push(q)}
+    pos0=bildpunkt(new V3(hero.x,hero.y,hero.z));pan.x=pos0.x;pan.y=pos0.y});
+}
+var pos0;
+function schatten(o){o.traverse(function(c){if(c.isMesh){c.castShadow=true;c.receiveShadow=false}})}
+function gehe(p,dt,tempo){if(!p.weg.length){p.sp=Math.max(0,p.sp-dt*4);return false}var t=p.weg[0],dx=t.x-p.x,dz=t.z-p.z,d=Math.hypot(dx,dz);
+  if(d<0.25){p.weg.shift();return true}var v=Math.min(tempo,p.sp+dt*3);p.sp=v;var st=Math.min(d,v*dt);p.x+=dx/d*st;p.z+=dz/d*st;var hy=hAt(p.x,p.z);p.y+=(hy-p.y)*Math.min(1,dt*10);
+  var ty=Math.atan2(dx,dz),da=Math.atan2(Math.sin(ty-p.yaw),Math.cos(ty-p.yaw));p.yaw+=da*Math.min(1,dt*8);return true}
+
+/* Zielmarke */
+var ring=new THREE.Mesh(new THREE.RingBufferGeometry(0.28,0.4,40),new THREE.MeshBasicMaterial({color:0xf1eadb,transparent:true,opacity:0,depthWrite:false,toneMapped:false}));ring.rotation.x=-Math.PI/2;ring.renderOrder=3;scene.add(ring);var ringT=0;
+
+/* ---------- Eingabe: Tippen, Ziehen, Zoomen ---------- */
+var tp={},drag=null;
+function runter(e){cv.setPointerCapture&&cv.setPointerCapture(e.pointerId);tp[e.pointerId]={x:e.clientX,y:e.clientY,x0:e.clientX,y0:e.clientY,t:performance.now()};var ks=Object.keys(tp);if(ks.length===2){var a=tp[ks[0]],b=tp[ks[1]];drag={pinch:Math.hypot(a.x-b.x,a.y-b.y),z0:zoom}}}
+function bewegt(e){var p=tp[e.pointerId];if(!p||!camera)return;var dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;var ks=Object.keys(tp);
+  if(ks.length===2&&drag){var a=tp[ks[0]],b=tp[ks[1]],dd=Math.hypot(a.x-b.x,a.y-b.y);zoom=Math.max(0.55,Math.min(2.6,drag.z0*dd/drag.pinch));groesse();folgen=performance.now();return}
+  if(Math.hypot(p.x-p.x0,p.y-p.y0)>8){var mpp=camera.right*2/innerWidth;pan.x-=dx*mpp;pan.y+=dy*mpp;folgen=performance.now()}}
+function hoch(e){var p=tp[e.pointerId];delete tp[e.pointerId];if(Object.keys(tp).length<2)drag=null;if(!p||!camera)return;
+  if(Math.hypot(p.x-p.x0,p.y-p.y0)<9&&performance.now()-p.t<450&&!Object.keys(tp).length)tippen(e.clientX,e.clientY)}
+cv.addEventListener('pointerdown',runter);cv.addEventListener('pointermove',bewegt);cv.addEventListener('pointerup',hoch);cv.addEventListener('pointercancel',function(e){delete tp[e.pointerId];drag=null});
+cv.addEventListener('wheel',function(e){e.preventDefault();zoom=Math.max(0.55,Math.min(2.6,zoom*Math.exp(-e.deltaY*0.0015)));groesse();folgen=performance.now()},{passive:false});
+function tippen(sx,sy){if(!hero)return;var w=welt(sx,sy);if(!w)return;var z=zelleNah(w.x,w.z),a=zelleNah(hero.x,hero.z);if(!z||!a)return;var P=weg(a,z);if(!P)return;P.shift();
+  var m=mitte(z.i,z.j);P.push({x:w.x,z:w.z});if(zh(zelle(w.x,w.z).i,zelle(w.x,w.z).j)===65535)P[P.length-1]=m;hero.weg=P;hero.lauf=Math.hypot(m.x-hero.x,m.z-hero.z)>18;
+  var e=P[P.length-1];ring.position.set(e.x,hAt(e.x,e.z)+0.04,e.z);ringT=1;folgen=0}
+
+/* ---------- Schleife ---------- */
+var last=performance.now();
+/* verdeckter Fotograf erscheint als heller Umriss */
+/* vor dem Fotografen gezeichnet: nur wo die Kulisse näher ist, erscheint die helle Silhouette; der sichtbare Körper deckt sie sonst zu */
+var UMM=new THREE.MeshBasicMaterial({color:0xb9b2a4,depthWrite:false,depthFunc:THREE.GreaterDepth,skinning:true,toneMapped:false});
+function umriss(root){var L=[];root.traverse(function(c){if(c.isSkinnedMesh&&!c.userData.um&&c.visible&&c.material&&c.material.visible!==false)L.push(c)});L.forEach(function(c){var m=c.isSkinnedMesh?new THREE.SkinnedMesh(c.geometry,UMM):new THREE.Mesh(c.geometry,UMM.clone());if(c.isSkinnedMesh)m.bind(c.skeleton,c.bindMatrix);else m.material.skinning=false;m.userData.um=1;m.renderOrder=-5;m.frustumCulled=false;c.add(m)})}
+function loop(now){requestAnimationFrame(loop);var dt=Math.min(0.05,(now-last)/1000);last=now;if(!camera)return;
+  if(hero){gehe(hero,dt,hero.lauf?3.4:1.55);Fig.animate(hero,dt);Fig.kopf(hero,hero.yaw,dt);if(hero.neu)Fig.folge(hero);
+    /* Kamera folgt dem Fotografen, außer man hat gerade selbst verschoben */
+    if(now-folgen>2600){var b=bildpunkt(new V3(hero.x,hero.y+1,hero.z));pan.x+=(b.x-pan.x)*Math.min(1,dt*2.2);pan.y+=(b.y-pan.y)*Math.min(1,dt*2.2)}
+    fang.position.set(hero.x,hero.y+0.02,hero.z);var d=sun.userData.d;sun.position.set(hero.x-d.x*30,hero.y-d.y*30,hero.z-d.z*30);sun.target.position.set(hero.x,hero.y,hero.z)}
+  npc.forEach(function(q){if(!gehe(q,dt,1.25)){q.warte-=dt;if(q.warte<0){var a=zelleNah(q.x,q.z),z=zelleNah(q.x+(Math.random()-.5)*28,q.z+(Math.random()-.5)*20);var P=a&&z?weg(a,z):null;q.weg=P?P.slice(1):[];q.warte=3+Math.random()*7}}Fig.animate(q,dt)});
+  if(ringT>0){ringT-=dt*0.7;ring.material.opacity=Math.max(0,ringT)*0.85;var s=1+(1-ringT)*0.5;ring.scale.set(s,s,s)}
+  kamSetzen();renderer.render(scene,camera);
+}
+</script>
+</body>
+</html>
