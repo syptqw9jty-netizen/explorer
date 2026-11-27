@@ -1304,8 +1304,17 @@ function bhfOcc(){var b=BHF.bb,R=BHF.R,i0=Math.floor((b[0]+1250)/250),i1=Math.fl
       p=bhfL(x,z);ri=Math.floor((p[0]-R.x0)/R.s);rj=Math.floor((p[1]-R.z0)/R.s);c=255;if(ri>=0&&ri<R.nx&&rj>=0&&rj<R.nz)c=parseInt(R.d.substr((rj*R.nx+ri)*2,2),16);
       if(c===254){t.d[k]=1}else if(c<254){t.d[k]=0;h.d[k]=Math.min(255,g+c)}else if(p[1]<-4&&Math.abs(p[0])<72&&p[1]>-50){t.d[k]=1/* Treppenöffnung zum Tunnel */}else if(bhfSchnitt(x,z)){t.d[k]=0;h.d[k]=g}}}}
   BHF.oc=alle}
+
+/* LOK-ERGAENZUNG: Das gelieferte Lokmodell ist unter Kessel und Umlauf hohl. Ergänzt werden Rahmenwangen, Füllung, Sattel unter der Rauchkammer,
+   außenliegende Zylinder mit Schieberkästen und Kolbenstangen (Bauart P 8 / BR 38 angenähert, Maße geschätzt) */
+function lokErgaenz(L){var P=L.parent,c=-15.55,sw=new THREE.MeshStandardMaterial({color:0x121110,roughness:0.62,metalness:0.25}),st=new THREE.MeshStandardMaterial({color:0x8d8a84,roughness:0.35,metalness:0.85}),
+    add=function(geo,m,x,y,z,rz){var o=new THREE.Mesh(geo,m);o.position.set(x,y,z);if(rz)o.rotation.z=rz;o.castShadow=true;o.receiveShadow=true;o.name='Lok_38_3050_erg';P.add(o);return o};
+  [-1,1].forEach(function(sd){add(new THREE.BoxGeometry(10.9,0.78,0.07),sw,2.85,1.17,c+sd*0.53);
+    add(new THREE.CylinderGeometry(0.33,0.33,1.05,18),sw,6.8,1.27,c+sd*1.1,Math.PI/2);[6.27,7.33].forEach(function(x){add(new THREE.CylinderGeometry(0.345,0.345,0.05,18),st,x,1.27,c+sd*1.1,Math.PI/2)});
+    add(new THREE.BoxGeometry(0.95,0.36,0.34),sw,6.8,1.76,c+sd*1.02);add(new THREE.CylinderGeometry(0.035,0.035,1.7,8),st,5.42,1.27,c+sd*1.1,Math.PI/2);add(new THREE.BoxGeometry(0.26,0.2,0.12),st,4.6,1.27,c+sd*1.1)});
+  add(new THREE.BoxGeometry(9.2,0.55,1.0),sw,3.4,1.2,c);add(new THREE.BoxGeometry(1.35,0.95,1.25),sw,6.85,1.78,c)}
 function bhfTick(){if(!BHF.ok)return;var d=Math.hypot(me.x-BHF.cx,me.z-BHF.cz);if(!BHF.oc&&d<480)bhfOcc();
-  if(!BHF.on&&d<(MOB?300:420)){BHF.on=1;LD.load('v/m/hbf.glb',function(g){var o=g.scene;o.traverse(function(q){if(q.isMesh){var gl=q.material.transparent;q.castShadow=!gl&&!/Gleise/.test(q.name);q.receiveShadow=true;q.material.envMapIntensity=0.45;if(q.material.map)q.material.map.anisotropy=ANI}});o.position.set(BHF.x,(BHF.g||0)/200,BHF.z);o.rotation.y=BHF.ya;try{schmutz(o)}catch(e){}scene.add(o);BHF.o=o;shC.x=1e9},undefined,function(){BHF.on=0;BHF.err=1})}
+  if(!BHF.on&&d<(MOB?300:420)){BHF.on=1;LD.load('v/m/hbf.glb',function(g){var o=g.scene;o.traverse(function(q){if(q.isMesh){var gl=q.material.transparent;q.castShadow=!gl&&!/Gleise/.test(q.name);q.receiveShadow=true;q.material.envMapIntensity=0.45;if(q.material.map)q.material.map.anisotropy=ANI}});try{var LL=o.getObjectByName('Lok_38_3050');if(LL)lokErgaenz(LL)}catch(e){}o.position.set(BHF.x,(BHF.g||0)/200,BHF.z);o.rotation.y=BHF.ya;try{schmutz(o)}catch(e){}scene.add(o);BHF.o=o;shC.x=1e9},undefined,function(){BHF.on=0;BHF.err=1})}
   if(BHF.o){BHF.o.visible=d<(MOB?380:600);if(BHF.g!==undefined&&!BHF.y){BHF.y=1;BHF.o.position.y=BHF.g/200}}}
 /* Gleise der Stadtkarte unter dem neuen Bahnhof entfernen (sonst doppelte Schienen) */
 function bhfGleisFrei(o){var g=o.geometry,p=g.attributes.position,ix=g.index,n=ix?ix.count:p.count,a=p.isInterleavedBufferAttribute?p.data.array:p.array,k=1,K=[],i,q,j,v=new V3(),M=o.matrixWorld,mx,mz,weg=0;if(!a)return;if(p.normalized)k=1/(a instanceof Int16Array?32767:a instanceof Int8Array?127:a instanceof Uint16Array?65535:255);
