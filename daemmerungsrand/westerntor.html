@@ -854,6 +854,8 @@ var HK={st:{},
   gruss:{s1:[0.12],s2:[0.05],hd:[0.3],nk:[0.12]},
   nicken:{hd:[0.28],nk:[0.12],s2:[0.04]},
   reden:{s1:[0.04],hd:[0.05],ru:[-0.55,0,-0.15],rf:[-1.1],lu:[-0.2,0,0.1],lf:[-0.6]},
+  posieren:{s1:[-0.05],s2:[-0.03],hd:[-0.04]},
+  wegdrehen:{s1:[0.08,0.5],s2:[0,0.3],nk:[0.15,0.25],hd:[0.25,0.3]},
   abwehr:{s1:[-0.1,0,0],hd:[-0.15],lu:[-1.0,0,0.35],lf:[-1.3],ru:[-1.0,0,-0.35],rf:[-1.3]},
   stossAus:{s1:[0.12],lu:[-0.75,0,0.25],ru:[-0.75,0,-0.25],lf:[-1.75],rf:[-1.75]},
   stossVor:{s1:[0.22],s2:[0.08],lu:[-1.45,0.1,0.05],ru:[-1.45,-0.1,-0.05],lf:[-0.15],rf:[-0.15],lt:[-0.35],lc:[0.3],rt:[0.25],rc:[0.4]},
@@ -888,7 +890,7 @@ function hilfTick(p,dt){var H=p.hilf,z=H.z,bx=p.x,bz=p.z;H.t+=dt;var sx=Math.cos
 
 /* Grüßen und Plausch: wer dicht an der Spielfigur vorbeigeht, tippt an den Hut oder nickt; Bekannte bleiben stehen und reden */
 var GR={t:0};
-function lebenTick(dt){GR.t+=dt;if(GR.t<0.3)return;var T=GR.t;GR.t=0;var i,p,d,j,q;
+function lebenTick(dt){GR.t+=dt;if(GR.t<0.3)return;var T=GR.t;GR.t=0;var i,p,d,j,q;if(kam||kPh==='in'||kPh==='on')fotoBlick(T);
   for(i=0;i<ppl.length;i++){p=ppl[i];if(!p.o.visible||p.kn||p.aw||p.hilf||p.ge||p.flucht>0||p.im||p.seq)continue;
     if(p.gT>0){p.gT-=T;continue}
     d=Math.hypot(p.x-me.x,p.z-me.z);
@@ -896,6 +898,11 @@ function lebenTick(dt){GR.t+=dt;if(GR.t<0.3)return;var T=GR.t;GR.t=0;var i,p,d,j
     /* zwei Gehende begegnen sich: manchmal stehen bleiben und reden */
     if(p.path&&!p.still&&p.v>0.3&&Math.random()<0.02){for(j=0;j<ppl.length;j++){q=ppl[j];if(q===p||!q.path||q.still||q.ge||q.kn||q.aw||q.hilf||q.gT>0||!q.o.visible)continue;var dq=Math.hypot(q.x-p.x,q.z-p.z);if(dq<1.9&&dq>0.6){var dur=5+Math.random()*6;[p,q].forEach(function(a,k){var b=k?p:q;a.halt=dur;a.ge={n:'reden',t:Math.random(),d:dur,mit:b};a.gT=90})
         break}}}}}
+
+/* Kamera gehoben: wer ins Bild gerät und es merkt, bleibt stehen und schaut in die Linse oder dreht sich weg (Misstrauen gegenüber Fotografen) */
+function fotoBlick(T){var cx=fwd.x,cz=fwd.z,cl=Math.hypot(cx,cz)||1;cx/=cl;cz/=cl;for(var i=0;i<ppl.length;i++){var p=ppl[i];if(!p.o.visible||p.kn||p.aw||p.hilf||p.flucht>0||p.im||p.seq||p.fb>0){if(p.fb>0)p.fb-=T;continue}
+    var dx=p.x-me.x,dz=p.z-me.z,d=Math.hypot(dx,dz);if(d>14||d<1)continue;var c=(dx*cx+dz*cz)/d;if(c<0.93)continue;if(Math.random()>0.5*T*(1.2-d/14))continue;
+    p.fb=25;if(Math.random()<0.35){p.ge={n:'wegdrehen',t:0,d:2.8};p.halt=0}else{p.ge={n:'posieren',t:0,d:2.2+Math.random()};p.halt=p.ge.d;p.zuMir=true;p.bz={x:me.x,z:me.z,t:p.ge.d,v:0.2}}}}
 /* nach dem Stoß: Wer stürzte, klopft sich den Mantel ab und droht; wer nur stolperte, droht gleich oder geht weiter */
 function nachher(p,fiel,w){p.kh=null;p.duck=0;p.sp=0;p.y=hAt(p.x,p.z);p.wut=6;p.zuMir=true;if(w>3.2)p.hu=25+Math.random()*20;
   if(fiel&&Math.random()<0.4){p.flucht=4+Math.random()*3;p.halt=0;return}if(!fiel&&Math.random()<0.35){p.halt=0.8;return}
